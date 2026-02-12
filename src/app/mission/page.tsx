@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { MissionContent } from "@/components/mission/MissionContent";
+
+export const metadata: Metadata = {
+  title: "Job Mission Control — CareerAI",
+  description: "Step-by-step plan to become the top candidate.",
+};
 
 export const dynamic = "force-dynamic";
 

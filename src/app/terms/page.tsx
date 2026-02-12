@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Terms of Service — CareerAI",
+  description: "Terms of use for CareerAI.",
+};
 
 export default function TermsPage() {
   return (

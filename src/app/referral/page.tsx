@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ReferralContent } from "@/components/referral/ReferralContent";
+
+export const metadata: Metadata = {
+  title: "Refer & Earn — CareerAI",
+  description: "Give 5 tokens, get 10. Share your referral link.",
+};
 
 export const dynamic = "force-dynamic";
 

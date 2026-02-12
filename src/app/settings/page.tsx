@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { SettingsContent } from "@/components/settings/SettingsContent";
+
+export const metadata: Metadata = {
+  title: "Settings — CareerAI",
+  description: "Manage your profile, account, and privacy.",
+};
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Loader2, RotateCcw, Share2, ArrowRight, AlertCircle } from "lucide-react";
 import { Insight } from "@/components/shared/Insight";
@@ -57,10 +57,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const { completeAction } = useMission();
   const { careerProfile, activeJobTarget } = useAppStore();
 
+  const isRunning = useRef(false);
+
   const handleRun = useCallback(
     async (inputs: Record<string, unknown>) => {
       if (!tool) return;
+      if (isRunning.current) return;
 
+      isRunning.current = true;
       setError(null);
 
       track("tool_started", { tool_id: toolId });
@@ -69,6 +73,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       if (tool.tokens > 0 && balance < tool.tokens) {
         setPendingInputs(inputs);
         setShowPaywall(true);
+        isRunning.current = false;
         return;
       }
 
@@ -242,6 +247,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         setState("result");
       } finally {
         clearInterval(simInterval);
+        isRunning.current = false;
       }
     },
     [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget]

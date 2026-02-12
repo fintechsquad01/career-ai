@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { HistoryContent } from "@/components/history/HistoryContent";
+
+export const metadata: Metadata = {
+  title: "Result History — CareerAI",
+  description: "All your past analyses in one place.",
+};
 
 export const dynamic = "force-dynamic";
 

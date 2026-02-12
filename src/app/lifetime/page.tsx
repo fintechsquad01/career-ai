@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, Shield, Gem, Sparkles, Loader2 } from "lucide-react";
 import { FAQ } from "@/components/shared/FAQ";
 import { TOOLS } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 const LIFETIME_FAQ = [
   { q: "What happens after I buy?", a: "You immediately receive 100 tokens. Every 30 days, another 100 tokens are added automatically. Unused tokens cap at 300." },
@@ -18,8 +19,25 @@ const PACK_ID = "lifetime_early";
 export default function LifetimePage() {
   const [purchaseError, setPurchaseError] = useState("");
   const [purchasing, setPurchasing] = useState(false);
-  const [spotsClaimed] = useState(127); // TODO: fetch from database
+  const [spotsClaimed, setSpotsClaimed] = useState<number | null>(null);
   const TOTAL_SPOTS = 500;
+
+  useEffect(() => {
+    async function fetchSpotsClaimed() {
+      try {
+        const supabase = createClient();
+        const { count } = await supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true })
+          .eq("lifetime_deal", true);
+        setSpotsClaimed(count ?? 0);
+      } catch {
+        // Fallback if query fails
+        setSpotsClaimed(0);
+      }
+    }
+    fetchSpotsClaimed();
+  }, []);
 
   const handlePurchase = async () => {
     setPurchaseError("");
@@ -64,7 +82,11 @@ export default function LifetimePage() {
           {/* Spots counter */}
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-full">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-red-700">{TOTAL_SPOTS - spotsClaimed} of {TOTAL_SPOTS} spots remaining</span>
+            <span className="text-sm font-medium text-red-700">
+              {spotsClaimed !== null
+                ? `${TOTAL_SPOTS - spotsClaimed} of ${TOTAL_SPOTS} spots remaining`
+                : "Loading spots…"}
+            </span>
           </div>
         </div>
 
