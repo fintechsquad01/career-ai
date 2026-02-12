@@ -101,10 +101,17 @@ export default function LifetimePage() {
               <span className="font-bold text-green-600">~7 months</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Year 1 value</span>
+              <span className="text-gray-500">Year 1 token value</span>
               <span className="font-bold text-green-600">$90 worth of tokens</span>
             </div>
+            <div className="flex justify-between border-t border-gray-100 pt-3">
+              <span className="text-gray-500">Potential side income (Track B tools)</span>
+              <span className="font-bold text-violet-600">$500–5,000/month</span>
+            </div>
           </div>
+          <p className="text-xs text-gray-400 mt-4">
+            100 tokens covers your job hunt AND an Entrepreneurship Assessment to start building income this month.
+          </p>
         </div>
 
         {/* What 100 tokens covers */}
@@ -126,6 +133,20 @@ export default function LifetimePage() {
                 <span className="text-gray-700">{item}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Topup Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-10 flex items-start gap-4">
+          <Sparkles className="w-8 h-8 text-blue-600 flex-shrink-0" />
+          <div>
+            <h3 className="font-semibold text-blue-900">Need more in a busy month? Top up anytime.</h3>
+            <p className="text-sm text-blue-800 mt-1">
+              Lifetime subscribers can purchase any token pack on top of their monthly refill. Purchased tokens are separate from your 100/month and never expire.
+            </p>
+            <Link href="/pricing" className="text-sm font-semibold text-blue-600 hover:text-blue-700 mt-2 inline-block">
+              View token packs →
+            </Link>
           </div>
         </div>
 

@@ -156,7 +156,7 @@ CREATE POLICY "Users insert own transactions" ON token_transactions FOR INSERT W
 ALTER TABLE shared_scores ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can read shared scores" ON shared_scores FOR SELECT USING (TRUE);
 CREATE POLICY "Authenticated users create shares" ON shared_scores FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Anyone can update view count" ON shared_scores FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+-- UPDATE policy removed: view_count updates go through increment_view_count() RPC (SECURITY DEFINER)
 
 ALTER TABLE email_captures ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can insert email captures" ON email_captures FOR INSERT WITH CHECK (TRUE);

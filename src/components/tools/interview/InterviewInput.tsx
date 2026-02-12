@@ -49,6 +49,15 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
         </div>
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>10+ questions with follow-up prep</li>
+          <li>&ldquo;What they&apos;re really asking&rdquo; insights</li>
+          <li>Red flag answers to avoid</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ interview_type: interviewType })}
         className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"

@@ -90,7 +90,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={`Paste anything here...\n\n• A job description you want to apply for\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text`}
+            placeholder={`Paste anything here...\n\n- A job description you're considering\n- A LinkedIn/Greenhouse/Indeed job URL\n- Your resume text\n\nWe auto-detect the type and analyze in 30 seconds.`}
             rows={text ? 6 : 4}
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
           />
@@ -165,7 +165,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
             </span>
           ))}
         </div>
-        <p className="text-xs text-gray-400">Encrypted · Never sold · 30 second analysis</p>
+        <p className="text-xs text-gray-400">Encrypted · Never stored permanently · Your data, your control</p>
       </div>
     </div>
   );

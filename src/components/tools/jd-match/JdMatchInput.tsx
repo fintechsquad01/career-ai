@@ -30,6 +30,15 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
       />
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Evidence-based match with resume quotes</li>
+          <li>Recruiter perspective on each gap</li>
+          <li>Cover letter positioning statement</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ jd_text: jdText })}
         disabled={!jdText.trim()}

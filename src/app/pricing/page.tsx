@@ -6,12 +6,13 @@ import { ArrowRight, Check, X, Loader2 } from "lucide-react";
 import { PACKS, TOOLS, FAQ_ITEMS } from "@/lib/constants";
 import { FAQ } from "@/components/shared/FAQ";
 import { Insight } from "@/components/shared/Insight";
+import { EmailCapture } from "@/components/landing/EmailCapture";
 
 const COMPETITORS = [
-  { name: "CareerAI", price: "From $5", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true },
-  { name: "Jobscan", price: "$49.95/mo", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false },
-  { name: "Teal", price: "$29/mo", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false },
-  { name: "FinalRound", price: "$149/mo", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false },
+  { name: "CareerAI", price: "From $5", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
+  { name: "Jobscan", price: "$49.95/mo", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false, gap: "Keyword counting only. No evidence, no recruiter perspective." },
+  { name: "Teal", price: "$29/mo", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false, gap: "Generic templates. Destroys your authentic voice." },
+  { name: "FinalRound", price: "$149/mo", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false, gap: "No follow-up prep. The thing that actually decides interviews." },
 ];
 
 export default function PricingPage() {
@@ -49,9 +50,12 @@ export default function PricingPage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
             Pay per use. No subscriptions.
           </h1>
-          <p className="text-lg text-gray-500 mb-6">
+          <p className="text-lg text-gray-500 mb-4">
             Others charge $29–$149/month. We charge per tool, starting at free.
           </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
+            Log in daily for 2 free tokens. That&apos;s a free JD Match scan every day.
+          </div>
           <Insight type="competitive" text="Jobscan = $49.95/mo for just resume scanning. Teal = $29/mo. FinalRound = $149/mo. CareerAI = pay per use." />
         </div>
 
@@ -175,15 +179,55 @@ export default function PricingPage() {
                     ))}
                   </tr>
                 ))}
+                <tr className="border-b border-gray-100">
+                  <td className="px-4 py-3 text-gray-700 font-medium">What they miss</td>
+                  {COMPETITORS.map((c) => (
+                    <td key={c.name} className={`text-center px-4 py-3 text-xs ${c.name === "CareerAI" ? "text-blue-600 font-medium" : "text-gray-500"}`}>
+                      {c.name === "CareerAI" ? "Nothing — 11 tools in one" : c.gap}
+                    </td>
+                  ))}
+                </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Track B ROI */}
+        <div className="mb-16 bg-violet-50 border border-violet-200 rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Not just job hunting</h2>
+          <p className="text-gray-600 mb-4">
+            Our tools help you build income while you search. Every analysis surfaces freelance, consulting, and entrepreneurship opportunities based on your skills.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-6">
+            <div className="bg-white rounded-xl p-4">
+              <p className="text-sm font-semibold text-violet-700">Entrepreneurship Assessment</p>
+              <p className="text-xs text-gray-500 mt-1">Business ideas from your skills + 90-day launch plan</p>
+            </div>
+            <div className="bg-white rounded-xl p-4">
+              <p className="text-sm font-semibold text-violet-700">Career Roadmap</p>
+              <p className="text-xs text-gray-500 mt-1">Dual-track: job hunt + income building with monthly targets</p>
+            </div>
+            <div className="bg-white rounded-xl p-4">
+              <p className="text-sm font-semibold text-violet-700">Every Tool</p>
+              <p className="text-xs text-gray-500 mt-1">Freelance and consulting opportunities surfaced in every result</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Email Capture */}
+        <div className="mb-16 bg-gray-50 border border-gray-200 rounded-2xl p-8 text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Not ready to buy? Stay in the loop.</h2>
+          <p className="text-sm text-gray-500 mb-4">Get career tips, product updates, and occasional deals. No spam.</p>
+          <div className="max-w-md mx-auto">
+            <EmailCapture context="pricing" />
           </div>
         </div>
 
         {/* Lifetime Deal CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center mb-16">
           <h2 className="text-2xl font-bold mb-2">Want unlimited value?</h2>
-          <p className="text-blue-100 mb-6">Get the Lifetime Deal — $49 for 100 tokens/month forever.</p>
+          <p className="text-blue-100 mb-4">Get the Lifetime Deal — $49 for 100 tokens/month forever.</p>
+          <p className="text-xs text-blue-200 mb-6">Already a lifetime subscriber? You can top up with any pack above for extra tokens in busy months.</p>
           <Link
             href="/lifetime"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"

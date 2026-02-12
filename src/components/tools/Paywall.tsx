@@ -44,9 +44,9 @@ export function Paywall({ requiredTokens, onClose, onPurchaseComplete }: Paywall
           <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
             <Coins className="w-6 h-6 text-amber-600" />
           </div>
-          <h2 className="text-lg font-bold text-gray-900">Need more tokens</h2>
+          <h2 className="text-lg font-bold text-gray-900">You need {requiredTokens} more tokens</h2>
           <p className="text-sm text-gray-500 mt-1">
-            This tool requires {requiredTokens} tokens. Choose a pack to continue.
+            Come back tomorrow for 2 free credits, or grab a pack to continue now.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export function Paywall({ requiredTokens, onClose, onPurchaseComplete }: Paywall
         </div>
 
         <p className="text-xs text-gray-400 text-center mt-4">
-          Pro pack covers ~10 full job applications
+          Pro pack covers ~10 job applications + a full Entrepreneurship Assessment
         </p>
       </div>
     </div>

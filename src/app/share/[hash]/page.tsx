@@ -36,10 +36,7 @@ export default async function SharePage({ params }: SharePageProps) {
     score = data;
 
     if (score) {
-      await supabase
-        .from("shared_scores")
-        .update({ view_count: (score.view_count || 0) + 1 } as Record<string, unknown>)
-        .eq("id", score.id);
+      await supabase.rpc("increment_view_count", { p_score_id: score.id });
     }
   }
 
@@ -61,6 +58,12 @@ export default async function SharePage({ params }: SharePageProps) {
     displacement: "AI Displacement Score",
     jd_match: "Job Match Score",
     resume: "ATS Score",
+    cover_letter: "Cover Letter",
+    linkedin: "LinkedIn Strength",
+    skills_gap: "Skills Gap Analysis",
+    roadmap: "Career Roadmap",
+    salary: "Salary Range",
+    entrepreneurship: "Founder-Market Fit",
   };
 
   return (
@@ -95,7 +98,7 @@ export default async function SharePage({ params }: SharePageProps) {
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-base font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
             >
-              What&apos;s YOUR score?
+              What&apos;s YOUR score? Free analysis, 30 seconds.
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -103,9 +106,9 @@ export default async function SharePage({ params }: SharePageProps) {
 
         {/* Social proof */}
         <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-400">
-          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> 12,400+ scores</span>
-          <span className="flex items-center gap-1"><Star className="w-3 h-3" /> 4.8/5 rating</span>
-          <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> 73% take action</span>
+          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> Free AI career tools</span>
+          <span className="flex items-center gap-1"><Star className="w-3 h-3" /> 11 tools, no subscription</span>
+          <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> 30-second analysis</span>
         </div>
       </div>
     </div>

@@ -59,6 +59,15 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
         />
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Dual-track: job hunt + income building</li>
+          <li>Weekly milestones with deadlines</li>
+          <li>Backup plans for every step</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ time_horizon_months: timeHorizon, target_role: targetRole })}
         disabled={!targetRole.trim()}

@@ -34,7 +34,17 @@ function checkRate(key: string, limit: number, windowMs: number): boolean {
 }
 
 // --- Validation ---
-const VALID_SCORE_TYPES = ["displacement", "match", "resume"];
+const VALID_SCORE_TYPES = [
+  "displacement",
+  "jd_match",
+  "resume",
+  "cover_letter",
+  "linkedin",
+  "skills_gap",
+  "roadmap",
+  "salary",
+  "entrepreneurship",
+];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {

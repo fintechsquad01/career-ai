@@ -30,6 +30,15 @@ export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
         </div>
       )}
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Task-by-task risk breakdown</li>
+          <li>Specific AI tools threatening each task</li>
+          <li>Freelance opportunities from your safe skills</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({})}
         disabled={!careerProfile?.title?.trim()}

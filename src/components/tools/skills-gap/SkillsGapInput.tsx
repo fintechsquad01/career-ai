@@ -33,6 +33,15 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
         />
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Transferable skills you may be undervaluing</li>
+          <li>Named courses with prices and timelines</li>
+          <li>Portfolio projects to prove each skill</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ target_role: targetRole })}
         disabled={!targetRole.trim()}

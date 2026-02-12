@@ -59,6 +59,15 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
         />
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Honest ranges with verification sources</li>
+          <li>Leverage-aware negotiation scripts</li>
+          <li>Beyond-salary negotiation (equity, remote, PTO)</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ current_salary: currentSalary || undefined, target_role: targetRole, location })}
         disabled={!targetRole.trim() || !location.trim()}

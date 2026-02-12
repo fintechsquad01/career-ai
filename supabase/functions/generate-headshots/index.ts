@@ -31,8 +31,8 @@ function checkRate(key: string, limit: number, windowMs: number): boolean {
   return true;
 }
 
-const VALID_STYLES = ["professional", "creative", "linkedin", "corporate"];
-const VALID_BACKGROUNDS = ["studio", "office", "outdoor", "gradient"];
+const VALID_STYLES = ["professional", "casual", "modern"];
+const VALID_BACKGROUNDS = ["neutral", "office", "gradient"];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -74,8 +74,8 @@ Deno.serve(async (req: Request) => {
     const { image_paths, style, background } = body;
 
     // Validate inputs
-    if (!Array.isArray(image_paths) || image_paths.length === 0 || image_paths.length > 3) {
-      return new Response(JSON.stringify({ error: "Provide 1-3 image paths" }), {
+    if (!Array.isArray(image_paths) || image_paths.length === 0 || image_paths.length > 5) {
+      return new Response(JSON.stringify({ error: "Provide 1-5 image paths" }), {
         status: 400,
         headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
@@ -102,7 +102,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const COST = 2; // tokens
+    const COST = 20; // tokens — matches TOOL_COSTS in constants
 
     // Check balance (don't deduct yet)
     const { data: profile } = await supabaseClient
@@ -160,7 +160,7 @@ Deno.serve(async (req: Request) => {
         body: JSON.stringify({
           version: "black-forest-labs/flux-1.1-pro",
           input: {
-            prompt: `Professional ${style || "professional"} headshot photo, ${background || "studio"} background, high quality, photorealistic`,
+            prompt: `Professional ${style === "casual" ? "relaxed professional portrait, natural soft lighting, warm friendly expression, gentle smile, softly blurred background" : style === "modern" ? "contemporary professional portrait, creative studio lighting with subtle gradient, modern aesthetic, confident expression, clean minimalist background" : "corporate business headshot, clean studio lighting, sharp focus, confident subtle smile, straight-on or slight angle, solid neutral background"}, ${background === "office" ? "softly blurred modern office environment in background" : background === "gradient" ? "smooth professional gradient background in subtle blue-to-gray tones" : "solid light gray or white studio backdrop"}, 8K resolution, ultra-detailed skin texture, professional DSLR photography quality, Rembrandt lighting with soft fill, natural skin tones, no artifacts, LinkedIn-ready headshot`,
             image: signedUrls[0],
             num_outputs: 4,
             guidance_scale: 7.5,

@@ -2,6 +2,7 @@
 // Main AI tool executor for all 11 CareerAI tools
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { toolPrompts } from "./prompts.ts";
 
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -15,11 +16,12 @@ const MODEL_CONFIG: Record<string, { model: string; maxTokens: number; tier: str
   cover_letter: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
   linkedin: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
   jd_match: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
+  // Tier 1b: Premium — interview prep (Gemini 2.5 Flash)
+  interview: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
   // Tier 2: Standard — analysis & scoring (DeepSeek V3.2: $0.25/$0.38 per M)
   skills_gap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
   roadmap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
   entrepreneurship: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
-  interview: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
   salary: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
   displacement: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
 };
@@ -226,8 +228,11 @@ Deno.serve(async (req: Request) => {
 
         const cost = TOOL_COSTS[tool_id];
         if (cost > 0) {
-          // Check balance (don't deduct yet)
-          if (!profile || profile.token_balance < cost) {
+          // Check combined balance (purchased + daily credits)
+          const purchasedBalance = profile?.token_balance ?? 0;
+          const dailyBalance = profile?.daily_credits_balance ?? 0;
+          const totalBalance = purchasedBalance + dailyBalance;
+          if (!profile || totalBalance < cost) {
             send("error", { error: "INSUFFICIENT_TOKENS" });
             controller.close();
             return;
@@ -237,7 +242,15 @@ Deno.serve(async (req: Request) => {
         // Step 3: Building prompt
         send("progress", { step: 3, total: 5, message: "Preparing AI analysis..." });
 
-        const prompt = buildPrompt(tool_id, careerProfile, jobTarget, sanitizedInputs);
+        // Resolve per-tool prompt config from the structured prompts module
+        const promptConfig = toolPrompts[tool_id];
+        const systemPrompt = promptConfig
+          ? promptConfig.systemPrompt
+          : "You are CareerAI, an expert career intelligence engine. Always respond with valid JSON only.";
+        const userPrompt = promptConfig
+          ? promptConfig.buildUserPrompt(careerProfile, jobTarget, sanitizedInputs)
+          : buildPromptLegacy(tool_id, careerProfile, jobTarget, sanitizedInputs);
+        const toolTemperature = promptConfig ? promptConfig.temperature : 0.7;
 
         // Step 4: AI processing
         send("progress", { step: 4, total: 5, message: "Running AI analysis..." });
@@ -266,11 +279,11 @@ Deno.serve(async (req: Request) => {
               body: JSON.stringify({
                 model,
                 messages: [
-                  { role: "system", content: "You are CareerAI, an expert career intelligence engine. Always respond with valid JSON only." },
-                  { role: "user", content: prompt },
+                  { role: "system", content: systemPrompt },
+                  { role: "user", content: userPrompt },
                 ],
                 max_tokens: maxTokens,
-                temperature: 0.7,
+                temperature: toolTemperature,
                 response_format: { type: "json_object" },
               }),
             });
@@ -354,12 +367,20 @@ Deno.serve(async (req: Request) => {
           body: JSON.stringify(toolResult),
         });
 
+        if (!insertRes.ok) {
+          const insertErr = await insertRes.text();
+          console.error("tool_results insert failed:", insertRes.status, insertErr);
+          send("error", { error: "Failed to save results. Please try again." });
+          controller.close();
+          return;
+        }
+
         const insertedResults = await insertRes.json();
         const resultId = insertedResults[0]?.id || null;
 
-        // NOW deduct tokens (after successful AI call)
+        // NOW deduct tokens (after successful AI call + successful insert)
         if (cost > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/rpc/spend_tokens`, {
+          const spendRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/spend_tokens`, {
             method: "POST",
             headers,
             body: JSON.stringify({
@@ -369,6 +390,13 @@ Deno.serve(async (req: Request) => {
               p_tool_result_id: resultId ?? "00000000-0000-0000-0000-000000000000",
             }),
           });
+
+          if (!spendRes.ok) {
+            const spendErr = await spendRes.text();
+            console.error("spend_tokens RPC failed:", spendRes.status, spendErr);
+            // Result is saved but tokens weren't deducted — log for reconciliation
+            // Don't fail the user request since the AI result is valid
+          }
         }
 
         // Check if this is user's first paid tool use and they have a referrer
@@ -420,14 +448,14 @@ Deno.serve(async (req: Request) => {
   });
 });
 
-function buildPrompt(
+// Legacy buildPrompt — only used if tool is not in the prompts module (shouldn't happen)
+function buildPromptLegacy(
   toolId: string,
   careerProfile: Record<string, unknown> | null,
   jobTarget: Record<string, unknown> | null,
-  inputs: Record<string, unknown>
+  _inputs: Record<string, unknown>
 ): string {
-  let context = ``;
-
+  let context = "";
   if (careerProfile) {
     context += `USER PROFILE:\n`;
     if (careerProfile.name) context += `- Name: ${careerProfile.name}\n`;
@@ -435,31 +463,12 @@ function buildPrompt(
     if (careerProfile.industry) context += `- Industry: ${careerProfile.industry}\n`;
     if (careerProfile.years_experience) context += `- Years: ${careerProfile.years_experience}\n`;
     if (careerProfile.skills) context += `- Skills: ${JSON.stringify(careerProfile.skills)}\n`;
-    if (careerProfile.resume_score != null) context += `- Resume Score: ${careerProfile.resume_score}/100\n`;
     context += "\n";
   }
-
   if (jobTarget) {
-    context += `TARGET JOB:\n- ${jobTarget.title} at ${jobTarget.company}\n`;
-    if (jobTarget.salary_range) context += `- Salary: ${jobTarget.salary_range}\n`;
-    context += "\n";
+    context += `TARGET JOB:\n- ${jobTarget.title} at ${jobTarget.company}\n\n`;
   }
-
-  // Tool-specific prompts (abbreviated for Edge Function size)
-  const toolPrompts: Record<string, string> = {
-    displacement: `Analyze AI displacement risk. Respond ONLY in valid JSON: {"score": <0-100>, "risk_level": "low|medium|high|critical", "timeline": "<timeframe>", "tasks_at_risk": [{"task": "<name>", "risk_pct": <0-100>, "ai_tool": "<tool>"}], "safe_tasks": [{"task": "<name>", "risk_pct": <0-100>, "why_safe": "<reason>"}], "recommendations": ["<rec1>", "<rec2>", "<rec3>"], "industry_benchmark": {"average_score": <num>, "percentile": <num>}}`,
-    jd_match: `Compare resume against this job description:\n${inputs.jd_text || ""}\n\nRespond ONLY in valid JSON: {"fit_score": <0-100>, "requirements": [{"skill": "<req>", "priority": "req|pref", "match": true|false|"partial", "evidence": "<text>"}], "advantages": ["<adv>"], "critical_gaps": [{"gap": "<gap>", "severity": "dealbreaker|significant|minor", "fix_time": "<time>"}], "salary_assessment": {"range": "<range>", "fair_for_candidate": true|false, "reasoning": "<why>"}, "applicant_pool_estimate": {"likely_applicants": <num>, "candidate_percentile": <num>}}`,
-    resume: `Optimize this resume for ATS. ${inputs.target_jd ? `Target JD: ${inputs.target_jd}` : ""}\nResume: ${(inputs.resume_text as string) || careerProfile?.resume_text || "Not available"}\n\nRespond ONLY in valid JSON: {"score_before": ${careerProfile?.resume_score || 40}, "score_after": <new-score>, "keywords_added": ["<kw>"], "sections_rewritten": [{"section": "<name>", "before": "<old>", "after": "<new>", "changes": "<why>"}], "formatting_fixes": ["<fix>"], "optimized_resume_text": "<full text>"}`,
-    cover_letter: `Write a ${inputs.tone || "professional"} cover letter (${inputs.length || "standard"} length). Respond ONLY in valid JSON: {"letter_text": "<full letter>", "word_count": <num>, "tone": "<tone>", "jd_keywords_used": <num>, "resume_achievements_cited": <num>, "highlighted_sections": [{"text": "<phrase>", "type": "job_specific|keyword_match|achievement"}]}`,
-    interview: `Generate ${inputs.interview_type || "behavioral_case"} interview questions. Respond ONLY in valid JSON: {"questions": [{"question": "<q>", "type": "behavioral|case_study|analytical|gap_probe|technical", "suggested_answer": "<STAR answer>", "coaching_tip": "<tip>", "difficulty": "easy|medium|hard"}], "company_culture_notes": "<notes>", "interview_format_prediction": "<prediction>"}`,
-    linkedin: `Optimize LinkedIn profile for ${inputs.target_role || "similar"} roles. Respond ONLY in valid JSON: {"headlines": [{"text": "<headline>", "search_keywords": ["<kw>"]}], "about_section": "<about>", "keywords": ["<kw>"], "experience_improvements": [{"current": "<old>", "improved": "<new>"}], "profile_strength_score": <0-100>}`,
-    skills_gap: `Analyze skills gap for ${inputs.target_role || "target"} roles. Respond ONLY in valid JSON: {"gaps": [{"skill": "<name>", "current_level": <0-100>, "required_level": <0-100>, "priority": "critical|high|medium|low|strength", "time_to_close": "<time>", "course": {"name": "<name>", "provider": "<platform>", "price": "<price>", "url": "<url>"}}], "learning_path": [{"month_range": "<range>", "focus": "<focus>", "actions": "<actions>"}], "dataset_note": "<note>"}`,
-    roadmap: `Create a ${inputs.time_horizon || "12"}-month career roadmap for ${inputs.target_role || "target"} roles. Respond ONLY in valid JSON: {"milestones": [{"month": "<Month>", "title": "<title>", "actions": ["<action>"], "priority": "critical|high|medium|low"}], "networking_goals": ["<goal>"], "application_targets": ["<target>"], "skill_development": ["<skill>"]}`,
-    salary: `Research salary for target position. ${inputs.current_salary ? `Current: ${inputs.current_salary}` : ""} Location: ${inputs.location || "US"}. Respond ONLY in valid JSON: {"market_range": {"p25": <num>, "p50": <num>, "p75": <num>, "p90": <num>}, "candidate_position": <percentile>, "counter_offer_scripts": [{"scenario": "<scenario>", "script": "<script>"}], "negotiation_tactics": [{"tactic": "<name>", "do_this": "<do>", "dont_do": "<dont>"}]}`,
-    entrepreneurship: `Assess founder-market fit. ${inputs.business_idea ? `Idea: ${inputs.business_idea}` : ""} Risk tolerance: ${inputs.risk_tolerance || "moderate"}. Respond ONLY in valid JSON: {"founder_market_fit": <0-100>, "business_models": [{"model": "<name>", "description": "<desc>", "match_score": <0-100>, "first_steps": ["<step>"]}], "risk_assessment": {"tolerance": "<level>", "key_risks": ["<risk>"], "mitigations": ["<mitigation>"]}, "competitive_landscape": "<analysis>", "recommended_first_steps": ["<step>"]}`,
-  };
-
-  return context + (toolPrompts[toolId] || `Analyze for tool: ${toolId}. Respond in JSON.`);
+  return context + `Analyze for tool: ${toolId}. Respond in valid JSON.`;
 }
 
 function generateSummary(toolId: string, result: Record<string, unknown>): string {
