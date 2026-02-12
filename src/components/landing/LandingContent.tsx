@@ -28,6 +28,8 @@ import {
   Zap,
   ArrowRight,
   Sparkles,
+  AlertCircle,
+  RotateCcw,
 } from "lucide-react";
 import type { InputType } from "@/lib/detect-input";
 import type { ParseInputResult } from "@/types/landing";
@@ -110,6 +112,8 @@ export function LandingContent() {
   const [analysisType, setAnalysisType] = useState<InputType>(null);
   const [analysisResult, setAnalysisResult] =
     useState<ParseInputResult | null>(null);
+  const [analysisError, setAnalysisError] = useState(false);
+  const [lastInput, setLastInput] = useState<{ text: string; type: InputType } | null>(null);
 
   const handleAnalyze = async (text: string, type: InputType) => {
     track("landing_analyze", { type: type ?? "unknown" });
@@ -120,6 +124,8 @@ export function LandingContent() {
     }
 
     setAnalysisType(type);
+    setAnalysisError(false);
+    setLastInput({ text, type });
     setPageState("analyzing");
 
     try {
@@ -140,13 +146,25 @@ export function LandingContent() {
         }
       }
     } catch {
-      // Fall through to mock
+      // Fall through to mock (dev) or error (prod)
     }
 
-    if (type === "resume" || type === null) {
-      setAnalysisResult(getMockResumeResult());
+    // In development, fall back to mock data for local testing
+    if (process.env.NODE_ENV === "development") {
+      if (type === "resume" || type === null) {
+        setAnalysisResult(getMockResumeResult());
+      } else {
+        setAnalysisResult(getMockJdResult());
+      }
     } else {
-      setAnalysisResult(getMockJdResult());
+      // In production, show error UI instead of fake data
+      setAnalysisError(true);
+    }
+  };
+
+  const handleRetry = () => {
+    if (lastInput) {
+      handleAnalyze(lastInput.text, lastInput.type);
     }
   };
 
@@ -176,7 +194,37 @@ export function LandingContent() {
             <Loader steps={loaderSteps} onComplete={handleLoaderComplete} />
           )}
 
-          {pageState === "results" && analysisResult && (
+          {pageState === "results" && analysisError && (
+            <div className="max-w-xl mx-auto">
+              <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto">
+                  <AlertCircle className="w-6 h-6 text-amber-500" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Analysis unavailable right now</h3>
+                <p className="text-sm text-gray-500 max-w-md mx-auto">
+                  Our servers are temporarily busy. Sign up for 5 free tokens and try from your dashboard, or retry now.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                  <button
+                    onClick={handleRetry}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[44px]"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Try Again
+                  </button>
+                  <Link
+                    href="/auth"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[44px]"
+                  >
+                    Create Account — 5 Free Tokens
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {pageState === "results" && analysisResult && !analysisError && (
             <>
               {analysisResult.type === "resume" ? (
                 <XrayResults data={analysisResult.data} />
