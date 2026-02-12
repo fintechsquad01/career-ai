@@ -1,6 +1,6 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
 import type { THeadshotsResult, ToolResult } from "@/types";
 
 interface HeadshotsResultsProps {
@@ -11,7 +11,12 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
   const data = result as THeadshotsResult | null;
 
   if (!data) {
-    return <div className="text-center py-8 text-gray-500">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</div>;
+    return (
+      <div className="text-center py-12 space-y-3">
+        <AlertCircle className="w-10 h-10 text-gray-300 mx-auto" />
+        <p className="text-gray-500 text-sm">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</p>
+      </div>
+    );
   }
 
   const images = data.images ?? [];

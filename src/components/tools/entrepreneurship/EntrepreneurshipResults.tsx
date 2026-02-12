@@ -1,7 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
-import { Lightbulb, Calendar, AlertTriangle, ArrowRight, Briefcase, DollarSign } from "lucide-react";
+import { Lightbulb, Calendar, AlertTriangle, AlertCircle, ArrowRight, Briefcase, DollarSign } from "lucide-react";
 import { ToolCard } from "@/components/shared/CourseCard";
 import type { TEntrepreneurshipResult, ToolResult } from "@/types";
 
@@ -14,8 +14,9 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
   if (!data) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.
+      <div className="text-center py-12 space-y-3">
+        <AlertCircle className="w-10 h-10 text-gray-300 mx-auto" />
+        <p className="text-gray-500 text-sm">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</p>
       </div>
     );
   }

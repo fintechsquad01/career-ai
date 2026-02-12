@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, AlertTriangle, DollarSign, Clock, Briefcase } from "lucide-react";
+import { Shield, AlertTriangle, AlertCircle, DollarSign, Clock, Briefcase } from "lucide-react";
 import type { TSalaryResult, ToolResult } from "@/types";
 
 interface SalaryResultsProps {
@@ -20,8 +20,9 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
   if (!data) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.
+      <div className="text-center py-12 space-y-3">
+        <AlertCircle className="w-10 h-10 text-gray-300 mx-auto" />
+        <p className="text-gray-500 text-sm">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</p>
       </div>
     );
   }
