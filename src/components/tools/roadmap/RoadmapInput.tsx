@@ -49,8 +49,9 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <label htmlFor="roadmap-target-role" className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
         <input
+          id="roadmap-target-role"
           type="text"
           value={targetRole}
           onChange={(e) => setTargetRole(e.target.value)}

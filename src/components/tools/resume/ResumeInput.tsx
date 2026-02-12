@@ -38,25 +38,29 @@ export function ResumeInput({ onSubmit }: ResumeInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Resume Text</label>
+        <label htmlFor="resume-text" className="block text-sm font-medium text-gray-700 mb-1">Resume Text</label>
         <textarea
+          id="resume-text"
           value={resumeText}
           onChange={(e) => setResumeText(e.target.value)}
           placeholder="Paste your resume text here..."
           rows={6}
+          aria-label="Resume text"
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="resume-target-jd" className="block text-sm font-medium text-gray-700 mb-1">
           Target Job Description <span className="text-gray-400">(optional)</span>
         </label>
         <textarea
+          id="resume-target-jd"
           value={targetJd || activeJobTarget?.jd_text || ""}
           onChange={(e) => setTargetJd(e.target.value)}
           placeholder="Paste the target job description to optimize against..."
           rows={5}
+          aria-label="Target job description"
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
         />
       </div>

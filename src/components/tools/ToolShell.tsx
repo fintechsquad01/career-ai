@@ -347,7 +347,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Loading state */}
       {state === "loading" && (
-        <div className="text-center py-12 space-y-4">
+        <div className="text-center py-12 space-y-4" role="status" aria-live="polite">
           <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
           <div>
             <p className="text-sm font-medium text-gray-900">{progress.message}</p>

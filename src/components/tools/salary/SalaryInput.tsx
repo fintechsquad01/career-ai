@@ -25,10 +25,11 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="salary-current" className="block text-sm font-medium text-gray-700 mb-1">
           Current Salary <span className="text-gray-400">(optional)</span>
         </label>
         <input
+          id="salary-current"
           type="text"
           value={currentSalary}
           onChange={(e) => setCurrentSalary(e.target.value)}
@@ -38,8 +39,9 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <label htmlFor="salary-target-role" className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
         <input
+          id="salary-target-role"
           type="text"
           value={targetRole}
           onChange={(e) => setTargetRole(e.target.value)}
@@ -49,8 +51,9 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <label htmlFor="salary-location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
         <input
+          id="salary-location"
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}

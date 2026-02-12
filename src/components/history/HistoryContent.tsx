@@ -170,6 +170,7 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
         <select
           value={filter}
           onChange={(e) => handleFilterChange(e.target.value)}
+          aria-label="Filter by tool"
           className="px-3 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white min-h-[44px]"
         >
           <option value="all">All Tools</option>

@@ -92,6 +92,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
             onChange={(e) => setText(e.target.value)}
             placeholder={`Paste anything here...\n\n- A job description you're considering\n- A LinkedIn/Greenhouse/Indeed job URL\n- Your resume text\n\nWe auto-detect the type and analyze in 30 seconds.`}
             rows={text ? 6 : 4}
+            aria-label="Paste a job description, job URL, or resume text"
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
           />
         </div>
@@ -120,6 +121,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
                 type="file"
                 accept=".pdf,.docx,.txt"
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+                aria-label="Upload resume file"
                 className="hidden"
               />
               <button
