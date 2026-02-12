@@ -53,7 +53,18 @@ const displacement: ToolPromptConfig = {
 
   buildUserPrompt: (careerProfile, jobTarget, inputs) => {
     const ctx = buildContext(careerProfile, jobTarget);
-    return `${ctx}Analyze the AI displacement risk for this specific professional based on their actual role, skills, and industry.
+
+    // Use inline inputs as fallback when career profile lacks title
+    const title = careerProfile?.title || inputs.job_title || "Unknown Role";
+    const industry = careerProfile?.industry || inputs.industry || "";
+    const years = careerProfile?.years_experience || inputs.years_experience || "";
+
+    const inlineCtx =
+      !careerProfile?.title && inputs.job_title
+        ? `USER INPUT:\n- Title: ${title}${industry ? `\n- Industry: ${industry}` : ""}${years ? `\n- Years: ${years}` : ""}\n\n`
+        : "";
+
+    return `${ctx}${inlineCtx}Analyze the AI displacement risk for this specific professional based on their actual role, skills, and industry.
 
 CRITICAL RULES:
 - Base your analysis on the specific tasks this person performs daily, NOT generic occupation-level statistics
