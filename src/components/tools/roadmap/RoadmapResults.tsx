@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Target, Users, BookOpen, DollarSign, AlertTriangle, ArrowRight, ExternalLink } from "lucide-react";
+import { Calendar, Target, Users, BookOpen, DollarSign, AlertTriangle, AlertCircle, ArrowRight, ExternalLink } from "lucide-react";
 import { trackAffiliateClick, getAffiliateUrl } from "@/lib/affiliates";
 import type { TRoadmapResult, ToolResult } from "@/types";
 
@@ -35,8 +35,9 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
   if (!data) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.
+      <div className="text-center py-12 space-y-3">
+        <AlertCircle className="w-10 h-10 text-gray-300 mx-auto" />
+        <p className="text-gray-500 text-sm">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</p>
       </div>
     );
   }

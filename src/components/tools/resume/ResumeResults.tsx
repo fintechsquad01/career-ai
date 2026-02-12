@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Ring } from "@/components/shared/Ring";
-import { Copy, Download, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, ArrowRight, DollarSign } from "lucide-react";
+import { Copy, Download, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, AlertCircle, ArrowRight, DollarSign } from "lucide-react";
 import type { TResumeResult, ToolResult } from "@/types";
 
 interface ResumeResultsProps {
@@ -16,8 +16,9 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
   if (!data) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.
+      <div className="text-center py-12 space-y-3">
+        <AlertCircle className="w-10 h-10 text-gray-300 mx-auto" />
+        <p className="text-gray-500 text-sm">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</p>
       </div>
     );
   }

@@ -241,7 +241,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         }
       } catch (err) {
         console.error("Tool execution error:", err);
-        const message = err instanceof Error ? err.message : "Analysis didn't complete — most likely a temporary issue. Your tokens were not deducted.";
+        let message: string;
+        if (err instanceof TypeError && (err.message === "Failed to fetch" || err.message.includes("NetworkError") || err.message.includes("network"))) {
+          message = "Connection lost. Please check your internet and try again. Your tokens are safe.";
+        } else if (err instanceof Error) {
+          message = err.message;
+        } else {
+          message = "Analysis didn't complete — most likely a temporary issue. Your tokens were not deducted.";
+        }
         track("tool_error", { tool_id: toolId, error: message });
         setError(message);
         setState("result");
