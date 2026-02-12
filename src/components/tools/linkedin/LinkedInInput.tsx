@@ -1,0 +1,59 @@
+"use client";
+
+import { useState } from "react";
+import { Linkedin } from "lucide-react";
+
+interface LinkedInInputProps {
+  onSubmit: (inputs: Record<string, unknown>) => void;
+}
+
+export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
+  const [aboutText, setAboutText] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center">
+          <Linkedin className="w-5 h-5 text-sky-600" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-gray-900">LinkedIn Optimizer</h3>
+          <p className="text-xs text-gray-500">Optimize your profile for recruiters</p>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Current About Section <span className="text-gray-400">(optional)</span>
+        </label>
+        <textarea
+          value={aboutText}
+          onChange={(e) => setAboutText(e.target.value)}
+          placeholder="Paste your current LinkedIn about section..."
+          rows={4}
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none min-h-[44px]"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <input
+          type="text"
+          value={targetRole}
+          onChange={(e) => setTargetRole(e.target.value)}
+          placeholder="e.g. Product Manager, Senior Engineer"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+        />
+      </div>
+
+      <button
+        onClick={() => onSubmit({ about_text: aboutText, target_role: targetRole })}
+        disabled={!targetRole.trim()}
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 shadow-lg shadow-sky-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Optimize LinkedIn — 10 tokens
+      </button>
+    </div>
+  );
+}

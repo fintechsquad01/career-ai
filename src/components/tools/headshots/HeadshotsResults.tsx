@@ -1,0 +1,64 @@
+"use client";
+
+import { Download } from "lucide-react";
+import type { THeadshotsResult, ToolResult } from "@/types";
+
+interface HeadshotsResultsProps {
+  result: ToolResult | null;
+}
+
+export function HeadshotsResults({ result }: HeadshotsResultsProps) {
+  const data = result as THeadshotsResult | null;
+
+  if (!data) {
+    return <div className="text-center py-8 text-gray-500">No results available. Please try again.</div>;
+  }
+
+  const images = data.images ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {images.length > 0 ? (
+          images.map((img, i) => (
+            <div key={img.id ?? i} className="space-y-2">
+              <div className="aspect-square rounded-xl bg-gray-100 overflow-hidden">
+                <img
+                  src={img.url}
+                  alt={`Headshot ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{img.style}</span>
+                <a
+                  href={img.url}
+                  download={`headshot-${i + 1}.jpg`}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-600 hover:text-pink-700 min-h-[44px]"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </a>
+              </div>
+            </div>
+          ))
+        ) : (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <div className="aspect-square rounded-xl bg-gray-100 flex items-center justify-center">
+                <span className="text-4xl text-gray-300">?</span>
+              </div>
+              <button
+                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[44px]"
+                disabled
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,161 @@
+# CareerAI — Cursor Rules
+
+## Project Context
+You are building CareerAI, an AI-powered career intelligence platform. The app is a mobile-first web app built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe.
+
+Reference these docs in the project root:
+- `PRD.md` — Full product requirements, user flows, tools, pricing
+- `TECHSTACK.md` — Architecture, project structure, patterns
+- `DATAMODEL.md` — Database schema, RLS policies, JSONB schemas
+- `API.md` — Edge Functions, API routes, Stripe config
+- `PAGES.md` — Page-by-page specs, components, states
+- `CONVENTIONS.md` — Code style and patterns
+
+The prototype (`prototype-v5.jsx`) is a 2,495-line React component that defines all UI patterns, copy, data structures, and interactions. Use it as the source of truth for visual design, copy, and UX flows.
+
+---
+
+## Code Style
+
+### TypeScript
+- Strict mode, no `any` types
+- Use interfaces for component props, types for unions/data
+- Name types with `T` prefix for data types, no prefix for component props
+- Export types from `src/types/`
+
+### React / Next.js
+- Use React Server Components by default
+- Mark client components with `"use client"` only when needed (interactivity, hooks, browser APIs)
+- Use `app/` directory routing (App Router)
+- Prefer named exports for components, default export for pages
+- Component files: PascalCase (e.g., `ToolShell.tsx`)
+- Hook files: camelCase with `use` prefix (e.g., `useTokens.ts`)
+
+### Tailwind CSS
+- Mobile-first: write base styles for mobile, use `sm:`, `md:`, `lg:` for larger screens
+- Match the prototype's exact class patterns — the prototype is the design spec
+- All interactive elements: `min-h-[44px]` (touch target)
+- Primary CTAs: `min-h-[48px]`
+- Use Tailwind's standard palette, no custom colors needed (the prototype uses only standard Tailwind classes)
+- Gradient pattern: `bg-gradient-to-r from-blue-600 to-violet-600`
+
+### File Organization
+- One component per file
+- Co-locate tool-specific components: `components/tools/resume/ResumeInput.tsx`, `components/tools/resume/ResumeResults.tsx`
+- Shared components in `components/shared/`
+- Layout components in `components/layout/`
+- Hooks in `hooks/`
+- Supabase queries abstracted in `lib/supabase/`
+
+---
+
+## Implementation Priorities
+
+### Phase 1: Core Shell
+1. Next.js project setup with Tailwind + Inter font
+2. Supabase integration (auth, database)
+3. Layout components: Nav, Sidebar, BottomNav, AppShell
+4. Auth flow (Google OAuth + email/password)
+5. Landing page with Smart Input
+6. Dashboard page (static data first)
+
+### Phase 2: Tool Engine
+7. ToolShell wrapper component (state machine: input → loading → results)
+8. Token system (balance, spend, add)
+9. Supabase Edge Function for `run-tool`
+10. First tool implementation: AI Displacement Score (free, simplest)
+11. Second tool: JD Match (2 tokens, core flow)
+12. Resume Optimizer (10 tokens, most complex output)
+
+### Phase 3: Mission & Monetization
+13. Mission Control page
+14. Stripe integration (token packs)
+15. Token gate / paywall component
+16. Remaining tools
+17. Pricing page
+18. Lifetime deal page
+
+### Phase 4: Growth Features
+19. Share/viral score pages + OG images
+20. Referral system
+21. Result history page
+22. Settings page
+23. Email capture + transactional emails
+24. AI Headshots (Replicate integration)
+
+---
+
+## Patterns to Follow
+
+### Smart Input Detection
+```typescript
+// Port directly from prototype lines 153-170
+// Returns: "url" | "jd" | "resume" | null
+function detectInputType(text: string): InputType
+```
+
+### ToolShell State Machine
+```typescript
+type ToolState = "input" | "loading" | "result";
+// ToolShell manages: token check → paywall if insufficient → form → loading → results
+// Every tool page wraps its content in ToolShell
+```
+
+### Token Operations (Atomic)
+```typescript
+// Always use the spend_tokens DB function, never update balance directly
+// Optimistic UI update, rollback on failure
+```
+
+### Insights Component
+```typescript
+// Three types used throughout the app:
+type InsightType = "pain" | "competitive" | "data" | "info";
+// pain = red-tinted, shows a scary stat about the problem
+// competitive = shows what competitors charge vs our price
+// data = shows a data-backed claim with source
+// info = neutral informational
+```
+
+### Score Ring
+```typescript
+// SVG donut chart used for: ATS score, displacement score, fit score
+// Color: red (<40), amber (40-69), green (70+)
+// Sizes: 60px (inline), 100px (card), 140px (hero)
+```
+
+---
+
+## Common Mistakes to Avoid
+
+1. **Don't use pages router** — App Router only (`app/` directory)
+2. **Don't create a custom design system** — Use Tailwind utilities matching the prototype exactly
+3. **Don't add subscription logic** — Token-based only, no recurring billing (except lifetime deal refills)
+4. **Don't forget mobile bottom nav padding** — All page content needs `pb-24 sm:pb-8`
+5. **Don't make tools pages SSR** — Tool pages with interactive states should be client components
+6. **Don't expose service role key** — Only Edge Functions and API routes use service role
+7. **Don't skip RLS** — Every table must have Row Level Security enabled
+8. **Don't hardcode demo data in production** — The prototype has simulated data (P, JOB objects); these must be replaced with real database queries
+9. **Don't forget the competitive anchoring** — Every tool must show "vs competitor" pricing
+10. **Don't over-engineer** — The prototype is ~2,500 lines for the full app. Keep it lean.
+
+---
+
+## Key Copy (from prototype — use verbatim)
+
+- Landing H1: "Stop guessing. / Know exactly where you stand."
+- Smart Input placeholder: "Paste anything here...\n\n• A job description you want to apply for\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"
+- Signup CTA: "Create Account — 5 Free Tokens"
+- Mission label: "Job Mission Control"
+- Token language: Always "tokens", never "credits" or "points"
+- Privacy line: "Encrypted · Never sold · 30 second analysis"
+
+---
+
+## Supabase-Specific Rules
+
+- Use `@supabase/ssr` for Next.js integration (not `@supabase/auth-helpers-nextjs`)
+- Create client in middleware for auth checks
+- Use `supabase.auth.getUser()` in server components (not `getSession()` — it's less secure)
+- Edge Functions: use Deno runtime, import from `jsr:@supabase/functions-js/edge-runtime.d.ts`
+- Generate types with `supabase gen types typescript` and keep in `src/types/database.ts`

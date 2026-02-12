@@ -1,0 +1,71 @@
+"use client";
+
+import { useState } from "react";
+import { DollarSign } from "lucide-react";
+
+interface SalaryInputProps {
+  onSubmit: (inputs: Record<string, unknown>) => void;
+}
+
+export function SalaryInput({ onSubmit }: SalaryInputProps) {
+  const [currentSalary, setCurrentSalary] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+  const [location, setLocation] = useState("");
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+          <DollarSign className="w-5 h-5 text-green-600" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-gray-900">Salary Research</h3>
+          <p className="text-xs text-gray-500">Market range and negotiation tactics</p>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Current Salary <span className="text-gray-400">(optional)</span>
+        </label>
+        <input
+          type="text"
+          value={currentSalary}
+          onChange={(e) => setCurrentSalary(e.target.value)}
+          placeholder="e.g. 120000"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <input
+          type="text"
+          value={targetRole}
+          onChange={(e) => setTargetRole(e.target.value)}
+          placeholder="e.g. Senior Product Manager"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="e.g. San Francisco, Remote"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+        />
+      </div>
+
+      <button
+        onClick={() => onSubmit({ current_salary: currentSalary || undefined, target_role: targetRole, location })}
+        disabled={!targetRole.trim()}
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Research Salary — 3 tokens
+      </button>
+    </div>
+  );
+}
