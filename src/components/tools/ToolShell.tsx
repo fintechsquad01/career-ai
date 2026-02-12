@@ -2,15 +2,34 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2, RotateCcw, Share2, ArrowRight } from "lucide-react";
+import { ArrowLeft, Loader2, RotateCcw, Share2, ArrowRight, AlertCircle } from "lucide-react";
 import { Insight } from "@/components/shared/Insight";
 import { ShareModal } from "@/components/shared/ShareModal";
 import { Paywall } from "./Paywall";
 import { useTokens } from "@/hooks/useTokens";
 import { useAppStore } from "@/stores/app-store";
+import { track } from "@/lib/analytics";
 import { TOOLS_MAP } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { ToolState, ToolProgress, ToolResult } from "@/types";
+
+function getRecommendedTools(currentToolId: string) {
+  const recommendations: Record<string, string[]> = {
+    displacement: ["jd_match", "skills_gap", "resume"],
+    jd_match: ["resume", "cover_letter", "interview"],
+    resume: ["cover_letter", "linkedin", "jd_match"],
+    cover_letter: ["interview", "resume", "linkedin"],
+    linkedin: ["resume", "headshots", "skills_gap"],
+    headshots: ["linkedin", "resume", "cover_letter"],
+    interview: ["salary", "skills_gap", "cover_letter"],
+    skills_gap: ["roadmap", "resume", "interview"],
+    roadmap: ["skills_gap", "entrepreneurship", "salary"],
+    salary: ["interview", "jd_match", "cover_letter"],
+    entrepreneurship: ["roadmap", "skills_gap", "salary"],
+  };
+  const ids = recommendations[currentToolId] || ["resume", "jd_match", "displacement"];
+  return ids.map((id) => TOOLS_MAP[id]).filter(Boolean).slice(0, 3);
+}
 
 interface ToolShellProps {
   toolId: string;
@@ -29,8 +48,10 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [result, setResult] = useState<ToolResult | null>(null);
   const [progress, setProgress] = useState<ToolProgress>({ step: 0, total: 5, message: "" });
   const [showPaywall, setShowPaywall] = useState(false);
+  const [pendingInputs, setPendingInputs] = useState<Record<string, unknown> | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const { balance, spend } = useTokens();
   const { careerProfile, activeJobTarget } = useAppStore();
 
@@ -38,15 +59,20 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
     async (inputs: Record<string, unknown>) => {
       if (!tool) return;
 
+      setError(null);
+
+      track("tool_started", { tool_id: toolId });
+
       // Check tokens
       if (tool.tokens > 0 && balance < tool.tokens) {
+        setPendingInputs(inputs);
         setShowPaywall(true);
         return;
       }
 
       setState("loading");
 
-      // Simulate progress steps
+      // Fallback simulation (runs in parallel; SSE progress overrides when available)
       const steps = [
         "Preparing your data...",
         "Analyzing with AI...",
@@ -54,11 +80,13 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         "Formatting output...",
         "Finalizing...",
       ];
-
-      for (let i = 0; i < steps.length; i++) {
-        setProgress({ step: i + 1, total: steps.length, message: steps[i] });
-        await new Promise((r) => setTimeout(r, 400 + Math.random() * 200));
-      }
+      let stepIdx = 0;
+      const simInterval = setInterval(() => {
+        if (stepIdx < steps.length) {
+          setProgress({ step: stepIdx + 1, total: steps.length, message: steps[stepIdx] });
+          stepIdx++;
+        }
+      }, 450);
 
       try {
         const supabase = createClient();
@@ -83,20 +111,60 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           throw new Error(err.error || "Tool execution failed");
         }
 
-        const data = await response.json();
-        setResult(data.result as ToolResult);
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("text/event-stream") && response.body) {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
 
-        // Deduct tokens after successful run
-        if (tool.tokens > 0) {
-          await spend(tool.tokens, toolId, data.result_id);
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n\n");
+            buffer = lines.pop() || "";
+
+            for (const block of lines) {
+              const eventMatch = block.match(/^event: (.+)$/m);
+              const dataMatch = block.match(/^data: (.+)$/m);
+              if (!eventMatch || !dataMatch) continue;
+
+              const event = eventMatch[1];
+              const data = JSON.parse(dataMatch[1]);
+
+              if (event === "progress") {
+                setProgress({ step: data.step, total: data.total, message: data.message });
+              } else if (event === "complete") {
+                setResult(data.result as ToolResult);
+                if (tool.tokens > 0) {
+                  await spend(tool.tokens, toolId, data.result_id);
+                }
+                track("tool_completed", { tool_id: toolId });
+                setState("result");
+              } else if (event === "error") {
+                throw new Error(data.error);
+              }
+            }
+          }
+        } else {
+          // Fallback: plain JSON response (when Edge Function isn't deployed with SSE yet)
+          const data = await response.json();
+          setResult(data.result as ToolResult);
+          if (tool.tokens > 0) {
+            await spend(tool.tokens, toolId, data.result_id);
+          }
+          track("tool_completed", { tool_id: toolId });
+          setState("result");
         }
-
+      } catch (err) {
+        console.error("Tool execution error:", err);
+        const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+        track("tool_error", { tool_id: toolId, error: message });
+        setError(message);
         setState("result");
-      } catch (error) {
-        console.error("Tool execution error:", error);
-        // For now, generate mock result for demonstration
-        setState("result");
-        setResult(null);
+      } finally {
+        clearInterval(simInterval);
       }
     },
     [tool, balance, spend, toolId, activeJobTarget]
@@ -105,6 +173,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const handleReset = useCallback(() => {
     setState("input");
     setResult(null);
+    setError(null);
     setProgress({ step: 0, total: 5, message: "" });
   }, []);
 
@@ -212,6 +281,23 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
 
+      {/* Error display */}
+      {state === "result" && error && !result && (
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
+            <AlertCircle className="w-6 h-6 text-red-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Something went wrong</h3>
+          <p className="text-sm text-gray-600 max-w-md mx-auto">{error}</p>
+          <button
+            onClick={() => { setError(null); setState("input"); }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-xl hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
       {/* Children render prop */}
       {state !== "loading" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
 
@@ -244,6 +330,25 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
 
+      {/* Recommended next */}
+      {state === "result" && tool && (
+        <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Recommended next</h3>
+          <div className="flex flex-wrap gap-2">
+            {getRecommendedTools(toolId).map((rec) => (
+              <Link
+                key={rec.id}
+                href={`/tools/${rec.id}`}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors min-h-[36px]"
+              >
+                {rec.title}
+                <span className="text-gray-400">{rec.tokens === 0 ? "Free" : `${rec.tokens} tok`}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Share Modal */}
       {showShare && (
         <ShareModal
@@ -260,6 +365,13 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           onClose={() => setShowPaywall(false)}
           onPurchaseComplete={() => {
             setShowPaywall(false);
+            // Auto-retry with pending inputs after purchase
+            if (pendingInputs) {
+              setTimeout(() => {
+                handleRun(pendingInputs);
+                setPendingInputs(null);
+              }, 1000);
+            }
           }}
         />
       )}

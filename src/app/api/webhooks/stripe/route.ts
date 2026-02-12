@@ -4,6 +4,10 @@ import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
+// Track processed events to prevent double-processing (single-instance; for multi-instance, DB check is primary)
+const processedEvents = new Set<string>();
+const MAX_TRACKED = 1000;
+
 const PACK_TOKENS: Record<string, number> = {
   starter: 50,
   pro: 200,
@@ -37,12 +41,41 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  // Idempotency check (in-memory)
+  if (processedEvents.has(event.id)) {
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+  processedEvents.add(event.id);
+
+  // Keep set from growing unbounded
+  if (processedEvents.size > MAX_TRACKED) {
+    const iterator = processedEvents.values();
+    for (let i = 0; i < 500; i++) {
+      const val = iterator.next().value;
+      if (val !== undefined) processedEvents.delete(val);
+    }
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.user_id;
         const packId = session.metadata?.pack_id;
+
+        // DB-based idempotency: skip if we already processed this session
+        const { data: existingTx } = await supabaseAdmin
+          .from("token_transactions")
+          .select("id")
+          .eq("stripe_session_id", session.id)
+          .limit(1);
+
+        if (existingTx && existingTx.length > 0) {
+          return NextResponse.json({
+            received: true,
+            already_processed: true,
+          });
+        }
 
         if (!userId) {
           console.error("No user_id in session metadata");

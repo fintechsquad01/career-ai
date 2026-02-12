@@ -16,7 +16,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { packId } = (await request.json()) as { packId: PackId };
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    const { packId } = body as { packId: PackId };
     const product = STRIPE_PRODUCTS[packId];
 
     if (!product) {

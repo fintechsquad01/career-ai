@@ -64,7 +64,7 @@ export function EntrepreneurshipInput({ onSubmit }: EntrepreneurshipInputProps) 
 
       <button
         onClick={() => onSubmit({ business_idea: businessIdea || undefined, risk_tolerance: riskTolerance })}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-colors min-h-[48px]"
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Assess Fit — 8 tokens
       </button>

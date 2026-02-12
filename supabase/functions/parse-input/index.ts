@@ -1,25 +1,90 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Model config: Tier 3 Lite (Gemini 2.5 Flash Lite: $0.10/$0.40 per M)
+const PRIMARY_MODEL = "google/gemini-2.5-flash-lite";
+const FALLBACK_MODEL = "openai/gpt-4.1-mini";
+
+// --- CORS: Dynamic origin check ---
+const ALLOWED_ORIGINS = [
+  Deno.env.get("APP_URL") || "https://careerai.com",
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
+
+// --- Rate Limiting ---
+const rateLimitMap = new Map<string, number[]>();
+
+function checkRate(key: string, limit: number, windowMs: number): boolean {
+  const now = Date.now();
+  const timestamps = rateLimitMap.get(key) || [];
+  const valid = timestamps.filter((t) => now - t < windowMs);
+  if (valid.length >= limit) return false;
+  valid.push(now);
+  rateLimitMap.set(key, valid);
+  return true;
+}
+
+// --- Validation ---
+const VALID_DETECTED_TYPES = ["resume", "jd", "url", "unknown"];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
+    // Rate limit by IP: 10/min
+    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (!checkRate(`parse-input:${clientIp}`, 10, 60000)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait and try again." }), {
+        status: 429,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+
     const { input_text, detected_type } = await req.json();
 
-    if (!input_text) {
-      return new Response(JSON.stringify({ error: "No input provided" }), {
+    // Validate input_text: required string, min 10, max 50000
+    if (!input_text || typeof input_text !== "string") {
+      return new Response(JSON.stringify({ error: "input_text is required and must be a string" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
+    }
+    if (input_text.length < 10) {
+      return new Response(JSON.stringify({ error: "input_text must be at least 10 characters" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+    if (input_text.length > 50000) {
+      return new Response(JSON.stringify({ error: "input_text must be 50,000 characters or less" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate detected_type: optional, must be one of valid types
+    if (detected_type !== undefined && detected_type !== null) {
+      if (!VALID_DETECTED_TYPES.includes(detected_type)) {
+        return new Response(JSON.stringify({ error: `Invalid detected_type. Must be one of: ${VALID_DETECTED_TYPES.join(", ")}` }), {
+          status: 400,
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        });
+      }
     }
 
     let prompt: string;
@@ -65,29 +130,59 @@ JOB POSTING TEXT:
 ${input_text}`;
     }
 
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY!,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-5-20250929",
-        max_tokens: 2048,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
+    // Call OpenRouter with fallback
+    const callModel = async (model: string) => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 30000);
+      try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": APP_URL,
+            "X-Title": "CareerAI",
+          },
+          signal: ctrl.signal,
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: "You are an expert data extraction AI. Always respond with valid JSON only." },
+              { role: "user", content: prompt },
+            ],
+            max_tokens: 2048,
+            temperature: 0.3,
+            response_format: { type: "json_object" },
+          }),
+        });
+        if (!res.ok) throw new Error(`OpenRouter ${res.status}: ${await res.text()}`);
+        const data = await res.json();
+        return data.choices?.[0]?.message?.content || "";
+      } finally {
+        clearTimeout(t);
+      }
+    };
 
-    if (!claudeResponse.ok) {
-      return new Response(JSON.stringify({ error: "AI_ERROR" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    let responseText: string;
+    try {
+      responseText = await callModel(PRIMARY_MODEL);
+    } catch (primaryError) {
+      if ((primaryError as Error).name === "AbortError") {
+        return new Response(JSON.stringify({ error: "AI analysis timed out. Please try again." }), {
+          status: 504,
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        });
+      }
+      // Fallback
+      try {
+        responseText = await callModel(FALLBACK_MODEL);
+      } catch {
+        return new Response(JSON.stringify({ error: "AI_ERROR" }), {
+          status: 500,
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        });
+      }
     }
-
-    const claudeData = await claudeResponse.json();
-    const responseText = claudeData.content[0].text;
 
     let result;
     try {
@@ -96,17 +191,17 @@ ${input_text}`;
     } catch {
       return new Response(JSON.stringify({ error: "PARSE_FAILED" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: String(error) }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   }
 });

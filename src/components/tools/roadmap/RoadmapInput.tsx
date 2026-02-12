@@ -62,7 +62,7 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
       <button
         onClick={() => onSubmit({ time_horizon_months: timeHorizon, target_role: targetRole })}
         disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Generate Roadmap — 8 tokens
       </button>

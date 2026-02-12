@@ -39,6 +39,9 @@ yarn-error.log*
 # supabase
 supabase/.temp/
 
+# playwright
+.playwright-cli/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

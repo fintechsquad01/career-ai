@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Brain, Loader2 } from "lucide-react";
@@ -29,6 +29,22 @@ function AuthContent() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref");
   const supabase = createClient();
+
+  // Read error from OAuth callback
+  useEffect(() => {
+    const callbackError = searchParams.get("error");
+    if (callbackError) {
+      setError(decodeURIComponent(callbackError));
+    }
+  }, [searchParams]);
+
+  // Read referral code from query params if present
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      localStorage.setItem("careerai_referral_code", ref);
+    }
+  }, [searchParams]);
 
   const handleGoogleAuth = async () => {
     setLoading(true);

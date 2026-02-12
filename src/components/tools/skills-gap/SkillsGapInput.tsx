@@ -36,7 +36,7 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
       <button
         onClick={() => onSubmit({ target_role: targetRole })}
         disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Analyze Skills — 5 tokens
       </button>

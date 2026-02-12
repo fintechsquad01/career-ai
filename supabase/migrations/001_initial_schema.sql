@@ -136,6 +136,8 @@ CREATE TABLE shared_scores (
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "System inserts profiles" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users delete own profile" ON profiles FOR DELETE USING (auth.uid() = id);
 
 ALTER TABLE career_profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users manage own career profile" ON career_profiles FOR ALL USING (auth.uid() = user_id);
@@ -145,15 +147,48 @@ CREATE POLICY "Users manage own job targets" ON job_targets FOR ALL USING (auth.
 
 ALTER TABLE tool_results ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users read own results" ON tool_results FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users insert own results" ON tool_results FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 ALTER TABLE token_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users read own transactions" ON token_transactions FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users insert own transactions" ON token_transactions FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 ALTER TABLE shared_scores ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can read shared scores" ON shared_scores FOR SELECT USING (TRUE);
 CREATE POLICY "Authenticated users create shares" ON shared_scores FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Anyone can update view count" ON shared_scores FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
 
 ALTER TABLE email_captures ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can insert email captures" ON email_captures FOR INSERT WITH CHECK (TRUE);
+
+-- ============================================
+-- STORAGE BUCKETS
+-- ============================================
+
+INSERT INTO storage.buckets (id, name, public) VALUES ('resumes', 'resumes', false);
+INSERT INTO storage.buckets (id, name, public) VALUES ('headshots-input', 'headshots-input', false);
+INSERT INTO storage.buckets (id, name, public) VALUES ('headshots-output', 'headshots-output', false);
+INSERT INTO storage.buckets (id, name, public) VALUES ('exports', 'exports', false);
+
+-- Storage RLS: users can only access their own files
+CREATE POLICY "Users upload own resumes" ON storage.objects FOR INSERT WITH CHECK (
+  bucket_id = 'resumes' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+CREATE POLICY "Users read own resumes" ON storage.objects FOR SELECT USING (
+  bucket_id = 'resumes' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+CREATE POLICY "Users upload own headshot inputs" ON storage.objects FOR INSERT WITH CHECK (
+  bucket_id = 'headshots-input' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+CREATE POLICY "Users read own headshot inputs" ON storage.objects FOR SELECT USING (
+  bucket_id = 'headshots-input' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+CREATE POLICY "Users read own headshot outputs" ON storage.objects FOR SELECT USING (
+  bucket_id = 'headshots-output' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+CREATE POLICY "Users read own exports" ON storage.objects FOR SELECT USING (
+  bucket_id = 'exports' AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
 
 -- ============================================
 -- DATABASE FUNCTIONS
@@ -163,7 +198,7 @@ ALTER TABLE email_captures ENABLE ROW LEVEL SECURITY;
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, email, full_name, avatar_url, referral_code)
+  INSERT INTO public.profiles (id, email, full_name, avatar_url, referral_code)
   VALUES (
     NEW.id,
     NEW.email,
@@ -173,12 +208,12 @@ BEGIN
   );
 
   -- Record signup bonus transaction
-  INSERT INTO token_transactions (user_id, amount, balance_after, type, description)
-  VALUES (NEW.id, 5, 5, 'signup_bonus', 'Welcome bonus — 5 free tokens');
+  INSERT INTO public.token_transactions (user_id, amount, balance_after, type, description)
+  VALUES (NEW.id, 5, 5, 'signup_bonus', 'Welcome bonus - 5 free tokens');
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
@@ -197,7 +232,7 @@ DECLARE
 BEGIN
   -- Lock and check balance
   SELECT token_balance INTO v_balance
-  FROM profiles
+  FROM public.profiles
   WHERE id = p_user_id
   FOR UPDATE;
 
@@ -206,7 +241,7 @@ BEGIN
   END IF;
 
   -- Deduct
-  UPDATE profiles
+  UPDATE public.profiles
   SET token_balance = token_balance - p_amount,
       total_tokens_spent = total_tokens_spent + p_amount,
       updated_at = NOW()
@@ -215,12 +250,12 @@ BEGIN
   v_balance := v_balance - p_amount;
 
   -- Log transaction
-  INSERT INTO token_transactions (user_id, amount, balance_after, type, description, tool_result_id)
+  INSERT INTO public.token_transactions (user_id, amount, balance_after, type, description, tool_result_id)
   VALUES (p_user_id, -p_amount, v_balance, 'tool_use', p_tool_id, p_tool_result_id);
 
   RETURN v_balance;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Atomic token adding
 CREATE OR REPLACE FUNCTION add_tokens(
@@ -234,19 +269,19 @@ RETURNS INTEGER AS $$
 DECLARE
   v_balance INTEGER;
 BEGIN
-  UPDATE profiles
+  UPDATE public.profiles
   SET token_balance = token_balance + p_amount,
       total_tokens_purchased = total_tokens_purchased + p_amount,
       updated_at = NOW()
   WHERE id = p_user_id
   RETURNING token_balance INTO v_balance;
 
-  INSERT INTO token_transactions (user_id, amount, balance_after, type, description, stripe_session_id)
+  INSERT INTO public.token_transactions (user_id, amount, balance_after, type, description, stripe_session_id)
   VALUES (p_user_id, p_amount, v_balance, p_type, p_description, p_stripe_session_id);
 
   RETURN v_balance;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Process referral credits
 CREATE OR REPLACE FUNCTION process_referral(
@@ -262,9 +297,9 @@ BEGIN
   PERFORM add_tokens(p_new_user_id, 5, 'referral_bonus', 'Referral welcome bonus');
 
   -- Increment referral count
-  UPDATE profiles SET referral_count = referral_count + 1 WHERE id = p_referrer_id;
+  UPDATE public.profiles SET referral_count = referral_count + 1 WHERE id = p_referrer_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Lifetime token refill (run via cron)
 CREATE OR REPLACE FUNCTION refill_lifetime_tokens()
@@ -274,7 +309,7 @@ DECLARE
 BEGIN
   FOR r IN
     SELECT id, token_balance
-    FROM profiles
+    FROM public.profiles
     WHERE lifetime_deal = TRUE
       AND lifetime_next_refill IS NOT NULL
       AND lifetime_next_refill <= NOW()
@@ -289,9 +324,21 @@ BEGIN
       );
     END IF;
 
-    UPDATE profiles
+    UPDATE public.profiles
     SET lifetime_next_refill = NOW() + INTERVAL '30 days'
     WHERE id = r.id;
   END LOOP;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+-- ============================================
+-- CRON: Lifetime token refill (daily at midnight UTC)
+-- Requires pg_cron extension (enable in Supabase Dashboard > Database > Extensions)
+-- ============================================
+
+-- Uncomment after enabling pg_cron extension:
+-- SELECT cron.schedule(
+--   'refill-lifetime-tokens',
+--   '0 0 * * *',
+--   $$SELECT refill_lifetime_tokens()$$
+-- );

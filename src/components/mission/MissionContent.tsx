@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, Crosshair, MapPin, DollarSign, Users,
@@ -9,6 +10,7 @@ import {
 import { Ring } from "@/components/shared/Ring";
 import { useMission } from "@/hooks/useMission";
 import { MISSION_ACTIONS } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 const ACTION_ICONS: Record<string, typeof FileText> = {
   optimize: FileText,
@@ -26,6 +28,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 };
 
 export function MissionContent() {
+  const [creatingFromPreAuth, setCreatingFromPreAuth] = useState(false);
   const {
     activeJobTarget,
     completed,
@@ -34,6 +37,66 @@ export function MissionContent() {
     isComplete,
     getActionState,
   } = useMission();
+
+  useEffect(() => {
+    const preAuthJd = localStorage.getItem("careerai_pre_auth_jd");
+    if (preAuthJd && !activeJobTarget) {
+      setCreatingFromPreAuth(true);
+      const createTarget = async () => {
+        try {
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+
+          const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+          let title = "Target Position";
+          let company = "Target Company";
+
+          if (supabaseUrl && !supabaseUrl.includes("placeholder")) {
+            try {
+              const res = await fetch(`${supabaseUrl}/functions/v1/parse-input`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+                body: JSON.stringify({ input_text: preAuthJd, detected_type: "jd" }),
+              });
+              if (res.ok) {
+                const parsed = await res.json();
+                if (parsed.data?.title) title = parsed.data.title;
+                if (parsed.data?.company) company = parsed.data.company;
+              }
+            } catch { /* use defaults */ }
+          }
+
+          await supabase.from("job_targets").insert({
+            user_id: session.user.id,
+            title,
+            company,
+            jd_text: preAuthJd,
+            source: "paste",
+            is_active: true,
+            mission_actions: {},
+          });
+
+          localStorage.removeItem("careerai_pre_auth_jd");
+          window.location.reload();
+        } catch (error) {
+          console.error("Failed to create job target from pre-auth JD:", error);
+        } finally {
+          setCreatingFromPreAuth(false);
+        }
+      };
+      createTarget();
+    }
+  }, [activeJobTarget]);
+
+  if (creatingFromPreAuth) {
+    return (
+      <div className="text-center py-16 space-y-4">
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+        <p className="text-sm text-gray-500">Setting up your job mission...</p>
+      </div>
+    );
+  }
 
   if (!activeJobTarget) {
     return (
@@ -56,42 +119,6 @@ export function MissionContent() {
 
   const requirements = (activeJobTarget.requirements as Array<{ skill: string; match: boolean | "partial" }>) || [];
   const matched = requirements.filter((r) => r.match === true).length;
-
-  // Mission Complete
-  if (isComplete) {
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 rounded-2xl p-8 text-center">
-          <Trophy className="w-16 h-16 text-amber-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Mission Complete!</h2>
-          <p className="text-gray-600">
-            You&apos;ve completed all actions for {activeJobTarget.title} at {activeJobTarget.company}.
-          </p>
-          <div className="flex items-center justify-center gap-4 mt-6">
-            {activeJobTarget.fit_score && (
-              <Ring score={activeJobTarget.fit_score} size="md" label="Fit Score" />
-            )}
-          </div>
-          <div className="flex gap-3 justify-center mt-6">
-            <a
-              href={activeJobTarget.job_url || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-colors min-h-[48px] inline-flex items-center gap-2"
-            >
-              Apply Now <ArrowRight className="w-4 h-4" />
-            </a>
-            <Link
-              href="/tools/jd_match"
-              className="px-6 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px] inline-flex items-center"
-            >
-              Analyze Another Job
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
@@ -229,6 +256,37 @@ export function MissionContent() {
           );
         })}
       </div>
+
+      {/* Mission Complete */}
+      {completed === 5 && (
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+            <Trophy className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900">Mission Complete!</h2>
+          <p className="text-sm text-gray-600 max-w-md mx-auto">
+            You have completed all steps for <strong>{activeJobTarget?.title}</strong> at <strong>{activeJobTarget?.company}</strong>.
+            You are now fully prepared to apply.
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center pt-2">
+            <a
+              href={activeJobTarget?.job_url || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-colors min-h-[48px]"
+            >
+              Apply Now
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
+            >
+              Next Job Mission
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

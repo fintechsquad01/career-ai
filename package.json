@@ -32,5 +32,6 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "_comment_resend": "UNUSED: src/lib/email.ts uses raw fetch to Resend API. Remove with: npm uninstall resend"
 }

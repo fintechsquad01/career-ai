@@ -1,3 +1,8 @@
+/**
+ * Shared prompt builder for AI tools.
+ * NOTE: Currently the run-tool Edge Function has its own inline buildPrompt.
+ * This module is ready to be imported by Edge Functions when refactoring.
+ */
 import type { CareerProfile, JobTarget } from "@/types";
 
 interface PromptContext {

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/stores/app-store";
 
 export function useTokens() {
-  const { tokenBalance, setTokenBalance, setTokenAnimating } = useAppStore();
+  const { tokenBalance, setTokenBalance, setTokenAnimating, tokenAnimating } = useAppStore();
   const supabase = createClient();
 
   const spend = useCallback(
@@ -18,8 +18,15 @@ export function useTokens() {
       setTimeout(() => setTokenAnimating(false), 600);
 
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          console.error("No authenticated user");
+          setTokenBalance(tokenBalance);
+          return false;
+        }
+
         const { error } = await supabase.rpc("spend_tokens", {
-          p_user_id: (await supabase.auth.getUser()).data.user!.id,
+          p_user_id: user.id,
           p_amount: amount,
           p_tool_id: toolId,
           p_tool_result_id: toolResultId || "",
@@ -48,5 +55,5 @@ export function useTokens() {
     [tokenBalance, setTokenBalance, setTokenAnimating]
   );
 
-  return { balance: tokenBalance, spend, add, animating: useAppStore((s) => s.tokenAnimating) };
+  return { balance: tokenBalance, spend, add, animating: tokenAnimating };
 }

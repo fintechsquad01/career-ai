@@ -9,6 +9,7 @@ import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
 import { TOOLS, PACKS, FAQ_ITEMS } from "@/lib/constants";
+import { track } from "@/lib/analytics";
 import {
   ShieldAlert,
   Target,
@@ -110,6 +111,13 @@ export function LandingContent() {
     useState<ParseInputResult | null>(null);
 
   const handleAnalyze = async (text: string, type: InputType) => {
+    track("landing_analyze", { type: type ?? "unknown" });
+
+    // Save JD for post-auth mission activation
+    if (type === "jd" || type === "url") {
+      localStorage.setItem("careerai_pre_auth_jd", text);
+    }
+
     setAnalysisType(type);
     setPageState("analyzing");
 

@@ -21,6 +21,8 @@ import { SalaryInput } from "./salary/SalaryInput";
 import { SalaryResults } from "./salary/SalaryResults";
 import { EntrepreneurshipInput } from "./entrepreneurship/EntrepreneurshipInput";
 import { EntrepreneurshipResults } from "./entrepreneurship/EntrepreneurshipResults";
+import { HeadshotsInput } from "./headshots/HeadshotsInput";
+import { HeadshotsResults } from "./headshots/HeadshotsResults";
 import type { ToolResult } from "@/types";
 
 const TOOL_COMPONENTS: Record<
@@ -40,6 +42,7 @@ const TOOL_COMPONENTS: Record<
   roadmap: { Input: RoadmapInput, Results: RoadmapResults },
   salary: { Input: SalaryInput, Results: SalaryResults },
   entrepreneurship: { Input: EntrepreneurshipInput, Results: EntrepreneurshipResults },
+  headshots: { Input: HeadshotsInput, Results: HeadshotsResults },
 };
 
 interface ToolPageContentProps {

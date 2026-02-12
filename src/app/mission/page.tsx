@@ -14,20 +14,20 @@ export default async function MissionPage() {
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: careerProfile } = await supabase
     .from("career_profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: activeJobTarget } = await supabase
     .from("job_targets")
     .select("*")
     .eq("user_id", user.id)
     .eq("is_active", true)
-    .single();
+    .maybeSingle();
 
   return (
     <AppShell

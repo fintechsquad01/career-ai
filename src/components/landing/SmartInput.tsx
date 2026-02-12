@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useRef } from "react";
 import { Link as LinkIcon, Crosshair, FileText, Sparkles, ArrowRight, X, Upload } from "lucide-react";
 import { useSmartInput } from "@/hooks/useSmartInput";
+import { parseFile, isResumeFile } from "@/lib/file-parser";
 import type { InputType } from "@/lib/detect-input";
 
 const DEMO_CHIPS = [
@@ -34,13 +36,39 @@ interface SmartInputProps {
 
 export function SmartInput({ onAnalyze }: SmartInputProps) {
   const { text, setText, detectedType, clear } = useSmartInput();
+  const [fileError, setFileError] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (file: File) => {
+    setFileError("");
+    try {
+      if (!isResumeFile(file)) {
+        setFileError("Please upload a PDF, DOCX, or TXT file.");
+        return;
+      }
+      const result = await parseFile(file);
+      setText(result.text);
+    } catch (err) {
+      setFileError(err instanceof Error ? err.message : "Failed to read file");
+    }
+  };
 
   const badge = detectedType ? BADGE_CONFIG[detectedType] : null;
   const cta = detectedType ? CTA_CONFIG[detectedType] : null;
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div
+        className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
+        onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-blue-400"); }}
+        onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove("ring-2", "ring-blue-400"); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.currentTarget.classList.remove("ring-2", "ring-blue-400");
+          const f = e.dataTransfer.files[0];
+          if (f) handleFile(f);
+        }}
+      >
         {/* Demo chips */}
         {!text && (
           <div className="px-4 pt-4 flex flex-wrap gap-2">
@@ -86,9 +114,30 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
                 Clear
               </button>
             )}
-            <span className="text-xs text-gray-300 hidden sm:inline">or drop a file</span>
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx,.txt"
+                onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-xs text-gray-400 hover:text-blue-600 hidden sm:inline transition-colors"
+              >
+                or upload a file
+              </button>
+            </>
           </div>
         </div>
+
+        {fileError && (
+          <div className="px-4 pb-3">
+            <p className="text-xs text-red-500">{fileError}</p>
+          </div>
+        )}
 
         {/* CTA */}
         {text && (

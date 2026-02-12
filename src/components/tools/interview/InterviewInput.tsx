@@ -51,7 +51,7 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
 
       <button
         onClick={() => onSubmit({ interview_type: interviewType })}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/20 transition-colors min-h-[48px]"
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Generate Questions — 3 tokens
       </button>

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       .from("shared_scores")
       .select("score_type, score_value, title, industry")
       .eq("hash", hash)
-      .single();
+      .maybeSingle();
     if (data) {
       type = data.score_type || type;
       score = data.score_value ?? score;

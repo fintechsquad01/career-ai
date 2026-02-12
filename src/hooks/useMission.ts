@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/stores/app-store";
 import { MISSION_ACTIONS } from "@/lib/constants";
+import type { Json } from "@/types";
 
 export function useMission() {
   const { activeJobTarget, setActiveJobTarget } = useAppStore();
@@ -23,7 +24,7 @@ export function useMission() {
 
       const { data, error } = await supabase
         .from("job_targets")
-        .update({ mission_actions: updated as unknown as import("@/types").Json })
+        .update({ mission_actions: updated as unknown as Json })
         .eq("id", activeJobTarget.id)
         .select()
         .single();

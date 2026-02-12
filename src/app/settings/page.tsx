@@ -14,13 +14,13 @@ export default async function SettingsPage() {
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: careerProfile } = await supabase
     .from("career_profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: transactions } = await supabase
     .from("token_transactions")

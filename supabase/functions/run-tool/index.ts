@@ -3,9 +3,27 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
+
+// --- OpenRouter Model Routing (3-tier strategy) ---
+const MODEL_CONFIG: Record<string, { model: string; maxTokens: number; tier: string }> = {
+  // Tier 1: Premium — user-facing writing (Gemini 2.5 Flash: $0.30/$2.50 per M)
+  resume: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
+  cover_letter: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
+  linkedin: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
+  jd_match: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
+  // Tier 2: Standard — analysis & scoring (DeepSeek V3.2: $0.25/$0.38 per M)
+  skills_gap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  roadmap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  entrepreneurship: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  interview: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  salary: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  displacement: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+};
+const FALLBACK_MODEL = "openai/gpt-4.1-mini";
 
 const TOOL_COSTS: Record<string, number> = {
   displacement: 0,
@@ -21,27 +39,83 @@ const TOOL_COSTS: Record<string, number> = {
   entrepreneurship: 8,
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// --- CORS: Dynamic origin check ---
+const ALLOWED_ORIGINS = [
+  Deno.env.get("APP_URL") || "https://careerai.com",
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
+
+// --- Rate Limiting ---
+const rateLimitMap = new Map<string, number[]>();
+
+function checkRate(key: string, limit: number, windowMs: number): boolean {
+  const now = Date.now();
+  const timestamps = rateLimitMap.get(key) || [];
+  const valid = timestamps.filter((t) => now - t < windowMs);
+  if (valid.length >= limit) return false;
+  valid.push(now);
+  rateLimitMap.set(key, valid);
+  return true;
+}
+
+// --- Prompt Sanitization ---
+function sanitizeInput(text: string): string {
+  // Remove potential prompt injection patterns
+  return text
+    .replace(/\b(ignore|disregard|forget)\s+(all\s+)?(previous|above|prior)\s+(instructions?|prompts?|rules?)/gi, "[filtered]")
+    .replace(/\b(you\s+are|act\s+as|pretend\s+to\s+be|role\s*play)\b/gi, "[filtered]")
+    .replace(/\bsystem\s*:\s*/gi, "[filtered]")
+    .slice(0, 50000); // Max 50K chars
+}
+
+function sanitizeInputs(obj: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === "string") {
+      sanitized[key] = sanitizeInput(value);
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  return sanitized;
+}
+
+// --- Validation ---
+const VALID_TOOL_IDS = Object.keys(TOOL_COSTS);
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const encoder = new TextEncoder();
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
-  try {
-    // 1. Verify JWT
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+  const cors = getCorsHeaders(req);
 
-    // Verify token with Supabase
+  // --- Pre-stream auth, rate limiting, and validation ---
+
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
+      status: 401,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
+
+  let userId: string;
+  try {
     const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: { Authorization: authHeader, apikey: SUPABASE_SERVICE_ROLE_KEY! },
     });
@@ -49,160 +123,301 @@ Deno.serve(async (req: Request) => {
     if (!userData.id) {
       return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
-    const userId = userData.id;
-
-    // 2. Parse request
-    const { tool_id, inputs, job_target_id } = await req.json();
-
-    if (!TOOL_COSTS.hasOwnProperty(tool_id)) {
-      return new Response(JSON.stringify({ error: "TOOL_NOT_FOUND" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // 3. Load user data from DB
-    const headers = {
-      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      apikey: SUPABASE_SERVICE_ROLE_KEY!,
-      "Content-Type": "application/json",
-    };
-
-    const [profileRes, careerProfileRes, jobTargetRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=*`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/career_profiles?user_id=eq.${userId}&select=*`, { headers }),
-      job_target_id
-        ? fetch(`${SUPABASE_URL}/rest/v1/job_targets?id=eq.${job_target_id}&select=*`, { headers })
-        : Promise.resolve(null),
-    ]);
-
-    const [profiles, careerProfiles] = await Promise.all([
-      profileRes.json(),
-      careerProfileRes.json(),
-    ]);
-    const jobTargets = jobTargetRes ? await jobTargetRes.json() : [];
-
-    const profile = profiles[0] || null;
-    const careerProfile = careerProfiles[0] || null;
-    const jobTarget = jobTargets[0] || null;
-
-    // 4. Check and deduct tokens
-    const cost = TOOL_COSTS[tool_id];
-    if (cost > 0) {
-      if (!profile || profile.token_balance < cost) {
-        return new Response(JSON.stringify({ error: "INSUFFICIENT_TOKENS" }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      // Deduct tokens via RPC
-      const spendRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/spend_tokens`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          p_user_id: userId,
-          p_amount: cost,
-          p_tool_id: tool_id,
-          p_tool_result_id: "00000000-0000-0000-0000-000000000000",
-        }),
-      });
-
-      if (!spendRes.ok) {
-        return new Response(JSON.stringify({ error: "INSUFFICIENT_TOKENS" }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 5. Build prompt
-    const prompt = buildPrompt(tool_id, careerProfile, jobTarget, inputs);
-
-    // 6. Call Anthropic Claude API
-    const startTime = Date.now();
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY!,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-5-20250929",
-        max_tokens: 4096,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
-
-    if (!claudeResponse.ok) {
-      const err = await claudeResponse.text();
-      console.error("Claude API error:", err);
-      return new Response(JSON.stringify({ error: "AI_ERROR" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const claudeData = await claudeResponse.json();
-    const latencyMs = Date.now() - startTime;
-
-    // 7. Parse result
-    const responseText = claudeData.content[0].text;
-    let result;
-    try {
-      // Extract JSON from response (handle markdown code blocks)
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      result = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
-    } catch {
-      return new Response(JSON.stringify({ error: "PARSE_FAILED" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // 8. Store in tool_results
-    const toolResult = {
-      user_id: userId,
-      job_target_id: job_target_id || null,
-      tool_id,
-      tokens_spent: cost,
-      result,
-      summary: generateSummary(tool_id, result),
-      metric_value: extractMetric(tool_id, result),
-      model_used: "claude-sonnet-4-5-20250929",
-      prompt_tokens: claudeData.usage?.input_tokens || null,
-      completion_tokens: claudeData.usage?.output_tokens || null,
-      latency_ms: latencyMs,
-    };
-
-    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/tool_results`, {
-      method: "POST",
-      headers: { ...headers, Prefer: "return=representation" },
-      body: JSON.stringify(toolResult),
-    });
-
-    const insertedResults = await insertRes.json();
-    const resultId = insertedResults[0]?.id || null;
-
-    // 9. Return result
-    return new Response(
-      JSON.stringify({ result_id: resultId, result }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
-  } catch (error) {
-    console.error("run-tool error:", error);
-    return new Response(JSON.stringify({ error: "AI_ERROR", message: String(error) }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    userId = userData.id;
+  } catch {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
+      status: 401,
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
+
+  // Rate limit by user: 5/min
+  if (!checkRate(`run-tool:${userId}`, 5, 60000)) {
+    return new Response(JSON.stringify({ error: "Too many requests. Please wait and try again." }), {
+      status: 429,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
+
+  // Parse and validate body
+  let tool_id: string;
+  let inputs: Record<string, unknown>;
+  let job_target_id: string | undefined;
+  try {
+    const body = await req.json();
+    tool_id = body.tool_id;
+    inputs = body.inputs;
+    job_target_id = body.job_target_id;
+  } catch {
+    return new Response(JSON.stringify({ error: "Invalid request body" }), {
+      status: 400,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
+
+  // Validate tool_id
+  if (!tool_id || !VALID_TOOL_IDS.includes(tool_id)) {
+    return new Response(JSON.stringify({ error: `Invalid tool_id. Must be one of: ${VALID_TOOL_IDS.join(", ")}` }), {
+      status: 400,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
+
+  // Validate inputs: required object
+  if (!inputs || typeof inputs !== "object" || Array.isArray(inputs)) {
+    return new Response(JSON.stringify({ error: "inputs must be an object" }), {
+      status: 400,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
+
+  // Validate job_target_id: optional UUID
+  if (job_target_id !== undefined && job_target_id !== null) {
+    if (typeof job_target_id !== "string" || !UUID_REGEX.test(job_target_id)) {
+      return new Response(JSON.stringify({ error: "job_target_id must be a valid UUID" }), {
+        status: 400,
+        headers: { ...cors, "Content-Type": "application/json" },
+      });
+    }
+  }
+
+  // Sanitize all user-provided text inputs before they go into prompts
+  const sanitizedInputs = sanitizeInputs(inputs);
+
+  // --- Streaming response ---
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: string, data: object) => {
+        controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+      };
+
+      try {
+        send("progress", { step: 1, total: 5, message: "Validating request..." });
+
+        const headers = {
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          apikey: SUPABASE_SERVICE_ROLE_KEY!,
+          "Content-Type": "application/json",
+        };
+
+        // Step 2: Token check
+        send("progress", { step: 2, total: 5, message: "Checking tokens..." });
+
+        const [profileRes, careerProfileRes, jobTargetRes] = await Promise.all([
+          fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=*`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/career_profiles?user_id=eq.${userId}&select=*`, { headers }),
+          job_target_id
+            ? fetch(`${SUPABASE_URL}/rest/v1/job_targets?id=eq.${job_target_id}&select=*`, { headers })
+            : Promise.resolve(null),
+        ]);
+
+        const [profiles, careerProfiles] = await Promise.all([
+          profileRes.json(),
+          careerProfileRes.json(),
+        ]);
+        const jobTargets = jobTargetRes ? await jobTargetRes.json() : [];
+
+        const profile = profiles[0] || null;
+        const careerProfile = careerProfiles[0] || null;
+        const jobTarget = jobTargets[0] || null;
+
+        const cost = TOOL_COSTS[tool_id];
+        if (cost > 0) {
+          // Check balance (don't deduct yet)
+          if (!profile || profile.token_balance < cost) {
+            send("error", { error: "INSUFFICIENT_TOKENS" });
+            controller.close();
+            return;
+          }
+        }
+
+        // Step 3: Building prompt
+        send("progress", { step: 3, total: 5, message: "Preparing AI analysis..." });
+
+        const prompt = buildPrompt(tool_id, careerProfile, jobTarget, sanitizedInputs);
+
+        // Step 4: AI processing
+        send("progress", { step: 4, total: 5, message: "Running AI analysis..." });
+
+        const startTime = Date.now();
+        const modelConfig = MODEL_CONFIG[tool_id] || { model: FALLBACK_MODEL, maxTokens: 4096, tier: "fallback" };
+        let usedModel = modelConfig.model;
+
+        // Call OpenRouter with fallback
+        let responseText: string;
+        let aiUsage: { prompt_tokens: number; completion_tokens: number } | null = null;
+
+        const callOpenRouter = async (model: string, maxTokens: number): Promise<{ text: string; usage: typeof aiUsage; model: string }> => {
+          const apiController = new AbortController();
+          const apiTimeout = setTimeout(() => apiController.abort(), 60000);
+          try {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": APP_URL,
+                "X-Title": "CareerAI",
+              },
+              signal: apiController.signal,
+              body: JSON.stringify({
+                model,
+                messages: [
+                  { role: "system", content: "You are CareerAI, an expert career intelligence engine. Always respond with valid JSON only." },
+                  { role: "user", content: prompt },
+                ],
+                max_tokens: maxTokens,
+                temperature: 0.7,
+                response_format: { type: "json_object" },
+              }),
+            });
+            if (!res.ok) {
+              const errText = await res.text();
+              throw new Error(`OpenRouter ${res.status}: ${errText}`);
+            }
+            const data = await res.json();
+            const text = data.choices?.[0]?.message?.content;
+            if (!text) throw new Error("Empty response from OpenRouter");
+            return {
+              text,
+              usage: data.usage ? { prompt_tokens: data.usage.prompt_tokens, completion_tokens: data.usage.completion_tokens } : null,
+              model: data.model || model,
+            };
+          } finally {
+            clearTimeout(apiTimeout);
+          }
+        };
+
+        try {
+          // Try primary model
+          const aiResult = await callOpenRouter(modelConfig.model, modelConfig.maxTokens);
+          responseText = aiResult.text;
+          aiUsage = aiResult.usage;
+          usedModel = aiResult.model;
+        } catch (primaryError) {
+          console.error(`Primary model ${modelConfig.model} failed:`, primaryError);
+          if ((primaryError as Error).name === "AbortError") {
+            send("error", { error: "AI analysis timed out. Please try again." });
+            controller.close();
+            return;
+          }
+          // Fallback to GPT-4.1-mini
+          try {
+            send("progress", { step: 4, total: 5, message: "Retrying with backup model..." });
+            const fallbackResult = await callOpenRouter(FALLBACK_MODEL, 4096);
+            responseText = fallbackResult.text;
+            aiUsage = fallbackResult.usage;
+            usedModel = fallbackResult.model;
+          } catch (fallbackError) {
+            console.error("Fallback model also failed:", fallbackError);
+            send("error", { error: "AI_ERROR" });
+            controller.close();
+            return;
+          }
+        }
+
+        const latencyMs = Date.now() - startTime;
+
+        let result: Record<string, unknown>;
+        try {
+          const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+          result = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
+        } catch {
+          send("error", { error: "PARSE_FAILED" });
+          controller.close();
+          return;
+        }
+
+        // Step 5: Storing results
+        send("progress", { step: 5, total: 5, message: "Saving results..." });
+
+        const toolResult = {
+          user_id: userId,
+          job_target_id: job_target_id || null,
+          tool_id,
+          tokens_spent: cost,
+          result,
+          summary: generateSummary(tool_id, result),
+          metric_value: extractMetric(tool_id, result),
+          model_used: usedModel,
+          prompt_tokens: aiUsage?.prompt_tokens || null,
+          completion_tokens: aiUsage?.completion_tokens || null,
+          latency_ms: latencyMs,
+        };
+
+        const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/tool_results`, {
+          method: "POST",
+          headers: { ...headers, Prefer: "return=representation" },
+          body: JSON.stringify(toolResult),
+        });
+
+        const insertedResults = await insertRes.json();
+        const resultId = insertedResults[0]?.id || null;
+
+        // NOW deduct tokens (after successful AI call)
+        if (cost > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/rpc/spend_tokens`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              p_user_id: userId,
+              p_amount: cost,
+              p_tool_id: tool_id,
+              p_tool_result_id: resultId ?? "00000000-0000-0000-0000-000000000000",
+            }),
+          });
+        }
+
+        // Check if this is user's first paid tool use and they have a referrer
+        if (cost > 0) {
+          const prevRunsRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}&tokens_spent=gt.0&select=id&limit=2`,
+            { headers }
+          );
+          const prevRuns = await prevRunsRes.json();
+
+          if (prevRuns && prevRuns.length <= 1) {
+            const profileRefRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=referred_by`,
+              { headers }
+            );
+            const profileRefData = await profileRefRes.json();
+            const profileWithRef = profileRefData[0] || null;
+
+            if (profileWithRef?.referred_by) {
+              await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_referral`, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({
+                  p_referrer_id: profileWithRef.referred_by,
+                  p_new_user_id: userId,
+                }),
+              });
+            }
+          }
+        }
+
+        send("complete", { result_id: resultId, result });
+      } catch (error) {
+        console.error("run-tool error:", error);
+        send("error", { error: (error as Error).message || "Tool execution failed" });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      ...cors,
+    },
+  });
 });
 
 function buildPrompt(
@@ -211,7 +426,7 @@ function buildPrompt(
   jobTarget: Record<string, unknown> | null,
   inputs: Record<string, unknown>
 ): string {
-  let context = `You are CareerAI, an expert career intelligence engine.\n\n`;
+  let context = ``;
 
   if (careerProfile) {
     context += `USER PROFILE:\n`;
@@ -234,7 +449,7 @@ function buildPrompt(
   const toolPrompts: Record<string, string> = {
     displacement: `Analyze AI displacement risk. Respond ONLY in valid JSON: {"score": <0-100>, "risk_level": "low|medium|high|critical", "timeline": "<timeframe>", "tasks_at_risk": [{"task": "<name>", "risk_pct": <0-100>, "ai_tool": "<tool>"}], "safe_tasks": [{"task": "<name>", "risk_pct": <0-100>, "why_safe": "<reason>"}], "recommendations": ["<rec1>", "<rec2>", "<rec3>"], "industry_benchmark": {"average_score": <num>, "percentile": <num>}}`,
     jd_match: `Compare resume against this job description:\n${inputs.jd_text || ""}\n\nRespond ONLY in valid JSON: {"fit_score": <0-100>, "requirements": [{"skill": "<req>", "priority": "req|pref", "match": true|false|"partial", "evidence": "<text>"}], "advantages": ["<adv>"], "critical_gaps": [{"gap": "<gap>", "severity": "dealbreaker|significant|minor", "fix_time": "<time>"}], "salary_assessment": {"range": "<range>", "fair_for_candidate": true|false, "reasoning": "<why>"}, "applicant_pool_estimate": {"likely_applicants": <num>, "candidate_percentile": <num>}}`,
-    resume: `Optimize this resume for ATS. ${inputs.target_jd ? `Target JD: ${inputs.target_jd}` : ""}\nResume: ${careerProfile?.resume_text || "Not available"}\n\nRespond ONLY in valid JSON: {"score_before": ${careerProfile?.resume_score || 40}, "score_after": <new-score>, "keywords_added": ["<kw>"], "sections_rewritten": [{"section": "<name>", "before": "<old>", "after": "<new>", "changes": "<why>"}], "formatting_fixes": ["<fix>"], "optimized_resume_text": "<full text>"}`,
+    resume: `Optimize this resume for ATS. ${inputs.target_jd ? `Target JD: ${inputs.target_jd}` : ""}\nResume: ${(inputs.resume_text as string) || careerProfile?.resume_text || "Not available"}\n\nRespond ONLY in valid JSON: {"score_before": ${careerProfile?.resume_score || 40}, "score_after": <new-score>, "keywords_added": ["<kw>"], "sections_rewritten": [{"section": "<name>", "before": "<old>", "after": "<new>", "changes": "<why>"}], "formatting_fixes": ["<fix>"], "optimized_resume_text": "<full text>"}`,
     cover_letter: `Write a ${inputs.tone || "professional"} cover letter (${inputs.length || "standard"} length). Respond ONLY in valid JSON: {"letter_text": "<full letter>", "word_count": <num>, "tone": "<tone>", "jd_keywords_used": <num>, "resume_achievements_cited": <num>, "highlighted_sections": [{"text": "<phrase>", "type": "job_specific|keyword_match|achievement"}]}`,
     interview: `Generate ${inputs.interview_type || "behavioral_case"} interview questions. Respond ONLY in valid JSON: {"questions": [{"question": "<q>", "type": "behavioral|case_study|analytical|gap_probe|technical", "suggested_answer": "<STAR answer>", "coaching_tip": "<tip>", "difficulty": "easy|medium|hard"}], "company_culture_notes": "<notes>", "interview_format_prediction": "<prediction>"}`,
     linkedin: `Optimize LinkedIn profile for ${inputs.target_role || "similar"} roles. Respond ONLY in valid JSON: {"headlines": [{"text": "<headline>", "search_keywords": ["<kw>"]}], "about_section": "<about>", "keywords": ["<kw>"], "experience_improvements": [{"current": "<old>", "improved": "<new>"}], "profile_strength_score": <0-100>}`,

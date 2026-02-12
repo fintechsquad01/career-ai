@@ -136,7 +136,6 @@ careerai/
 │   │   └── constants.ts            # Tools config, packs, FAQs
 │   │
 │   ├── hooks/
-│   │   ├── useUser.ts              # Auth state + profile
 │   │   ├── useTokens.ts            # Token balance + spend/add
 │   │   ├── useTool.ts              # Tool execution state machine
 │   │   ├── useMission.ts           # Mission progress

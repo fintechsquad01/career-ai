@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, X, Minus } from "lucide-react";
+import { ArrowRight, Check, X, Loader2 } from "lucide-react";
 import { PACKS, TOOLS, FAQ_ITEMS } from "@/lib/constants";
 import { FAQ } from "@/components/shared/FAQ";
 import { Insight } from "@/components/shared/Insight";
@@ -14,7 +15,12 @@ const COMPETITORS = [
 ];
 
 export default function PricingPage() {
+  const [purchaseError, setPurchaseError] = useState("");
+  const [purchasing, setPurchasing] = useState<string>("");
+
   const handlePurchase = async (packId: string) => {
+    setPurchaseError("");
+    setPurchasing(packId);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -22,11 +28,16 @@ export default function PricingPage() {
         body: JSON.stringify({ packId }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || "Purchase failed. Please try again.");
+      }
       if (data.url) {
         window.location.href = data.url;
       }
-    } catch (error) {
-      console.error("Purchase error:", error);
+    } catch (err) {
+      setPurchaseError(err instanceof Error ? err.message : "Purchase failed. Please try again.");
+    } finally {
+      setPurchasing("");
     }
   };
 
@@ -74,17 +85,31 @@ export default function PricingPage() {
               )}
               <button
                 onClick={() => handlePurchase(pack.id)}
-                className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors min-h-[48px] ${
+                disabled={purchasing === pack.id}
+                className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60 ${
                   pack.highlighted
                     ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20"
                     : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                Get {pack.name}
+                {purchasing === pack.id ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing…
+                  </>
+                ) : (
+                  `Get ${pack.name}`
+                )}
               </button>
             </div>
           ))}
         </div>
+
+        {purchaseError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center mb-8">
+            <p className="text-sm text-red-600">{purchaseError}</p>
+          </div>
+        )}
 
         {/* What can you do */}
         <div className="mb-16">

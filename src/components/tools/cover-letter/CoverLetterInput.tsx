@@ -77,7 +77,7 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
 
       <button
         onClick={() => onSubmit({ tone, length })}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-colors min-h-[48px]"
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Generate Cover Letter — 3 tokens
       </button>

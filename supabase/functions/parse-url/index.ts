@@ -1,41 +1,158 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Model config: Tier 3 Lite (Gemini 2.5 Flash Lite: $0.10/$0.40 per M)
+const PRIMARY_MODEL = "google/gemini-2.5-flash-lite";
+const FALLBACK_MODEL = "openai/gpt-4.1-mini";
+
+// --- CORS: Dynamic origin check ---
+const ALLOWED_ORIGINS = [
+  Deno.env.get("APP_URL") || "https://careerai.com",
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
+
+// --- Rate Limiting ---
+const rateLimitMap = new Map<string, number[]>();
+
+function checkRate(key: string, limit: number, windowMs: number): boolean {
+  const now = Date.now();
+  const timestamps = rateLimitMap.get(key) || [];
+  const valid = timestamps.filter((t) => now - t < windowMs);
+  if (valid.length >= limit) return false;
+  valid.push(now);
+  rateLimitMap.set(key, valid);
+  return true;
+}
+
+// --- SSRF Protection ---
+function isPrivateUrl(urlStr: string): boolean {
+  try {
+    const parsed = new URL(urlStr);
+    const hostname = parsed.hostname.toLowerCase();
+
+    // Block non-http(s) protocols
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return true;
+    }
+
+    // Block localhost and loopback
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "0.0.0.0") {
+      return true;
+    }
+
+    // Block private IP ranges: 10.x.x.x
+    if (hostname.startsWith("10.")) return true;
+
+    // Block private IP ranges: 192.168.x.x
+    if (hostname.startsWith("192.168.")) return true;
+
+    // Block private IP ranges: 172.16.0.0 - 172.31.255.255
+    if (hostname.startsWith("172.")) {
+      const second = parseInt(hostname.split(".")[1], 10);
+      if (second >= 16 && second <= 31) return true;
+    }
+
+    // Block link-local: 169.254.x.x
+    if (hostname.startsWith("169.254.")) return true;
+
+    // Block cloud metadata endpoints
+    if (hostname === "metadata.google.internal" || hostname === "metadata.google.com") return true;
+
+    // Block common internal hostnames
+    if (hostname.endsWith(".local") || hostname.endsWith(".internal")) return true;
+
+    return false;
+  } catch {
+    return true; // If URL parsing fails, block it
+  }
+}
+
+// --- Validation ---
+const URL_REGEX = /^https?:\/\//i;
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
-    const { url } = await req.json();
-
-    if (!url) {
-      return new Response(JSON.stringify({ error: "No URL provided" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Rate limit by IP: 10/min
+    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (!checkRate(`parse-url:${clientIp}`, 10, 60000)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait and try again." }), {
+        status: 429,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
-    // Fetch page content
+    const { url } = await req.json();
+
+    // Validate url: required, valid format, max 2000 chars
+    if (!url || typeof url !== "string") {
+      return new Response(JSON.stringify({ error: "url is required and must be a string" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+    if (url.length > 2000) {
+      return new Response(JSON.stringify({ error: "url must be 2,000 characters or less" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+    if (!URL_REGEX.test(url)) {
+      return new Response(JSON.stringify({ error: "url must start with http:// or https://" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+
+    // SSRF protection: block private/internal URLs
+    if (isPrivateUrl(url)) {
+      return new Response(JSON.stringify({ error: "URL points to a private or internal address" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+
+    // Fetch page content with 10-second timeout
     let pageContent: string;
+    const fetchController = new AbortController();
+    const fetchTimeout = setTimeout(() => fetchController.abort(), 10000);
     try {
       const response = await fetch(url, {
         headers: {
           "User-Agent": "Mozilla/5.0 (compatible; CareerAI/1.0)",
         },
+        signal: fetchController.signal,
       });
       pageContent = await response.text();
-    } catch {
+    } catch (fetchError) {
+      if ((fetchError as Error).name === "AbortError") {
+        return new Response(JSON.stringify({ error: "URL fetch timed out (10s limit)" }), {
+          status: 504,
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        });
+      }
       return new Response(JSON.stringify({ error: "URL_FETCH_FAILED" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
+    } finally {
+      clearTimeout(fetchTimeout);
     }
 
     // Strip HTML tags for cleaner extraction
@@ -47,21 +164,8 @@ Deno.serve(async (req: Request) => {
       .trim()
       .slice(0, 8000);
 
-    // Use Claude to extract structured JD data
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY!,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: `Extract job posting information from this web page content. Respond ONLY in valid JSON:
+    // Call OpenRouter with fallback to extract structured JD data
+    const jdPrompt = `Extract job posting information from this web page content. Respond ONLY in valid JSON:
 {
   "title": "<job title>",
   "company": "<company>",
@@ -71,21 +175,46 @@ Deno.serve(async (req: Request) => {
 }
 
 PAGE CONTENT:
-${textContent}`,
-          },
-        ],
-      }),
-    });
+${textContent}`;
 
-    if (!claudeResponse.ok) {
-      return new Response(JSON.stringify({ error: "AI_ERROR" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const callModel = async (model: string) => {
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": APP_URL,
+          "X-Title": "CareerAI",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: "system", content: "You are an expert data extraction AI. Always respond with valid JSON only." },
+            { role: "user", content: jdPrompt },
+          ],
+          max_tokens: 1024,
+          temperature: 0.3,
+          response_format: { type: "json_object" },
+        }),
       });
-    }
+      if (!res.ok) throw new Error(`OpenRouter ${res.status}: ${await res.text()}`);
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || "";
+    };
 
-    const claudeData = await claudeResponse.json();
-    const responseText = claudeData.content[0].text;
+    let responseText: string;
+    try {
+      responseText = await callModel(PRIMARY_MODEL);
+    } catch {
+      try {
+        responseText = await callModel(FALLBACK_MODEL);
+      } catch {
+        return new Response(JSON.stringify({ error: "AI_ERROR" }), {
+          status: 500,
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        });
+      }
+    }
 
     let result;
     try {
@@ -94,17 +223,17 @@ ${textContent}`,
     } catch {
       return new Response(JSON.stringify({ error: "PARSE_FAILED" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: String(error) }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   }
 });

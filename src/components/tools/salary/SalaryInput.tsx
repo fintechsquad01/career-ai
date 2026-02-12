@@ -61,8 +61,8 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
 
       <button
         onClick={() => onSubmit({ current_salary: currentSalary || undefined, target_role: targetRole, location })}
-        disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+        disabled={!targetRole.trim() || !location.trim()}
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Research Salary — 3 tokens
       </button>

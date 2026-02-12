@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Shield, Clock, Gem, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Shield, Gem, Sparkles, Loader2 } from "lucide-react";
 import { FAQ } from "@/components/shared/FAQ";
 import { TOOLS } from "@/lib/constants";
 
@@ -12,18 +13,32 @@ const LIFETIME_FAQ = [
   { q: "How many spots are left?", a: "We're limiting early bird pricing to 500 users. Once filled, the price goes to $79." },
 ];
 
+const PACK_ID = "lifetime_early";
+
 export default function LifetimePage() {
+  const [purchaseError, setPurchaseError] = useState("");
+  const [purchasing, setPurchasing] = useState(false);
+  const [spotsClaimed] = useState(127); // TODO: fetch from database
+  const TOTAL_SPOTS = 500;
+
   const handlePurchase = async () => {
+    setPurchaseError("");
+    setPurchasing(true);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ packId: "lifetime_early" }),
+        body: JSON.stringify({ packId: PACK_ID }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || "Purchase failed. Please try again.");
+      }
       if (data.url) window.location.href = data.url;
-    } catch (error) {
-      console.error("Purchase error:", error);
+    } catch (err) {
+      setPurchaseError(err instanceof Error ? err.message : "Purchase failed. Please try again.");
+    } finally {
+      setPurchasing(false);
     }
   };
 
@@ -49,7 +64,7 @@ export default function LifetimePage() {
           {/* Spots counter */}
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-full">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-red-700">127 of 500 spots remaining</span>
+            <span className="text-sm font-medium text-red-700">{TOTAL_SPOTS - spotsClaimed} of {TOTAL_SPOTS} spots remaining</span>
           </div>
         </div>
 
@@ -125,6 +140,12 @@ export default function LifetimePage() {
           </div>
         </div>
 
+        {purchaseError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center mb-6">
+            <p className="text-sm text-red-600">{purchaseError}</p>
+          </div>
+        )}
+
         {/* CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-center text-white mb-10">
           <Sparkles className="w-8 h-8 mx-auto mb-3 text-blue-200" />
@@ -132,10 +153,20 @@ export default function LifetimePage() {
           <p className="text-blue-100 mb-6">$49 today. 100 tokens every month. Forever.</p>
           <button
             onClick={handlePurchase}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 text-base font-bold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px] shadow-lg"
+            disabled={purchasing}
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 text-base font-bold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px] shadow-lg disabled:opacity-60"
           >
-            Get Lifetime Deal — $49
-            <ArrowRight className="w-5 h-5" />
+            {purchasing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Processing…
+              </>
+            ) : (
+              <>
+                Get Lifetime Deal — $49
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
           </button>
           <p className="text-xs text-blue-200 mt-3">One-time payment · 30-day guarantee · Cancel never</p>
         </div>

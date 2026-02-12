@@ -14,7 +14,7 @@ export default async function ToolsHubPage() {
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   return (
     <AppShell isLoggedIn={true} profile={profile}>

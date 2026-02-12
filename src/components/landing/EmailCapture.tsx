@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type CaptureContext = "resume_xray" | "jd_match";
 
@@ -16,10 +17,24 @@ export function EmailCapture({ context }: EmailCaptureProps) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle"
   );
+  const [validationError, setValidationError] = useState("");
+
+  const trimmedEmail = email.trim();
+  const isValidEmail = trimmedEmail.length > 0 && EMAIL_REGEX.test(trimmedEmail);
+  const isSubmitDisabled = !isValidEmail || status === "loading";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    setValidationError("");
+
+    if (!trimmedEmail) {
+      setValidationError("Please enter your email.");
+      return;
+    }
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      setValidationError("Please enter a valid email address.");
+      return;
+    }
 
     setStatus("loading");
 
@@ -28,7 +43,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
         const res = await fetch(`${SUPABASE_URL}/functions/v1/capture-email`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.trim(), context }),
+          body: JSON.stringify({ email: trimmedEmail, context }),
         });
 
         if (res.ok) {
@@ -42,6 +57,11 @@ export function EmailCapture({ context }: EmailCaptureProps) {
     } catch {
       setStatus("error");
     }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (validationError) setValidationError("");
   };
 
   if (status === "success") {
@@ -62,21 +82,23 @@ export function EmailCapture({ context }: EmailCaptureProps) {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           placeholder="you@example.com"
           disabled={status === "loading"}
           className="flex-1 min-h-[44px] px-4 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
         />
         <button
           type="submit"
-          disabled={status === "loading" || !email.trim()}
-          className="min-h-[44px] px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          disabled={isSubmitDisabled}
+          className="min-h-[44px] px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {status === "loading" ? "Saving..." : "Save Results"}
         </button>
       </div>
-      {status === "error" && (
-        <p className="text-xs text-red-500">Something went wrong. Try again.</p>
+      {(validationError || status === "error") && (
+        <p className="text-xs text-red-500">
+          {validationError || "Something went wrong. Try again."}
+        </p>
       )}
     </form>
   );

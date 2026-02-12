@@ -32,7 +32,7 @@ export default async function SharePage({ params }: SharePageProps) {
       .from("shared_scores")
       .select("*")
       .eq("hash", hash)
-      .single();
+      .maybeSingle();
     score = data;
 
     if (score) {

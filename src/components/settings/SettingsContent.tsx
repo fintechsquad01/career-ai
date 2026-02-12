@@ -24,6 +24,9 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [name, setName] = useState(profile?.full_name || "");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -63,10 +66,81 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
       setShowDeleteConfirm(true);
       return;
     }
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/");
-    toast("Account deletion requested");
+
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/delete-account", { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to delete account");
+      }
+
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Delete account error:", error);
+      alert("Failed to delete account. Please contact support.");
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate
+    const validTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+    if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|docx|txt)$/i)) {
+      alert("Please upload a PDF, DOCX, or TXT file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File must be less than 5MB.");
+      return;
+    }
+
+    setUploading(true);
+    setUploadSuccess(false);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const filePath = `${user.id}/resume-${Date.now()}.${file.name.split(".").pop()}`;
+      const { error } = await supabase.storage.from("resumes").upload(filePath, file);
+
+      if (error) throw error;
+
+      // Read text for .txt files; for PDF/DOCX store path only (parsing would need backend)
+      let resumeText: string | null = null;
+      if (file.type === "text/plain") {
+        resumeText = await file.text();
+      } else {
+        resumeText = "[Uploaded - processing pending]";
+      }
+
+      // Upsert career_profile with resume path (and text if available)
+      const { data: existing } = await supabase.from("career_profiles").select("id").eq("user_id", user.id).single();
+      if (existing) {
+        await supabase.from("career_profiles").update({ resume_file_path: filePath, resume_text: resumeText, source: "upload", updated_at: new Date().toISOString() }).eq("user_id", user.id);
+      } else {
+        await supabase.from("career_profiles").insert({ user_id: user.id, resume_file_path: filePath, resume_text: resumeText, source: "upload" });
+      }
+
+      setUploadSuccess(true);
+      toast("Resume uploaded!");
+      setTimeout(() => setUploadSuccess(false), 3000);
+      router.refresh();
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload resume. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+    e.target.value = "";
   };
 
   return (
@@ -124,16 +198,36 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Resume</label>
-              {careerProfile?.resume_text ? (
+              {careerProfile?.resume_text || careerProfile?.resume_file_path ? (
                 <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
-                  <span className="text-sm text-green-800">Resume uploaded</span>
-                  <button className="text-xs text-red-600 hover:underline">Remove</button>
+                  <span className="text-sm text-green-800">
+                    {uploadSuccess ? "Resume uploaded!" : "Resume uploaded"}
+                  </span>
+                  <label className="text-xs text-blue-600 hover:underline cursor-pointer">
+                    Replace
+                    <input
+                      type="file"
+                      accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                      className="sr-only"
+                      onChange={handleResumeUpload}
+                      disabled={uploading}
+                    />
+                  </label>
                 </div>
               ) : (
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center">
+                <label className="block border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
+                  <input
+                    type="file"
+                    accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                    className="sr-only"
+                    onChange={handleResumeUpload}
+                    disabled={uploading}
+                  />
                   <Upload className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">Upload PDF or DOCX</p>
-                </div>
+                  <p className="text-sm text-gray-500">
+                    {uploading ? "Uploading..." : "Upload PDF, DOCX, or TXT"}
+                  </p>
+                </label>
               )}
             </div>
 
@@ -209,16 +303,34 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                 <Download className="w-4 h-4" /> Export All Data (JSON)
               </span>
             </button>
-            <button onClick={handleDeleteAccount} className="w-full flex items-center justify-between px-4 py-3 border border-red-200 rounded-xl hover:bg-red-50 transition-colors min-h-[44px]">
-              <span className="flex items-center gap-2 text-sm font-medium text-red-600">
-                <Trash2 className="w-4 h-4" /> Delete Account
-              </span>
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-            </button>
-            {showDeleteConfirm && (
-              <p className="text-sm text-amber-700 bg-amber-50 p-3 rounded-xl border border-amber-200">
-                Click again to sign out and request deletion. Your data will be removed per our privacy policy.
-              </p>
+            {showDeleteConfirm ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
+                <p className="text-sm text-red-800 font-medium">Are you sure? This will permanently delete all your data.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-xl hover:bg-red-700 disabled:opacity-50 transition-colors"
+                  >
+                    {deleting ? "Deleting..." : "Yes, Delete Everything"}
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="px-4 py-2 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleDeleteAccount}
+                className="px-4 py-2 border border-red-200 text-red-600 text-sm font-medium rounded-xl hover:bg-red-50 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Trash2 className="w-4 h-4" /> Delete Account
+                </span>
+              </button>
             )}
           </div>
         </div>

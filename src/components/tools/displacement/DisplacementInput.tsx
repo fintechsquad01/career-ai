@@ -32,7 +32,8 @@ export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
 
       <button
         onClick={() => onSubmit({})}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
+        disabled={!careerProfile?.title?.trim()}
+        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Analyze My Risk — Free
       </button>

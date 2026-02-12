@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ErrorBoundary } from "@/components/providers/ErrorBoundary";
+import { AnalyticsProvider } from "@/components/providers/AnalyticsProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,7 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <ErrorBoundary>
+          <AnalyticsProvider>
+            {children}
+          </AnalyticsProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
