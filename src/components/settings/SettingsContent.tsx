@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User, CreditCard, Shield, Upload, Download, Trash2, AlertTriangle, Camera, Eye, EyeOff, Bell, Loader2 } from "lucide-react";
+import { User, CreditCard, Shield, Upload, Download, Trash2, AlertTriangle, Camera, Eye, EyeOff, Bell, Loader2, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { parseFile } from "@/lib/file-parser";
 import { toast } from "@/components/shared/Toast";
+import { INDUSTRIES } from "@/lib/constants";
 import type { Profile, CareerProfile, TokenTransaction } from "@/types";
 import type { Json } from "@/types/database";
 
@@ -52,6 +53,15 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences>(getNotificationPrefs(profile));
   const [savingNotifs, setSavingNotifs] = useState(false);
 
+  // Career profile fields
+  const [jobTitle, setJobTitle] = useState(careerProfile?.title || "");
+  const [company, setCompany] = useState(careerProfile?.company || "");
+  const [industry, setIndustry] = useState(careerProfile?.industry || "");
+  const [yearsExperience, setYearsExperience] = useState(careerProfile?.years_experience?.toString() || "");
+  const [location, setLocation] = useState(careerProfile?.location || "");
+  const [linkedinUrl, setLinkedinUrl] = useState(careerProfile?.linkedin_url || "");
+  const [savingCareer, setSavingCareer] = useState(false);
+
   // Password change state
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -67,10 +77,66 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
     setAvatarUrl(profile?.avatar_url || "");
   }, [profile?.full_name, profile?.avatar_url]);
 
+  useEffect(() => {
+    setJobTitle(careerProfile?.title || "");
+    setCompany(careerProfile?.company || "");
+    setIndustry(careerProfile?.industry || "");
+    setYearsExperience(careerProfile?.years_experience?.toString() || "");
+    setLocation(careerProfile?.location || "");
+    setLinkedinUrl(careerProfile?.linkedin_url || "");
+  }, [careerProfile]);
+
   const handleSave = async () => {
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ full_name: name }).eq("id", profile?.id || "");
     if (!error) toast("Profile saved!");
+  };
+
+  const handleSaveCareerProfile = async () => {
+    setSavingCareer(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const careerData = {
+        user_id: user.id,
+        title: jobTitle.trim() || null,
+        company: company.trim() || null,
+        industry: industry || null,
+        years_experience: yearsExperience ? parseInt(yearsExperience, 10) : null,
+        location: location.trim() || null,
+        linkedin_url: linkedinUrl.trim() || null,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data: existing } = await supabase
+        .from("career_profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (existing) {
+        const { error } = await supabase
+          .from("career_profiles")
+          .update(careerData)
+          .eq("user_id", user.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("career_profiles")
+          .insert(careerData);
+        if (error) throw error;
+      }
+
+      toast("Career profile saved!");
+      router.refresh();
+    } catch (err) {
+      console.error("Career profile save error:", err);
+      toast("Failed to save career profile. Please try again.", "error");
+    } finally {
+      setSavingCareer(false);
+    }
   };
 
   // --- Avatar Upload ---
@@ -455,6 +521,101 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
 
             <button onClick={handleSave} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[44px]">
               Save Changes
+            </button>
+          </div>
+
+          {/* About Your Career */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-blue-600" />
+              <h3 className="font-semibold text-gray-900">About Your Career</h3>
+            </div>
+            <p className="text-xs text-gray-500">This data pre-fills your tools and improves analysis accuracy.</p>
+
+            <div>
+              <label htmlFor="settings-job-title" className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+              <input
+                id="settings-job-title"
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                placeholder="e.g. Software Engineer, Marketing Manager"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="settings-company" className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+              <input
+                id="settings-company"
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. Google, Acme Corp"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="settings-industry" className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+              <select
+                id="settings-industry"
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px] bg-white"
+              >
+                <option value="">Select industry</option>
+                {INDUSTRIES.map((ind) => (
+                  <option key={ind} value={ind}>{ind}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="settings-years" className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+              <input
+                id="settings-years"
+                type="number"
+                min="0"
+                max="50"
+                value={yearsExperience}
+                onChange={(e) => setYearsExperience(e.target.value)}
+                placeholder="e.g. 5"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="settings-location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <input
+                id="settings-location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. San Francisco, CA"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="settings-linkedin" className="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
+              <input
+                id="settings-linkedin"
+                type="url"
+                value={linkedinUrl}
+                onChange={(e) => setLinkedinUrl(e.target.value)}
+                placeholder="https://linkedin.com/in/yourprofile"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+              />
+            </div>
+
+            <button
+              onClick={handleSaveCareerProfile}
+              disabled={savingCareer}
+              className="px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[44px] flex items-center gap-2 disabled:opacity-50"
+            >
+              {savingCareer && <Loader2 className="w-4 h-4 animate-spin" />}
+              {savingCareer ? "Saving..." : "Save Career Profile"}
             </button>
           </div>
 
