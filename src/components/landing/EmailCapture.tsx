@@ -66,7 +66,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
 
   if (status === "success") {
     return (
-      <div className="flex items-center gap-2 text-green-600 text-sm py-2">
+      <div className="flex items-center gap-2 text-green-600 text-sm py-2" role="status" aria-live="polite">
         <Check className="w-5 h-5 flex-shrink-0" />
         <span>You&apos;re on the list! We&apos;ll send you career tips and product updates.</span>
       </div>
@@ -80,11 +80,14 @@ export function EmailCapture({ context }: EmailCaptureProps) {
       </p>
       <div className="flex gap-2">
         <input
+          id="email-capture"
           type="email"
           value={email}
           onChange={handleEmailChange}
           placeholder="you@example.com"
           disabled={status === "loading"}
+          aria-label="Email address"
+          aria-invalid={!!validationError || status === "error"}
           className="flex-1 min-h-[44px] px-4 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
         />
         <button

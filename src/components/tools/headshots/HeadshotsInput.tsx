@@ -107,6 +107,7 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
           onChange={handleFileChange}
           accept="image/jpeg,image/png,image/webp"
           multiple
+          aria-label="Upload photos for AI headshots"
           className="hidden"
         />
         <div

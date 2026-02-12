@@ -57,6 +57,7 @@ export function ReferralContent({ profile, referralTransactions = [] }: Referral
           <input
             readOnly
             value={referralLink}
+            aria-label="Referral link"
             className="flex-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 min-h-[44px]"
           />
           <button

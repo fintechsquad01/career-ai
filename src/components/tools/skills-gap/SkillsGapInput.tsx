@@ -23,8 +23,9 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <label htmlFor="skillsgap-target-role" className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
         <input
+          id="skillsgap-target-role"
           type="text"
           value={targetRole}
           onChange={(e) => setTargetRole(e.target.value)}

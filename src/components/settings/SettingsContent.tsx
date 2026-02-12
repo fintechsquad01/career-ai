@@ -400,7 +400,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
-                    alt="Avatar"
+                    alt={profile?.full_name ? `${profile.full_name}'s avatar` : "User avatar"}
                     className="w-16 h-16 rounded-full object-cover border-2 border-gray-100"
                   />
                 ) : (
@@ -431,14 +431,16 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                   className="sr-only"
                   onChange={handleAvatarUpload}
                   disabled={avatarUploading}
+                  aria-label="Upload avatar image"
                 />
               </div>
             </div>
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label htmlFor="settings-name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input
+                id="settings-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -448,18 +450,20 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
 
             {/* Email (read-only) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label htmlFor="settings-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
+                id="settings-email"
                 type="email"
                 value={profile?.email || ""}
                 readOnly
+                aria-readonly="true"
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-gray-500 min-h-[44px]"
               />
             </div>
 
             {/* Resume Upload with Parsing */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Resume</label>
+              <span className="block text-sm font-medium text-gray-700 mb-1">Resume</span>
               {careerProfile?.resume_text || careerProfile?.resume_file_path ? (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
@@ -492,6 +496,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                         className="sr-only"
                         onChange={handleResumeUpload}
                         disabled={uploading}
+                        aria-label="Replace resume file"
                       />
                     </label>
                   </div>
@@ -509,6 +514,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                     className="sr-only"
                     onChange={handleResumeUpload}
                     disabled={uploading}
+                    aria-label="Upload resume file"
                   />
                   <Upload className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-500">
@@ -625,9 +631,10 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
             <p className="text-xs text-gray-500">Update your password. Only available for email/password accounts.</p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <label htmlFor="settings-new-password" className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
               <div className="relative">
                 <input
+                  id="settings-new-password"
                   type={showPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => {
@@ -635,6 +642,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                     setPasswordError("");
                   }}
                   placeholder="At least 8 characters"
+                  aria-invalid={!!passwordError}
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px] pr-10"
                 />
                 <button
@@ -648,8 +656,9 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label htmlFor="settings-confirm-password" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
               <input
+                id="settings-confirm-password"
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => {
@@ -657,6 +666,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                   setPasswordError("");
                 }}
                 placeholder="Re-enter your new password"
+                aria-invalid={!!passwordError}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
               />
             </div>

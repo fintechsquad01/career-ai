@@ -30,14 +30,16 @@ export function EntrepreneurshipInput({ onSubmit }: EntrepreneurshipInputProps) 
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="entrepreneurship-idea" className="block text-sm font-medium text-gray-700 mb-1">
           Business Idea <span className="text-gray-400">(optional)</span>
         </label>
         <textarea
+          id="entrepreneurship-idea"
           value={businessIdea}
           onChange={(e) => setBusinessIdea(e.target.value)}
           placeholder="Describe your business idea or industry you're considering..."
           rows={4}
+          aria-label="Business idea"
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none min-h-[44px]"
         />
       </div>

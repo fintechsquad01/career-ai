@@ -35,6 +35,7 @@ export function ShareModal({ url, title, onClose }: ShareModalProps) {
             <input
               readOnly
               value={url}
+              aria-label="Share URL"
               className="flex-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 min-h-[44px]"
             />
             <button

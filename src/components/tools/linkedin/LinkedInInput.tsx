@@ -24,21 +24,24 @@ export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="linkedin-about" className="block text-sm font-medium text-gray-700 mb-1">
           Current About Section <span className="text-gray-400">(optional)</span>
         </label>
         <textarea
+          id="linkedin-about"
           value={aboutText}
           onChange={(e) => setAboutText(e.target.value)}
           placeholder="Paste your current LinkedIn about section..."
           rows={4}
+          aria-label="Current LinkedIn about section"
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none min-h-[44px]"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+        <label htmlFor="linkedin-target-role" className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
         <input
+          id="linkedin-target-role"
           type="text"
           value={targetRole}
           onChange={(e) => setTargetRole(e.target.value)}

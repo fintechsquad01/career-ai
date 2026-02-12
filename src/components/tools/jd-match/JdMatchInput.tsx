@@ -22,13 +22,18 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         </div>
       </div>
 
-      <textarea
-        value={jdText}
-        onChange={(e) => setJdText(e.target.value)}
-        placeholder="Paste the job description here..."
-        rows={8}
-        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-      />
+      <div>
+        <label htmlFor="jdmatch-jd" className="sr-only">Job Description</label>
+        <textarea
+          id="jdmatch-jd"
+          value={jdText}
+          onChange={(e) => setJdText(e.target.value)}
+          placeholder="Paste the job description here..."
+          rows={8}
+          aria-label="Paste the full job description or URL"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+        />
+      </div>
 
       <div className="text-xs text-gray-400 space-y-1 mb-3">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>
