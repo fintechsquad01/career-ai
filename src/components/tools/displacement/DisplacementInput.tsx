@@ -3,27 +3,11 @@
 import { useState } from "react";
 import { ShieldAlert } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { INDUSTRIES } from "@/lib/constants";
 
 interface DisplacementInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
-
-const INDUSTRIES = [
-  "Technology",
-  "Finance & Banking",
-  "Healthcare",
-  "Education",
-  "Marketing & Advertising",
-  "Legal",
-  "Manufacturing",
-  "Retail & E-commerce",
-  "Media & Entertainment",
-  "Consulting",
-  "Real Estate",
-  "Government",
-  "Nonprofit",
-  "Other",
-];
 
 export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
   const { careerProfile } = useAppStore();

@@ -137,6 +137,23 @@ export const TOOLS: Tool[] = [
 
 export const TOOL_CATEGORIES = ["Analyze", "Build", "Prepare", "Grow"] as const;
 
+export const INDUSTRIES = [
+  "Technology",
+  "Finance & Banking",
+  "Healthcare",
+  "Education",
+  "Marketing & Advertising",
+  "Legal",
+  "Manufacturing",
+  "Retail & E-commerce",
+  "Media & Entertainment",
+  "Consulting",
+  "Real Estate",
+  "Government",
+  "Nonprofit",
+  "Other",
+] as const;
+
 export const TOOLS_MAP = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
 ) as Record<string, Tool>;
