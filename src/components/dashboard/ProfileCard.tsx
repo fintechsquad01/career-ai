@@ -27,7 +27,7 @@ export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
         {/* Avatar */}
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
           {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+            <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
           ) : (
             initials
           )}

@@ -22,5 +22,10 @@
     }
   ],
   "rewrites": [],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/cron/daily-reminders",
+      "schedule": "0 10 * * *"
+    }
+  ]
 }

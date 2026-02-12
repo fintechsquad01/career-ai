@@ -75,6 +75,15 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
         </div>
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>Story-driven letter (not a template)</li>
+          <li>Company-specific references</li>
+          <li>Interview talking points from the letter</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ tone, length })}
         className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"

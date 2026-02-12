@@ -47,6 +47,15 @@ export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
         />
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>AI Hiring Assistant optimized profile</li>
+          <li>Content strategy for visibility</li>
+          <li>Personal brand monetization plan</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ about_text: aboutText, target_role: targetRole })}
         disabled={!targetRole.trim()}

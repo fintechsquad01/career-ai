@@ -1,8 +1,22 @@
 /**
  * Client-side file text extraction.
- * For PDF and DOCX, we extract text on the client using basic methods.
- * For full parsing, files are sent to the server/Edge Function.
+ * Uses pdfjs-dist for PDFs and JSZip for DOCX files.
+ * pdfjs-dist is loaded dynamically to avoid SSR crashes (DOMMatrix not available in Node).
  */
+
+import JSZip from "jszip";
+
+let pdfjsLib: typeof import("pdfjs-dist") | null = null;
+
+async function getPdfJs() {
+  if (pdfjsLib) return pdfjsLib;
+  if (typeof window === "undefined") {
+    throw new Error("PDF parsing is only available in the browser.");
+  }
+  pdfjsLib = await import("pdfjs-dist");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+  return pdfjsLib;
+}
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -26,13 +40,13 @@ export async function parseFile(file: File): Promise<FileParseResult> {
     return { text, fileName, fileType };
   }
 
-  // PDF files - extract text client-side using basic method
+  // PDF files
   if (fileType === "application/pdf" || fileName.endsWith(".pdf")) {
     const text = await extractPdfText(file);
     return { text, fileName, fileType: "application/pdf" };
   }
 
-  // DOCX files - extract text client-side
+  // DOCX files
   if (
     fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
     fileName.endsWith(".docx")
@@ -45,58 +59,76 @@ export async function parseFile(file: File): Promise<FileParseResult> {
 }
 
 async function extractPdfText(file: File): Promise<string> {
-  // Basic PDF text extraction using the browser
-  // Read the raw bytes and extract text between stream markers
-  const buffer = await file.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
-  const text = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+  try {
+    const pdfjs = await getPdfJs();
+    const buffer = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+    const textParts: string[] = [];
 
-  // Try to extract readable text content from PDF
-  const textParts: string[] = [];
-  const streamRegex = /stream\s*\n([\s\S]*?)\nendstream/g;
-  let match;
-  while ((match = streamRegex.exec(text)) !== null) {
-    const content = match[1];
-    // Filter to only printable ASCII
-    const readable = content.replace(/[^\x20-\x7E\n\r\t]/g, " ").replace(/\s+/g, " ").trim();
-    if (readable.length > 20) {
-      textParts.push(readable);
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items
+        .map((item) => ("str" in item ? item.str : ""))
+        .join(" ");
+      if (pageText.trim()) {
+        textParts.push(pageText);
+      }
     }
-  }
 
-  if (textParts.length > 0) {
-    return textParts.join("\n");
-  }
+    if (textParts.length === 0) {
+      throw new Error("No text content found in PDF.");
+    }
 
-  // Fallback: extract any readable text
-  const readable = text.replace(/[^\x20-\x7E\n\r\t]/g, "").replace(/\s+/g, " ").trim();
-  if (readable.length > 50) {
-    return readable.slice(0, 10000);
+    return textParts.join("\n\n");
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("No text content")) {
+      throw err;
+    }
+    throw new Error("Could not extract text from PDF. Please paste the text directly.");
   }
-
-  throw new Error("Could not extract text from PDF. Please paste the text directly.");
 }
 
 async function extractDocxText(file: File): Promise<string> {
-  // DOCX is a zip file with XML inside
-  // We use a basic approach: read the document.xml from the zip
-  const buffer = await file.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
+  try {
+    const buffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(buffer);
+    const docXml = zip.file("word/document.xml");
 
-  // Find the document.xml content in the zip
-  const text = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    if (!docXml) {
+      throw new Error("Invalid DOCX: missing document.xml");
+    }
 
-  // Extract text from XML tags
-  const xmlContent = text.match(/<w:t[^>]*>([^<]*)<\/w:t>/g);
-  if (xmlContent) {
-    return xmlContent
-      .map((tag) => tag.replace(/<[^>]+>/g, ""))
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const xmlContent = await docXml.async("string");
+
+    // Parse XML to extract text from <w:t> tags
+    const textParts: string[] = [];
+    // Match paragraph boundaries for better formatting
+    const paragraphs = xmlContent.split(/<\/w:p>/);
+
+    for (const para of paragraphs) {
+      const textMatches = para.match(/<w:t[^>]*>([^<]*)<\/w:t>/g);
+      if (textMatches) {
+        const paraText = textMatches
+          .map((tag) => tag.replace(/<[^>]+>/g, ""))
+          .join("");
+        if (paraText.trim()) {
+          textParts.push(paraText);
+        }
+      }
+    }
+
+    if (textParts.length === 0) {
+      throw new Error("No text content found in DOCX.");
+    }
+
+    return textParts.join("\n");
+  } catch (err) {
+    if (err instanceof Error && (err.message.includes("No text content") || err.message.includes("Invalid DOCX"))) {
+      throw err;
+    }
+    throw new Error("Could not extract text from DOCX. Please paste the text directly.");
   }
-
-  throw new Error("Could not extract text from DOCX. Please paste the text directly.");
 }
 
 export function isResumeFile(file: File): boolean {

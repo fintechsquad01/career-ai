@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
+
+export const metadata: Metadata = {
+  title: "Dashboard — CareerAI",
+  description: "Your career intelligence hub.",
+};
 
 export const dynamic = "force-dynamic";
 

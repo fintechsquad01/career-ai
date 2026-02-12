@@ -4,7 +4,7 @@
 
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
-| **Framework** | Next.js 14+ (App Router) | SSR for landing/SEO, RSC for dashboard, API routes for backend |
+| **Framework** | Next.js 16+ (App Router) | SSR for landing/SEO, RSC for dashboard, API routes for backend |
 | **Language** | TypeScript | Type safety across full stack |
 | **Styling** | Tailwind CSS | Matches prototype exactly (all utility classes) |
 | **UI Components** | shadcn/ui + custom | Headless components, accessible, style-compatible |
@@ -12,7 +12,7 @@
 | **Database** | Supabase (Postgres) | Auth, DB, Storage, Realtime, Edge Functions |
 | **Auth** | Supabase Auth | Google OAuth + email/password, session management |
 | **Payments** | Stripe | Token packs, lifetime deals, webhooks |
-| **AI/LLM** | Anthropic Claude API (via Supabase Edge Functions) | Resume parsing, JD analysis, all 11 tools |
+| **AI/LLM** | OpenRouter (Gemini 2.5 Flash / DeepSeek V3.2 / GPT-4.1-mini fallback) | Resume parsing, JD analysis, all 11 tools |
 | **File Processing** | pdf-parse, mammoth | Resume PDF/DOCX extraction |
 | **Image Gen** | FLUX.1 Pro (via Replicate) | AI headshots feature |
 | **Email** | Resend | Transactional emails, result PDFs |
@@ -205,7 +205,7 @@ User clicks "Run" → Check token balance
 ### AI Processing (Edge Functions)
 - Each tool has a dedicated prompt template in `lib/ai/prompts.ts`
 - Edge Function receives: tool_id, user_profile, job_data (if applicable), tool-specific inputs
-- Calls Anthropic Claude API with structured output
+- Calls OpenRouter API with structured JSON output (3-tier model routing)
 - Returns typed JSON result
 - Result stored in `tool_results` table
 

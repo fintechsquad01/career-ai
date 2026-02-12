@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ToolsGrid } from "@/components/dashboard/ToolsGrid";
+
+export const metadata: Metadata = {
+  title: "AI Career Tools — CareerAI",
+  description: "11 AI tools to analyze, build, prepare, and grow your career.",
+};
 
 export const dynamic = "force-dynamic";
 

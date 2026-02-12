@@ -61,6 +61,15 @@ export function ResumeInput({ onSubmit }: ResumeInputProps) {
         />
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>ATS + human-optimized resume</li>
+          <li>Your voice preserved (no AI cliches)</li>
+          <li>Formatting issues caught and fixed</li>
+        </ul>
+      </div>
+
       <button
         onClick={() => onSubmit({ resume_text: effectiveResume, target_jd: effectiveTargetJd })}
         disabled={!effectiveResume.trim()}

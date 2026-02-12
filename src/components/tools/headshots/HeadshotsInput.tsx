@@ -179,6 +179,15 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
         </div>
       </div>
 
+      <div className="text-xs text-gray-400 space-y-1 mb-3">
+        <p className="font-medium text-gray-500">What you&apos;ll get:</p>
+        <ul className="list-disc pl-4">
+          <li>4 professional AI headshots</li>
+          <li>Multiple styles and backgrounds</li>
+          <li>LinkedIn-ready quality</li>
+        </ul>
+      </div>
+
       <button
         onClick={handleSubmitClick}
         disabled={files.length === 0}

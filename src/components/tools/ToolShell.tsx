@@ -1,15 +1,16 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Loader2, RotateCcw, Share2, ArrowRight, AlertCircle } from "lucide-react";
 import { Insight } from "@/components/shared/Insight";
 import { ShareModal } from "@/components/shared/ShareModal";
 import { Paywall } from "./Paywall";
 import { useTokens } from "@/hooks/useTokens";
+import { useMission } from "@/hooks/useMission";
 import { useAppStore } from "@/stores/app-store";
 import { track } from "@/lib/analytics";
-import { TOOLS_MAP } from "@/lib/constants";
+import { TOOLS_MAP, MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { ToolState, ToolProgress, ToolResult } from "@/types";
 
@@ -52,13 +53,18 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [showShare, setShowShare] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { balance, spend } = useTokens();
+  const { balance, refreshBalance } = useTokens();
+  const { completeAction } = useMission();
   const { careerProfile, activeJobTarget } = useAppStore();
+
+  const isRunning = useRef(false);
 
   const handleRun = useCallback(
     async (inputs: Record<string, unknown>) => {
       if (!tool) return;
+      if (isRunning.current) return;
 
+      isRunning.current = true;
       setError(null);
 
       track("tool_started", { tool_id: toolId });
@@ -67,19 +73,16 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       if (tool.tokens > 0 && balance < tool.tokens) {
         setPendingInputs(inputs);
         setShowPaywall(true);
+        isRunning.current = false;
         return;
       }
 
       setState("loading");
 
       // Fallback simulation (runs in parallel; SSE progress overrides when available)
-      const steps = [
-        "Preparing your data...",
-        "Analyzing with AI...",
-        "Processing results...",
-        "Formatting output...",
-        "Finalizing...",
-      ];
+      const steps = toolId === "headshots"
+        ? ["Uploading photos...", "Processing images...", "Generating headshots...", "Finalizing..."]
+        : ["Preparing your data...", "Analyzing with AI...", "Processing results...", "Formatting output...", "Finalizing..."];
       let stepIdx = 0;
       const simInterval = setInterval(() => {
         if (stepIdx < steps.length) {
@@ -91,83 +94,163 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       try {
         const supabase = createClient();
         const { data: { session } } = await supabase.auth.getSession();
-
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const response = await fetch(`${supabaseUrl}/functions/v1/run-tool`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify({
-            tool_id: toolId,
-            inputs,
-            job_target_id: activeJobTarget?.id || null,
-          }),
-        });
 
-        if (!response.ok) {
-          const err = await response.json();
-          throw new Error(err.error || "Tool execution failed");
-        }
+        if (toolId === "headshots") {
+          // --- Headshots: upload files to Storage, then call generate-headshots ---
+          const files = inputs.files as File[] | undefined;
+          if (!files || files.length === 0) {
+            throw new Error("Please upload at least one photo.");
+          }
 
-        const contentType = response.headers.get("content-type") || "";
-        if (contentType.includes("text/event-stream") && response.body) {
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = "";
+          setProgress({ step: 1, total: 4, message: "Uploading photos..." });
 
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n\n");
-            buffer = lines.pop() || "";
-
-            for (const block of lines) {
-              const eventMatch = block.match(/^event: (.+)$/m);
-              const dataMatch = block.match(/^data: (.+)$/m);
-              if (!eventMatch || !dataMatch) continue;
-
-              const event = eventMatch[1];
-              const data = JSON.parse(dataMatch[1]);
-
-              if (event === "progress") {
-                setProgress({ step: data.step, total: data.total, message: data.message });
-              } else if (event === "complete") {
-                setResult(data.result as ToolResult);
-                if (tool.tokens > 0) {
-                  await spend(tool.tokens, toolId, data.result_id);
-                }
-                track("tool_completed", { tool_id: toolId });
-                setState("result");
-              } else if (event === "error") {
-                throw new Error(data.error);
-              }
+          // Upload each file to Supabase Storage
+          const imagePaths: string[] = [];
+          for (const file of files) {
+            const filePath = `${session?.user?.id}/${Date.now()}-${file.name}`;
+            const { error: uploadError } = await supabase.storage
+              .from("headshots-input")
+              .upload(filePath, file);
+            if (uploadError) {
+              throw new Error(`Failed to upload ${file.name}: ${uploadError.message}`);
             }
+            imagePaths.push(filePath);
           }
-        } else {
-          // Fallback: plain JSON response (when Edge Function isn't deployed with SSE yet)
+
+          setProgress({ step: 2, total: 4, message: "Processing images..." });
+
+          // Call the dedicated generate-headshots function
+          const response = await fetch(`${supabaseUrl}/functions/v1/generate-headshots`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify({
+              image_paths: imagePaths,
+              style: inputs.style || "professional",
+              background: inputs.background || "neutral",
+            }),
+          });
+
+          if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || "Headshot generation failed");
+          }
+
+          setProgress({ step: 3, total: 4, message: "Generating headshots..." });
+
           const data = await response.json();
-          setResult(data.result as ToolResult);
-          if (tool.tokens > 0) {
-            await spend(tool.tokens, toolId, data.result_id);
-          }
+
+          // Transform result to match HeadshotsResults expected format
+          const headshotsResult = {
+            images: (data.result?.headshots || []).map(
+              (h: { url: string; style: string; index: number }) => ({
+                id: `headshot-${h.index}`,
+                url: h.url,
+                style: h.style,
+              })
+            ),
+            ...data.result,
+          };
+
+          setResult(headshotsResult as ToolResult);
+          // Tokens already deducted server-side in generate-headshots; just refresh
+          await refreshBalance();
           track("tool_completed", { tool_id: toolId });
           setState("result");
+        } else {
+          // --- Standard tools: call run-tool with SSE ---
+          const response = await fetch(`${supabaseUrl}/functions/v1/run-tool`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify({
+              tool_id: toolId,
+              inputs,
+              job_target_id: activeJobTarget?.id || null,
+            }),
+          });
+
+          if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || "Tool execution failed");
+          }
+
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("text/event-stream") && response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split("\n\n");
+              buffer = lines.pop() || "";
+
+              for (const block of lines) {
+                const eventMatch = block.match(/^event: (.+)$/m);
+                const dataMatch = block.match(/^data: (.+)$/m);
+                if (!eventMatch || !dataMatch) continue;
+
+                const event = eventMatch[1];
+                const data = JSON.parse(dataMatch[1]);
+
+                if (event === "progress") {
+                  setProgress({ step: data.step, total: data.total, message: data.message });
+                } else if (event === "complete") {
+                  setResult(data.result as ToolResult);
+                  // Tokens already deducted server-side in run-tool; just refresh balance
+                  if (tool.tokens > 0) {
+                    await refreshBalance();
+                  }
+                  // Mark corresponding mission action as completed
+                  const missionAction = MISSION_ACTIONS.find((a) => a.toolId === toolId);
+                  if (missionAction) {
+                    await completeAction(missionAction.id);
+                  }
+                  track("tool_completed", { tool_id: toolId });
+                  setState("result");
+                } else if (event === "error") {
+                  throw new Error(data.error);
+                }
+              }
+            }
+          } else {
+            // Fallback: plain JSON response (when Edge Function isn't deployed with SSE yet)
+            const data = await response.json();
+            setResult(data.result as ToolResult);
+            // Tokens already deducted server-side in run-tool; just refresh balance
+            if (tool.tokens > 0) {
+              await refreshBalance();
+            }
+            // Mark corresponding mission action as completed
+            const missionAction = MISSION_ACTIONS.find((a) => a.toolId === toolId);
+            if (missionAction) {
+              await completeAction(missionAction.id);
+            }
+            track("tool_completed", { tool_id: toolId });
+            setState("result");
+          }
         }
       } catch (err) {
         console.error("Tool execution error:", err);
-        const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+        const message = err instanceof Error ? err.message : "Analysis didn't complete — most likely a temporary issue. Your tokens were not deducted.";
         track("tool_error", { tool_id: toolId, error: message });
         setError(message);
         setState("result");
       } finally {
         clearInterval(simInterval);
+        isRunning.current = false;
       }
     },
-    [tool, balance, spend, toolId, activeJobTarget]
+    [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget]
   );
 
   const handleReset = useCallback(() => {
@@ -211,8 +294,8 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   if (!tool) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 text-center">
-        <p className="text-gray-500">Tool not found.</p>
-        <Link href="/tools" className="text-blue-600 text-sm mt-2 inline-block">
+        <p className="text-gray-500">This tool isn&apos;t available yet. Check back soon or try one of our 11 other tools.</p>
+        <Link href="/dashboard" className="text-blue-600 text-sm mt-2 inline-block">
           Browse all tools
         </Link>
       </div>
@@ -287,7 +370,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Something went wrong</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Analysis didn&apos;t complete</h3>
           <p className="text-sm text-gray-600 max-w-md mx-auto">{error}</p>
           <button
             onClick={() => { setError(null); setState("input"); }}

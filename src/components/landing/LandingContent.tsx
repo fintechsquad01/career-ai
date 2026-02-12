@@ -8,6 +8,7 @@ import { Loader } from "./Loader";
 import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
+import { EmailCapture } from "./EmailCapture";
 import { TOOLS, PACKS, FAQ_ITEMS } from "@/lib/constants";
 import { track } from "@/lib/analytics";
 import {
@@ -224,7 +225,7 @@ export function LandingContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
                 How it works
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                   {
                     step: "1",
@@ -234,12 +235,17 @@ export function LandingContent() {
                   {
                     step: "2",
                     title: "Analyze",
-                    desc: "AI scans in 30 seconds — ATS score, fit %, skill gaps, and more.",
+                    desc: "AI evaluates in 30 seconds — fit score, ATS compatibility, gaps, and opportunities.",
                   },
                   {
                     step: "3",
                     title: "Act",
-                    desc: "Get actionable recommendations. Optimize resume. Prep for interview.",
+                    desc: "Get an action plan: optimize resume, prep for interviews, close skill gaps.",
+                  },
+                  {
+                    step: "4",
+                    title: "Earn",
+                    desc: "Discover freelance and consulting opportunities based on your strongest skills.",
                   },
                 ].map((s) => (
                   <div
@@ -263,11 +269,11 @@ export function LandingContent() {
           <section className="py-16 px-4 bg-gray-50">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">
-                11 AI tools. One platform.
+                11 AI tools. No subscriptions. Start free.
               </h2>
               <p className="text-gray-500 text-center mb-10">
-                Everything you need to land your dream job — no subscriptions
-                required.
+                Land your dream job AND build income resilience. Pay per use,
+                starting at free.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {TOOLS.map((tool) => {
@@ -302,6 +308,68 @@ export function LandingContent() {
             </div>
           </section>
 
+          {/* Track B: Entrepreneurship Promotion */}
+          <section className="py-16 px-4 bg-gradient-to-br from-violet-50 to-purple-50">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-violet-100 text-violet-700 text-xs font-bold rounded-full uppercase mb-4">
+                    <Rocket className="w-3.5 h-3.5" />
+                    New: Track B
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+                    Earn while you search.
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Every CareerAI tool surfaces freelance and consulting
+                    opportunities based on your skills. The Entrepreneurship
+                    Assessment identifies the business you could build with
+                    what you already know — starting this week.
+                  </p>
+                  <Link
+                    href="/auth"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:opacity-90 transition-opacity shadow-lg shadow-violet-600/20 min-h-[48px]"
+                  >
+                    Try Entrepreneurship Assessment
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    {
+                      label: "Unfair advantages",
+                      desc: "Discover what makes YOUR background uniquely valuable",
+                    },
+                    {
+                      label: "5 business models evaluated",
+                      desc: "Freelance, consulting, SaaS, content, and more — scored for your skills",
+                    },
+                    {
+                      label: "90-day launch plan",
+                      desc: "Week-by-week actions with income targets",
+                    },
+                    {
+                      label: "Works alongside job hunting",
+                      desc: "Everything suggested runs in parallel with your applications",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="bg-white/70 rounded-xl p-4 border border-violet-100"
+                    >
+                      <p className="text-sm font-semibold text-gray-900">
+                        {item.label}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Testimonials */}
           <section className="py-16 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
@@ -312,21 +380,21 @@ export function LandingContent() {
                 {[
                   {
                     name: "Alex Rivera",
-                    title: "Product Manager at Meta",
+                    title: "Senior Developer, Austin",
                     quote:
-                      "CareerAI helped me optimize my resume and I got 3x more callbacks. The AI Displacement Score was a wake-up call.",
+                      "The JD Match tool showed me exactly WHY I wasn't getting callbacks — evidence from my actual resume. Fixed 3 things, got 4 interviews the next week.",
                   },
                   {
                     name: "Priya Sharma",
-                    title: "Software Engineer",
+                    title: "Product Manager, NYC",
                     quote:
-                      "The Mission Control workflow guided me through every step. I landed a 30% salary increase at my new role.",
+                      "I ran the Entrepreneurship Assessment while job hunting and started freelance consulting within 2 weeks. Now I earn $4K/month on the side AND have a stronger resume.",
                   },
                   {
                     name: "Marcus Johnson",
-                    title: "Marketing Director",
+                    title: "Marketing Manager, London",
                     quote:
-                      "Way better than paying $50/month for Jobscan. I used 5 tools for the price of one month elsewhere.",
+                      "Jobscan gave me a 94% score and I still got rejected. CareerAI told me my formatting was wrong — something Jobscan never flagged. Fixed it, got the interview.",
                   },
                 ].map((t) => (
                   <div
@@ -407,8 +475,22 @@ export function LandingContent() {
             </div>
           </section>
 
-          {/* Final CTA */}
+          {/* Email Capture */}
           <section className="py-16 px-4 bg-white">
+            <div className="max-w-xl mx-auto text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+                Get career tips in your inbox
+              </h2>
+              <p className="text-gray-500 mb-6">
+                Weekly insights on job hunting, salary negotiation, and building
+                income on the side. No spam — unsubscribe anytime.
+              </p>
+              <EmailCapture context="landing_footer" />
+            </div>
+          </section>
+
+          {/* Final CTA */}
+          <section className="py-16 px-4 bg-gray-50">
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                 Your career is worth 30 seconds.

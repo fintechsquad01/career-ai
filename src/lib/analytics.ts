@@ -67,4 +67,6 @@ export const EVENTS = {
   SIGNUP_COMPLETE: "signup_complete",
   MISSION_START: "mission_start",
   MISSION_STEP_COMPLETE: "mission_step_complete",
+  AFFILIATE_CLICK: "affiliate_click",
+  DAILY_CREDITS_AWARDED: "daily_credits_awarded",
 } as const;

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, X, Minus } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
+import { EmailCapture } from "./EmailCapture";
 import type { JobAnalysisData } from "@/types/landing";
 
 interface JobResultsProps {
@@ -84,6 +85,11 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
           </p>
         </div>
       )}
+
+      {/* Email capture */}
+      <div className="border-t border-gray-200 pt-6">
+        <EmailCapture context="tool_result" />
+      </div>
 
       {/* CTA */}
       <Link

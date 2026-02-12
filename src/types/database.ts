@@ -16,6 +16,8 @@ export interface Database {
           full_name: string | null;
           avatar_url: string | null;
           token_balance: number;
+          daily_credits_balance: number;
+          last_daily_credit_at: string | null;
           total_tokens_purchased: number;
           total_tokens_spent: number;
           lifetime_deal: boolean;
@@ -25,6 +27,7 @@ export interface Database {
           referred_by: string | null;
           referral_count: number;
           onboarding_completed: boolean;
+          notification_preferences: Json;
           created_at: string;
           updated_at: string;
         };
@@ -34,6 +37,8 @@ export interface Database {
           full_name?: string | null;
           avatar_url?: string | null;
           token_balance?: number;
+          daily_credits_balance?: number;
+          last_daily_credit_at?: string | null;
           total_tokens_purchased?: number;
           total_tokens_spent?: number;
           lifetime_deal?: boolean;
@@ -43,6 +48,7 @@ export interface Database {
           referred_by?: string | null;
           referral_count?: number;
           onboarding_completed?: boolean;
+          notification_preferences?: Json;
           created_at?: string;
           updated_at?: string;
         };
@@ -51,6 +57,8 @@ export interface Database {
           full_name?: string | null;
           avatar_url?: string | null;
           token_balance?: number;
+          daily_credits_balance?: number;
+          last_daily_credit_at?: string | null;
           total_tokens_purchased?: number;
           total_tokens_spent?: number;
           lifetime_deal?: boolean;
@@ -60,6 +68,7 @@ export interface Database {
           referred_by?: string | null;
           referral_count?: number;
           onboarding_completed?: boolean;
+          notification_preferences?: Json;
           updated_at?: string;
         };
         Relationships: [];
@@ -329,6 +338,12 @@ export interface Database {
           p_new_user_id: string;
         };
         Returns: void;
+      };
+      award_daily_credits: {
+        Args: {
+          p_user_id: string;
+        };
+        Returns: Json;
       };
     };
     Enums: Record<string, never>;

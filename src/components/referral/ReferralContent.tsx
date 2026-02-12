@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, Copy, CheckCircle, Twitter, Linkedin } from "lucide-react";
-import type { Profile } from "@/types";
+import { Gift, Copy, CheckCircle, Twitter, Linkedin, Users, Coins } from "lucide-react";
+import type { Profile, TokenTransaction } from "@/types";
 
 interface ReferralContentProps {
   profile: Profile | null;
+  referralTransactions?: TokenTransaction[];
 }
 
-export function ReferralContent({ profile }: ReferralContentProps) {
+export function ReferralContent({ profile, referralTransactions = [] }: ReferralContentProps) {
   const [copied, setCopied] = useState(false);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
   const referralLink = `${appUrl}?ref=${profile?.referral_code || ""}`;
+
+  const totalEarned = referralTransactions.reduce((sum, tx) => sum + Math.max(0, tx.amount), 0);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
@@ -42,7 +45,7 @@ export function ReferralContent({ profile }: ReferralContentProps) {
           <p className="text-sm text-gray-500 mt-1">Referrals</p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-5 text-center">
-          <p className="text-3xl font-bold text-green-600">{(profile?.referral_count || 0) * 10}</p>
+          <p className="text-3xl font-bold text-green-600">{totalEarned}</p>
           <p className="text-sm text-gray-500 mt-1">Tokens earned</p>
         </div>
       </div>
@@ -85,6 +88,52 @@ export function ReferralContent({ profile }: ReferralContentProps) {
           <Linkedin className="w-4 h-4" /> LinkedIn
         </a>
       </div>
+
+      {/* Referral History */}
+      {referralTransactions.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Users className="w-4 h-4 text-gray-500" />
+            Referral History
+          </h3>
+          <div className="space-y-3">
+            {referralTransactions.map((tx) => (
+              <div key={tx.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                    <Coins className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-900">
+                      {tx.description || "Referral bonus"}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(tx.created_at).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-sm font-semibold text-green-600">
+                  +{tx.amount} tokens
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty state for no referrals */}
+      {referralTransactions.length === 0 && (profile?.referral_count || 0) === 0 && (
+        <div className="bg-gray-50 rounded-2xl p-6 text-center">
+          <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+          <p className="text-sm text-gray-500">
+            Share your referral link to start earning tokens. Your referral history will appear here.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

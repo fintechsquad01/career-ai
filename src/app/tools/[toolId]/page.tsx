@@ -1,12 +1,26 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ToolPageContent } from "@/components/tools/ToolPageContent";
+import { TOOLS_MAP } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 interface ToolPageProps {
   params: Promise<{ toolId: string }>;
+}
+
+export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
+  const { toolId } = await params;
+  const tool = TOOLS_MAP[toolId];
+  if (!tool) {
+    return { title: "Tool Not Found — CareerAI" };
+  }
+  return {
+    title: `${tool.title} — CareerAI`,
+    description: tool.description,
+  };
 }
 
 export default async function ToolPage({ params }: ToolPageProps) {

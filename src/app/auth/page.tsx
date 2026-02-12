@@ -74,6 +74,12 @@ function AuthContent() {
         if (refCode) {
           localStorage.setItem("careerai_referral_code", refCode);
         }
+        // Fire-and-forget: trigger welcome email via API route
+        fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "welcome" }),
+        }).catch(() => {});
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -193,8 +199,13 @@ function AuthContent() {
               className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-colors min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {mode === "signup" ? "Create Account — 5 Free Tokens" : "Sign In"}
+              {mode === "signup" ? "Create Account — 5 Free Tokens + 2 Daily Credits" : "Sign In"}
             </button>
+            {mode === "signup" && (
+              <p className="text-xs text-gray-400 text-center mt-3">
+                Join 12,400+ professionals. No credit card required.
+              </p>
+            )}
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">

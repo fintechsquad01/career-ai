@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type CaptureContext = "resume_xray" | "jd_match";
+type CaptureContext = "resume_xray" | "jd_match" | "pricing" | "landing_footer" | "tool_result";
 
 interface EmailCaptureProps {
   context: CaptureContext;
@@ -68,7 +68,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
     return (
       <div className="flex items-center gap-2 text-green-600 text-sm py-2">
         <Check className="w-5 h-5 flex-shrink-0" />
-        <span>Results saved! Check your email for the PDF.</span>
+        <span>You&apos;re on the list! We&apos;ll send you career tips and product updates.</span>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <p className="text-sm text-gray-600 mb-2">
-        Save your results as PDF — enter your email
+        Get career tips and early access — enter your email
       </p>
       <div className="flex gap-2">
         <input

@@ -11,7 +11,7 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
   const data = result as THeadshotsResult | null;
 
   if (!data) {
-    return <div className="text-center py-8 text-gray-500">No results available. Please try again.</div>;
+    return <div className="text-center py-8 text-gray-500">We couldn&apos;t generate results this time. This is usually temporary — try again in a moment.</div>;
   }
 
   const images = data.images ?? [];

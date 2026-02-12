@@ -6,7 +6,7 @@ export function HeroSection() {
       {/* Badge */}
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full">
         <Sparkles className="w-4 h-4 text-blue-600" />
-        <span className="text-sm font-medium text-blue-700">Free instant analysis · No signup</span>
+        <span className="text-sm font-medium text-blue-700">Free analysis · 30 seconds · Your voice preserved</span>
       </div>
 
       {/* Headline */}
@@ -20,8 +20,8 @@ export function HeroSection() {
 
       {/* Subtitle */}
       <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto">
-        Paste a job posting, job URL, or your resume — our AI analyzes it in 30 seconds
-        and tells you exactly what to fix.
+        Paste a job posting or your resume. In 30 seconds, get an honest assessment
+        with evidence — not generic keyword scores.
       </p>
     </div>
   );

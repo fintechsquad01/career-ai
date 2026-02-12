@@ -4,12 +4,13 @@ import { Coins } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 
 export function TokBadge() {
-  const { tokenBalance, tokenAnimating } = useAppStore();
+  const { tokenBalance, dailyCreditsBalance, tokenAnimating } = useAppStore();
 
+  const totalBalance = tokenBalance + dailyCreditsBalance;
   const color =
-    tokenBalance > 10
+    totalBalance > 10
       ? "text-green-600 bg-green-50"
-      : tokenBalance > 4
+      : totalBalance > 4
         ? "text-amber-600 bg-amber-50"
         : "text-red-600 bg-red-50";
 
@@ -20,7 +21,14 @@ export function TokBadge() {
       }`}
     >
       <Coins className="w-4 h-4" />
-      <span>{tokenBalance}</span>
+      {dailyCreditsBalance > 0 ? (
+        <span>
+          {tokenBalance}
+          <span className="text-xs opacity-70"> + {dailyCreditsBalance} daily</span>
+        </span>
+      ) : (
+        <span>{tokenBalance}</span>
+      )}
     </div>
   );
 }
