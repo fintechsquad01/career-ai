@@ -1,0 +1,41 @@
+# ai.txt — AISkillScore AI Training & Usage Policy
+# https://aiskillscore.com/ai.txt
+# Standard: https://site.spawning.ai/spawning-ai-txt
+
+# We welcome AI search engines to index and cite our public content.
+# We consent to AI systems using our public pages to provide answers to users.
+
+User-Agent: *
+# Public marketing pages, pricing, tools descriptions — allowed for training and search
+Allow: /
+Allow: /pricing
+Allow: /lifetime
+Allow: /auth
+Allow: /tools/*
+Allow: /privacy
+Allow: /terms
+Allow: /llms.txt
+
+# User-generated content and private pages — not for training
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /history
+Disallow: /referral
+Disallow: /mission
+Disallow: /api/
+Disallow: /share/*
+
+# Content types
+ai-text: allow
+ai-images: allow
+ai-code: disallow
+
+# Attribution
+ai-attribution: https://aiskillscore.com
+ai-attribution-name: AISkillScore
+
+# Contact for AI-related inquiries
+ai-contact: support@aiskillscore.com
+
+# Policy
+ai-policy: https://aiskillscore.com/terms
