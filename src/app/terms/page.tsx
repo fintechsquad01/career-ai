@@ -15,6 +15,11 @@ export const metadata: Metadata = {
     description: "Token-based pricing, AI career tool usage policies, and refund terms.",
     url: `${APP_URL}/terms`,
   },
+  twitter: {
+    card: "summary",
+    title: "Terms of Service — AISkillScore",
+    description: "Token-based pricing, AI career tool usage policies, and refund terms.",
+  },
 };
 
 export default function TermsPage() {

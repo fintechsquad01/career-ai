@@ -15,6 +15,11 @@ export const metadata: Metadata = {
     description: "AES-256 encryption, no data selling, GDPR compliant, auto-delete after 90 days.",
     url: `${APP_URL}/privacy`,
   },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy — AISkillScore",
+    description: "AES-256 encryption, no data selling, GDPR compliant, auto-delete after 90 days.",
+  },
 };
 
 export default function PrivacyPage() {
