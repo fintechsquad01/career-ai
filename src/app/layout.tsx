@@ -7,6 +7,8 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+  preload: true,
 });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -197,6 +199,12 @@ export default function RootLayout({
         <meta name="theme-color" content="#2563eb" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icon.png" />
+        {/* Preconnect to external services for faster first-byte */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+          <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

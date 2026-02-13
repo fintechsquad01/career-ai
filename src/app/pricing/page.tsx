@@ -103,11 +103,39 @@ export default function PricingPage() {
     })),
   };
 
+  const productsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "AISkillScore Token Packs",
+    description: "AI career tool token packs — pay per use, no subscriptions.",
+    numberOfItems: PACKS.length,
+    itemListElement: PACKS.map((pack, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      item: {
+        "@type": "Product",
+        name: `${pack.name} Pack — ${pack.tokens} AI Career Tokens`,
+        description: `${pack.description}. ${pack.tokens} tokens at ${pack.rate}/token.${pack.save ? ` Save ${pack.save}.` : ""}`,
+        offers: {
+          "@type": "Offer",
+          price: String(pack.price),
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          priceValidUntil: "2027-12-31",
+        },
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productsJsonLd).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
         {/* Header */}

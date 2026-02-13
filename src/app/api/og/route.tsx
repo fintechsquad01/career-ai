@@ -47,7 +47,19 @@ function getScoreColor(score: number) {
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const hash = searchParams.get("hash");
+  const pageType = searchParams.get("type");
 
+  // --- Brand / page-type OG images (no hash) ---
+  if (!hash && pageType) {
+    return renderPageOG(pageType);
+  }
+
+  // --- Default brand OG image (no hash, no type) ---
+  if (!hash && !pageType) {
+    return renderBrandOG();
+  }
+
+  // --- Score-specific OG images (with hash) ---
   let type = searchParams.get("type") || "displacement";
   let score = parseInt(searchParams.get("score") || "50");
   let title = searchParams.get("title") || "Career Professional";
@@ -91,7 +103,6 @@ export async function GET(request: NextRequest) {
           padding: 60,
         }}
       >
-        {/* Card */}
         <div
           style={{
             display: "flex",
@@ -104,22 +115,10 @@ export async function GET(request: NextRequest) {
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Icon + Label */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              marginBottom: 20,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <span style={{ fontSize: 28 }}>{icon}</span>
-            <p style={{ fontSize: 16, color: "#6B7280", fontWeight: 600 }}>
-              {label}
-            </p>
+            <p style={{ fontSize: 16, color: "#6B7280", fontWeight: 600 }}>{label}</p>
           </div>
-
-          {/* Score Ring */}
           <div
             style={{
               display: "flex",
@@ -133,62 +132,263 @@ export async function GET(request: NextRequest) {
               background: `linear-gradient(180deg, ${scoreColor}10, ${scoreColor}05)`,
             }}
           >
-            <span style={{ fontSize: 56, fontWeight: 800, color: scoreColor }}>
-              {score}
-            </span>
+            <span style={{ fontSize: 56, fontWeight: 800, color: scoreColor }}>{score}</span>
           </div>
+          <p style={{ fontSize: 22, fontWeight: 700, color: "#111827", textAlign: "center", lineHeight: 1.3 }}>
+            {title}
+          </p>
+          {industry && (
+            <p style={{ fontSize: 15, color: "#6B7280", marginTop: 4 }}>{industry}</p>
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 28 }}>
+          <p style={{ color: "rgba(255,255,255,0.9)", fontSize: 18, fontWeight: 600 }}>
+            What&apos;s YOUR score? Free analysis, 30 seconds.
+          </p>
+          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>→ aiskillscore.com</p>
+        </div>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  );
+}
 
-          {/* Title */}
+/** Default brand OG image — used when no type or hash specified */
+function renderBrandOG() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+          fontFamily: "Inter, sans-serif",
+          padding: 60,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "white",
+            borderRadius: 28,
+            padding: "56px 72px",
+            width: 700,
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 14,
+                background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span style={{ fontSize: 30, color: "white" }}>🧠</span>
+            </div>
+            <span style={{ fontSize: 36, fontWeight: 800, color: "#111827" }}>AISkillScore</span>
+          </div>
           <p
             style={{
-              fontSize: 22,
+              fontSize: 28,
               fontWeight: 700,
               color: "#111827",
               textAlign: "center",
               lineHeight: 1.3,
+              marginBottom: 12,
             }}
           >
-            {title}
+            Stop guessing.
           </p>
-          {industry && (
-            <p
-              style={{
-                fontSize: 15,
-                color: "#6B7280",
-                marginTop: 4,
-              }}
-            >
-              {industry}
-            </p>
-          )}
+          <p
+            style={{
+              fontSize: 28,
+              fontWeight: 700,
+              color: "#111827",
+              textAlign: "center",
+              lineHeight: 1.3,
+              marginBottom: 20,
+            }}
+          >
+            Know exactly where you stand.
+          </p>
+          <p
+            style={{
+              fontSize: 16,
+              color: "#6B7280",
+              textAlign: "center",
+              lineHeight: 1.5,
+            }}
+          >
+            11 AI career tools · Pay per use · No subscriptions
+          </p>
         </div>
+        <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 18, fontWeight: 500, marginTop: 28 }}>
+          Free AI career analysis in 30 seconds → aiskillscore.com
+        </p>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  );
+}
 
-        {/* Footer */}
+/** Page-specific OG images for pricing, lifetime, and tool pages */
+function renderPageOG(pageType: string) {
+  const configs: Record<string, { title: string; subtitle: string; badge: string; gradient: { from: string; to: string } }> = {
+    pricing: {
+      title: "Pay Per Use. No Subscriptions.",
+      subtitle: "11 AI career tools from free to $0.065/use\nvs Jobscan $49.95/mo · Teal $29/mo · FinalRound $149/mo",
+      badge: "💰 Pricing",
+      gradient: { from: "#059669", to: "#2563EB" },
+    },
+    lifetime: {
+      title: "$49 One-Time. 100 Tokens/Month. Forever.",
+      subtitle: "Early bird lifetime deal — limited to 500 spots\n30-day money-back guarantee",
+      badge: "💎 Lifetime Deal",
+      gradient: { from: "#7C3AED", to: "#DB2777" },
+    },
+  };
+
+  // For tool-type pages, use existing tool data
+  if (typeLabels[pageType]) {
+    const gradient = typeGradients[pageType] || { from: "#2563EB", to: "#7C3AED" };
+    const icon = typeIcons[pageType] || "⚡";
+    const label = typeLabels[pageType] || "AI Career Tool";
+
+    return new ImageResponse(
+      (
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: 12,
-            marginTop: 28,
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+            background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+            fontFamily: "Inter, sans-serif",
+            padding: 60,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              background: "white",
+              borderRadius: 28,
+              padding: "56px 72px",
+              width: 700,
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            <span style={{ fontSize: 48, marginBottom: 16 }}>{icon}</span>
+            <p style={{ fontSize: 32, fontWeight: 800, color: "#111827", textAlign: "center", marginBottom: 12 }}>
+              {label}
+            </p>
+            <p style={{ fontSize: 16, color: "#6B7280", textAlign: "center" }}>
+              AI-powered analysis · Pay per use · AISkillScore
+            </p>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 18, fontWeight: 500, marginTop: 28 }}>
+            Try it free → aiskillscore.com
+          </p>
+        </div>
+      ),
+      { width: 1200, height: 630 }
+    );
+  }
+
+  // Pricing or Lifetime
+  const config = configs[pageType] || configs.pricing;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+          background: `linear-gradient(135deg, ${config.gradient.from}, ${config.gradient.to})`,
+          fontFamily: "Inter, sans-serif",
+          padding: 60,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "white",
+            borderRadius: 28,
+            padding: "56px 72px",
+            width: 700,
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
           }}
         >
           <p
             style={{
-              color: "rgba(255,255,255,0.9)",
               fontSize: 18,
               fontWeight: 600,
+              color: "#6B7280",
+              marginBottom: 16,
             }}
           >
-            What&apos;s YOUR score? Free analysis, 30 seconds.
+            {config.badge}
           </p>
           <p
             style={{
-              color: "rgba(255,255,255,0.7)",
-              fontSize: 16,
+              fontSize: 30,
+              fontWeight: 800,
+              color: "#111827",
+              textAlign: "center",
+              lineHeight: 1.3,
+              marginBottom: 20,
             }}
           >
-            → aiskillscore.com
+            {config.title}
           </p>
+          <p
+            style={{
+              fontSize: 15,
+              color: "#6B7280",
+              textAlign: "center",
+              lineHeight: 1.6,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {config.subtitle}
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 28 }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span style={{ fontSize: 20, color: "white" }}>🧠</span>
+          </div>
+          <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 20, fontWeight: 700 }}>AISkillScore</span>
+          <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, marginLeft: 8 }}>→ aiskillscore.com</span>
         </div>
       </div>
     ),
