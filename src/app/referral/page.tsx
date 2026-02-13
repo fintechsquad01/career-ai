@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { ReferralContent } from "@/components/referral/ReferralContent";
 
 export const metadata: Metadata = {
-  title: "Refer & Earn — CareerAI",
-  description: "Give 5 tokens, get 10. Share your referral link.",
+  title: "Refer & Earn — AISkillScore",
+  description: "Give friends 5 free AI career tokens, get 10 for yourself. Share your referral link.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

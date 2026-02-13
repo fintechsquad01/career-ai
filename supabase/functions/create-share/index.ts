@@ -5,7 +5,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 // --- CORS: Dynamic origin check ---
 const ALLOWED_ORIGINS = [
-  Deno.env.get("APP_URL") || "https://careerai.com",
+  Deno.env.get("APP_URL") || "https://aiskillscore.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
@@ -153,7 +153,7 @@ Deno.serve(async (req: Request) => {
     });
 
     const data = await res.json();
-    const appUrl = Deno.env.get("APP_URL") || "https://careerai.com";
+    const appUrl = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
     return new Response(
       JSON.stringify({ hash, url: `${appUrl}/share/${hash}` }),

@@ -8,7 +8,6 @@ const PROTECTED_ROUTES = [
   "/settings",
   "/history",
   "/referral",
-  "/lifetime",
 ];
 
 export async function updateSession(request: NextRequest) {

@@ -3,23 +3,55 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ToolPageContent } from "@/components/tools/ToolPageContent";
-import { TOOLS_MAP } from "@/lib/constants";
+import { TOOLS_MAP, TOOLS } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
 interface ToolPageProps {
   params: Promise<{ toolId: string }>;
+}
+
+// Generate static params for all tool pages
+export async function generateStaticParams() {
+  return TOOLS.map((tool) => ({ toolId: tool.id }));
 }
 
 export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
   const { toolId } = await params;
   const tool = TOOLS_MAP[toolId];
   if (!tool) {
-    return { title: "Tool Not Found — CareerAI" };
+    return { title: "Tool Not Found — AISkillScore" };
   }
+
+  const priceLabel = tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`;
+
   return {
-    title: `${tool.title} — CareerAI`,
-    description: tool.description,
+    title: `${tool.title} — AI ${tool.category} Tool | AISkillScore`,
+    description: `${tool.description}. ${priceLabel}. ${tool.painPoint || ""} Powered by Gemini 2.5 Pro.`.trim(),
+    alternates: {
+      canonical: `${APP_URL}/tools/${toolId}`,
+    },
+    openGraph: {
+      title: `${tool.title} — ${priceLabel} | AISkillScore`,
+      description: `${tool.description}. ${tool.vsCompetitor || `${priceLabel} — pay per use, no subscriptions.`}`,
+      url: `${APP_URL}/tools/${toolId}`,
+      images: [
+        {
+          url: `${APP_URL}/api/og?type=${toolId}`,
+          width: 1200,
+          height: 630,
+          alt: `${tool.title} — AISkillScore`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${tool.title} — ${priceLabel} | AISkillScore`,
+      description: tool.description,
+      images: [`${APP_URL}/api/og?type=${toolId}`],
+    },
   };
 }
 
@@ -48,6 +80,28 @@ export default async function ToolPage({ params }: ToolPageProps) {
     .eq("is_active", true)
     .maybeSingle();
 
+  // Service schema for individual tool SEO
+  const tool = TOOLS_MAP[toolId];
+  const serviceJsonLd = tool ? {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: tool.title,
+    description: tool.description,
+    provider: {
+      "@type": "Organization",
+      name: "AISkillScore",
+      url: APP_URL,
+    },
+    serviceType: `AI ${tool.category} Tool`,
+    offers: {
+      "@type": "Offer",
+      price: tool.tokens === 0 ? "0" : String(tool.tokens * 0.075),
+      priceCurrency: "USD",
+      description: tool.tokens === 0 ? "Free — no tokens required" : `${tool.tokens} tokens (from $${(tool.tokens * 0.065).toFixed(2)} at Power rate)`,
+    },
+    ...(tool.painPoint ? { slogan: tool.painPoint } : {}),
+  } : null;
+
   return (
     <AppShell
       isLoggedIn={true}
@@ -55,6 +109,14 @@ export default async function ToolPage({ params }: ToolPageProps) {
       careerProfile={careerProfile}
       activeJobTarget={activeJobTarget}
     >
+      {serviceJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(serviceJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <ToolPageContent toolId={toolId} />
     </AppShell>
   );

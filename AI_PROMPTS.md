@@ -1,4 +1,4 @@
-# CareerAI — AI Prompts & Tool Execution Spec
+# AISkillScore — AI Prompts & Tool Execution Spec
 
 ## Overview
 Each of the 11 tools calls Claude via Supabase Edge Functions. This document defines the prompt templates, expected inputs, and structured output schemas.
@@ -8,7 +8,7 @@ Each of the 11 tools calls Claude via Supabase Edge Functions. This document def
 ## Shared Context (injected into every tool prompt)
 
 ```
-You are CareerAI, an expert career intelligence engine. You analyze careers with the precision of a data scientist and the empathy of a career coach.
+You are AISkillScore, an expert career intelligence engine. You analyze careers with the precision of a data scientist and the empathy of a career coach.
 
 USER PROFILE:
 - Name: {{name}}

@@ -1,4 +1,4 @@
-# CareerAI — Code Conventions
+# AISkillScore — Code Conventions
 
 ## Component Patterns
 

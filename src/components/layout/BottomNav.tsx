@@ -28,8 +28,8 @@ export function BottomNav() {
                 active ? "text-blue-600" : "text-gray-400"
               }`}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
+              <item.icon className="w-5 h-5" strokeWidth={1.75} />
+              <span className="text-[11px] font-medium mt-0.5">{item.label}</span>
             </Link>
           );
         })}

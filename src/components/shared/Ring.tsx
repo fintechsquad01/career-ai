@@ -52,6 +52,7 @@ export function Ring({ score, size = "md", label, showLabel = true }: RingProps)
           strokeDashoffset={offset}
           strokeLinecap="round"
           className="transition-all duration-700"
+          style={{ filter: `drop-shadow(0 0 4px ${stroke}40)` }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

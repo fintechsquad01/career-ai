@@ -1,4 +1,4 @@
-# CareerAI — Product Requirements Document (PRD)
+# AISkillScore — Product Requirements Document (PRD)
 
 ## One-liner
 AI-powered career intelligence platform that analyzes resumes and job postings, then guides users through a mission-based workflow to become the top candidate — priced per-use via tokens instead of subscriptions.

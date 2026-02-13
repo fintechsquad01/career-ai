@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
 export const metadata: Metadata = {
-  title: "Privacy Policy — CareerAI",
-  description: "How we protect your data.",
+  title: "Privacy Policy — AISkillScore",
+  description:
+    "How AISkillScore protects your data. AES-256 encryption, no data selling, GDPR compliant, auto-delete after 90 days. AI processing with no data retention.",
+  alternates: {
+    canonical: `${APP_URL}/privacy`,
+  },
+  openGraph: {
+    title: "Privacy Policy — AISkillScore",
+    description: "AES-256 encryption, no data selling, GDPR compliant, auto-delete after 90 days.",
+    url: `${APP_URL}/privacy`,
+  },
 };
 
 export default function PrivacyPage() {
@@ -27,7 +38,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Your Rights (GDPR)</h2>
-            <p>You have the right to access, export, and delete all your personal data. Use the Settings page to exercise these rights, or contact us at privacy@careerai.com.</p>
+            <p>You have the right to access, export, and delete all your personal data. Use the Settings page to exercise these rights, or contact us at privacy@aiskillscore.com.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Cookies</h2>

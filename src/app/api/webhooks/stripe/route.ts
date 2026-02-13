@@ -79,7 +79,10 @@ export async function POST(request: NextRequest) {
 
         if (!userId) {
           console.error("No user_id in session metadata");
-          break;
+          return NextResponse.json(
+            { error: "Missing user_id in session metadata" },
+            { status: 400 }
+          );
         }
 
         if (packId === "lifetime_early" || packId === "lifetime_standard") {
@@ -103,6 +106,13 @@ export async function POST(request: NextRequest) {
           });
         } else {
           const tokens = PACK_TOKENS[packId || ""] || 0;
+          if (!packId || tokens <= 0) {
+            console.error(`Invalid or missing pack_id: ${packId}`);
+            return NextResponse.json(
+              { error: "Invalid pack_id in session metadata" },
+              { status: 400 }
+            );
+          }
           if (tokens > 0) {
             await supabaseAdmin.rpc("add_tokens", {
               p_user_id: userId,

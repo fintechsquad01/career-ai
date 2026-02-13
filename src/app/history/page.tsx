@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { HistoryContent } from "@/components/history/HistoryContent";
 
 export const metadata: Metadata = {
-  title: "Result History — CareerAI",
-  description: "All your past analyses in one place.",
+  title: "Result History — AISkillScore",
+  description: "All your past AI career analyses in one place. Review and compare results over time.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

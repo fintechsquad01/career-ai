@@ -52,7 +52,7 @@ export function useTokens() {
         }
 
         // 2. Apply pending referral code from localStorage
-        const pendingRef = localStorage.getItem("careerai_referral_code");
+        const pendingRef = localStorage.getItem("aiskillscore_referral_code");
         if (pendingRef) {
           try {
             const refRes = await fetch("/api/apply-referral", {
@@ -64,7 +64,7 @@ export function useTokens() {
               const refData = await refRes.json();
               if (refData.applied || refData.reason === "already_referred") {
                 // Remove from localStorage whether applied or already used
-                localStorage.removeItem("careerai_referral_code");
+                localStorage.removeItem("aiskillscore_referral_code");
                 // Refresh balance to pick up referral bonus tokens
                 if (refData.bonuses_credited) {
                   const balRes = await supabase
@@ -80,7 +80,7 @@ export function useTokens() {
               }
               // If invalid_code or self_referral, also clear to prevent repeated calls
               if (refData.reason === "invalid_code" || refData.reason === "self_referral") {
-                localStorage.removeItem("careerai_referral_code");
+                localStorage.removeItem("aiskillscore_referral_code");
               }
             }
           } catch {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2, RotateCcw, Share2, ArrowRight, AlertCircle } from "lucide-react";
+import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, FileText, User } from "lucide-react";
 import { Insight } from "@/components/shared/Insight";
 import { ShareModal } from "@/components/shared/ShareModal";
 import { Paywall } from "./Paywall";
@@ -12,6 +12,8 @@ import { useAppStore } from "@/stores/app-store";
 import { track } from "@/lib/analytics";
 import { TOOLS_MAP, MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { getLoadingInsights } from "@/lib/loading-insights";
+import type { InsightCategory } from "@/lib/loading-insights";
 import type { ToolState, ToolProgress, ToolResult } from "@/types";
 
 function getRecommendedTools(currentToolId: string) {
@@ -30,6 +32,35 @@ function getRecommendedTools(currentToolId: string) {
   };
   const ids = recommendations[currentToolId] || ["resume", "jd_match", "displacement"];
   return ids.map((id) => TOOLS_MAP[id]).filter(Boolean).slice(0, 3);
+}
+
+// --- Insight Card for loading state ---
+const CATEGORY_CONFIG: Record<InsightCategory, { icon: typeof Lightbulb; label: string; bg: string; border: string; iconColor: string; labelColor: string }> = {
+  tip: { icon: Lightbulb, label: "Did you know?", bg: "bg-amber-50", border: "border-amber-200", iconColor: "text-amber-600", labelColor: "text-amber-700" },
+  stat: { icon: BarChart3, label: "Industry Insight", bg: "bg-blue-50", border: "border-blue-200", iconColor: "text-blue-600", labelColor: "text-blue-700" },
+  quote: { icon: Quote, label: "Words of Wisdom", bg: "bg-violet-50", border: "border-violet-200", iconColor: "text-violet-600", labelColor: "text-violet-700" },
+  pain_solution: { icon: Zap, label: "Why This Matters", bg: "bg-emerald-50", border: "border-emerald-200", iconColor: "text-emerald-600", labelColor: "text-emerald-700" },
+};
+
+function InsightCard({ category, text, source }: { category: InsightCategory; text: string; source?: string }) {
+  const config = CATEGORY_CONFIG[category];
+  const Icon = config.icon;
+  return (
+    <div className={`${config.bg} border ${config.border} rounded-2xl p-4 sm:p-5`}>
+      <div className="flex items-start gap-3">
+        <div className={`flex-shrink-0 w-8 h-8 rounded-full ${config.bg} flex items-center justify-center`}>
+          <Icon className={`w-4 h-4 ${config.iconColor}`} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={`text-xs font-semibold ${config.labelColor} mb-1`}>{config.label}</p>
+          <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
+          {source && (
+            <p className="text-xs text-gray-400 mt-1.5 italic">{category === "quote" ? `— ${source}` : source}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 interface ToolShellProps {
@@ -58,6 +89,38 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const { careerProfile, activeJobTarget } = useAppStore();
 
   const isRunning = useRef(false);
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const elapsedInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [insightIdx, setInsightIdx] = useState(0);
+
+  // Memoize loading insights so they shuffle once per tool, not per render
+  const loadingInsights = useMemo(() => getLoadingInsights(toolId), [toolId]);
+
+  // Elapsed timer + insight rotation for loading state
+  useEffect(() => {
+    if (state === "loading") {
+      setElapsedSec(0);
+      setInsightIdx(0);
+      elapsedInterval.current = setInterval(() => setElapsedSec((s) => s + 1), 1000);
+    } else {
+      if (elapsedInterval.current) {
+        clearInterval(elapsedInterval.current);
+        elapsedInterval.current = null;
+      }
+    }
+    return () => {
+      if (elapsedInterval.current) clearInterval(elapsedInterval.current);
+    };
+  }, [state]);
+
+  // Rotate insights every 5 seconds during loading
+  useEffect(() => {
+    if (state !== "loading" || loadingInsights.length === 0) return;
+    const timer = setInterval(() => {
+      setInsightIdx((prev) => (prev + 1) % loadingInsights.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [state, loadingInsights]);
 
   const handleRun = useCallback(
     async (inputs: Record<string, unknown>) => {
@@ -80,9 +143,20 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       setState("loading");
 
       // Fallback simulation (runs in parallel; SSE progress overrides when available)
-      const steps = toolId === "headshots"
-        ? ["Uploading photos...", "Processing images...", "Generating headshots...", "Finalizing..."]
-        : ["Preparing your data...", "Analyzing with AI...", "Processing results...", "Formatting output...", "Finalizing..."];
+      const toolStepMap: Record<string, string[]> = {
+        displacement: ["Analyzing your role & industry...", "Calculating AI displacement risk...", "Benchmarking against market data...", "Identifying vulnerable skills...", "Generating your risk profile..."],
+        jd_match: ["Extracting job requirements...", "Analyzing your qualifications...", "Calculating match score...", "Finding skill gaps...", "Generating recommendations..."],
+        resume: ["Parsing resume structure...", "Calculating ATS score...", "Checking keyword optimization...", "Analyzing formatting...", "Generating optimized version..."],
+        cover_letter: ["Analyzing job description...", "Matching your experience...", "Crafting narrative...", "Optimizing tone & structure...", "Finalizing cover letter..."],
+        linkedin: ["Auditing your profile...", "Analyzing headline & summary...", "Checking keyword density...", "Benchmarking against top profiles...", "Generating recommendations..."],
+        headshots: ["Uploading photos...", "Processing images...", "Generating headshots...", "Finalizing..."],
+        interview: ["Analyzing role requirements...", "Generating likely questions...", "Crafting STAR responses...", "Preparing follow-ups...", "Building your prep guide..."],
+        skills_gap: ["Mapping current skills...", "Analyzing market demand...", "Identifying gaps...", "Prioritizing learning paths...", "Generating your plan..."],
+        roadmap: ["Analyzing career trajectory...", "Mapping milestone options...", "Estimating timelines...", "Identifying accelerators...", "Building your roadmap..."],
+        salary: ["Benchmarking market data...", "Analyzing your experience...", "Calculating target range...", "Preparing negotiation scripts...", "Finalizing strategy..."],
+        entrepreneurship: ["Analyzing your background...", "Evaluating market opportunities...", "Assessing founder-market fit...", "Calculating risk profile...", "Generating your assessment..."],
+      };
+      const steps = toolStepMap[toolId] || ["Preparing your data...", "Analyzing with AI...", "Processing results...", "Formatting output...", "Finalizing..."];
       let stepIdx = 0;
       const simInterval = setInterval(() => {
         if (stepIdx < steps.length) {
@@ -311,12 +385,6 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
-      {/* Back */}
-      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
-        <ArrowLeft className="w-4 h-4" />
-        Dashboard
-      </Link>
-
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">
@@ -352,22 +420,97 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
 
-      {/* Loading state */}
-      {state === "loading" && (
-        <div className="text-center py-12 space-y-4" role="status" aria-live="polite">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+      {/* Data completeness nudge — helps users get better results */}
+      {state === "input" && !careerProfile?.resume_text && toolId !== "headshots" && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <FileText className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-gray-900">{progress.message}</p>
-            <p className="text-xs text-gray-400 mt-1">
-              Step {progress.step} of {progress.total} · Usually 5-15 seconds
+            <p className="text-sm font-medium text-amber-900">Add your resume for significantly better results</p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Our AI uses your full resume to personalize every analysis — quoting your real achievements, matching your actual skills, and tailoring advice to your experience.
+            </p>
+            <Link href="/settings" className="text-xs font-semibold text-amber-700 hover:text-amber-900 mt-1 inline-block">
+              Upload resume in Settings →
+            </Link>
+          </div>
+        </div>
+      )}
+      {state === "input" && careerProfile?.resume_text && !careerProfile?.title && toolId !== "headshots" && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <User className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-amber-900">Complete your career profile for better accuracy</p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Adding your job title, industry, and years of experience helps our AI calibrate scores and recommendations to your specific situation.
+            </p>
+            <Link href="/settings" className="text-xs font-semibold text-amber-700 hover:text-amber-900 mt-1 inline-block">
+              Complete profile in Settings →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Loading state — Rich experience with rotating insights */}
+      {state === "loading" && (
+        <div className="py-8 space-y-6" role="status" aria-live="polite">
+          {/* Progress section */}
+          <div className="text-center space-y-3">
+            <div className="relative w-14 h-14 mx-auto">
+              <Loader2 className="w-14 h-14 text-blue-600 animate-spin" />
+              <Zap className="w-5 h-5 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900">{progress.message || "Preparing your analysis..."}</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Step {progress.step || 1} of {progress.total} · {elapsedSec}s
+              </p>
+            </div>
+            <div className="w-56 bg-gray-200 rounded-full h-1.5 mx-auto overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${Math.max(5, (progress.step / progress.total) * 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Reassurance message */}
+          <div className="text-center">
+            <p className="text-xs text-gray-500 max-w-sm mx-auto">
+              {elapsedSec < 10
+                ? "Our AI is using advanced reasoning to deeply analyze your specific situation..."
+                : elapsedSec < 25
+                  ? "Building a premium, personalized analysis — this takes a moment for the best results..."
+                  : "Almost there — our AI is putting the finishing touches on your comprehensive analysis..."}
             </p>
           </div>
-          <div className="w-48 bg-gray-200 rounded-full h-1.5 mx-auto">
+
+          {/* Rotating insight card */}
+          {loadingInsights.length > 0 && (
             <div
-              className="bg-blue-600 h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${(progress.step / progress.total) * 100}%` }}
-            />
-          </div>
+              key={insightIdx}
+              className="mx-auto max-w-md animate-in fade-in slide-in-from-bottom-2 duration-500"
+            >
+              <InsightCard
+                category={loadingInsights[insightIdx].category}
+                text={loadingInsights[insightIdx].text}
+                source={loadingInsights[insightIdx].source}
+              />
+            </div>
+          )}
+
+          {/* Insight dots indicator */}
+          {loadingInsights.length > 1 && (
+            <div className="flex justify-center gap-1">
+              {loadingInsights.slice(0, Math.min(loadingInsights.length, 12)).map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
+                    i === insightIdx % Math.min(loadingInsights.length, 12) ? "bg-blue-500" : "bg-gray-200"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -385,6 +528,16 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           >
             Try Again
           </button>
+        </div>
+      )}
+
+      {/* Premium analysis badge — shown on successful results */}
+      {state === "result" && result && !error && (
+        <div className="flex items-center gap-2 text-xs text-gray-400">
+          <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+          <span>Premium AI Analysis</span>
+          <span className="text-gray-300">·</span>
+          <span>{careerProfile?.resume_text ? "Personalized from your resume" : "Add resume for deeper personalization"}</span>
         </div>
       )}
 
@@ -443,7 +596,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {showShare && (
         <ShareModal
           url={shareUrl}
-          title={`My ${tool.title} results on CareerAI`}
+          title={`My ${tool.title} results on AISkillScore`}
           onClose={() => setShowShare(false)}
         />
       )}

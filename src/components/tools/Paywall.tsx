@@ -1,6 +1,7 @@
 "use client";
 
-import { X, Coins, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { X, Coins, ArrowRight, Users } from "lucide-react";
 import { PACKS } from "@/lib/constants";
 
 interface PaywallProps {
@@ -40,13 +41,20 @@ export function Paywall({ requiredTokens, onClose, onPurchaseComplete }: Paywall
           <X className="w-5 h-5" />
         </button>
 
-        <div className="text-center mb-6">
+        <div className="text-center mb-5">
           <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
             <Coins className="w-6 h-6 text-amber-600" />
           </div>
           <h2 className="text-lg font-bold text-gray-900">You need {requiredTokens} more tokens</h2>
           <p className="text-sm text-gray-500 mt-1">
-            Come back tomorrow for 2 free credits, or grab a pack to continue now.
+            Come back tomorrow for 2 free tokens, or grab a pack to continue now.
+          </p>
+        </div>
+
+        {/* Competitive anchoring */}
+        <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-center">
+          <p className="text-xs font-medium text-blue-700">
+            Others charge $29–$149/mo. AISkillScore starts at $0.10/analysis.
           </p>
         </div>
 
@@ -80,9 +88,17 @@ export function Paywall({ requiredTokens, onClose, onPurchaseComplete }: Paywall
           ))}
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-4">
-          Pro pack covers ~10 job applications + a full Entrepreneurship Assessment
-        </p>
+        <div className="mt-4 space-y-2">
+          <p className="text-xs text-gray-400 text-center">
+            Pro pack covers ~10 job applications + a full Entrepreneurship Assessment
+          </p>
+          <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+            <span className="flex items-center gap-1"><Users className="w-3 h-3" /> 12,400+ professionals</span>
+            <Link href="/lifetime" className="text-blue-600 hover:underline font-medium" onClick={onClose}>
+              Lifetime deal from $49 →
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

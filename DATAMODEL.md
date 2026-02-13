@@ -1,4 +1,4 @@
-# CareerAI — Data Model
+# AISkillScore — Data Model
 
 ## Overview
 Supabase (PostgreSQL) with Row Level Security (RLS) on all user-facing tables.

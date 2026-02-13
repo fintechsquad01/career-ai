@@ -1,4 +1,4 @@
-# CareerAI — Prioritized Task Prompt
+# AISkillScore — Prioritized Task Prompt
 
 > Generated from comprehensive audit of: PRD.md, PAGES.md, DATAMODEL.md, API.md,
 > CONVENTIONS.md, TECHSTACK.md, SPRINT_NEXT.md, E2E_TEST_CHECKLIST.md, and full
@@ -34,25 +34,25 @@ commit, verify the build still passes, then proceed to the next tier.
 
 | Page | Title | Description |
 |------|-------|-------------|
-| `/` (landing) | "CareerAI — Free AI Career Analysis in 30 Seconds" | "Paste a job posting or resume. Get an honest AI assessment with evidence — not generic keyword scores." |
-| `/auth` | "Sign Up — CareerAI" | "Create a free account. 5 tokens + 2 daily credits. No credit card required." |
-| `/dashboard` | "Dashboard — CareerAI" | "Your career intelligence hub." |
-| `/mission` | "Job Mission Control — CareerAI" | "Step-by-step plan to become the top candidate." |
-| `/tools` | "AI Career Tools — CareerAI" | "11 AI tools to analyze, build, prepare, and grow your career." |
+| `/` (landing) | "AISkillScore — Free AI Career Analysis in 30 Seconds" | "Paste a job posting or resume. Get an honest AI assessment with evidence — not generic keyword scores." |
+| `/auth` | "Sign Up — AISkillScore" | "Create a free account. 5 tokens + 2 daily credits. No credit card required." |
+| `/dashboard` | "Dashboard — AISkillScore" | "Your career intelligence hub." |
+| `/mission` | "Job Mission Control — AISkillScore" | "Step-by-step plan to become the top candidate." |
+| `/tools` | "AI Career Tools — AISkillScore" | "11 AI tools to analyze, build, prepare, and grow your career." |
 | `/tools/[toolId]` | Use `generateMetadata` to set per-tool title dynamically | Pull from TOOLS_MAP |
-| `/history` | "Result History — CareerAI" | "All your past analyses in one place." |
-| `/settings` | "Settings — CareerAI" | "Manage your profile, account, and privacy." |
-| `/pricing` | "Pricing — CareerAI" | "Pay per use. No subscriptions. Start free." |
-| `/lifetime` | "Lifetime Deal — CareerAI" | "100 tokens/month forever for $49. Limited spots." |
-| `/referral` | "Refer & Earn — CareerAI" | "Give 5 tokens, get 10. Share your referral link." |
-| `/privacy` | "Privacy Policy — CareerAI" | "How we protect your data." |
-| `/terms` | "Terms of Service — CareerAI" | "Terms of use for CareerAI." |
+| `/history` | "Result History — AISkillScore" | "All your past analyses in one place." |
+| `/settings` | "Settings — AISkillScore" | "Manage your profile, account, and privacy." |
+| `/pricing` | "Pricing — AISkillScore" | "Pay per use. No subscriptions. Start free." |
+| `/lifetime` | "Lifetime Deal — AISkillScore" | "100 tokens/month forever for $49. Limited spots." |
+| `/referral` | "Refer & Earn — AISkillScore" | "Give 5 tokens, get 10. Share your referral link." |
+| `/privacy` | "Privacy Policy — AISkillScore" | "How we protect your data." |
+| `/terms` | "Terms of Service — AISkillScore" | "Terms of use for AISkillScore." |
 
 ### Task 1.3 — Create custom 404 page
 **Files:** New: `src/app/not-found.tsx`
 **Effort:** 10 min | **Impact:** Currently a broken link shows the default Next.js 404. A branded page retains users.
 **Fix:** Create a simple not-found page with:
-- CareerAI branding
+- AISkillScore branding
 - "Page not found" message
 - "Go to Dashboard" and "Go Home" buttons
 - Consistent with app styling (rounded cards, gradient CTA)
@@ -183,7 +183,7 @@ Save these to the `career_profiles` table via upsert (same pattern as resume upl
 **Effort:** 20 min | **Impact:** HIGH — welcome emails, daily reminders, email captures won't send.
 **Steps:**
 1. Verify domain in Resend dashboard (add DNS records)
-2. Set sender address (e.g., `hello@careerai.com`)
+2. Set sender address (e.g., `hello@aiskillscore.com`)
 3. Update `src/lib/email.ts` if the sender address needs changing
 4. Test with a real email send
 

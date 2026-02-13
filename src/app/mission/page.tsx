@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MissionContent } from "@/components/mission/MissionContent";
 
 export const metadata: Metadata = {
-  title: "Job Mission Control — CareerAI",
-  description: "Step-by-step plan to become the top candidate.",
+  title: "Job Mission Control — AISkillScore",
+  description: "Step-by-step plan to become the top candidate. AI-guided workflow: optimize resume, write cover letter, prep for interviews.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

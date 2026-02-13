@@ -1,4 +1,4 @@
-# CareerAI — Cursor IDE Context Documents
+# AISkillScore — Cursor IDE Context Documents
 
 ## How to Use These Docs
 

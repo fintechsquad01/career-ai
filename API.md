@@ -1,4 +1,4 @@
-# CareerAI — API & Edge Functions
+# AISkillScore — API & Edge Functions
 
 ## Overview
 - **Next.js API Routes**: Stripe webhooks, OG image generation
@@ -183,7 +183,7 @@ Creates a public share link for viral score pages.
 ```json
 {
   "hash": "abc123",
-  "url": "https://careerai.com/share/abc123"
+  "url": "https://aiskillscore.com/share/abc123"
 }
 ```
 
@@ -214,7 +214,7 @@ Dynamic OG image generation for share pages.
 Uses `@vercel/og` (Satori) to render a branded card with:
 - Score ring visualization
 - Title and industry
-- CareerAI branding
+- AISkillScore branding
 - CTA: "What's YOUR score?"
 
 ---

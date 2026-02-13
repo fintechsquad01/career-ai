@@ -1,4 +1,4 @@
-# CareerAI — Page Specs
+# AISkillScore — Page Specs
 
 ## Design System Constants
 
@@ -39,7 +39,7 @@ const DESIGN = {
 
 ### Nav (sticky top)
 - Height: 56px mobile (`h-14`), 64px desktop (`sm:h-16`)
-- Logo: 28x28 gradient square with Brain icon + "CareerAI" text
+- Logo: 28x28 gradient square with Brain icon + "AISkillScore" text
 - **Logged out**: Pricing, Sign In, "Get Started — Free" button
 - **Logged in (desktop)**: Dashboard, Job Mission (with red dot badge if incomplete), Tokens, TokBadge, avatar circle
 - **Logged in (mobile)**: TokBadge + hamburger menu → full mobile menu overlay
@@ -193,7 +193,7 @@ All tool pages use the **ToolShell** wrapper:
 3. **3 Pack Cards**: Starter, Pro (highlighted with "Most Popular" + save badge), Power
    - Each: name, tokens, price, per-token rate, description, "Get [Pack]" button
 4. "What can you do with X tokens?" grid
-5. Competitive teardown table (CareerAI vs Jobscan vs Teal vs FinalRound)
+5. Competitive teardown table (AISkillScore vs Jobscan vs Teal vs FinalRound)
 6. FAQ accordion
 
 ---
@@ -226,7 +226,7 @@ All tool pages use the **ToolShell** wrapper:
 
 Public page (no auth). Designed for OG card rendering.
 
-1. Branded card: CareerAI logo, score type, large Ring score, title/industry
+1. Branded card: AISkillScore logo, score type, large Ring score, title/industry
 2. Key findings: risk tasks, safe tasks
 3. CTA: "What's YOUR score?" → links to landing
 4. Social proof: scores generated, avg rating, action rate
