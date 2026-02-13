@@ -596,6 +596,60 @@ export function LandingContent() {
             </div>
           </section>
 
+          {/* From the Blog */}
+          <section className="py-20 sm:py-28 px-4 bg-white">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
+                Guides &amp; research
+              </h2>
+              <p className="text-gray-500 text-center mb-10">
+                Data-backed insights for navigating the AI-age job market.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  {
+                    emoji: "🛡️",
+                    title: "Will AI Replace My Job?",
+                    desc: "Measure your personal risk using ILO 2025 data.",
+                    href: "/blog/will-ai-replace-my-job",
+                  },
+                  {
+                    emoji: "📄",
+                    title: "ATS Resume Optimization",
+                    desc: "43% of rejections are formatting errors, not qualifications.",
+                    href: "/blog/resume-ats-optimization-guide",
+                  },
+                  {
+                    emoji: "💬",
+                    title: "AI Interview Prep Guide",
+                    desc: "90% of candidates aren't prepared for follow-ups.",
+                    href: "/blog/ai-interview-prep-guide",
+                  },
+                ].map((post) => (
+                  <Link
+                    key={post.href}
+                    href={post.href}
+                    className="glass-card p-5 hover:shadow-md transition-shadow group"
+                  >
+                    <span className="text-2xl">{post.emoji}</span>
+                    <h3 className="text-sm font-bold text-gray-900 mt-3 mb-1 group-hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-gray-500">{post.desc}</p>
+                    <span className="text-xs text-blue-600 font-medium mt-2 inline-flex items-center gap-1">
+                      Read guide <ArrowRight className="w-3 h-3" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+              <div className="text-center mt-6">
+                <Link href="/blog" className="text-sm text-gray-500 hover:text-gray-900 font-medium">
+                  View all articles →
+                </Link>
+              </div>
+            </div>
+          </section>
+
           {/* FAQ */}
           <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-2xl mx-auto">
@@ -618,6 +672,12 @@ export function LandingContent() {
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <Link href="/pricing" className="hover:text-gray-900">
                   Pricing
+                </Link>
+                <Link href="/blog" className="hover:text-gray-900">
+                  Blog
+                </Link>
+                <Link href="/compare" className="hover:text-gray-900">
+                  Compare
                 </Link>
                 <Link href="/privacy" className="hover:text-gray-900">
                   Privacy

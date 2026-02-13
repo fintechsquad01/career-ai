@@ -39,6 +39,18 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - Dual-track approach: job hunting + income building simultaneously
 - Free daily tokens (2/day) plus 5 free tokens on signup
 
+## Blog — Guides & Research
+
+- [Will AI Replace My Job?](https://aiskillscore.com/blog/will-ai-replace-my-job): Measure your personal AI displacement risk using ILO 2025 data. 1 in 4 roles are exposed to generative AI.
+- [ATS Resume Optimization Guide](https://aiskillscore.com/blog/resume-ats-optimization-guide): 43% of ATS rejections are formatting errors. Complete guide to passing ATS in 2026.
+- [AI Interview Prep Guide](https://aiskillscore.com/blog/ai-interview-prep-guide): 90% of candidates aren't prepared for follow-up questions — the part that actually decides interviews.
+
+## Comparisons
+
+- [AISkillScore vs Jobscan](https://aiskillscore.com/compare/aiskillscore-vs-jobscan): 11 tools from free vs $49.95/month for keyword counting.
+- [AISkillScore vs Teal](https://aiskillscore.com/compare/aiskillscore-vs-teal): AI-personalized content vs generic templates at $29/month.
+- [AISkillScore vs FinalRound AI](https://aiskillscore.com/compare/aiskillscore-vs-finalround): Interview prep from $0.23 vs $149/month, plus 10 more tools.
+
 ## Company
 
 - [Privacy Policy](https://aiskillscore.com/privacy): AES-256 encryption, no data selling, auto-delete after 90 days

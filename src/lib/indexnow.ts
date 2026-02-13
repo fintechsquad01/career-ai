@@ -67,6 +67,18 @@ export async function submitAllPagesToIndexNow(): Promise<IndexNowResponse> {
     "headshots", "interview", "skills_gap", "roadmap", "salary", "entrepreneurship",
   ];
 
+  const articleSlugs = [
+    "will-ai-replace-my-job",
+    "resume-ats-optimization-guide",
+    "ai-interview-prep-guide",
+  ];
+
+  const comparisonSlugs = [
+    "aiskillscore-vs-jobscan",
+    "aiskillscore-vs-teal",
+    "aiskillscore-vs-finalround",
+  ];
+
   const urls = [
     "/",
     "/pricing",
@@ -74,7 +86,11 @@ export async function submitAllPagesToIndexNow(): Promise<IndexNowResponse> {
     "/auth",
     "/privacy",
     "/terms",
+    "/blog",
+    "/compare",
     ...toolIds.map((id) => `/tools/${id}`),
+    ...articleSlugs.map((slug) => `/blog/${slug}`),
+    ...comparisonSlugs.map((slug) => `/compare/${slug}`),
   ];
 
   return submitToIndexNow(urls);
