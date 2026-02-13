@@ -159,22 +159,27 @@ Aggregated, anonymized data from tool results:
 
 ## 6. Technical TODO (Remaining)
 
-### Wave 2 (Next)
-- [ ] Service schema on each tool page
-- [ ] Expand FAQ content with natural-language AI queries
-- [ ] HowTo schema on landing page
-- [ ] Product/Offer schema on pricing page
-- [ ] IndexNow protocol implementation
-- [ ] Default OG image generation for non-tool pages
-- [ ] Lighthouse optimization pass (>90 target)
-- [ ] loading.tsx skeletons for all routes
+### Wave 2 ✅ COMPLETED
+- [x] Service schema on each tool page
+- [x] Expand FAQ content with natural-language AI queries (16 items)
+- [x] HowTo schema on landing page
+- [x] Product/Offer schema on pricing page (ItemList + Product JSON-LD)
+- [x] IndexNow protocol implementation (API route + key file)
+- [x] Default OG image generation for non-tool pages (brand, pricing, lifetime, tools)
+- [x] Lighthouse optimization pass (font swap, preload, dns-prefetch)
+- [x] loading.tsx skeletons for routes (/auth, /referral, /tools, /share/[hash])
+- [x] ai.txt file for AI training transparency
 
-### Wave 3 (Content Infrastructure)
-- [ ] Blog infrastructure (`/blog` route with MDX)
-- [ ] First 3 pillar pages
-- [ ] 5-10 comparison/alternative pages
-- [ ] Original research report
-- [ ] ai.txt file
+### Wave 3 ✅ COMPLETED
+- [x] Blog infrastructure (`/blog` route, index page, article template)
+- [x] 3 pillar articles: AI Displacement, ATS Resume Optimization, AI Interview Prep
+- [x] 3 comparison pages: vs Jobscan, vs Teal, vs FinalRound
+- [x] Comparison hub page (`/compare`)
+- [x] Article JSON-LD + BreadcrumbList on all content pages
+- [x] Internal links from landing page (blog section, footer links)
+- [x] Sitemap updated with all blog + comparison URLs
+- [x] llms.txt updated with blog + comparison content
+- [x] IndexNow utility updated with all new page URLs
 
 ### Wave 4 (Ongoing)
 - [ ] Reddit community engagement program

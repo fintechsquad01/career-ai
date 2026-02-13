@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/constants";
+import { ARTICLES, COMPARISONS } from "@/lib/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -37,6 +38,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+    })),
+    // Blog — pillar content for topical authority
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...ARTICLES.map((article) => ({
+      url: `${baseUrl}/blog/${article.slug}`,
+      lastModified: new Date(article.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    // Comparison pages — high commercial intent
+    {
+      url: `${baseUrl}/compare`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...COMPARISONS.map((comp) => ({
+      url: `${baseUrl}/compare/${comp.slug}`,
+      lastModified: new Date(comp.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     // Legal / informational
     {
