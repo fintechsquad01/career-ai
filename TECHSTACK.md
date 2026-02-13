@@ -1,4 +1,4 @@
-# CareerAI — Tech Stack & Architecture
+# AISkillScore — Tech Stack & Architecture
 
 ## Stack Decision
 
@@ -25,7 +25,7 @@
 ## Project Structure
 
 ```
-careerai/
+aiskillscore/
 ├── .cursorrules                    # Cursor IDE rules
 ├── PRD.md                          # Product requirements
 ├── TECHSTACK.md                    # This file

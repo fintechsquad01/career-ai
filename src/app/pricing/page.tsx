@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X, Loader2 } from "lucide-react";
 import { PACKS, TOOLS, FAQ_ITEMS } from "@/lib/constants";
@@ -8,8 +8,56 @@ import { FAQ } from "@/components/shared/FAQ";
 import { Insight } from "@/components/shared/Insight";
 import { EmailCapture } from "@/components/landing/EmailCapture";
 
+function TokenCalculator() {
+  const [jobApps, setJobApps] = useState(5);
+  // Average tokens per full job application: JD Match (2) + Resume (10) + Cover Letter (3) + Interview (3) = 18
+  const tokensNeeded = useMemo(() => {
+    const perApp = 18; // JD Match + Resume + Cover Letter + Interview
+    const base = jobApps * perApp;
+    return base;
+  }, [jobApps]);
+
+  const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : "Power";
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-16">
+      <h2 className="text-lg font-bold text-gray-900 mb-4 text-center">How many tokens do you need?</h2>
+      <div className="max-w-md mx-auto space-y-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-2">
+            Job applications you&apos;re targeting: <span className="text-blue-600 font-bold">{jobApps}</span>
+          </label>
+          <input
+            type="range"
+            min={1}
+            max={30}
+            value={jobApps}
+            onChange={(e) => setJobApps(Number(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+          <div className="flex justify-between text-xs text-gray-400 mt-1">
+            <span>1 app</span>
+            <span>30 apps</span>
+          </div>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-4 text-center">
+          <p className="text-sm text-gray-600">
+            You&apos;ll need approximately <span className="font-bold text-blue-600">{tokensNeeded} tokens</span>
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Based on JD Match + Resume Optimizer + Cover Letter + Interview Prep per application
+          </p>
+          <p className="text-sm font-semibold text-blue-700 mt-2">
+            Recommended: {recommendedPack} Pack
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const COMPETITORS = [
-  { name: "CareerAI", price: "From $5", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
+  { name: "AISkillScore", price: "From $5", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
   { name: "Jobscan", price: "$49.95/mo", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false, gap: "Keyword counting only. No evidence, no recruiter perspective." },
   { name: "Teal", price: "$29/mo", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false, gap: "Generic templates. Destroys your authentic voice." },
   { name: "FinalRound", price: "$149/mo", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false, gap: "No follow-up prep. The thing that actually decides interviews." },
@@ -42,12 +90,29 @@ export default function PricingPage() {
     }
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F5F5F7]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
             Pay per use. No subscriptions.
           </h1>
           <p className="text-lg text-gray-500 mb-4">
@@ -56,7 +121,7 @@ export default function PricingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
             Log in daily for 2 free tokens. That&apos;s a free JD Match scan every day.
           </div>
-          <Insight type="competitive" text="Jobscan = $49.95/mo for just resume scanning. Teal = $29/mo. FinalRound = $149/mo. CareerAI = pay per use." />
+          <Insight type="competitive" text="Jobscan = $49.95/mo for just resume scanning. Teal = $29/mo. FinalRound = $149/mo. AISkillScore = pay per use." />
         </div>
 
         {/* Packs */}
@@ -115,6 +180,9 @@ export default function PricingPage() {
           </div>
         )}
 
+        {/* Token Calculator */}
+        <TokenCalculator />
+
         {/* What can you do */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
@@ -143,7 +211,7 @@ export default function PricingPage() {
                 <tr className="border-b border-gray-200">
                   <th className="text-left px-4 py-3 font-medium text-gray-500">Feature</th>
                   {COMPETITORS.map((c) => (
-                    <th key={c.name} className={`text-center px-4 py-3 font-semibold ${c.name === "CareerAI" ? "text-blue-600" : "text-gray-900"}`}>
+                    <th key={c.name} className={`text-center px-4 py-3 font-semibold ${c.name === "AISkillScore" ? "text-blue-600" : "text-gray-900"}`}>
                       {c.name}
                     </th>
                   ))}
@@ -153,7 +221,7 @@ export default function PricingPage() {
                 <tr className="border-b border-gray-100">
                   <td className="px-4 py-3 text-gray-700">Price</td>
                   {COMPETITORS.map((c) => (
-                    <td key={c.name} className={`text-center px-4 py-3 font-medium ${c.name === "CareerAI" ? "text-blue-600" : "text-gray-900"}`}>
+                    <td key={c.name} className={`text-center px-4 py-3 font-medium ${c.name === "AISkillScore" ? "text-blue-600" : "text-gray-900"}`}>
                       {c.price}
                     </td>
                   ))}
@@ -182,8 +250,8 @@ export default function PricingPage() {
                 <tr className="border-b border-gray-100">
                   <td className="px-4 py-3 text-gray-700 font-medium">What they miss</td>
                   {COMPETITORS.map((c) => (
-                    <td key={c.name} className={`text-center px-4 py-3 text-xs ${c.name === "CareerAI" ? "text-blue-600 font-medium" : "text-gray-500"}`}>
-                      {c.name === "CareerAI" ? "Nothing — 11 tools in one" : c.gap}
+                    <td key={c.name} className={`text-center px-4 py-3 text-xs ${c.name === "AISkillScore" ? "text-blue-600 font-medium" : "text-gray-500"}`}>
+                      {c.name === "AISkillScore" ? "Nothing — 11 tools in one" : c.gap}
                     </td>
                   ))}
                 </tr>

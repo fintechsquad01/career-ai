@@ -23,6 +23,8 @@ interface AppState {
   // UI
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
+  sidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -49,4 +51,6 @@ export const useAppStore = create<AppState>((set) => ({
 
   mobileMenuOpen: false,
   setMobileMenuOpen: (mobileMenuOpen) => set({ mobileMenuOpen }),
+  sidebarCollapsed: false,
+  setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
 }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { HeroSection } from "./HeroSection";
 import { SmartInput } from "./SmartInput";
@@ -23,18 +23,51 @@ import {
   Map,
   DollarSign,
   Rocket,
-  Users,
   Star,
   Zap,
   ArrowRight,
   Sparkles,
   AlertCircle,
   RotateCcw,
+  ClipboardPaste,
+  Brain,
+  MousePointerClick,
 } from "lucide-react";
 import type { InputType } from "@/lib/detect-input";
 import type { ParseInputResult } from "@/types/landing";
 
 type LandingState = "default" | "analyzing" | "results";
+
+function StickyCtaBar() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 600);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-3 animate-in slide-in-from-bottom-2 duration-300 md:block hidden">
+      <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <p className="text-sm font-medium text-gray-700">
+          Ready to analyze? Paste your resume or job description.
+        </p>
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]"
+        >
+          Get Started — Free
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const RESUME_STEPS = [
   "Parsing resume text...",
@@ -120,7 +153,7 @@ export function LandingContent() {
 
     // Save JD for post-auth mission activation
     if (type === "jd" || type === "url") {
-      localStorage.setItem("careerai_pre_auth_jd", text);
+      localStorage.setItem("aiskillscore_pre_auth_jd", text);
     }
 
     setAnalysisType(type);
@@ -181,8 +214,9 @@ export function LandingContent() {
 
   return (
     <div className="min-h-screen">
+      {pageState === "default" && <StickyCtaBar />}
       {/* Hero + Smart Input / Loader / Results */}
-      <section className="px-4 pt-12 sm:pt-20 pb-16 bg-gradient-to-b from-white to-gray-50">
+      <section className="px-4 pt-16 sm:pt-24 pb-20 bg-gradient-to-b from-white to-[#F5F5F7]">
         <div className="max-w-4xl mx-auto space-y-10">
           <HeroSection />
 
@@ -196,7 +230,7 @@ export function LandingContent() {
 
           {pageState === "results" && analysisError && (
             <div className="max-w-xl mx-auto">
-              <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center space-y-4">
+              <div className="glass-card p-8 text-center space-y-4">
                 <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-6 h-6 text-amber-500" />
                 </div>
@@ -243,70 +277,73 @@ export function LandingContent() {
       {pageState === "default" && (
         <>
           {/* Social Proof */}
-          <section className="py-8 border-y border-gray-100 bg-white">
-            <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-blue-600" />
-                <span>
-                  <strong className="text-gray-900">12,400+</strong> careers
-                  analyzed
-                </span>
+          <section className="py-12 sm:py-16 bg-white">
+            <div className="gradient-divider mb-12 sm:mb-16" />
+            <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-start justify-center gap-12 sm:gap-20">
+              <div className="text-center">
+                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">12,400+</p>
+                <p className="text-sm text-gray-500 mt-1">Careers analyzed</p>
               </div>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-amber-500" />
-                <span>
-                  <strong className="text-gray-900">4.8/5</strong> rating
-                </span>
+              <div className="text-center">
+                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">4.8/5</p>
+                <p className="text-sm text-gray-500 mt-1">User rating</p>
               </div>
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-violet-600" />
-                <span>
-                  <strong className="text-gray-900">30 sec</strong> analysis
-                </span>
+              <div className="text-center">
+                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">30 sec</p>
+                <p className="text-sm text-gray-500 mt-1">Analysis time</p>
               </div>
             </div>
+            <div className="gradient-divider mt-12 sm:mt-16" />
           </section>
 
           {/* How It Works */}
-          <section className="py-16 px-4 bg-white">
+          <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
                 How it works
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                   {
-                    step: "1",
+                    icon: ClipboardPaste,
                     title: "Paste",
                     desc: "Drop in a job posting, URL, or your resume. We auto-detect the type.",
+                    color: "from-blue-50 to-blue-100/50",
+                    iconColor: "text-blue-600",
                   },
                   {
-                    step: "2",
+                    icon: Brain,
                     title: "Analyze",
                     desc: "AI evaluates in 30 seconds — fit score, ATS compatibility, gaps, and opportunities.",
+                    color: "from-violet-50 to-violet-100/50",
+                    iconColor: "text-violet-600",
                   },
                   {
-                    step: "3",
+                    icon: MousePointerClick,
                     title: "Act",
                     desc: "Get an action plan: optimize resume, prep for interviews, close skill gaps.",
+                    color: "from-emerald-50 to-emerald-100/50",
+                    iconColor: "text-emerald-600",
                   },
                   {
-                    step: "4",
+                    icon: DollarSign,
                     title: "Earn",
                     desc: "Discover freelance and consulting opportunities based on your strongest skills.",
+                    color: "from-amber-50 to-amber-100/50",
+                    iconColor: "text-amber-600",
                   },
                 ].map((s) => (
                   <div
-                    key={s.step}
-                    className="text-center p-6 rounded-2xl bg-gray-50 border border-gray-100"
+                    key={s.title}
+                    className="text-center p-6 sm:p-8 rounded-2xl bg-white/60 backdrop-blur-sm border border-gray-100/50 shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 text-white flex items-center justify-center text-sm font-bold mx-auto mb-4">
-                      {s.step}
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-5`}>
+                      <s.icon className={`w-7 h-7 ${s.iconColor}`} />
                     </div>
                     <h3 className="font-semibold text-gray-900 mb-2">
                       {s.title}
                     </h3>
-                    <p className="text-sm text-gray-500">{s.desc}</p>
+                    <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
               </div>
@@ -314,9 +351,9 @@ export function LandingContent() {
           </section>
 
           {/* Tools Preview */}
-          <section className="py-16 px-4 bg-gray-50">
+          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 11 AI tools. No subscriptions. Start free.
               </h2>
               <p className="text-gray-500 text-center mb-10">
@@ -329,10 +366,12 @@ export function LandingContent() {
                   return (
                     <div
                       key={tool.id}
-                      className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                      className="glass-card p-4 hover:shadow-lg transition-all duration-200"
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <Icon className="w-5 h-5 text-blue-600" />
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                          <Icon className="w-4.5 h-4.5 text-blue-600" />
+                        </div>
                         <span
                           className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                             tool.tokens === 0
@@ -357,7 +396,7 @@ export function LandingContent() {
           </section>
 
           {/* Track B: Entrepreneurship Promotion */}
-          <section className="py-16 px-4 bg-gradient-to-br from-violet-50 to-purple-50">
+          <section className="py-20 sm:py-28 px-4 bg-gradient-to-br from-violet-50 to-purple-50">
             <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div>
@@ -369,7 +408,7 @@ export function LandingContent() {
                     Earn while you search.
                   </h2>
                   <p className="text-gray-600 mb-6">
-                    Every CareerAI tool surfaces freelance and consulting
+                    Every AISkillScore tool surfaces freelance and consulting
                     opportunities based on your skills. The Entrepreneurship
                     Assessment identifies the business you could build with
                     what you already know — starting this week.
@@ -419,9 +458,9 @@ export function LandingContent() {
           </section>
 
           {/* Testimonials */}
-          <section className="py-16 px-4 bg-white">
+          <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
                 What users say
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -442,12 +481,12 @@ export function LandingContent() {
                     name: "Marcus Johnson",
                     title: "Marketing Manager, London",
                     quote:
-                      "Jobscan gave me a 94% score and I still got rejected. CareerAI told me my formatting was wrong — something Jobscan never flagged. Fixed it, got the interview.",
+                      "Jobscan gave me a 94% score and I still got rejected. AISkillScore told me my formatting was wrong — something Jobscan never flagged. Fixed it, got the interview.",
                   },
                 ].map((t) => (
                   <div
                     key={t.name}
-                    className="bg-gray-50 rounded-2xl border border-gray-100 p-6"
+                    className="glass-card p-6"
                   >
                     <div className="flex items-center gap-1 mb-3">
                       {[...Array(5)].map((_, i) => (
@@ -473,9 +512,9 @@ export function LandingContent() {
           </section>
 
           {/* Pricing Preview */}
-          <section className="py-16 px-4 bg-gray-50">
+          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 Pay per use. No subscriptions.
               </h2>
               <p className="text-gray-500 text-center mb-10">
@@ -524,7 +563,7 @@ export function LandingContent() {
           </section>
 
           {/* Email Capture */}
-          <section className="py-16 px-4 bg-white">
+          <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-xl mx-auto text-center">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
                 Get career tips in your inbox
@@ -538,7 +577,7 @@ export function LandingContent() {
           </section>
 
           {/* Final CTA */}
-          <section className="py-16 px-4 bg-gray-50">
+          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                 Your career is worth 30 seconds.
@@ -558,7 +597,7 @@ export function LandingContent() {
           </section>
 
           {/* FAQ */}
-          <section className="py-16 px-4 bg-gray-50">
+          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
                 Frequently asked questions
@@ -574,7 +613,7 @@ export function LandingContent() {
                 <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
                   <Sparkles className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-bold text-gray-900">CareerAI</span>
+                <span className="font-bold text-gray-900">AISkillScore</span>
               </div>
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <Link href="/pricing" className="hover:text-gray-900">
@@ -588,7 +627,7 @@ export function LandingContent() {
                 </Link>
               </div>
               <p className="text-xs text-gray-400">
-                © {new Date().getFullYear()} CareerAI. All rights reserved.
+                © {new Date().getFullYear()} AISkillScore. All rights reserved.
               </p>
             </div>
           </footer>

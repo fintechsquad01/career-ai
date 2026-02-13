@@ -5,20 +5,20 @@
  * Templates: Welcome, Daily Credit Reminder, Results Email
  *
  * FROM ADDRESS & DOMAIN VERIFICATION:
- * - Production: "CareerAI <noreply@careerai.com>" — requires verified domain in Resend.
+ * - Production: "AISkillScore <noreply@aiskillscore.com>" — requires verified domain in Resend.
  * - Development: "Acme <onboarding@resend.dev>" — Resend's shared testing domain (no verification needed,
  *   but emails can only be sent to the email address associated with your Resend account).
  *
  * To verify your production domain:
- *   1. Go to https://resend.com/domains → Add "careerai.com"
+ *   1. Go to https://resend.com/domains → Add "aiskillscore.com"
  *   2. Add the DNS records Resend provides: SPF (TXT), DKIM (TXT), optional DMARC (TXT)
  *   3. Wait for verification (typically < 1 hour)
  *   4. Until verified, production emails will fail or land in spam.
  */
 
 const FROM_ADDRESS = process.env.NODE_ENV === "production"
-  ? "CareerAI <noreply@careerai.com>"
-  : "CareerAI Dev <onboarding@resend.dev>";
+  ? "AISkillScore <noreply@aiskillscore.com>"
+  : "AISkillScore Dev <onboarding@resend.dev>";
 
 interface SendEmailOptions {
   to: string;
@@ -66,7 +66,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
 // ---------------------------------------------------------------------------
 
 function emailWrapper(body: string): string {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -76,7 +76,7 @@ function emailWrapper(body: string): string {
   <!-- Header -->
   <div style="text-align:center;margin-bottom:32px;">
     <div style="display:inline-block;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);text-align:center;line-height:36px;color:white;font-weight:800;font-size:16px;">C</div>
-    <span style="font-weight:700;font-size:18px;color:#111827;vertical-align:middle;margin-left:8px;">CareerAI</span>
+    <span style="font-weight:700;font-size:18px;color:#111827;vertical-align:middle;margin-left:8px;">AISkillScore</span>
   </div>
 
   <!-- Body -->
@@ -87,7 +87,7 @@ function emailWrapper(body: string): string {
   <!-- Footer -->
   <div style="text-align:center;">
     <p style="color:#9ca3af;font-size:11px;line-height:1.5;margin:0;">
-      You received this because you signed up at <a href="${appUrl}" style="color:#6b7280;">careerai.com</a>.<br>
+      You received this because you signed up at <a href="${appUrl}" style="color:#6b7280;">aiskillscore.com</a>.<br>
       <a href="${appUrl}/settings" style="color:#6b7280;">Manage email preferences</a> · <a href="${appUrl}/settings" style="color:#6b7280;">Unsubscribe</a>
     </p>
   </div>
@@ -105,12 +105,12 @@ function ctaButton(text: string, href: string): string {
 // ---------------------------------------------------------------------------
 
 export async function sendWelcomeEmail(email: string, name: string): Promise<boolean> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
   const firstName = name.split(" ")[0] || "there";
 
   return sendEmail({
     to: email,
-    subject: "Welcome to CareerAI — your 5 free tokens are ready",
+    subject: "Welcome to AISkillScore — your 5 free tokens are ready",
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Hey ${firstName}, welcome aboard!</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
@@ -125,7 +125,7 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<boo
         <li><strong>Resume Optimizer</strong> — ATS + recruiter-optimized, voice preserved (10 tokens)</li>
       </ul>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 4px;">
-        Unlike other tools, CareerAI preserves your authentic voice — no "spearheaded" or "leveraged" here.
+        Unlike other tools, AISkillScore preserves your authentic voice — no "spearheaded" or "leveraged" here.
       </p>
       <div style="text-align:center;">
         ${ctaButton("Go to Dashboard", `${appUrl}/dashboard`)}
@@ -139,7 +139,7 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<boo
 // ---------------------------------------------------------------------------
 
 export async function sendDailyCreditReminder(email: string, name: string, daysMissed: number): Promise<boolean> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
   const firstName = name.split(" ")[0] || "there";
   const missedTokens = daysMissed * 2;
 
@@ -170,16 +170,16 @@ export async function sendDailyCreditReminder(email: string, name: string, daysM
 // ---------------------------------------------------------------------------
 
 export async function sendResultsEmail(email: string, context: string): Promise<boolean> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
   const contextLabel = context === "resume_xray" ? "Resume X-Ray" : context === "jd_match" ? "Job Match" : "Career Analysis";
 
   return sendEmail({
     to: email,
-    subject: `Your CareerAI ${contextLabel} Results`,
+    subject: `Your AISkillScore ${contextLabel} Results`,
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your ${contextLabel} Results</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Thanks for trying CareerAI! Your ${contextLabel.toLowerCase()} results are ready.
+        Thanks for trying AISkillScore! Your ${contextLabel.toLowerCase()} results are ready.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
         Create a free account to unlock all 11 AI career tools, save your results, and start your Job Mission. You'll get <strong>5 free tokens</strong> plus <strong>2 daily credits</strong>.

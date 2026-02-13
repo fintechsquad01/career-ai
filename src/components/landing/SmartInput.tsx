@@ -59,7 +59,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
   return (
     <div className="w-full max-w-xl mx-auto">
       <div
-        className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
+        className="glass-card overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-lg transition-shadow duration-300"
         onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-blue-400"); }}
         onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove("ring-2", "ring-blue-400"); }}
         onDrop={(e) => {
@@ -159,14 +159,10 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
       </div>
 
       {/* Supported platforms + privacy */}
-      <div className="mt-4 text-center space-y-2">
-        <div className="flex flex-wrap justify-center gap-2">
-          {["LinkedIn", "Greenhouse", "Lever", "Indeed", "Workday"].map((p) => (
-            <span key={p} className="px-2 py-1 bg-white border border-gray-200 rounded-md text-[10px] text-gray-400 font-medium">
-              {p}
-            </span>
-          ))}
-        </div>
+      <div className="mt-5 text-center space-y-2">
+        <p className="text-xs text-gray-400 font-medium">
+          Works with LinkedIn · Greenhouse · Lever · Indeed · Workday
+        </p>
         <p className="text-xs text-gray-400">Encrypted · Never stored permanently · Your data, your control</p>
       </div>
     </div>

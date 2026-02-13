@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
 
 export const metadata: Metadata = {
-  title: "Dashboard — CareerAI",
-  description: "Your career intelligence hub.",
+  title: "Dashboard — AISkillScore",
+  description: "Your career intelligence hub. View token balance, recent analyses, and access all 11 AI career tools.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

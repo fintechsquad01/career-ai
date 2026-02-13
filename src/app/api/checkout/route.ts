@@ -7,7 +7,15 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) {
+      console.error("STRIPE_SECRET_KEY is not configured");
+      return NextResponse.json(
+        { error: "Payment service not configured" },
+        { status: 503 }
+      );
+    }
+    const stripe = new Stripe(stripeKey);
 
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();

@@ -42,7 +42,7 @@ export function MissionContent() {
   } = useMission();
 
   useEffect(() => {
-    const preAuthJd = localStorage.getItem("careerai_pre_auth_jd");
+    const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
     if (preAuthJd && !activeJobTarget) {
       setCreatingFromPreAuth(true);
       const createTarget = async () => {
@@ -80,7 +80,7 @@ export function MissionContent() {
             mission_actions: {},
           });
 
-          localStorage.removeItem("careerai_pre_auth_jd");
+          localStorage.removeItem("aiskillscore_pre_auth_jd");
           window.location.reload();
         } catch (error) {
           console.error("Failed to create job target from pre-auth JD:", error);
@@ -180,7 +180,7 @@ export function MissionContent() {
 
       {/* Skill Matrix */}
       {requirements.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="glass-card p-6 sm:p-8">
           <h3 className="font-semibold text-gray-900 mb-4">Requirements Match</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {requirements.map((req, i) => (
@@ -237,7 +237,10 @@ export function MissionContent() {
                       {action.priority}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">{action.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {action.description}
+                    <span className="text-xs text-gray-400 ml-1">· ~30 sec</span>
+                  </p>
                 </div>
 
                 {state === "available" && (
@@ -302,15 +305,49 @@ export function MissionContent() {
 
       {/* Mission Complete */}
       {completed === 5 && (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-            <Trophy className="w-8 h-8 text-green-600" />
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 text-center space-y-4 relative overflow-hidden">
+          {/* CSS confetti effect */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 rounded-full animate-bounce"
+                style={{
+                  left: `${5 + (i * 4.5)}%`,
+                  top: `${-10 + (i % 3) * 5}%`,
+                  backgroundColor: ["#3B82F6", "#8B5CF6", "#10B981", "#F59E0B", "#EF4444"][i % 5],
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: `${1.5 + (i % 3) * 0.5}s`,
+                  opacity: 0.7,
+                }}
+              />
+            ))}
           </div>
-          <h2 className="text-xl font-bold text-gray-900">Mission Complete!</h2>
+          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto animate-in zoom-in duration-500">
+            <Trophy className="w-10 h-10 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900">Mission Complete!</h2>
           <p className="text-sm text-gray-600 max-w-md mx-auto">
             You have completed all steps for <strong>{activeJobTarget?.title}</strong> at <strong>{activeJobTarget?.company}</strong>.
             You are now fully prepared to apply.
           </p>
+          {/* Before/After summary */}
+          {activeJobTarget.fit_score && (
+            <div className="flex justify-center gap-6 pt-2">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Readiness</p>
+                <p className="text-2xl font-bold text-green-600">100%</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Fit Score</p>
+                <p className="text-2xl font-bold text-blue-600">{activeJobTarget.fit_score}%</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">Actions</p>
+                <p className="text-2xl font-bold text-violet-600">{completed}/{total}</p>
+              </div>
+            </div>
+          )}
           <div className="flex flex-wrap gap-3 justify-center pt-2">
             <a
               href={activeJobTarget?.job_url || "#"}

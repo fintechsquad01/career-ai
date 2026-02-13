@@ -10,7 +10,7 @@ export default function NotFound() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
             <Brain className="w-6 h-6 text-white" />
           </div>
-          <span className="font-bold text-2xl text-gray-900">CareerAI</span>
+          <span className="font-bold text-2xl text-gray-900">AISkillScore</span>
         </div>
 
         {/* Message */}
@@ -40,7 +40,7 @@ export default function NotFound() {
         </div>
 
         <p className="text-xs text-gray-400">
-          Need help? Contact us at support@careerai.com
+          Need help? Contact us at support@aiskillscore.com
         </p>
       </div>
     </div>

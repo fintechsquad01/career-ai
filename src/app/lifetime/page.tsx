@@ -7,6 +7,45 @@ import { FAQ } from "@/components/shared/FAQ";
 import { TOOLS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
+function CountdownTimer() {
+  // Countdown to end of month for urgency
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+      const diff = endOfMonth.getTime() - now.getTime();
+      return {
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+      };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="mt-3 flex items-center justify-center gap-3">
+      <span className="text-xs font-medium text-gray-500">Early bird pricing ends in:</span>
+      <div className="flex items-center gap-1.5">
+        {[
+          { value: timeLeft.days, label: "d" },
+          { value: timeLeft.hours, label: "h" },
+          { value: timeLeft.minutes, label: "m" },
+        ].map((unit) => (
+          <span key={unit.label} className="inline-flex items-center gap-0.5 px-2 py-1 bg-gray-900 text-white text-xs font-mono font-bold rounded">
+            {String(unit.value).padStart(2, "0")}{unit.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const LIFETIME_FAQ = [
   { q: "What happens after I buy?", a: "You immediately receive 100 tokens. Every 30 days, another 100 tokens are added automatically. Unused tokens cap at 300." },
   { q: "Is this really one-time?", a: "Yes. One payment of $49, tokens forever. No hidden fees, no recurring charges." },
@@ -61,7 +100,7 @@ export default function LifetimePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F5F5F7]">
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-8">
           <ArrowLeft className="w-4 h-4" /> Pricing
@@ -72,7 +111,7 @@ export default function LifetimePage() {
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-violet-50 border border-violet-100 rounded-full text-sm font-medium text-violet-700 mb-4">
             <Gem className="w-4 h-4" /> Early Bird Lifetime Deal
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
             100 tokens/month. Forever.
           </h1>
           <p className="text-lg text-gray-500">
@@ -88,6 +127,9 @@ export default function LifetimePage() {
                 : "Loading spots…"}
             </span>
           </div>
+
+          {/* Countdown timer */}
+          <CountdownTimer />
         </div>
 
         {/* Price comparison */}
@@ -107,7 +149,7 @@ export default function LifetimePage() {
         </div>
 
         {/* ROI */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-10">
+        <div className="glass-card p-6 sm:p-8 mb-10">
           <h3 className="font-semibold text-gray-900 mb-4">ROI Calculator</h3>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
@@ -137,7 +179,7 @@ export default function LifetimePage() {
         </div>
 
         {/* What 100 tokens covers */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-10">
+        <div className="glass-card p-6 sm:p-8 mb-10">
           <h3 className="font-semibold text-gray-900 mb-4">What 100 tokens covers monthly</h3>
           <div className="grid grid-cols-2 gap-3">
             {[

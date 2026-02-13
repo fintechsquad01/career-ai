@@ -11,7 +11,7 @@ interface ReferralContentProps {
 
 export function ReferralContent({ profile, referralTransactions = [] }: ReferralContentProps) {
   const [copied, setCopied] = useState(false);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
   const referralLink = `${appUrl}?ref=${profile?.referral_code || ""}`;
 
   const totalEarned = referralTransactions.reduce((sum, tx) => sum + Math.max(0, tx.amount), 0);
@@ -73,7 +73,7 @@ export function ReferralContent({ profile, referralTransactions = [] }: Referral
       {/* Share buttons */}
       <div className="flex gap-3">
         <a
-          href={`https://twitter.com/intent/tweet?text=Check out CareerAI - AI-powered career tools&url=${encodeURIComponent(referralLink)}`}
+          href={`https://twitter.com/intent/tweet?text=Check out AISkillScore - AI-powered career tools&url=${encodeURIComponent(referralLink)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px]"

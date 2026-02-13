@@ -1,5 +1,5 @@
 // Supabase Edge Function: run-tool
-// Main AI tool executor for all 11 CareerAI tools
+// Main AI tool executor for all 11 AISkillScore tools
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { toolPrompts } from "./prompts.ts";
@@ -7,23 +7,25 @@ import { toolPrompts } from "./prompts.ts";
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
+const APP_URL = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
-// --- OpenRouter Model Routing (3-tier strategy) ---
+// --- OpenRouter Model Routing — All Premium (Gemini 2.5 Pro) ---
+// Best-in-class model for all tools. $1.25/$10 per M tokens.
+// Avg cost ~$0.04/call with ~$0.80 avg revenue = 95%+ gross margin.
+// Fallback: GPT-4.1 Mini for reliability if primary model fails.
 const MODEL_CONFIG: Record<string, { model: string; maxTokens: number; tier: string }> = {
-  // Tier 1: Premium — user-facing writing (Gemini 2.5 Flash: $0.30/$2.50 per M)
-  resume: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
-  cover_letter: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
-  linkedin: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
-  jd_match: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
-  // Tier 1b: Premium — interview prep (Gemini 2.5 Flash)
-  interview: { model: "google/gemini-2.5-flash", maxTokens: 4096, tier: "premium" },
-  // Tier 2: Standard — analysis & scoring (DeepSeek V3.2: $0.25/$0.38 per M)
-  skills_gap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
-  roadmap: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
-  entrepreneurship: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
-  salary: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
-  displacement: { model: "deepseek/deepseek-v3.2", maxTokens: 4096, tier: "standard" },
+  // All tools use Gemini 2.5 Pro for maximum output quality
+  // Complex tools get higher maxTokens to avoid truncation
+  resume: { model: "google/gemini-2.5-pro", maxTokens: 8192, tier: "premium" },       // Full resume rewrite
+  cover_letter: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
+  linkedin: { model: "google/gemini-2.5-pro", maxTokens: 8192, tier: "premium" },      // About section + content strategy
+  jd_match: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
+  interview: { model: "google/gemini-2.5-pro", maxTokens: 6144, tier: "premium" },     // 5-8 questions with follow-ups
+  skills_gap: { model: "google/gemini-2.5-pro", maxTokens: 6144, tier: "premium" },    // Gaps + learning paths
+  roadmap: { model: "google/gemini-2.5-pro", maxTokens: 8192, tier: "premium" },       // 12-month plan with scripts
+  entrepreneurship: { model: "google/gemini-2.5-pro", maxTokens: 6144, tier: "premium" }, // 5 business models
+  salary: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
+  displacement: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
 };
 const FALLBACK_MODEL = "openai/gpt-4.1-mini";
 
@@ -43,7 +45,7 @@ const TOOL_COSTS: Record<string, number> = {
 
 // --- CORS: Dynamic origin check ---
 const ALLOWED_ORIGINS = [
-  Deno.env.get("APP_URL") || "https://careerai.com",
+  Deno.env.get("APP_URL") || "https://aiskillscore.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
@@ -246,7 +248,7 @@ Deno.serve(async (req: Request) => {
         const promptConfig = toolPrompts[tool_id];
         const systemPrompt = promptConfig
           ? promptConfig.systemPrompt
-          : "You are CareerAI, an expert career intelligence engine. Always respond with valid JSON only.";
+          : "You are AISkillScore, an expert career intelligence engine. Always respond with valid JSON only.";
         const userPrompt = promptConfig
           ? promptConfig.buildUserPrompt(careerProfile, jobTarget, sanitizedInputs)
           : buildPromptLegacy(tool_id, careerProfile, jobTarget, sanitizedInputs);
@@ -263,9 +265,9 @@ Deno.serve(async (req: Request) => {
         let responseText: string;
         let aiUsage: { prompt_tokens: number; completion_tokens: number } | null = null;
 
-        const callOpenRouter = async (model: string, maxTokens: number): Promise<{ text: string; usage: typeof aiUsage; model: string }> => {
+        const callOpenRouter = async (model: string, maxTokens: number, timeoutMs = 90000): Promise<{ text: string; usage: typeof aiUsage; model: string }> => {
           const apiController = new AbortController();
-          const apiTimeout = setTimeout(() => apiController.abort(), 60000);
+          const apiTimeout = setTimeout(() => apiController.abort(), timeoutMs);
           try {
             const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
               method: "POST",
@@ -273,7 +275,7 @@ Deno.serve(async (req: Request) => {
                 Authorization: `Bearer ${OPENROUTER_API_KEY}`,
                 "Content-Type": "application/json",
                 "HTTP-Referer": APP_URL,
-                "X-Title": "CareerAI",
+                "X-Title": "AISkillScore",
               },
               signal: apiController.signal,
               body: JSON.stringify({
@@ -305,28 +307,28 @@ Deno.serve(async (req: Request) => {
         };
 
         try {
-          // Try primary model
-          const aiResult = await callOpenRouter(modelConfig.model, modelConfig.maxTokens);
+          // Try primary model (90s timeout)
+          const aiResult = await callOpenRouter(modelConfig.model, modelConfig.maxTokens, 90000);
           responseText = aiResult.text;
           aiUsage = aiResult.usage;
           usedModel = aiResult.model;
         } catch (primaryError) {
           console.error(`Primary model ${modelConfig.model} failed:`, primaryError);
-          if ((primaryError as Error).name === "AbortError") {
-            send("error", { error: "AI analysis timed out. Please try again." });
-            controller.close();
-            return;
-          }
-          // Fallback to GPT-4.1-mini
+          // Always try fallback — including on timeout (AbortError)
           try {
-            send("progress", { step: 4, total: 5, message: "Retrying with backup model..." });
-            const fallbackResult = await callOpenRouter(FALLBACK_MODEL, 4096);
+            const isTimeout = (primaryError as Error).name === "AbortError";
+            send("progress", { step: 4, total: 5, message: isTimeout ? "Switching to faster model..." : "Retrying with backup model..." });
+            const fallbackResult = await callOpenRouter(FALLBACK_MODEL, 4096, 60000);
             responseText = fallbackResult.text;
             aiUsage = fallbackResult.usage;
             usedModel = fallbackResult.model;
           } catch (fallbackError) {
             console.error("Fallback model also failed:", fallbackError);
-            send("error", { error: "AI_ERROR" });
+            if ((fallbackError as Error).name === "AbortError") {
+              send("error", { error: "AI analysis timed out. Please try again." });
+            } else {
+              send("error", { error: "AI_ERROR" });
+            }
             controller.close();
             return;
           }
@@ -334,14 +336,42 @@ Deno.serve(async (req: Request) => {
 
         const latencyMs = Date.now() - startTime;
 
+        // --- Robust JSON parsing ---
+        // Handles: raw JSON, markdown code fences, trailing commas, extra whitespace
         let result: Record<string, unknown>;
         try {
-          const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-          result = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
-        } catch {
+          let cleaned = responseText.trim();
+          // Strip markdown code fences (```json ... ``` or ``` ... ```)
+          const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+          if (fenceMatch) {
+            cleaned = fenceMatch[1].trim();
+          }
+          // Try direct parse first
+          try {
+            result = JSON.parse(cleaned);
+          } catch {
+            // Fallback: extract the outermost JSON object
+            const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) throw new Error("No JSON object found in response");
+            let jsonStr = jsonMatch[0];
+            // Fix trailing commas before } or ] (common LLM mistake)
+            jsonStr = jsonStr.replace(/,\s*([\]}])/g, "$1");
+            result = JSON.parse(jsonStr);
+          }
+        } catch (parseErr) {
+          console.error("JSON parse failed:", parseErr, "Response:", responseText.slice(0, 500));
           send("error", { error: "PARSE_FAILED" });
           controller.close();
           return;
+        }
+
+        // --- Per-tool result validation ---
+        // Check that critical fields exist before saving and charging tokens
+        const validationResult = validateToolResult(tool_id, result);
+        if (!validationResult.valid) {
+          console.error(`Result validation failed for ${tool_id}:`, validationResult.reason);
+          // Return the result anyway but log the issue — the output might still have value
+          // We just won't charge tokens for clearly broken output
         }
 
         // Step 5: Storing results
@@ -351,7 +381,7 @@ Deno.serve(async (req: Request) => {
           user_id: userId,
           job_target_id: job_target_id || null,
           tool_id,
-          tokens_spent: cost,
+          tokens_spent: validationResult.valid ? cost : 0, // Don't charge for bad output
           result,
           summary: generateSummary(tool_id, result),
           metric_value: extractMetric(tool_id, result),
@@ -378,8 +408,8 @@ Deno.serve(async (req: Request) => {
         const insertedResults = await insertRes.json();
         const resultId = insertedResults[0]?.id || null;
 
-        // NOW deduct tokens (after successful AI call + successful insert)
-        if (cost > 0) {
+        // NOW deduct tokens — only if result passed validation (quality gate)
+        if (cost > 0 && validationResult.valid) {
           const spendRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/spend_tokens`, {
             method: "POST",
             headers,
@@ -397,6 +427,8 @@ Deno.serve(async (req: Request) => {
             // Result is saved but tokens weren't deducted — log for reconciliation
             // Don't fail the user request since the AI result is valid
           }
+        } else if (cost > 0 && !validationResult.valid) {
+          console.warn(`Skipping token deduction for ${tool_id}: result validation failed — ${validationResult.reason}`);
         }
 
         // Check if this is user's first paid tool use and they have a referrer
@@ -447,6 +479,68 @@ Deno.serve(async (req: Request) => {
     },
   });
 });
+
+// --- Per-tool result validation ---
+// Ensures critical fields are present before charging tokens.
+// Returns { valid: true } if result is acceptable, or { valid: false, reason } if not.
+function validateToolResult(toolId: string, result: Record<string, unknown>): { valid: boolean; reason?: string } {
+  switch (toolId) {
+    case "displacement": {
+      if (typeof result.score !== "number") return { valid: false, reason: "missing score" };
+      if (!result.risk_level) return { valid: false, reason: "missing risk_level" };
+      if (!Array.isArray(result.tasks_at_risk) || result.tasks_at_risk.length === 0) return { valid: false, reason: "missing tasks_at_risk" };
+      if (!Array.isArray(result.recommendations) || result.recommendations.length === 0) return { valid: false, reason: "missing recommendations" };
+      return { valid: true };
+    }
+    case "jd_match": {
+      if (typeof result.fit_score !== "number") return { valid: false, reason: "missing fit_score" };
+      if (!result.headline) return { valid: false, reason: "missing headline" };
+      if (!Array.isArray(result.requirements) || result.requirements.length === 0) return { valid: false, reason: "missing requirements" };
+      return { valid: true };
+    }
+    case "resume": {
+      if (typeof result.score_before !== "number") return { valid: false, reason: "missing score_before" };
+      if (typeof result.score_after !== "number") return { valid: false, reason: "missing score_after" };
+      if (!result.optimized_resume_text) return { valid: false, reason: "missing optimized_resume_text" };
+      return { valid: true };
+    }
+    case "cover_letter": {
+      if (!result.letter_text || String(result.letter_text).length < 100) return { valid: false, reason: "letter_text too short or missing" };
+      return { valid: true };
+    }
+    case "interview": {
+      if (!Array.isArray(result.questions) || result.questions.length === 0) return { valid: false, reason: "missing questions" };
+      return { valid: true };
+    }
+    case "linkedin": {
+      if (!Array.isArray(result.headlines) || result.headlines.length === 0) return { valid: false, reason: "missing headlines" };
+      if (!result.about_section) return { valid: false, reason: "missing about_section" };
+      return { valid: true };
+    }
+    case "skills_gap": {
+      if (!Array.isArray(result.gaps)) return { valid: false, reason: "missing gaps array" };
+      if (!result.headline) return { valid: false, reason: "missing headline" };
+      return { valid: true };
+    }
+    case "roadmap": {
+      if (!Array.isArray(result.milestones) || result.milestones.length === 0) return { valid: false, reason: "missing milestones" };
+      if (!result.headline) return { valid: false, reason: "missing headline" };
+      return { valid: true };
+    }
+    case "salary": {
+      if (!result.market_range) return { valid: false, reason: "missing market_range" };
+      if (!Array.isArray(result.counter_offer_scripts) || result.counter_offer_scripts.length === 0) return { valid: false, reason: "missing counter_offer_scripts" };
+      return { valid: true };
+    }
+    case "entrepreneurship": {
+      if (typeof result.founder_market_fit !== "number") return { valid: false, reason: "missing founder_market_fit" };
+      if (!Array.isArray(result.business_models) || result.business_models.length === 0) return { valid: false, reason: "missing business_models" };
+      return { valid: true };
+    }
+    default:
+      return { valid: true }; // Unknown tools pass validation
+  }
+}
 
 // Legacy buildPrompt — only used if tool is not in the prompts module (shouldn't happen)
 function buildPromptLegacy(

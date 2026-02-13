@@ -22,10 +22,10 @@ export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
   const completeness = calculateCompleteness(profile, careerProfile);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+    <div className="glass-card p-6 sm:p-8">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0 ring-4 ring-white shadow-lg">
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
           ) : (
@@ -61,12 +61,12 @@ export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-medium text-gray-500">Profile {completeness}% complete</span>
           <span className="text-xs text-gray-400">
-            {completeness < 100 ? "Upload resume to continue" : "Ready to go!"}
+            {completeness < 100 ? "Add resume to unlock more" : "All set"}
           </span>
         </div>
-        <div className="w-full bg-gray-100 rounded-full h-2">
+        <div className="w-full bg-gray-100 rounded-full h-2.5">
           <div
-            className="bg-gradient-to-r from-blue-600 to-violet-600 h-2 rounded-full transition-all duration-700"
+            className="bg-gradient-to-r from-blue-600 to-violet-600 h-2.5 rounded-full transition-all duration-700"
             style={{ width: `${completeness}%` }}
           />
         </div>

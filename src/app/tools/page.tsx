@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { ToolsGrid } from "@/components/dashboard/ToolsGrid";
 
 export const metadata: Metadata = {
-  title: "AI Career Tools — CareerAI",
-  description: "11 AI tools to analyze, build, prepare, and grow your career.",
+  title: "AI Career Tools — AISkillScore",
+  description: "11 AI-powered career tools. Resume optimizer, JD match score, interview prep, skills gap analysis, salary negotiation, and more.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

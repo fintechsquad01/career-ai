@@ -3,11 +3,11 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
+const APP_URL = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
 // --- CORS: Dynamic origin check ---
 const ALLOWED_ORIGINS = [
-  Deno.env.get("APP_URL") || "https://careerai.com",
+  Deno.env.get("APP_URL") || "https://aiskillscore.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
@@ -105,12 +105,12 @@ Deno.serve(async (req: Request) => {
       try {
         const isResultsContext = context === "resume_xray" || context === "jd_match";
         const subject = isResultsContext
-          ? "Your CareerAI Analysis Results"
-          : "Welcome to CareerAI — Free AI Career Tools";
+          ? "Your AISkillScore Analysis Results"
+          : "Welcome to AISkillScore — Free AI Career Tools";
         const body = isResultsContext
           ? `<h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your results are ready</h1>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-               Thanks for trying CareerAI! Create a free account to save your results, unlock all 11 AI career tools, and start your Job Mission.
+               Thanks for trying AISkillScore! Create a free account to save your results, unlock all 11 AI career tools, and start your Job Mission.
              </p>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
                You'll get <strong>5 free tokens</strong> plus <strong>2 daily credits</strong> — enough for a free JD Match scan every day.
@@ -118,9 +118,9 @@ Deno.serve(async (req: Request) => {
              <div style="text-align:center;margin-top:20px;">
                <a href="${APP_URL}/auth" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right,#2563eb,#7c3aed);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:14px;">Create Account — 5 Free Tokens</a>
              </div>`
-          : `<h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Welcome to CareerAI</h1>
+          : `<h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Welcome to AISkillScore</h1>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-               Thanks for your interest! CareerAI gives you 11 AI-powered career tools — from resume optimization to salary negotiation — all pay-per-use with no subscriptions.
+               Thanks for your interest! AISkillScore gives you 11 AI-powered career tools — from resume optimization to salary negotiation — all pay-per-use with no subscriptions.
              </p>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
                <strong>Most popular tools:</strong>
@@ -141,7 +141,7 @@ Deno.serve(async (req: Request) => {
 <div style="max-width:520px;margin:0 auto;padding:40px 24px;">
   <div style="text-align:center;margin-bottom:32px;">
     <div style="display:inline-block;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);text-align:center;line-height:36px;color:white;font-weight:800;font-size:16px;">C</div>
-    <span style="font-weight:700;font-size:18px;color:#111827;vertical-align:middle;margin-left:8px;">CareerAI</span>
+    <span style="font-weight:700;font-size:18px;color:#111827;vertical-align:middle;margin-left:8px;">AISkillScore</span>
   </div>
   <div style="background:white;border-radius:16px;border:1px solid #e5e7eb;padding:32px;margin-bottom:32px;">
     ${body}
@@ -162,7 +162,7 @@ Deno.serve(async (req: Request) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "CareerAI <noreply@careerai.com>",
+            from: "AISkillScore <noreply@aiskillscore.com>",
             to: email,
             subject,
             html: emailHtml,

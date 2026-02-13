@@ -5,8 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { SettingsContent } from "@/components/settings/SettingsContent";
 
 export const metadata: Metadata = {
-  title: "Settings — CareerAI",
-  description: "Manage your profile, account, and privacy.",
+  title: "Settings — AISkillScore",
+  description: "Manage your profile, career data, account settings, and privacy preferences.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";

@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // --- CORS: Dynamic origin check ---
 const ALLOWED_ORIGINS = [
-  Deno.env.get("APP_URL") || "https://careerai.com",
+  Deno.env.get("APP_URL") || "https://aiskillscore.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
@@ -173,13 +173,18 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
+    // Use SERVICE_ROLE_KEY for server-side operations (storage uploads, DB writes)
+    // Auth is verified via the user's JWT token separately
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    // First, authenticate the user using their JWT
+    const authClient = createClient(supabaseUrl, serviceRoleKey);
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await authClient.auth.getUser(token);
+
+    // Create a service role client for all subsequent operations
+    const supabaseClient = createClient(supabaseUrl, serviceRoleKey);
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -278,8 +283,8 @@ Deno.serve(async (req: Request) => {
         headers: {
           Authorization: `Bearer ${openrouterKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": Deno.env.get("APP_URL") || "https://careerai.com",
-          "X-Title": "CareerAI Headshots",
+          "HTTP-Referer": Deno.env.get("APP_URL") || "https://aiskillscore.com",
+          "X-Title": "AISkillScore Headshots",
         },
         signal: controller.signal,
         body: JSON.stringify({

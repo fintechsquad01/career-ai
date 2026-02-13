@@ -187,7 +187,7 @@ export async function GET(request: NextRequest) {
               fontSize: 16,
             }}
           >
-            → careerai.com
+            → aiskillscore.com
           </p>
         </div>
       </div>

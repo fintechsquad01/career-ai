@@ -3,13 +3,13 @@
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Brain, Loader2 } from "lucide-react";
+import { Brain, Loader2, Mail, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function AuthPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
       </div>
     }>
@@ -25,6 +25,9 @@ function AuthContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref");
@@ -42,7 +45,7 @@ function AuthContent() {
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref) {
-      localStorage.setItem("careerai_referral_code", ref);
+      localStorage.setItem("aiskillscore_referral_code", ref);
     }
   }, [searchParams]);
 
@@ -58,6 +61,35 @@ function AuthContent() {
     setLoading(false);
   };
 
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      setError("Please enter your email.");
+      return;
+    }
+    setError("");
+    setMagicLinkLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: fullName ? { full_name: fullName } : undefined,
+        },
+      });
+      if (error) throw error;
+      if (refCode) {
+        localStorage.setItem("aiskillscore_referral_code", refCode);
+      }
+      setMagicLinkSent(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to send magic link");
+    } finally {
+      setMagicLinkLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -65,21 +97,26 @@ function AuthContent() {
 
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { full_name: fullName } },
         });
         if (error) throw error;
-        if (refCode) {
-          localStorage.setItem("careerai_referral_code", refCode);
+
+        // If no session returned (user already exists — Supabase anti-enumeration),
+        // fall back to sign-in with password
+        if (!data.session) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (signInError) throw signInError;
         }
-        // Fire-and-forget: trigger welcome email via API route
-        fetch("/api/send-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "welcome" }),
-        }).catch(() => {});
+
+        if (refCode) {
+          localStorage.setItem("aiskillscore_referral_code", refCode);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -88,8 +125,7 @@ function AuthContent() {
         if (error) throw error;
       }
 
-      // Check if there's a pre-auth JD to redirect to mission
-      const preAuthJd = localStorage.getItem("careerai_pre_auth_jd");
+      const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
       router.push(preAuthJd ? "/mission" : "/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -98,19 +134,56 @@ function AuthContent() {
     }
   };
 
+  // Magic link sent confirmation
+  if (magicLinkSent) {
+    return (
+      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="w-full max-w-md relative">
+          <div className="glass-card p-8 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center mx-auto mb-6">
+              <Mail className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Check your email</h1>
+            <p className="text-sm text-gray-500 leading-relaxed mb-2">
+              We sent a sign-in link to
+            </p>
+            <p className="text-sm font-semibold text-gray-900 mb-6">{email}</p>
+            <p className="text-xs text-gray-400 mb-6">
+              Click the link in the email to sign in. It expires in 1 hour.
+            </p>
+            <button
+              onClick={() => { setMagicLinkSent(false); setEmail(""); }}
+              className="text-sm text-blue-600 font-medium hover:underline"
+            >
+              Use a different email
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Background gradient blobs */}
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-200/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="w-full max-w-md relative">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
             <Brain className="w-6 h-6 text-white" />
           </div>
-          <span className="font-bold text-2xl text-gray-900">CareerAI</span>
+          <span className="font-bold text-2xl text-gray-900">AISkillScore</span>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
-          <h1 className="text-2xl font-bold text-gray-900 text-center mb-6">
+        <div className="glass-card p-8">
+          <h1 className="text-2xl font-bold text-gray-900 text-center mb-6 tracking-tight">
             {mode === "signup" ? "Create your account" : "Welcome back"}
           </h1>
 
@@ -135,11 +208,11 @@ function AuthContent() {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-3 text-gray-400">or</span>
+              <span className="bg-white px-3 text-gray-400">or continue with email</span>
             </div>
           </div>
 
-          {/* Form */}
+          {/* Email + Password Form — primary */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
               <div>
@@ -153,7 +226,6 @@ function AuthContent() {
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
                   placeholder="Sarah Chen"
-                  required
                 />
               </div>
             )}
@@ -183,7 +255,7 @@ function AuthContent() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
-                placeholder="••••••••"
+                placeholder="Min 6 characters"
                 required
                 minLength={6}
               />
@@ -199,27 +271,54 @@ function AuthContent() {
               className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-colors min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {mode === "signup" ? "Create Account — 5 Free Tokens + 2 Daily Credits" : "Sign In"}
+              {mode === "signup" ? "Create Account — 5 Free Tokens" : "Sign In"}
             </button>
-            {mode === "signup" && (
-              <p className="text-xs text-gray-400 text-center mt-3">
-                Join 12,400+ professionals. No credit card required.
-              </p>
-            )}
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          {/* Magic link option — secondary */}
+          <div className="mt-4">
+            <button
+              onClick={() => setShowPasswordForm(!showPasswordForm)}
+              className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors py-2"
+            >
+              <Mail className="w-3 h-3" />
+              Sign in with magic link instead
+              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showPasswordForm ? "rotate-180" : ""}`} />
+            </button>
+
+            {showPasswordForm && (
+              <form onSubmit={handleMagicLink} className="space-y-3 mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                <p className="text-xs text-gray-400 text-center">
+                  We&apos;ll email you a passwordless sign-in link.
+                </p>
+                <button
+                  type="submit"
+                  disabled={magicLinkLoading || !email.trim()}
+                  className="w-full py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {magicLinkLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Mail className="w-4 h-4" />
+                  )}
+                  Send Magic Link {email.trim() ? `to ${email}` : ""}
+                </button>
+              </form>
+            )}
+          </div>
+
+          <p className="mt-5 text-center text-sm text-gray-500">
             {mode === "signup" ? (
               <>
                 Have an account?{" "}
-                <button onClick={() => setMode("signin")} className="text-blue-600 font-medium hover:underline">
+                <button onClick={() => { setMode("signin"); setShowPasswordForm(false); setError(""); }} className="text-blue-600 font-medium hover:underline">
                   Sign in
                 </button>
               </>
             ) : (
               <>
                 New?{" "}
-                <button onClick={() => setMode("signup")} className="text-blue-600 font-medium hover:underline">
+                <button onClick={() => { setMode("signup"); setShowPasswordForm(false); setError(""); }} className="text-blue-600 font-medium hover:underline">
                   Sign up free
                 </button>
               </>

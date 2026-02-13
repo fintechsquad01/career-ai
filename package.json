@@ -1,5 +1,5 @@
 {
-  "name": "careerai",
+  "name": "aiskillscore",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -28,11 +28,16 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "pg": "^8.18.0",
+    "playwright": "^1.58.2",
+    "puppeteer": "^24.37.2",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   },
   "_comment_resend": "UNUSED: src/lib/email.ts uses raw fetch to Resend API. Remove with: npm uninstall resend"

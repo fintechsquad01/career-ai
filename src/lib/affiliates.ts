@@ -21,7 +21,7 @@ export interface AffiliateConfig {
   isAffiliate: boolean;
 }
 
-const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AFFILIATE_TAG || "careerai";
+const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AFFILIATE_TAG || "aiskillscore";
 
 /**
  * Platform affiliate configuration map.

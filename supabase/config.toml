@@ -1,7 +1,7 @@
-# CareerAI Supabase Configuration
+# AISkillScore Supabase Configuration
 # For local development with supabase CLI
 
-project_id = "eakxgbdouyqybkglowyn"
+project_id = "znntwsrwhbvtzbkeydfj"
 
 [api]
 enabled = true

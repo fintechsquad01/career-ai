@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
 export const metadata: Metadata = {
-  title: "Terms of Service — CareerAI",
-  description: "Terms of use for CareerAI.",
+  title: "Terms of Service — AISkillScore",
+  description:
+    "Terms of service for AISkillScore. Token-based pricing, AI career tool usage policies, refund terms, and limitation of liability.",
+  alternates: {
+    canonical: `${APP_URL}/terms`,
+  },
+  openGraph: {
+    title: "Terms of Service — AISkillScore",
+    description: "Token-based pricing, AI career tool usage policies, and refund terms.",
+    url: `${APP_URL}/terms`,
+  },
 };
 
 export default function TermsPage() {
@@ -15,7 +26,7 @@ export default function TermsPage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-8 space-y-6 text-sm text-gray-600 leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Service</h2>
-            <p>CareerAI provides AI-powered career analysis tools on a pay-per-use token basis. Results are AI-generated and should be used as guidance, not guarantees.</p>
+            <p>AISkillScore provides AI-powered career analysis tools on a pay-per-use token basis. Results are AI-generated and should be used as guidance, not guarantees.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Tokens</h2>
@@ -27,7 +38,7 @@ export default function TermsPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Limitation of Liability</h2>
-            <p>CareerAI is not liable for career decisions made based on AI analysis. Our tools provide data-driven insights but cannot guarantee employment outcomes.</p>
+            <p>AISkillScore is not liable for career decisions made based on AI analysis. Our tools provide data-driven insights but cannot guarantee employment outcomes.</p>
           </section>
         </div>
       </div>

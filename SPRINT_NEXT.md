@@ -1,4 +1,4 @@
-# CareerAI -- Next Sprint Instructions
+# AISkillScore -- Next Sprint Instructions
 
 > Authoritative reference for the next development sprints. Consolidates user research, prompt architecture, microcopy optimization, token economics, and implementation plan.
 >
@@ -159,7 +159,7 @@ Every tool recommendation creates potential affiliate revenue:
 
 ### 2.0 Architecture Change
 
-**Current state**: All 11 tool prompts are inline 1-2 line strings in `supabase/functions/run-tool/index.ts` (lines 464-474). One generic system prompt for all tools (line 269): `"You are CareerAI, an expert career intelligence engine. Always respond with valid JSON only."`
+**Current state**: All 11 tool prompts are inline 1-2 line strings in `supabase/functions/run-tool/index.ts` (lines 464-474). One generic system prompt for all tools (line 269): `"You are AISkillScore, an expert career intelligence engine. Always respond with valid JSON only."`
 
 **Target state**: Extract prompts into a structured prompt system with:
 - Per-tool system prompts (expert persona)
@@ -484,7 +484,7 @@ Respond ONLY in valid JSON:
   "next_steps": [
     {
       "action": "<recommended next action>",
-      "tool": "<which CareerAI tool helps, or external resource>"
+      "tool": "<which AISkillScore tool helps, or external resource>"
     }
   ],
   "monetizable_skills": ["<skills visible in this resume that could generate freelance or consulting income>"]
@@ -1261,7 +1261,7 @@ Respond ONLY in valid JSON:
 ```
 
 **Key differentiators**:
-- "Unfair advantages" analysis from actual career (unique to CareerAI)
+- "Unfair advantages" analysis from actual career (unique to AISkillScore)
 - Alongside-job-hunt filter (everything suggested is doable while applying to jobs)
 - 90-day launch plan with weekly deliverables and income targets
 - Job hunt synergy (business activities strengthen candidacy)
@@ -1353,14 +1353,14 @@ All copy changes are informed by the research findings in Section 1. Changes are
 },
 {
   q: "Will recruiters know my resume was AI-optimized?",
-  a: "Not with CareerAI. Unlike other tools that rewrite your resume into generic 'spearheaded' language, we enhance YOUR voice. Our #1 rule: no detectable AI cliches."
+  a: "Not with AISkillScore. Unlike other tools that rewrite your resume into generic 'spearheaded' language, we enhance YOUR voice. Our #1 rule: no detectable AI cliches."
 },
 {
   q: "How is the Lifetime Deal different from token packs?",
   a: "Token packs are one-time purchases. The Lifetime Deal ($49) refills 100 tokens every month forever, with a 300 token cap. Need more in a busy month? Top up with any pack."
 },
 {
-  q: "Can CareerAI help me make money while job hunting?",
+  q: "Can AISkillScore help me make money while job hunting?",
   a: "Yes. Every tool surfaces freelance and consulting opportunities based on your skills. The Entrepreneurship Assessment and Career Roadmap include income-building plans you can start this week."
 },
 {
@@ -1391,7 +1391,7 @@ All copy changes are informed by the research findings in Section 1. Changes are
 - Replace generic testimonials with dual-track stories:
   - "The JD Match tool showed me exactly WHY I wasn't getting callbacks -- evidence from my actual resume. Fixed 3 things, got 4 interviews the next week." -- Senior Developer, Austin
   - "I ran the Entrepreneurship Assessment while job hunting and started freelance consulting within 2 weeks. Now I earn $4K/month on the side AND have a stronger resume." -- Product Manager, NYC
-  - "Jobscan gave me a 94% score and I still got rejected. CareerAI told me my formatting was wrong -- something Jobscan never flagged. Fixed it, got the interview." -- Marketing Manager, London
+  - "Jobscan gave me a 94% score and I still got rejected. AISkillScore told me my formatting was wrong -- something Jobscan never flagged. Fixed it, got the interview." -- Marketing Manager, London
 
 #### LandingContent.tsx -- Tools section heading
 - Change "11 AI tools. One platform." to: "11 AI tools. No subscriptions. Start free."

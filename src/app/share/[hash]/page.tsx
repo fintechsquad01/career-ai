@@ -1,20 +1,85 @@
 import { createClient } from "@supabase/supabase-js";
 import { Ring } from "@/components/shared/Ring";
 import Link from "next/link";
-import { Brain, ArrowRight, Users, Star, TrendingUp } from "lucide-react";
+import { Brain, ArrowRight, Users, Star, TrendingUp, Twitter, Linkedin, Eye } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
 interface SharePageProps {
   params: Promise<{ hash: string }>;
 }
 
+const TYPE_LABELS: Record<string, string> = {
+  displacement: "AI Displacement Score",
+  jd_match: "Job Match Score",
+  resume: "ATS Score",
+  cover_letter: "Cover Letter",
+  linkedin: "LinkedIn Strength",
+  skills_gap: "Skills Gap Analysis",
+  roadmap: "Career Roadmap",
+  salary: "Salary Range",
+  entrepreneurship: "Founder-Market Fit",
+};
+
 export async function generateMetadata({ params }: SharePageProps) {
   const { hash } = await params;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://careerai.com";
+
+  // Try to fetch score data for rich metadata
+  let title = "Career Score — AISkillScore";
+  let description = "See this AI-powered career analysis. Get your own score free in 30 seconds.";
+  let scoreValue: number | null = null;
+  let scoreType = "";
+
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY
+      );
+      const { data: score } = await supabase
+        .from("shared_scores")
+        .select("score_type, score_value, title, industry")
+        .eq("hash", hash)
+        .maybeSingle();
+
+      if (score) {
+        const typeLabel = TYPE_LABELS[score.score_type] || "Career Score";
+        scoreType = score.score_type;
+        scoreValue = score.score_value;
+        title = `${typeLabel}: ${score.score_value}/100 — AISkillScore`;
+        description = `${score.title ? `${score.title} — ` : ""}${typeLabel} scored ${score.score_value}/100.${score.industry ? ` Industry: ${score.industry}.` : ""} Get your own AI career analysis free.`;
+      }
+    } catch {
+      // Fallback to generic metadata
+    }
+  }
+
   return {
+    title,
+    description,
+    alternates: {
+      canonical: `${APP_URL}/share/${hash}`,
+    },
     openGraph: {
-      images: [`${appUrl}/api/og?hash=${hash}`],
+      title,
+      description,
+      url: `${APP_URL}/share/${hash}`,
+      images: [
+        {
+          url: `${APP_URL}/api/og?hash=${hash}`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title,
+      description,
+      images: [`${APP_URL}/api/og?hash=${hash}`],
     },
   };
 }
@@ -54,34 +119,22 @@ export default async function SharePage({ params }: SharePageProps) {
     );
   }
 
-  const typeLabels: Record<string, string> = {
-    displacement: "AI Displacement Score",
-    jd_match: "Job Match Score",
-    resume: "ATS Score",
-    cover_letter: "Cover Letter",
-    linkedin: "LinkedIn Strength",
-    skills_gap: "Skills Gap Analysis",
-    roadmap: "Career Roadmap",
-    salary: "Salary Range",
-    entrepreneurship: "Founder-Market Fit",
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+        <div className="glass-card shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-4 flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-white">CareerAI</span>
+            <span className="font-bold text-white">AISkillScore</span>
           </div>
 
           {/* Score */}
           <div className="p-8 text-center">
             <p className="text-sm font-medium text-gray-500 mb-4">
-              {typeLabels[score.score_type] || "Career Score"}
+              {TYPE_LABELS[score.score_type] || "Career Score"}
             </p>
             <Ring score={score.score_value || 0} size="lg" />
             {score.title && (
@@ -92,13 +145,40 @@ export default async function SharePage({ params }: SharePageProps) {
             )}
           </div>
 
+          {/* Share buttons */}
+          <div className="px-6 pb-4">
+            <div className="flex gap-3 justify-center">
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My ${TYPE_LABELS[score.score_type] || "Career Score"}: ${score.score_value}/100 on AISkillScore`)}&url=${encodeURIComponent(`${APP_URL}/share/${hash}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px]"
+              >
+                <Twitter className="w-4 h-4" /> Twitter/X
+              </a>
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${APP_URL}/share/${hash}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px]"
+              >
+                <Linkedin className="w-4 h-4" /> LinkedIn
+              </a>
+            </div>
+            {score.view_count > 0 && (
+              <p className="text-xs text-gray-400 text-center mt-3 flex items-center justify-center gap-1">
+                <Eye className="w-3 h-3" /> Viewed {score.view_count.toLocaleString()} times
+              </p>
+            )}
+          </div>
+
           {/* CTA */}
           <div className="px-6 pb-8 text-center">
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-base font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
             >
-              What&apos;s YOUR score? Free analysis, 30 seconds.
+              Get YOUR score in 30 seconds — free
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -106,8 +186,8 @@ export default async function SharePage({ params }: SharePageProps) {
 
         {/* Social proof */}
         <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-400">
-          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> Free AI career tools</span>
-          <span className="flex items-center gap-1"><Star className="w-3 h-3" /> 11 tools, no subscription</span>
+          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> 11 AI career tools</span>
+          <span className="flex items-center gap-1"><Star className="w-3 h-3" /> Pay per use, no subscription</span>
           <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> 30-second analysis</span>
         </div>
       </div>

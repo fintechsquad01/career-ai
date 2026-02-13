@@ -1,4 +1,4 @@
-# CareerAI — End-to-End Test Checklist
+# AISkillScore — End-to-End Test Checklist
 
 > Manual test plan covering all critical user flows.  
 > Run through each section after deploying changes.  
@@ -49,7 +49,7 @@ Before testing, ensure these environment variables are configured:
 ### 1d. Referral Code Pass-Through
 - [ ] Navigate to `/auth?ref=TESTCODE`
 - [ ] Sign up with new account
-- [ ] Verify `localStorage` has `careerai_referral_code = TESTCODE`
+- [ ] Verify `localStorage` has `aiskillscore_referral_code = TESTCODE`
 - [ ] Verify OAuth redirect preserves `ref` param through callback
 - [ ] Verify `/api/apply-referral` is called on dashboard mount (check network tab)
 

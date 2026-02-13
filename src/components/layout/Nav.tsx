@@ -2,20 +2,49 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Brain, Menu, X } from "lucide-react";
+import { Brain, Menu, X, ChevronRight } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
+import { TOOLS_MAP } from "@/lib/constants";
 
 interface NavProps {
   isLoggedIn: boolean;
 }
 
+/** Derive a breadcrumb from the current pathname */
+function useBreadcrumb(pathname: string) {
+  const segments = pathname.split("/").filter(Boolean);
+  const crumbs: Array<{ label: string; href?: string }> = [];
+
+  if (segments[0] === "dashboard") {
+    crumbs.push({ label: "Dashboard" });
+  } else if (segments[0] === "mission") {
+    crumbs.push({ label: "Mission" });
+  } else if (segments[0] === "tools") {
+    crumbs.push({ label: "Tools", href: "/dashboard" });
+    if (segments[1]) {
+      const tool = TOOLS_MAP[segments[1]];
+      crumbs.push({ label: tool?.title || segments[1].replace(/_/g, " ") });
+    }
+  } else if (segments[0] === "pricing") {
+    crumbs.push({ label: "Tokens" });
+  } else if (segments[0] === "settings") {
+    crumbs.push({ label: "Settings" });
+  } else if (segments[0] === "history") {
+    crumbs.push({ label: "History" });
+  } else if (segments[0] === "lifetime") {
+    crumbs.push({ label: "Lifetime Deal" });
+  } else if (segments[0] === "referral") {
+    crumbs.push({ label: "Referral" });
+  }
+
+  return crumbs;
+}
+
 export function Nav({ isLoggedIn }: NavProps) {
   const pathname = usePathname();
-  const { mobileMenuOpen, setMobileMenuOpen, profile, activeJobTarget } = useAppStore();
-  const missionIncomplete = activeJobTarget && activeJobTarget.mission_actions
-    ? Object.values(activeJobTarget.mission_actions as Record<string, boolean>).filter(Boolean).length < 5
-    : false;
+  const { mobileMenuOpen, setMobileMenuOpen, profile } = useAppStore();
+  const breadcrumbs = useBreadcrumb(pathname);
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -28,40 +57,45 @@ export function Nav({ isLoggedIn }: NavProps) {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+      <nav className="sticky top-0 z-40 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
-          {/* Logo */}
-          <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
-              <Brain className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-gray-900 text-lg">CareerAI</span>
-          </Link>
+          {/* Logo + breadcrumb */}
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center gap-2 flex-shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                <Brain className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-gray-900 text-lg hidden sm:inline">AISkillScore</span>
+            </Link>
 
-          {/* Desktop nav */}
+            {/* Breadcrumb — desktop only, logged-in only */}
+            {isLoggedIn && breadcrumbs.length > 0 && (
+              <div className="hidden md:flex items-center gap-1 text-sm text-gray-400 min-w-0">
+                <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
+                {breadcrumbs.map((crumb, i) => (
+                  <span key={i} className="flex items-center gap-1 min-w-0">
+                    {i > 0 && <ChevronRight className="w-3 h-3 flex-shrink-0" />}
+                    {crumb.href ? (
+                      <Link href={crumb.href} className="hover:text-gray-600 transition-colors truncate">
+                        {crumb.label}
+                      </Link>
+                    ) : (
+                      <span className="text-gray-700 font-medium truncate">{crumb.label}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right side */}
           {isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-6">
-              <Link
-                href="/dashboard"
-                className={`text-sm font-medium ${pathname === "/dashboard" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"}`}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/mission"
-                className={`text-sm font-medium relative ${pathname === "/mission" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"}`}
-              >
-                Job Mission
-                {missionIncomplete && <span className="absolute -top-1 -right-2 w-2 h-2 bg-red-500 rounded-full" />}
-              </Link>
-              <Link
-                href="/pricing"
-                className={`text-sm font-medium ${pathname === "/pricing" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"}`}
-              >
-                Tokens
-              </Link>
+            <div className="hidden md:flex items-center gap-4">
               <TokBadge />
-              <Link href="/settings" className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+              <Link
+                href="/settings"
+                className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden hover:opacity-90 transition-opacity"
+              >
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
                 ) : (
@@ -106,9 +140,9 @@ export function Nav({ isLoggedIn }: NavProps) {
             {isLoggedIn ? (
               <>
                 <MobileLink href="/dashboard" label="Dashboard" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/mission" label="Job Mission" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/tools" label="All Tools" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/pricing" label="Get Tokens" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/mission" label="Mission" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/tools" label="Tools" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/pricing" label="Tokens" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/history" label="History" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/settings" label="Settings" onClick={() => setMobileMenuOpen(false)} />
               </>

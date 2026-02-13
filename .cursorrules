@@ -1,7 +1,7 @@
-# CareerAI — Cursor Rules
+# AISkillScore — Cursor Rules
 
 ## Project Context
-You are building CareerAI, an AI-powered career intelligence platform. The app is a mobile-first web app built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe.
+You are building AISkillScore, an AI-powered career intelligence platform. The app is a mobile-first web app built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe.
 
 Reference these docs in the project root:
 - `PRD.md` — Full product requirements, user flows, tools, pricing

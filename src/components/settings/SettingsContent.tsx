@@ -335,7 +335,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "careerai-data.json";
+    a.download = "aiskillscore-data.json";
     a.click();
     URL.revokeObjectURL(url);
     toast("Data exported!");

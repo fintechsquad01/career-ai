@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
-const APP_URL = Deno.env.get("APP_URL") || "https://careerai.com";
+const APP_URL = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
 // Model config: Tier 3 Lite (Gemini 2.5 Flash Lite: $0.10/$0.40 per M)
 const PRIMARY_MODEL = "google/gemini-2.5-flash-lite";
@@ -9,7 +9,7 @@ const FALLBACK_MODEL = "openai/gpt-4.1-mini";
 
 // --- CORS: Dynamic origin check ---
 const ALLOWED_ORIGINS = [
-  Deno.env.get("APP_URL") || "https://careerai.com",
+  Deno.env.get("APP_URL") || "https://aiskillscore.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
@@ -135,7 +135,7 @@ Deno.serve(async (req: Request) => {
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; CareerAI/1.0)",
+          "User-Agent": "Mozilla/5.0 (compatible; AISkillScore/1.0)",
         },
         signal: fetchController.signal,
       });
@@ -184,7 +184,7 @@ ${textContent}`;
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
           "HTTP-Referer": APP_URL,
-          "X-Title": "CareerAI",
+          "X-Title": "AISkillScore",
         },
         body: JSON.stringify({
           model,

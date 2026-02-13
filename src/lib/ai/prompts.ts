@@ -14,7 +14,7 @@ function buildSharedContext(ctx: PromptContext): string {
   const cp = ctx.careerProfile;
   const jt = ctx.jobTarget;
 
-  let context = `You are CareerAI, an expert career intelligence engine. You analyze careers with the precision of a data scientist and the empathy of a career coach.\n\n`;
+  let context = `You are AISkillScore, an expert career intelligence engine. You analyze careers with the precision of a data scientist and the empathy of a career coach.\n\n`;
 
   if (cp) {
     context += `USER PROFILE:\n`;

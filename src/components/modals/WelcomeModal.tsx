@@ -12,7 +12,7 @@ interface WelcomeModalProps {
 const STEPS = [
   {
     icon: Brain,
-    title: "Welcome to CareerAI",
+    title: "Welcome to AISkillScore",
     description:
       "Your AI-powered career intelligence platform. 11 tools to help you analyze, optimize, and land your dream job.",
   },
@@ -93,6 +93,14 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
             {step < STEPS.length - 1 ? "Next" : "Let's Go!"}
             <ArrowRight className="w-4 h-4" />
           </button>
+          {step < STEPS.length - 1 && (
+            <button
+              onClick={handleClose}
+              className="w-full py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Skip
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 /**
- * Custom error classes for CareerAI.
+ * Custom error classes for AISkillScore.
  * Import these in API routes and Edge Functions for structured error handling.
  */
 export class InsufficientTokensError extends Error {

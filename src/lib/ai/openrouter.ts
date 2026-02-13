@@ -1,5 +1,5 @@
 /**
- * OpenRouter API client for CareerAI.
+ * OpenRouter API client for AISkillScore.
  * Provides a unified interface for calling AI models through OpenRouter
  * with automatic fallback to GPT-4.1-mini on failure.
  *
@@ -60,7 +60,7 @@ export async function callOpenRouter(options: {
 }> {
   const {
     apiKey,
-    appUrl = "https://careerai.com",
+    appUrl = "https://aiskillscore.com",
     model,
     fallbackModel = "openai/gpt-4.1-mini",
     messages,
@@ -133,7 +133,7 @@ async function makeRequest(options: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": appUrl,
-        "X-Title": "CareerAI",
+        "X-Title": "AISkillScore",
       },
       signal: controller.signal,
       body: JSON.stringify({
