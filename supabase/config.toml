@@ -6,7 +6,7 @@ project_id = "znntwsrwhbvtzbkeydfj"
 [api]
 enabled = true
 port = 54321
-schemas = ["public", "storage"]
+schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
@@ -20,8 +20,8 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+site_url = "https://aiskillscore.com"
+additional_redirect_urls = ["https://aiskillscore.com/auth/callback", "http://localhost:3000/auth/callback"]
 
 [auth.email]
 enable_signup = true
@@ -36,7 +36,7 @@ enabled = false
 
 [storage]
 enabled = true
-file_size_limit = "5MB"
+file_size_limit = "50MiB"
 
 [edge_runtime]
 enabled = true
