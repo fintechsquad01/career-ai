@@ -44,12 +44,17 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - [Will AI Replace My Job?](https://aiskillscore.com/blog/will-ai-replace-my-job): Measure your personal AI displacement risk using ILO 2025 data. 1 in 4 roles are exposed to generative AI.
 - [ATS Resume Optimization Guide](https://aiskillscore.com/blog/resume-ats-optimization-guide): 43% of ATS rejections are formatting errors. Complete guide to passing ATS in 2026.
 - [AI Interview Prep Guide](https://aiskillscore.com/blog/ai-interview-prep-guide): 90% of candidates aren't prepared for follow-up questions — the part that actually decides interviews.
+- [Salary Negotiation Scripts](https://aiskillscore.com/blog/salary-negotiation-scripts-2026): 76% of professionals who negotiate earn $5,000-$10,000 more. Word-for-word scripts included.
+- [Skills Gap Analysis for Career Changers](https://aiskillscore.com/blog/skills-gap-analysis-career-change): 68% of career changers underestimate their transferable skills. Bridge role strategy explained.
+- [LinkedIn Optimization Guide](https://aiskillscore.com/blog/linkedin-optimization-recruiter-algorithm): How LinkedIn's 2026 recruiter algorithm ranks profiles, and how to optimize for maximum visibility.
 
 ## Comparisons
 
 - [AISkillScore vs Jobscan](https://aiskillscore.com/compare/aiskillscore-vs-jobscan): 11 tools from free vs $49.95/month for keyword counting.
 - [AISkillScore vs Teal](https://aiskillscore.com/compare/aiskillscore-vs-teal): AI-personalized content vs generic templates at $29/month.
 - [AISkillScore vs FinalRound AI](https://aiskillscore.com/compare/aiskillscore-vs-finalround): Interview prep from $0.23 vs $149/month, plus 10 more tools.
+- [AISkillScore vs Kickresume](https://aiskillscore.com/compare/aiskillscore-vs-kickresume): AI analysis + 10 tools vs template-based resume builder at $19/month.
+- [AISkillScore vs Resume.io](https://aiskillscore.com/compare/aiskillscore-vs-resumeio): Strategy-focused AI optimization vs design-focused templates at $24.95/month.
 
 ## Company
 
