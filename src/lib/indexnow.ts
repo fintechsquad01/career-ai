@@ -71,12 +71,17 @@ export async function submitAllPagesToIndexNow(): Promise<IndexNowResponse> {
     "will-ai-replace-my-job",
     "resume-ats-optimization-guide",
     "ai-interview-prep-guide",
+    "salary-negotiation-scripts-2026",
+    "skills-gap-analysis-career-change",
+    "linkedin-optimization-recruiter-algorithm",
   ];
 
   const comparisonSlugs = [
     "aiskillscore-vs-jobscan",
     "aiskillscore-vs-teal",
     "aiskillscore-vs-finalround",
+    "aiskillscore-vs-kickresume",
+    "aiskillscore-vs-resumeio",
   ];
 
   const urls = [
