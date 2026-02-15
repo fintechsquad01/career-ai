@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { ErrorBoundary } from "@/components/providers/ErrorBoundary";
 import { AnalyticsProvider } from "@/components/providers/AnalyticsProvider";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: "../fonts/InterVariable.woff2",
   variable: "--font-inter",
   display: "swap",
-  preload: true,
 });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -200,8 +199,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icon.png" />
         {/* Preconnect to external services for faster first-byte */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* Font is self-hosted via next/font/local — no Google Fonts fetch needed */}
         {process.env.NEXT_PUBLIC_SUPABASE_URL && (
           <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
         )}
