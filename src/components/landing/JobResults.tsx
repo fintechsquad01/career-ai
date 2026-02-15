@@ -33,7 +33,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Company card */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+      <div className="glass-card p-6">
         <h2 className="text-xl font-bold text-gray-900">{data.title}</h2>
         <p className="text-sm text-gray-500 mt-1">{data.company}</p>
         {data.location && (
@@ -42,7 +42,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
       </div>
 
       {/* Fit score — visible */}
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 celebrate">
         {fitScore != null ? (
           <>
             <Ring score={fitScore} size="md" label="Fit Score" showLabel />
@@ -65,7 +65,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
           <h3 className="text-sm font-semibold text-gray-900 mb-3">
             Requirements
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-2 stagger-children">
             {visibleReqs.map((req) => (
               <div
                 key={req.skill}
@@ -126,15 +126,15 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
 
         {/* Gate overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4 text-center">
+          <div className="glass-card shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4 text-center">
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
               <Lock className="w-5 h-5 text-blue-600" />
             </div>
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              Unlock full job analysis
+              See exactly what this recruiter wants — and if you have it
             </h3>
             <p className="text-xs text-gray-500 mb-4">
-              Complete requirements breakdown, salary data, and your personalized application strategy.
+              Full requirements match, salary data, and a step-by-step application strategy.
             </p>
 
             {showSignup ? (
@@ -145,7 +145,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
                   onClick={() => setShowSignup(true)}
                   className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
                 >
-                  Sign Up Free — Unlock Results
+                  Create Account — 15 Free Tokens
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <p className="text-xs text-gray-400">No credit card required</p>

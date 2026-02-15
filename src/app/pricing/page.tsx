@@ -175,7 +175,7 @@ export default function PricingPage() {
               )}
               <h3 className="text-lg font-bold text-gray-900">{pack.name}</h3>
               <p className="text-4xl font-bold text-gray-900 mt-2">${pack.price}</p>
-              <p className="text-sm text-gray-500 mt-1">{pack.tokens} tokens · {pack.rate}/token</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">{pack.tokens} tokens · {pack.rate}/tok</p>
               <p className="text-xs text-gray-400 mt-2 mb-4">{pack.description}</p>
               {pack.vsNote && (
                 <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg mb-4">{pack.vsNote}</p>
@@ -216,12 +216,12 @@ export default function PricingPage() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
             What can you do with tokens?
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {TOOLS.map((tool) => (
               <div key={tool.id} className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3 text-center min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-1 break-words">{tool.title}</p>
-                <p className={`text-xs font-bold mt-1 ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
-                  {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+                <p className="text-[11px] sm:text-sm font-medium text-gray-900 line-clamp-2 break-words leading-tight">{tool.title}</p>
+                <p className={`text-[10px] sm:text-xs font-bold mt-1 whitespace-nowrap ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
+                  {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
                 </p>
               </div>
             ))}
@@ -233,13 +233,13 @@ export default function PricingPage() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
             How we compare
           </h2>
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-white rounded-2xl border border-gray-200 overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full text-xs sm:text-sm min-w-[600px]">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Feature</th>
+                  <th className="text-left px-3 sm:px-4 py-3 font-medium text-gray-500 whitespace-nowrap">Feature</th>
                   {COMPETITORS.map((c) => (
-                    <th key={c.name} className={`text-center px-4 py-3 font-semibold ${c.name === "AISkillScore" ? "text-blue-600" : "text-gray-900"}`}>
+                    <th key={c.name} className={`text-center px-2 sm:px-4 py-3 font-semibold whitespace-nowrap ${c.name === "AISkillScore" ? "text-blue-600" : "text-gray-900"}`}>
                       {c.name}
                     </th>
                   ))}
@@ -294,18 +294,18 @@ export default function PricingPage() {
           <p className="text-gray-600 mb-4">
             Our tools help you build income while you search. Every analysis surfaces freelance, consulting, and entrepreneurship opportunities based on your skills.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-6">
-            <div className="bg-white rounded-xl p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mt-6">
+            <div className="bg-white rounded-xl p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Entrepreneurship Assessment</p>
-              <p className="text-xs text-gray-500 mt-1">Business ideas from your skills + 90-day launch plan</p>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">Business ideas from your skills + 90-day launch plan</p>
             </div>
-            <div className="bg-white rounded-xl p-4">
+            <div className="bg-white rounded-xl p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Career Roadmap</p>
-              <p className="text-xs text-gray-500 mt-1">Dual-track: job hunt + income building with monthly targets</p>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">Dual-track: job hunt + income building with monthly targets</p>
             </div>
-            <div className="bg-white rounded-xl p-4">
+            <div className="bg-white rounded-xl p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Every Tool</p>
-              <p className="text-xs text-gray-500 mt-1">Freelance and consulting opportunities surfaced in every result</p>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">Freelance and consulting opportunities surfaced in every result</p>
             </div>
           </div>
         </div>

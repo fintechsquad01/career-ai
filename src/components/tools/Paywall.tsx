@@ -91,7 +91,7 @@ export function Paywall({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom-4 duration-300">
+      <div className="relative bg-white/95 backdrop-blur-xl rounded-t-2xl sm:rounded-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom-4 duration-300">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600"
@@ -119,7 +119,7 @@ export function Paywall({
         </div>
 
         {/* What you'll unlock — tool-specific preview */}
-        <div className="bg-violet-50 border border-violet-100 rounded-xl px-4 py-3 mb-4">
+        <div className="bg-violet-50/80 backdrop-blur-sm border border-violet-100 rounded-xl px-4 py-3 mb-4">
           <p className="text-xs font-semibold text-violet-700 mb-1.5">What you&apos;ll unlock</p>
           <p className="text-sm text-violet-900">{toolDescription || toolName || "Premium AI analysis"}</p>
           {bullets && (
@@ -140,7 +140,7 @@ export function Paywall({
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {PACKS.map((pack) => {
             const isRecommended = pack.id === recommendedPack.id;
             return (
@@ -187,7 +187,7 @@ export function Paywall({
           <Link
             href="/lifetime"
             onClick={onClose}
-            className="block w-full mt-3 p-3 bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200 rounded-xl text-center hover:shadow-sm transition-shadow"
+            className="block w-full mt-3 p-3 bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200 rounded-xl text-center hover:shadow-md transition-all hover:scale-[1.01]"
           >
             <p className="text-xs font-bold text-violet-700">Or get the Lifetime Deal</p>
             <p className="text-[11px] text-violet-600 mt-0.5">$79 once &rarr; 100 tokens/month forever</p>

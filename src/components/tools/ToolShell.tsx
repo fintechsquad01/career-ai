@@ -870,13 +870,13 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Context */}
       {careerProfile?.title && (
-        <div className="text-sm text-gray-500 bg-gray-50 px-4 py-2.5 rounded-xl">
+        <div className="text-sm text-gray-500 bg-white/60 backdrop-blur-sm border border-gray-100 px-4 py-2.5 rounded-xl">
           Pre-loaded from your resume: <strong className="text-gray-700">{careerProfile.title}</strong>
           {careerProfile.company && ` at ${careerProfile.company}`}
         </div>
       )}
       {activeJobTarget && (
-        <div className="text-sm text-gray-500 bg-blue-50 px-4 py-2.5 rounded-xl">
+        <div className="text-sm text-gray-500 bg-blue-50/60 backdrop-blur-sm border border-blue-100/50 px-4 py-2.5 rounded-xl">
           Targeting: <strong className="text-blue-700">{activeJobTarget.title}</strong> at {activeJobTarget.company}
         </div>
       )}
@@ -991,7 +991,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Loading state — Rich experience with rotating insights */}
       {state === "loading" && (
-        <div className="py-8 space-y-6" role="status" aria-live="polite">
+        <div className="py-8 space-y-6 stagger-children" role="status" aria-live="polite">
           {/* Progress section */}
           <div className="text-center space-y-3">
             <div className="relative w-14 h-14 mx-auto">
@@ -999,7 +999,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               <Zap className="w-5 h-5 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{progress.message || "Preparing your analysis..."}</p>
+              <p className="text-sm font-semibold text-gray-900">{progress.message || (careerProfile?.name ? `Analyzing your background, ${careerProfile.name.split(" ")[0]}...` : "Preparing your analysis...")}</p>
               <p className="text-xs text-gray-400 mt-1">
                 Step {progress.step || 1} of {progress.total} · {elapsedSec}s
               </p>
@@ -1066,7 +1066,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Error display */}
       {state === "result" && error && !result && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4" role="alert">
+        <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-2xl p-6 text-center space-y-4 celebrate" role="alert">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>
@@ -1083,7 +1083,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Premium analysis badge — shown on successful results */}
       {state === "result" && result && !error && (
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2 text-xs text-gray-400 celebrate">
           <Sparkles className="w-3.5 h-3.5 text-violet-400" />
           <span>Premium AI Analysis</span>
           <span className="text-gray-300">·</span>
@@ -1096,7 +1096,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Result actions */}
       {state === "result" && (
-        <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100 stagger-children">
           <button
             onClick={handleReset}
             className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[44px]"
@@ -1164,7 +1164,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             {primary && (
               <Link
                 href={`/tools/${primary.tool.id}`}
-                className="block bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 hover:shadow-md transition-shadow group"
+                className="block bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 hover:shadow-md transition-shadow group celebrate"
               >
                 <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Your next step</p>
                 <p className="text-sm text-gray-700 mb-3">{primary.narrative}</p>
@@ -1186,7 +1186,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
             {/* Secondary recommendations — compact */}
             {secondary.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 stagger-children">
                 <span className="text-xs text-gray-400 self-center mr-1">Also try:</span>
                 {secondary.map((rec) => (
                   <Link

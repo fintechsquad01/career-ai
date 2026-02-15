@@ -103,7 +103,7 @@ export function MissionContent() {
 
   if (!activeJobTarget) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6 stagger-children">
+      <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
         {/* Hero section */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-6 sm:p-8 text-white">
           <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
@@ -111,7 +111,7 @@ export function MissionContent() {
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
               <Crosshair className="w-5 h-5 text-blue-200" />
-              <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Job Mission Control</span>
+              <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Application HQ</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold mb-2">Your AI-Powered Application Command Center</h2>
             <p className="text-sm sm:text-base text-blue-100 leading-relaxed max-w-lg">
@@ -218,7 +218,7 @@ export function MissionContent() {
         <div className="flex items-center gap-2 mb-3">
           <Crosshair className="w-4 h-4" />
           <span className="text-xs font-semibold text-blue-100 uppercase tracking-wider">
-            Job Mission Control
+            Application HQ
           </span>
         </div>
 

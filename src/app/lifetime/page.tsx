@@ -169,7 +169,7 @@ export default function LifetimePage() {
             <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>Standard</p>
             <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$129</p>
             <p className={`text-sm mt-1 ${selectedTier === "lifetime_standard" ? "text-gray-500" : "text-gray-400"}`}>one-time</p>
-            <p className={`text-xs font-medium mt-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>100 tokens/mo · $0.108/tok</p>
+            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>100 tokens/mo · $0.108/tok</p>
           </button>
           <button
             type="button"
@@ -221,7 +221,7 @@ export default function LifetimePage() {
         {/* What 100 tokens covers */}
         <div className="glass-card p-6 sm:p-8 mb-10">
           <h3 className="font-semibold text-gray-900 mb-4">What 100 tokens covers monthly</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               "2 Resume Optimizations (20 tok)",
               "3 JD Match Analyses (6 tok)",

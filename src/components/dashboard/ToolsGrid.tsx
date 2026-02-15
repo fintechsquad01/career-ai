@@ -44,7 +44,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
           return (
             <div key={cat}>
               <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-3">{cat}</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 stagger-children">
                 {categoryTools.map((tool) => {
                   const Icon = ICON_MAP[tool.icon] || Zap;
                   return (
@@ -89,7 +89,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">{cat}</h3>
               <p className="text-sm text-gray-400 mt-0.5">{CATEGORY_DESCRIPTIONS[cat]}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">
               {categoryTools.map((tool) => {
                 const Icon = ICON_MAP[tool.icon] || Zap;
                 const isPopular = POPULAR_TOOLS.has(tool.id);
@@ -98,7 +98,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                   <Link
                     key={tool.id}
                     href={`/tools/${tool.id}`}
-                    className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg hover:scale-[1.01] transition-all duration-200 group"
+                    className="glass-card p-5 hover:shadow-lg hover:scale-[1.01] transition-all duration-200 group"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">

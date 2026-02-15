@@ -202,6 +202,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
         {step === 0 && (
           <div className="space-y-5">
             <div className="text-center">
+              <p className="text-sm text-gray-500 text-center mb-4">Let&apos;s make sure every tool gives you personalized results. This takes 60 seconds.</p>
               <h2 className="text-xl font-bold text-gray-900 mb-1">What brings you here?</h2>
               <p className="text-sm text-gray-500">We&apos;ll personalize your experience.</p>
             </div>
@@ -303,12 +304,15 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
             </div>
 
             <div className="flex gap-3">
-              <button
-                onClick={() => { handleStep2Next(); }}
-                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors min-h-[44px]"
-              >
-                Skip for now
-              </button>
+              <div className="flex-1">
+                <button
+                  onClick={() => { handleStep2Next(); }}
+                  className="w-full py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors min-h-[44px]"
+                >
+                  Skip for now
+                </button>
+                <p className="text-xs text-gray-400 mt-1 text-center">(results will be less personalized)</p>
+              </div>
               <button
                 onClick={handleStep2Next}
                 disabled={saving}
@@ -325,8 +329,8 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
         {step === 2 && (
           <div className="space-y-5">
             <div className="text-center">
-              <h2 className="text-xl font-bold text-gray-900 mb-1">Add your resume</h2>
-              <p className="text-sm text-gray-500">Get personalized analysis across all 11 tools.</p>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Drop your resume here</h2>
+              <p className="text-sm text-gray-500">This is the single most impactful thing you can do for result quality.</p>
             </div>
 
             <ResumeUploadOrPaste
@@ -345,12 +349,15 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
             )}
 
             <div className="flex gap-3">
-              <button
-                onClick={() => setStep(3)}
-                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors min-h-[44px]"
-              >
-                Skip for now
-              </button>
+              <div className="flex-1">
+                <button
+                  onClick={() => setStep(3)}
+                  className="w-full py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors min-h-[44px]"
+                >
+                  Skip for now
+                </button>
+                <p className="text-xs text-gray-400 mt-1 text-center">(results will be less personalized)</p>
+              </div>
               <button
                 onClick={handleResumeNext}
                 disabled={!resumeText.trim()}

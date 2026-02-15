@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Ring } from "@/components/shared/Ring";
 import { CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Target, Briefcase } from "lucide-react";
 import type { TJdMatchResult, ToolResult } from "@/types";
@@ -29,11 +30,9 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   return (
     <div className="space-y-6">
       {/* Score hero */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center celebrate">
+        <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.fit_score} size="lg" label="Fit Score" />
-        {data.headline && (
-          <p className="text-sm text-gray-700 mt-3 max-w-md mx-auto">{data.headline}</p>
-        )}
       </div>
 
       {/* Requirements Match */}
@@ -121,6 +120,17 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Bridge CTA — Resume Optimizer */}
+      {data.critical_gaps && data.critical_gaps.length > 0 && (
+        <div className="bg-violet-50 border border-violet-100 rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-gray-900">Want to fix these gaps before applying?</p>
+            <p className="text-xs text-gray-500">Resume Optimizer will address each gap specifically.</p>
+          </div>
+          <Link href="/tools/resume" className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap">Fix Resume →</Link>
         </div>
       )}
 

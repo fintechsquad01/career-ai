@@ -18,7 +18,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-  { href: "/mission", icon: Crosshair, label: "Mission" },
+  { href: "/mission", icon: Crosshair, label: "App HQ" },
   { href: "/tools", icon: Wrench, label: "Tools" },
   { href: "/history", icon: Clock, label: "History" },
   { href: "/settings", icon: Settings, label: "Settings" },
@@ -77,6 +77,10 @@ export function Sidebar() {
                 active || isToolsActive
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+              } ${
+                isToolsActive && pathname.startsWith("/tools/")
+                  ? "border-l-2 border-l-violet-500"
+                  : ""
               }`}
             >
               <item.icon
@@ -109,14 +113,22 @@ export function Sidebar() {
             <div className="flex items-center gap-1.5 mb-1">
               <Coins className="w-3.5 h-3.5 text-gray-400" />
               {tokensLoaded ? (
-                <span className="text-sm font-semibold">{tokenBalance + dailyCreditsBalance}</span>
+                dailyCreditsBalance > 0 && tokenBalance > 0 ? (
+                  <span className="text-sm font-semibold tabular-nums">
+                    {tokenBalance}
+                    <span className="text-xs text-gray-500 mx-0.5">+</span>
+                    <span className="text-xs text-gray-400">{dailyCreditsBalance}</span>
+                  </span>
+                ) : (
+                  <span className="text-sm font-semibold tabular-nums">{tokenBalance + dailyCreditsBalance}</span>
+                )
               ) : (
                 <span className="inline-block w-8 h-4 bg-white/20 rounded animate-pulse" />
               )}
               <span className="text-[10px] text-gray-400">tokens</span>
             </div>
             {dailyCreditsBalance > 0 && (
-              <p className="text-[10px] text-gray-500 mb-1">{dailyCreditsBalance} daily · {tokenBalance} purchased</p>
+              <p className="text-[10px] text-gray-500 mb-1">{tokenBalance} purchased · {dailyCreditsBalance} daily</p>
             )}
             <Link href="/pricing" className="text-[11px] text-gray-400 hover:text-white transition-colors">
               Get more →

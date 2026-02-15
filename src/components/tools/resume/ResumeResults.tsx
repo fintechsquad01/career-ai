@@ -235,20 +235,20 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
 
       {/* Action buttons */}
-      <div className="flex gap-3">
+      <div className="space-y-3">
         <button
           onClick={handleCopy}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[48px]"
+          className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
         >
           {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           {copied ? "Copied!" : "Copy Optimized Resume"}
         </button>
         <button
           onClick={handleDownloadPdf}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <Download className="w-4 h-4" />
-          TXT
+          Download TXT
         </button>
       </div>
     </div>

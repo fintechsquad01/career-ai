@@ -40,6 +40,7 @@ a:active {
     0 0 0 1px rgba(0, 0, 0, 0.04),
     0 2px 8px rgba(0, 0, 0, 0.04),
     0 12px 24px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 /* Gradient divider utility */
@@ -80,25 +81,108 @@ a:active {
   transform: translateY(0);
 }
 
-/* Staggered entrance for child elements */
+/* Staggered entrance for child elements.
+   Works both standalone and inside .animate-on-scroll.visible parents.
+   Children start paused; animation runs only when .stagger-active is added via JS,
+   or immediately when NOT inside an animate-on-scroll wrapper. */
 .stagger-children > * {
   opacity: 0;
   transform: translateY(12px);
   animation: stagger-in 0.5s ease forwards;
 }
 
+/* When inside an animate-on-scroll wrapper, pause until parent is visible */
+.animate-on-scroll .stagger-children > * {
+  animation-play-state: paused;
+}
+.animate-on-scroll.visible .stagger-children > * {
+  animation-play-state: running;
+}
+
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
-.stagger-children > *:nth-child(7) { animation-delay: 360ms; }
-.stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
 
 @keyframes stagger-in {
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Warm accent gradient for page backgrounds */
+.bg-warm-gradient {
+  background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 50%, #f0fdf4 100%);
+}
+
+/* Celebration animation for score reveals */
+@keyframes celebrate {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.celebrate {
+  animation: celebrate 600ms ease-out;
+}
+
+/* Shimmer loading utility */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Glass card hover glow */
+.glass-card:hover {
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.12), 0 8px 30px -5px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Text gradient utility */
+.text-gradient {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Score ring draw-on animation */
+@keyframes ring-draw {
+  from { stroke-dashoffset: var(--ring-circumference); }
+  to { stroke-dashoffset: var(--ring-offset); }
+}
+.ring-animate {
+  animation: ring-draw 700ms ease-out forwards;
+}
+
+/* Button shine sweep on hover */
+@keyframes shine-sweep {
+  0% { left: -75%; }
+  100% { left: 125%; }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  animation: shine-sweep 0.6s ease;
 }
