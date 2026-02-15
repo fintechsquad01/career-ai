@@ -65,7 +65,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
             placeholder="Paste a job posting or your resume..."
             rows={text ? 6 : 3}
             aria-label="Paste a job description, job URL, or resume text"
-            className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
+            className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none min-h-[80px]"
           />
         </div>
 
@@ -83,7 +83,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
 
           <div className="flex items-center gap-3">
             {text && (
-              <button onClick={clear} className="text-xs text-gray-400 hover:text-gray-600">
+              <button onClick={clear} className="text-xs text-gray-400 hover:text-gray-600 min-h-[44px] px-2 flex items-center">
                 Clear
               </button>
             )}
@@ -99,7 +99,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs text-gray-400 hover:text-blue-600 transition-colors"
+                className="text-xs text-gray-400 hover:text-blue-600 transition-colors min-h-[44px] px-2 flex items-center"
               >
                 or upload a file
               </button>

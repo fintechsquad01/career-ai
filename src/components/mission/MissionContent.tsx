@@ -103,19 +103,101 @@ export function MissionContent() {
 
   if (!activeJobTarget) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-8 text-center space-y-4">
-        <Crosshair className="w-12 h-12 text-gray-300 mx-auto" />
-        <h2 className="text-xl font-bold text-gray-900">No Active Mission</h2>
-        <p className="text-gray-500">
-          Analyze a job posting to start your Mission Control workflow.
-        </p>
-        <Link
-          href="/tools/jd_match"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[48px]"
-        >
-          <Target className="w-4 h-4" />
-          Analyze a Job Posting
-        </Link>
+      <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6 stagger-children">
+        {/* Hero section */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-6 sm:p-8 text-white">
+          <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-violet-400/20 rounded-full blur-2xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-3">
+              <Crosshair className="w-5 h-5 text-blue-200" />
+              <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Job Mission Control</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">Your AI-Powered Application Command Center</h2>
+            <p className="text-sm sm:text-base text-blue-100 leading-relaxed max-w-lg">
+              Analyze any job posting, then let AI build your entire application — resume, cover letter, interview prep, and salary strategy — all tailored to that specific role.
+            </p>
+          </div>
+        </div>
+
+        {/* 3-step workflow */}
+        <div className="glass-card p-5 sm:p-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">How it works</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex sm:flex-col items-start sm:items-center sm:text-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <Target className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">1. Analyze Job</p>
+                <p className="text-xs text-gray-500 mt-0.5">Paste a job URL or description to get a fit score and gap analysis</p>
+              </div>
+            </div>
+            <div className="flex sm:flex-col items-start sm:items-center sm:text-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
+                <FileText className="w-5 h-5 text-violet-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">2. Build Materials</p>
+                <p className="text-xs text-gray-500 mt-0.5">Generate a tailored resume, cover letter, and LinkedIn profile</p>
+              </div>
+            </div>
+            <div className="flex sm:flex-col items-start sm:items-center sm:text-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                <MessageSquare className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">3. Ace the Interview</p>
+                <p className="text-xs text-gray-500 mt-0.5">Practice with AI-generated questions and negotiate your salary</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefits */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mb-2">
+              <CheckCircle className="w-4 h-4 text-blue-600" />
+            </div>
+            <p className="text-sm font-semibold text-gray-900">Match Score</p>
+            <p className="text-xs text-gray-500 mt-0.5">See exactly how your skills match the job requirements</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center mb-2">
+              <FileText className="w-4 h-4 text-violet-600" />
+            </div>
+            <p className="text-sm font-semibold text-gray-900">Smart Materials</p>
+            <p className="text-xs text-gray-500 mt-0.5">Resume and cover letter tuned specifically to the posting</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center mb-2">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+            </div>
+            <p className="text-sm font-semibold text-gray-900">Salary Intel</p>
+            <p className="text-xs text-gray-500 mt-0.5">Market data and negotiation scripts for the role</p>
+          </div>
+        </div>
+
+        {/* Competitive comparison + pain point */}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <p className="text-xs text-amber-800">
+            <span className="font-semibold">43% of ATS rejections</span> are from formatting errors alone.
+            Jobscan charges $49.95/month to scan resumes. We analyze and build your full application for tokens.
+          </p>
+        </div>
+
+        {/* Primary CTA */}
+        <div className="text-center space-y-2">
+          <Link
+            href="/tools/jd_match"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
+          >
+            <Target className="w-4 h-4" />
+            Analyze a Job Posting
+          </Link>
+          <p className="text-xs text-gray-400">Paste any job URL or description to start</p>
+        </div>
       </div>
     );
   }

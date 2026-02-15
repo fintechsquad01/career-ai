@@ -8,6 +8,7 @@ import { Loader } from "./Loader";
 import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
+import { EmailCapture } from "./EmailCapture";
 import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES } from "@/lib/constants";
 import { track } from "@/lib/analytics";
 import {
@@ -53,7 +54,7 @@ function StickyCtaBar() {
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px] w-full sm:w-auto"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs sm:text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px] w-full sm:w-auto whitespace-nowrap"
         >
           Get Started — Free
           <ArrowRight className="w-4 h-4" />
@@ -218,9 +219,11 @@ export function LandingContent() {
   const handleAnalyze = async (text: string, type: InputType) => {
     track("landing_analyze", { type: type ?? "unknown" });
 
-    // Save JD for post-auth mission activation
+    // Save input for post-auth restoration
     if (type === "jd" || type === "url") {
       localStorage.setItem("aiskillscore_pre_auth_jd", text);
+    } else if (type === "resume") {
+      localStorage.setItem("aiskillscore_pre_auth_resume", text);
     }
 
     setAnalysisType(type);
@@ -614,33 +617,41 @@ export function LandingContent() {
 
           {/* Footer */}
           <footer className="py-12 px-4 bg-[#F5F5F7] border-t border-gray-200">
-            <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
-                  <Sparkles className="w-3.5 h-3.5 text-white" />
+            <div className="max-w-4xl mx-auto space-y-8">
+              {/* Email capture */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                    <Sparkles className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <span className="font-bold text-gray-900">AISkillScore</span>
                 </div>
-                <span className="font-bold text-gray-900">AISkillScore</span>
+                <div className="w-full sm:max-w-xs">
+                  <EmailCapture context="landing_footer" />
+                </div>
               </div>
-              <div className="flex items-center gap-6 text-sm text-gray-500">
-                <Link href="/pricing" className="hover:text-gray-900">
-                  Pricing
-                </Link>
-                <Link href="/blog" className="hover:text-gray-900">
-                  Blog
-                </Link>
-                <Link href="/compare" className="hover:text-gray-900">
-                  Compare
-                </Link>
-                <Link href="/privacy" className="hover:text-gray-900">
-                  Privacy
-                </Link>
-                <Link href="/terms" className="hover:text-gray-900">
-                  Terms
-                </Link>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200/60">
+                <div className="flex items-center gap-6 text-sm text-gray-500">
+                  <Link href="/pricing" className="hover:text-gray-900">
+                    Pricing
+                  </Link>
+                  <Link href="/blog" className="hover:text-gray-900">
+                    Blog
+                  </Link>
+                  <Link href="/compare" className="hover:text-gray-900">
+                    Compare
+                  </Link>
+                  <Link href="/privacy" className="hover:text-gray-900">
+                    Privacy
+                  </Link>
+                  <Link href="/terms" className="hover:text-gray-900">
+                    Terms
+                  </Link>
+                </div>
+                <p className="text-xs text-gray-400">
+                  © {new Date().getFullYear()} AISkillScore. All rights reserved.
+                </p>
               </div>
-              <p className="text-xs text-gray-400">
-                © {new Date().getFullYear()} AISkillScore. All rights reserved.
-              </p>
             </div>
           </footer>
         </>

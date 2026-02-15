@@ -15,10 +15,12 @@ interface AppState {
   dailyCreditsBalance: number;
   dailyCreditsAwarded: boolean;
   tokenAnimating: boolean;
+  tokensLoaded: boolean;
   setTokenBalance: (balance: number) => void;
   setDailyCreditsBalance: (balance: number) => void;
   setDailyCreditsAwarded: (awarded: boolean) => void;
   setTokenAnimating: (animating: boolean) => void;
+  setTokensLoaded: (loaded: boolean) => void;
 
   // UI
   mobileMenuOpen: boolean;
@@ -44,10 +46,12 @@ export const useAppStore = create<AppState>((set) => ({
   dailyCreditsBalance: 0,
   dailyCreditsAwarded: false,
   tokenAnimating: false,
+  tokensLoaded: false,
   setTokenBalance: (tokenBalance) => set({ tokenBalance }),
   setDailyCreditsBalance: (dailyCreditsBalance) => set({ dailyCreditsBalance }),
   setDailyCreditsAwarded: (dailyCreditsAwarded) => set({ dailyCreditsAwarded }),
   setTokenAnimating: (tokenAnimating) => set({ tokenAnimating }),
+  setTokensLoaded: (tokensLoaded) => set({ tokensLoaded }),
 
   mobileMenuOpen: false,
   setMobileMenuOpen: (mobileMenuOpen) => set({ mobileMenuOpen }),

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Crosshair,
@@ -11,8 +11,10 @@ import {
   Coins,
   PanelLeftClose,
   PanelLeftOpen,
+  LogOut,
 } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { createClient } from "@/lib/supabase/client";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
@@ -24,11 +26,20 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   // Use individual selectors to prevent re-renders from unrelated state changes
   const tokenBalance = useAppStore((s) => s.tokenBalance);
   const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
+  const tokensLoaded = useAppStore((s) => s.tokensLoaded);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const setSidebarCollapsed = useAppStore((s) => s.setSidebarCollapsed);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <aside
@@ -82,18 +93,26 @@ export function Sidebar() {
         })}
       </div>
 
-      {/* Token balance — bottom */}
-      <div className={`m-2 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 text-white ${sidebarCollapsed ? "p-2" : "p-3"}`}>
+      {/* Token balance */}
+      <div className={`mx-2 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 text-white ${sidebarCollapsed ? "p-2" : "p-3"}`}>
         {sidebarCollapsed ? (
           <Link href="/pricing" className="flex flex-col items-center gap-0.5" title={`${tokenBalance + dailyCreditsBalance} tokens`}>
             <Coins className="w-4 h-4 text-gray-300" />
-            <span className="text-[10px] font-bold">{tokenBalance + dailyCreditsBalance}</span>
+            {tokensLoaded ? (
+              <span className="text-[10px] font-bold">{tokenBalance + dailyCreditsBalance}</span>
+            ) : (
+              <span className="inline-block w-6 h-3 bg-white/20 rounded animate-pulse" />
+            )}
           </Link>
         ) : (
           <>
             <div className="flex items-center gap-1.5 mb-1">
               <Coins className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-sm font-semibold">{tokenBalance + dailyCreditsBalance}</span>
+              {tokensLoaded ? (
+                <span className="text-sm font-semibold">{tokenBalance + dailyCreditsBalance}</span>
+              ) : (
+                <span className="inline-block w-8 h-4 bg-white/20 rounded animate-pulse" />
+              )}
               <span className="text-[10px] text-gray-400">tokens</span>
             </div>
             {dailyCreditsBalance > 0 && (
@@ -105,6 +124,18 @@ export function Sidebar() {
           </>
         )}
       </div>
+
+      {/* Sign Out — bottom */}
+      <button
+        onClick={handleSignOut}
+        title={sidebarCollapsed ? "Sign Out" : undefined}
+        className={`flex items-center gap-2 mx-2 mb-2 mt-1 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors ${
+          sidebarCollapsed ? "justify-center px-1 py-2" : "px-3 py-2"
+        }`}
+      >
+        <LogOut className="w-4 h-4 flex-shrink-0" />
+        {!sidebarCollapsed && <span className="text-xs font-medium">Sign Out</span>}
+      </button>
     </aside>
   );
 }

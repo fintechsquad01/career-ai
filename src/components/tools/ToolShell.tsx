@@ -925,7 +925,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           </div>
 
           {/* Reassurance message */}
-          <div className="text-center">
+          <div className="text-center space-y-2">
             <p className="text-xs text-gray-500 max-w-sm mx-auto">
               {elapsedSec < 10
                 ? "Our AI is using advanced reasoning to deeply analyze your specific situation..."
@@ -933,6 +933,17 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                   ? "Building a premium, personalized analysis — this takes a moment for the best results..."
                   : "Almost there — our AI is putting the finishing touches on your comprehensive analysis..."}
             </p>
+            {/* Timeout warning at 20 seconds */}
+            {elapsedSec >= 20 && (
+              <p className="text-xs text-amber-600 flex items-center justify-center gap-2">
+                <span className="inline-flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse [animation-delay:0.2s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse [animation-delay:0.4s]" />
+                </span>
+                Still working on your analysis...
+              </p>
+            )}
           </div>
 
           {/* Rotating insight card */}
@@ -967,7 +978,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Error display */}
       {state === "result" && error && !result && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4" role="alert">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>

@@ -15,6 +15,8 @@ export function useTokens() {
     setDailyCreditsAwarded,
     setTokenAnimating,
     tokenAnimating,
+    tokensLoaded,
+    setTokensLoaded,
   } = useAppStore();
   const supabase = createClient();
   const initChecked = useRef(false);
@@ -34,7 +36,7 @@ export function useTokens() {
         } = await supabase.auth.getUser();
         if (!user) return;
 
-        // 1. Award daily credits
+        // 1. Award daily credits and get real balance
         const res = await fetch("/api/daily-credits", { method: "POST" });
         if (res.ok) {
           const data = await res.json();
@@ -49,6 +51,10 @@ export function useTokens() {
             setDailyCreditsBalance(data.daily_balance);
             setTokenBalance(data.purchased_balance);
           }
+          setTokensLoaded(true);
+        } else {
+          // Even on error, mark as loaded so we don't show shimmer forever
+          setTokensLoaded(true);
         }
 
         // 2. Apply pending referral code from localStorage
@@ -88,12 +94,13 @@ export function useTokens() {
           }
         }
       } catch {
-        // Silently fail
+        // Silently fail, but still mark as loaded
+        setTokensLoaded(true);
       }
     };
 
     runInitChecks();
-  }, [supabase, setDailyCreditsBalance, setDailyCreditsAwarded, setTokenBalance, setTokenAnimating]);
+  }, [supabase, setDailyCreditsBalance, setDailyCreditsAwarded, setTokenBalance, setTokenAnimating, setTokensLoaded]);
 
   const spend = useCallback(
     async (amount: number, toolId: string, toolResultId?: string): Promise<boolean> => {
@@ -182,6 +189,7 @@ export function useTokens() {
     purchasedBalance: tokenBalance,
     dailyBalance: dailyCreditsBalance,
     dailyCreditsAwarded,
+    tokensLoaded,
     spend,
     add,
     refreshBalance,

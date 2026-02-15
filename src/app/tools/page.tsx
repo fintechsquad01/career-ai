@@ -30,14 +30,26 @@ export default async function ToolsHubPage() {
     : null;
 
   const content = (
-    <div className="max-w-5xl mx-auto px-4 py-5 sm:py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">All Tools</h1>
-      <p className="text-gray-500 text-sm mb-6">
-        11 AI-powered career tools. Analyze, Build, Prepare, Grow.
-      </p>
+    <div className="max-w-4xl mx-auto px-4 py-5 sm:py-8 space-y-6 stagger-children">
+      {/* Hero section */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-6 sm:p-8 text-white">
+        <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-violet-400/20 rounded-full blur-2xl" />
+        <div className="relative">
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">AI-Powered Career Intelligence</h1>
+          <p className="text-sm sm:text-base text-blue-100 leading-relaxed max-w-lg mb-4">
+            Professional-grade analysis that costs others $50–200/month. Yours for tokens.
+          </p>
+          <div className="flex flex-wrap gap-3 text-xs font-medium">
+            <span className="px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full">11 tools</span>
+            <span className="px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full">6 free</span>
+            <span className="px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full">Avg 30s analysis</span>
+          </div>
+        </div>
+      </div>
 
       {!user && (
-        <div className="mb-6 bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl p-5 flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl p-5 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-gray-900">
               Sign up to use any tool

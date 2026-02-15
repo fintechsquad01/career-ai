@@ -151,11 +151,11 @@ export default function LifetimePage() {
                 : "border-2 border-gray-200 hover:border-violet-300"
             }`}
           >
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-violet-600 text-white text-[10px] font-bold rounded-full uppercase">Best Value</span>
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-violet-600 text-white text-[10px] font-bold rounded-full uppercase whitespace-nowrap">Best Value</span>
             <p className="text-xs font-bold text-violet-600 uppercase mb-2 mt-1">Early Bird</p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">$79</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-violet-600 font-medium mt-2">100 tokens/mo · $0.066/tok</p>
+            <p className="text-xs text-violet-600 font-medium mt-2 break-words">100 tokens/mo · $0.066/tok</p>
           </button>
           <button
             type="button"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User, CreditCard, Shield, Upload, Download, Trash2, AlertTriangle, Camera, Eye, EyeOff, Bell, Loader2, Briefcase } from "lucide-react";
+import { User, CreditCard, Shield, Upload, Download, Trash2, AlertTriangle, Camera, Eye, EyeOff, Bell, Loader2, Briefcase, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -27,6 +27,21 @@ const TABS = [
   { id: "account", label: "Account", icon: CreditCard },
   { id: "privacy", label: "Privacy", icon: Shield },
 ] as const;
+
+const EXPERIENCE_LEVELS = [
+  { value: "2", label: "0-2 years" },
+  { value: "5", label: "3-5 years" },
+  { value: "10", label: "6-10 years" },
+  { value: "15", label: "10+ years" },
+] as const;
+
+function yearsToExperienceLevel(years: number | null | undefined): string {
+  if (years == null) return "";
+  if (years <= 2) return "2";
+  if (years <= 5) return "5";
+  if (years <= 10) return "10";
+  return "15";
+}
 
 function getNotificationPrefs(profile: Profile | null): NotificationPreferences {
   const prefs = profile?.notification_preferences;
@@ -57,7 +72,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [jobTitle, setJobTitle] = useState(careerProfile?.title || "");
   const [company, setCompany] = useState(careerProfile?.company || "");
   const [industry, setIndustry] = useState(careerProfile?.industry || "");
-  const [yearsExperience, setYearsExperience] = useState(careerProfile?.years_experience?.toString() || "");
+  const [yearsExperience, setYearsExperience] = useState(yearsToExperienceLevel(careerProfile?.years_experience ?? null));
   const [location, setLocation] = useState(careerProfile?.location || "");
   const [linkedinUrl, setLinkedinUrl] = useState(careerProfile?.linkedin_url || "");
   const [savingCareer, setSavingCareer] = useState(false);
@@ -81,7 +96,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
     setJobTitle(careerProfile?.title || "");
     setCompany(careerProfile?.company || "");
     setIndustry(careerProfile?.industry || "");
-    setYearsExperience(careerProfile?.years_experience?.toString() || "");
+    setYearsExperience(yearsToExperienceLevel(careerProfile?.years_experience ?? null));
     setLocation(careerProfile?.location || "");
     setLinkedinUrl(careerProfile?.linkedin_url || "");
   }, [careerProfile]);
@@ -110,24 +125,9 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
         updated_at: new Date().toISOString(),
       };
 
-      const { data: existing } = await supabase
+      const { error } = await supabase
         .from("career_profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
-
-      if (existing) {
-        const { error } = await supabase
-          .from("career_profiles")
-          .update(careerData)
-          .eq("user_id", user.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from("career_profiles")
-          .insert(careerData);
-        if (error) throw error;
-      }
+        .upsert(careerData, { onConflict: "user_id" });
 
       toast("Career profile saved!");
       router.refresh();
@@ -530,11 +530,11 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
             </button>
           </div>
 
-          {/* About Your Career */}
+          {/* Career Profile */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-blue-600" />
-              <h3 className="font-semibold text-gray-900">About Your Career</h3>
+              <h3 className="font-semibold text-gray-900">Career Profile</h3>
             </div>
             <p className="text-xs text-gray-500">This data pre-fills your tools and improves analysis accuracy.</p>
 
@@ -578,17 +578,18 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
             </div>
 
             <div>
-              <label htmlFor="settings-years" className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
-              <input
-                id="settings-years"
-                type="number"
-                min="0"
-                max="50"
+              <label htmlFor="settings-experience" className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+              <select
+                id="settings-experience"
                 value={yearsExperience}
                 onChange={(e) => setYearsExperience(e.target.value)}
-                placeholder="e.g. 5"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
-              />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px] bg-white"
+              >
+                <option value="">Select experience level</option>
+                {EXPERIENCE_LEVELS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -780,6 +781,22 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
               </div>
             </div>
           )}
+
+          {/* Sign Out */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6">
+            <button
+              onClick={async () => {
+                const supabase = createClient();
+                await supabase.auth.signOut();
+                router.push("/");
+                router.refresh();
+              }}
+              className="flex items-center gap-2.5 px-4 py-3 w-full border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px]"
+            >
+              <LogOut className="w-4 h-4 text-gray-400" />
+              Sign Out
+            </button>
+          </div>
         </div>
       )}
 

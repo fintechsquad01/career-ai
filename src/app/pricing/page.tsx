@@ -218,8 +218,8 @@ export default function PricingPage() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {TOOLS.map((tool) => (
-              <div key={tool.id} className="bg-white rounded-xl border border-gray-200 p-3 text-center">
-                <p className="text-sm font-medium text-gray-900">{tool.title}</p>
+              <div key={tool.id} className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3 text-center min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-1 break-words">{tool.title}</p>
                 <p className={`text-xs font-bold mt-1 ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
                   {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
                 </p>

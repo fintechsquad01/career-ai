@@ -40,6 +40,24 @@ function buildContext(
   const { includeResume = false, includeJdText = false } = options;
   let ctx = "";
 
+  // PRIMARY INPUTS — resume and JD come first so the model always sees raw inputs before profile
+  // Include full resume text when requested — inputs take priority over DB profile
+  if (includeResume) {
+    const resumeText = String(inputs.resume_text || careerProfile?.resume_text || "");
+    if (resumeText) {
+      ctx += `CANDIDATE RESUME:\n${resumeText.slice(0, 12000)}\n\n`;
+    }
+  }
+
+  // Include full JD text when requested — inputs take priority over DB job target
+  if (includeJdText) {
+    const jdText = String(inputs.jd_text || inputs.target_jd || jobTarget?.jd_text || "");
+    if (jdText) {
+      ctx += `JOB DESCRIPTION:\n${jdText.slice(0, 8000)}\n\n`;
+    }
+  }
+
+  // SUPPLEMENTARY CONTEXT — profile and job target metadata
   if (careerProfile) {
     ctx += "USER PROFILE:\n";
     if (careerProfile.name) ctx += `- Name: ${careerProfile.name}\n`;
@@ -53,27 +71,11 @@ function buildContext(
     ctx += "\n";
   }
 
-  // Include full resume text when requested — inputs take priority over DB profile
-  if (includeResume) {
-    const resumeText = String(inputs.resume_text || careerProfile?.resume_text || "");
-    if (resumeText) {
-      ctx += `CANDIDATE RESUME:\n${resumeText.slice(0, 12000)}\n\n`;
-    }
-  }
-
   if (jobTarget) {
     ctx += `TARGET JOB:\n- ${jobTarget.title} at ${jobTarget.company}\n`;
     if (jobTarget.salary_range) ctx += `- Salary: ${jobTarget.salary_range}\n`;
     if (jobTarget.location) ctx += `- Location: ${jobTarget.location}\n`;
     ctx += "\n";
-  }
-
-  // Include full JD text when requested — inputs take priority over DB job target
-  if (includeJdText) {
-    const jdText = String(inputs.jd_text || inputs.target_jd || jobTarget?.jd_text || "");
-    if (jdText) {
-      ctx += `JOB DESCRIPTION:\n${jdText.slice(0, 8000)}\n\n`;
-    }
   }
 
   return ctx;
@@ -539,7 +541,7 @@ const cover_letter: ToolPromptConfig = {
     return `${ctx}${priorCtx}${jdFromInput}Write a ${tone} cover letter (${length} length: short=150-200 words, standard=250-350 words, detailed=400-500 words).
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
-IMPORTANT: Use the candidate's ACTUAL resume achievements and experience as the foundation for the cover letter. Do not invent experiences or projects not mentioned in the resume.
+IMPORTANT: Use the candidate's ACTUAL resume achievements and experience as the foundation for the cover letter. Do not invent experiences or projects not mentioned in the resume. NEVER fabricate metrics, percentages, revenue figures, or quantified achievements — only use numbers the candidate explicitly provided.
 
 STORYTELLING FRAMEWORK:
 1. HOOK (2-3 sentences): Open with a specific personal or professional moment that connects to this role or company. NOT "I am writing to express my interest." Think: "When I built [project] at [company], I discovered that [insight relevant to their mission]..." or "Three years ago, I solved a problem that I think [Company] is tackling right now..."
@@ -608,7 +610,7 @@ const interview: ToolPromptConfig = {
     // Include JD from inputs if not from job target
     const jdFromInput = inputs.jd_text ? `\nJOB DESCRIPTION:\n${String(inputs.jd_text).slice(0, 8000)}\n` : "";
 
-    return `${ctx}${priorCtx}${jdFromInput}Generate ${interviewType} interview questions tailored to this specific candidate and target role.
+    return `${ctx}${priorCtx}${jdFromInput}Generate exactly 8 interview questions tailored to this specific candidate and target role. Distribution: 1 warm-up, 2 behavioral (STAR format), 2 technical/role-specific, 2 gap-probe questions targeting resume weaknesses, and 1 culture-fit question.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Base all suggested answers on the candidate's ACTUAL experience from their resume. Reference specific projects, companies, and achievements mentioned in their resume — not generic examples.

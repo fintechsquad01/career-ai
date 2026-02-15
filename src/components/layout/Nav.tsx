@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Brain, Menu, X, ChevronRight } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Brain, Menu, X, ChevronRight, Settings, LogOut } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
+import { createClient } from "@/lib/supabase/client";
 import { TOOLS_MAP } from "@/lib/constants";
 
 interface NavProps {
@@ -43,8 +45,33 @@ function useBreadcrumb(pathname: string) {
 
 export function Nav({ isLoggedIn }: NavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { mobileMenuOpen, setMobileMenuOpen, profile } = useAppStore();
   const breadcrumbs = useBreadcrumb(pathname);
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close avatar dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target as Node)) {
+        setAvatarMenuOpen(false);
+      }
+    }
+    if (avatarMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [avatarMenuOpen]);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setAvatarMenuOpen(false);
+    setMobileMenuOpen(false);
+    router.push("/");
+    router.refresh();
+  };
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -92,16 +119,38 @@ export function Nav({ isLoggedIn }: NavProps) {
           {isLoggedIn ? (
             <div className="hidden md:flex items-center gap-4">
               <TokBadge />
-              <Link
-                href="/settings"
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden hover:opacity-90 transition-opacity"
-              >
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
-                ) : (
-                  initials
+              <div className="relative" ref={avatarMenuRef}>
+                <button
+                  onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden hover:opacity-90 transition-opacity"
+                >
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    initials
+                  )}
+                </button>
+                {avatarMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-50">
+                    <Link
+                      href="/settings"
+                      onClick={() => setAvatarMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <Settings className="w-4 h-4 text-gray-400" />
+                      Settings
+                    </Link>
+                    <div className="border-t border-gray-100 my-1" />
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                    >
+                      <LogOut className="w-4 h-4 text-gray-400" />
+                      Sign Out
+                    </button>
+                  </div>
                 )}
-              </Link>
+              </div>
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
@@ -145,6 +194,14 @@ export function Nav({ isLoggedIn }: NavProps) {
                 <MobileLink href="/pricing" label="Tokens" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/history" label="History" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/settings" label="Settings" onClick={() => setMobileMenuOpen(false)} />
+                <div className="border-t border-gray-200 my-2" />
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2.5 w-full px-3 py-3 rounded-xl text-base font-medium text-gray-500 hover:bg-gray-50 min-h-[44px]"
+                >
+                  <LogOut className="w-4.5 h-4.5" />
+                  Sign Out
+                </button>
               </>
             ) : (
               <>

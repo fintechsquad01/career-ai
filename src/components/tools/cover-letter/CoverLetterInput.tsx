@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileSignature } from "lucide-react";
+import { useAppStore } from "@/stores/app-store";
 
 interface CoverLetterInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
@@ -20,8 +21,19 @@ const LENGTHS = [
 ] as const;
 
 export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
+  const { activeJobTarget } = useAppStore();
   const [tone, setTone] = useState<string>("professional");
   const [length, setLength] = useState<string>("standard");
+  const [jdText, setJdText] = useState(activeJobTarget?.jd_text ?? "");
+
+  useEffect(() => {
+    if (activeJobTarget?.jd_text && !jdText.trim()) {
+      setJdText(activeJobTarget.jd_text);
+    }
+  }, [activeJobTarget?.jd_text, jdText]);
+
+  const effectiveJd = jdText.trim() || activeJobTarget?.jd_text?.trim() || "";
+  const hasJd = effectiveJd.length > 0;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -33,6 +45,27 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
           <h3 className="font-semibold text-gray-900">Cover Letter</h3>
           <p className="text-xs text-gray-500">AI-generated cover letter tailored to the job</p>
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="coverletter-jd" className="block text-sm font-medium text-gray-700 mb-2">
+          Job Description <span className="text-red-500">*</span>
+        </label>
+        <p className="text-xs text-gray-500 mb-2">Paste the job posting so we can personalize your letter</p>
+        <textarea
+          id="coverletter-jd"
+          value={jdText || activeJobTarget?.jd_text || ""}
+          onChange={(e) => setJdText(e.target.value)}
+          placeholder="Paste the full job description here..."
+          rows={5}
+          className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none min-h-[120px] resize-y"
+          aria-label="Job description"
+        />
+        {!hasJd && (
+          <p className="text-xs text-amber-600 mt-1.5">
+            A job description is required for a personalized cover letter.
+          </p>
+        )}
       </div>
 
       <div>
@@ -85,7 +118,8 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
       </div>
 
       <button
-        onClick={() => onSubmit({ tone, length })}
+        onClick={() => onSubmit({ tone, length, jd_text: effectiveJd })}
+        disabled={!hasJd}
         className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Generate Cover Letter — 3 tokens

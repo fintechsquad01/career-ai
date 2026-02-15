@@ -54,7 +54,7 @@ export function ToastProvider() {
   const Icon = iconMap[data.type || "success"];
 
   return (
-    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200" role="status" aria-live="polite" aria-atomic="true">
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200" role="alert" aria-live="assertive" aria-atomic="true">
       <div className={`flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg ${bgMap[data.type || "success"]} text-white text-sm font-medium`}>
         <Icon className="w-4 h-4 shrink-0" />
         <span>{data.message}</span>

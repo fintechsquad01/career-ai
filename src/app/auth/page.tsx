@@ -248,11 +248,17 @@ function AuthContent() {
               {mode === "signup"
                 ? hasPreAuthAnalysis
                   ? "Unlock Results — Free"
-                  : "Create Account — 15 Free Tokens"
+                  : "Create Account — 15 Free Tokens + 2 Daily"
                 : "Sign In"
               }
             </button>
           </form>
+
+          {mode === "signup" && (
+            <p className="text-xs text-gray-400 text-center mt-2">
+              Join 500+ professionals. No credit card required.
+            </p>
+          )}
 
           <p className="mt-5 text-center text-sm text-gray-500">
             {mode === "signup" ? (
