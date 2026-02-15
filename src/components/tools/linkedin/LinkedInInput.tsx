@@ -2,14 +2,20 @@
 
 import { useState } from "react";
 import { Linkedin } from "lucide-react";
+import { useAppStore } from "@/stores/app-store";
 
 interface LinkedInInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
 export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
+  const { careerProfile, activeJobTarget } = useAppStore();
+
+  const prefillTargetRole = activeJobTarget?.title || careerProfile?.title || "";
+  const targetRoleSource = activeJobTarget?.title ? "job target" : careerProfile?.title ? "profile" : null;
+
   const [aboutText, setAboutText] = useState("");
-  const [targetRole, setTargetRole] = useState("");
+  const [targetRole, setTargetRole] = useState(prefillTargetRole);
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -48,6 +54,9 @@ export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
           placeholder="e.g. Product Manager, Senior Engineer"
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
         />
+        {targetRoleSource && (
+          <p className="text-xs text-gray-400 mt-1">Pre-filled from your {targetRoleSource}</p>
+        )}
       </div>
 
       <div className="text-xs text-gray-400 space-y-1 mb-3">

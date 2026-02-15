@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Briefcase,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { INDUSTRIES } from "@/lib/constants";
+import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
 
 interface WelcomeModalProps {
   userId: string;
@@ -63,8 +64,18 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
   const [industry, setIndustry] = useState("");
   const [experience, setExperience] = useState("");
   const [saving, setSaving] = useState(false);
+  const [resumeText, setResumeText] = useState("");
+  const [preAuthResumeDetected, setPreAuthResumeDetected] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("aiskillscore_pre_auth_resume");
+    if (saved) {
+      setResumeText(saved);
+      setPreAuthResumeDetected(true);
+    }
+  }, []);
 
   const handleClose = async () => {
     await supabase
@@ -117,6 +128,28 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
     }
   };
 
+  const handleResumeNext = async () => {
+    // Resume auto-save is handled by ResumeUploadOrPaste component (autoSave=true)
+    // But if user just typed/pasted (not uploaded), save it now
+    if (resumeText.trim()) {
+      try {
+        await supabase
+          .from("career_profiles")
+          .upsert({
+            user_id: userId,
+            resume_text: resumeText.trim(),
+            source: preAuthResumeDetected ? "paste" : "paste",
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "user_id" });
+      } catch {
+        // Non-blocking
+      }
+    }
+    // Clear pre-auth localStorage
+    localStorage.removeItem("aiskillscore_pre_auth_resume");
+    setStep(3);
+  };
+
   const handleGetStarted = () => {
     onClose();
 
@@ -155,7 +188,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
 
         {/* Step indicator */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
               className={`h-1 rounded-full transition-all duration-300 ${
@@ -288,8 +321,50 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
           </div>
         )}
 
-        {/* Step 3: Career Snapshot / Get Started */}
+        {/* Step 3: Resume Upload */}
         {step === 2 && (
+          <div className="space-y-5">
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Add your resume</h2>
+              <p className="text-sm text-gray-500">Get personalized analysis across all 11 tools.</p>
+            </div>
+
+            <ResumeUploadOrPaste
+              value={resumeText}
+              onChange={setResumeText}
+              label="Upload or paste your resume"
+              autoSave
+            />
+
+            {/* Pre-auth detection */}
+            {preAuthResumeDetected && (
+              <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+                <Check className="w-3.5 h-3.5" />
+                We found the resume you pasted earlier
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setStep(3)}
+                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors min-h-[44px]"
+              >
+                Skip for now
+              </button>
+              <button
+                onClick={handleResumeNext}
+                disabled={!resumeText.trim()}
+                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-colors min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Continue
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Career Snapshot / Get Started */}
+        {step === 3 && (
           <div className="space-y-5 text-center">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center mx-auto">
               <Sparkles className="w-8 h-8 text-white" />

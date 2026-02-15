@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MessageSquare } from "lucide-react";
+import { useAppStore } from "@/stores/app-store";
 
 interface InterviewInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
@@ -15,6 +16,7 @@ const INTERVIEW_TYPES = [
 ] as const;
 
 export function InterviewInput({ onSubmit }: InterviewInputProps) {
+  const { activeJobTarget } = useAppStore();
   const [interviewType, setInterviewType] = useState<string>("behavioral_case");
 
   return (
@@ -28,6 +30,13 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
           <p className="text-xs text-gray-500">Practice questions with STAR answers</p>
         </div>
       </div>
+
+      {activeJobTarget && (
+        <div className="text-sm text-blue-700 bg-blue-50 px-4 py-2.5 rounded-xl">
+          Preparing for: <strong>{activeJobTarget.title}</strong>
+          {activeJobTarget.company && ` at ${activeJobTarget.company}`}
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Interview Type</label>

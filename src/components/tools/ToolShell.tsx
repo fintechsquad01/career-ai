@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, FileText, User } from "lucide-react";
+import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles } from "lucide-react";
+import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
+import { InlineProfileForm } from "@/components/shared/InlineProfileForm";
 import { Insight } from "@/components/shared/Insight";
 import { NpsWidget } from "@/components/shared/NpsWidget";
 import { ShareModal } from "@/components/shared/ShareModal";
@@ -15,7 +17,7 @@ import { TOOLS_MAP, MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
 import type { InsightCategory } from "@/lib/loading-insights";
-import type { ToolState, ToolProgress, ToolResult, CareerProfile } from "@/types";
+import type { ToolState, ToolProgress, ToolResult, CareerProfile, JobTarget } from "@/types";
 
 /** Narrative copy linking current tool to the recommended next */
 const NARRATIVE_TRANSITIONS: Record<string, Record<string, string>> = {
@@ -256,16 +258,12 @@ async function autoSaveDetectedProfile(
   result: Record<string, unknown>,
   currentCareerProfile: CareerProfile | null,
   userId: string,
+  inputs?: Record<string, unknown>,
+  toolId?: string,
 ): Promise<CareerProfile | null> {
   const detected = result.detected_profile as Record<string, unknown> | undefined;
-  if (!detected) return null;
 
-  // Only auto-save if current profile is missing critical fields
-  const hasTitle = currentCareerProfile?.title && currentCareerProfile.title.trim() !== "";
-  const hasIndustry = currentCareerProfile?.industry && currentCareerProfile.industry.trim() !== "";
-  if (hasTitle && hasIndustry) return null; // Profile already populated
-
-  // Build update object from detected_profile
+  // Build update object
   const updates: {
     user_id: string;
     updated_at: string;
@@ -273,30 +271,76 @@ async function autoSaveDetectedProfile(
     industry?: string;
     name?: string;
     years_experience?: number;
+    resume_text?: string;
+    source?: string;
+    skills?: string[];
+    skill_gaps?: string[];
+    displacement_score?: number;
+    resume_score?: number;
   } = {
     user_id: userId,
     updated_at: new Date().toISOString(),
   };
 
+  const hasTitle = currentCareerProfile?.title && currentCareerProfile.title.trim() !== "";
+  const hasIndustry = currentCareerProfile?.industry && currentCareerProfile.industry.trim() !== "";
+
   let fieldCount = 0;
-  if (!hasTitle && detected.role && detected.role !== "Not provided" && detected.role !== "Unknown") {
-    updates.title = String(detected.role);
-    fieldCount++;
-  }
-  if (!hasIndustry && detected.industry && detected.industry !== "Not provided" && detected.industry !== "Unknown") {
-    updates.industry = String(detected.industry);
-    fieldCount++;
-  }
-  if (detected.name && detected.name !== "Not provided" && !currentCareerProfile?.name) {
-    updates.name = String(detected.name);
-    fieldCount++;
-  }
-  if (detected.experience_years && detected.experience_years !== "Not specified" && !currentCareerProfile?.years_experience) {
-    const years = parseInt(String(detected.experience_years), 10);
-    if (!isNaN(years)) {
-      updates.years_experience = years;
+
+  // Save title/industry/name/experience from detected_profile
+  if (detected) {
+    if (!hasTitle && detected.role && detected.role !== "Not provided" && detected.role !== "Unknown") {
+      updates.title = String(detected.role);
       fieldCount++;
     }
+    if (!hasIndustry && detected.industry && detected.industry !== "Not provided" && detected.industry !== "Unknown") {
+      updates.industry = String(detected.industry);
+      fieldCount++;
+    }
+    if (detected.name && detected.name !== "Not provided" && !currentCareerProfile?.name) {
+      updates.name = String(detected.name);
+      fieldCount++;
+    }
+    if (detected.experience_years && detected.experience_years !== "Not specified" && !currentCareerProfile?.years_experience) {
+      const years = parseInt(String(detected.experience_years), 10);
+      if (!isNaN(years)) {
+        updates.years_experience = years;
+        fieldCount++;
+      }
+    }
+
+    // Save skills if detected and profile has none
+    const profileSkills = currentCareerProfile?.skills as unknown[] | null;
+    if ((!profileSkills || profileSkills.length === 0) && detected.key_skills && Array.isArray(detected.key_skills) && detected.key_skills.length > 0) {
+      updates.skills = (detected.key_skills as string[]).map(String);
+      fieldCount++;
+    }
+
+    // Save skill_gaps if detected
+    const profileGaps = currentCareerProfile?.skill_gaps as unknown[] | null;
+    if ((!profileGaps || profileGaps.length === 0) && detected.skill_gaps && Array.isArray(detected.skill_gaps) && detected.skill_gaps.length > 0) {
+      updates.skill_gaps = (detected.skill_gaps as string[]).map(String);
+      fieldCount++;
+    }
+  }
+
+  // Save resume_text from inputs if profile doesn't have one
+  if (!currentCareerProfile?.resume_text && inputs?.resume_text && typeof inputs.resume_text === "string" && inputs.resume_text.trim().length > 50) {
+    updates.resume_text = inputs.resume_text.trim();
+    updates.source = "paste";
+    fieldCount++;
+  }
+
+  // Save displacement score
+  if (toolId === "displacement" && typeof result.overall_score === "number") {
+    updates.displacement_score = result.overall_score;
+    fieldCount++;
+  }
+
+  // Save resume/ATS score
+  if (toolId === "resume" && typeof result.ats_score === "number") {
+    updates.resume_score = result.ats_score;
+    fieldCount++;
   }
 
   // Only update if we have something new to save
@@ -317,6 +361,47 @@ async function autoSaveDetectedProfile(
     return data as CareerProfile;
   } catch (err) {
     console.error("Auto-profile save error:", err);
+    return null;
+  }
+}
+
+/** Auto-save JD text as active job target if none exists */
+async function autoSaveJobTarget(
+  inputs: Record<string, unknown>,
+  currentJobTarget: JobTarget | null,
+  userId: string,
+): Promise<JobTarget | null> {
+  // Only save if no active job target and inputs contain jd_text
+  if (currentJobTarget?.jd_text) return null;
+  const jdText = inputs.jd_text || inputs.target_jd;
+  if (!jdText || typeof jdText !== "string" || jdText.trim().length < 50) return null;
+
+  try {
+    const supabase = createClient();
+
+    // Try to extract title from JD text (simple heuristic)
+    const lines = jdText.trim().split("\n").filter((l: string) => l.trim());
+    const possibleTitle = lines[0]?.trim().slice(0, 100) || "Untitled Position";
+
+    const { data, error } = await supabase
+      .from("job_targets")
+      .insert({
+        user_id: userId,
+        jd_text: jdText.trim(),
+        title: possibleTitle,
+        company: "",
+        is_active: true,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Auto job target save failed:", error);
+      return null;
+    }
+    return data as JobTarget;
+  } catch (err) {
+    console.error("Auto job target save error:", err);
     return null;
   }
 }
@@ -344,7 +429,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [error, setError] = useState<string | null>(null);
   const { balance, refreshBalance } = useTokens();
   const { completeAction } = useMission();
-  const { careerProfile, activeJobTarget, setCareerProfile } = useAppStore();
+  const { careerProfile, activeJobTarget, setCareerProfile, setActiveJobTarget } = useAppStore();
 
   const isRunning = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -621,16 +706,23 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                   if (missionAction) {
                     await completeAction(missionAction.id);
                   }
-                  // Auto-save detected profile if career profile is sparse
+                  // Auto-save detected profile data
                   const sseResultObj = data.result as Record<string, unknown>;
-                  if (session?.user?.id && sseResultObj?.detected_profile) {
+                  if (session?.user?.id) {
                     const savedProfile = await autoSaveDetectedProfile(
                       sseResultObj,
                       careerProfile,
                       session.user.id,
+                      inputs,
+                      toolId,
                     );
                     if (savedProfile) {
                       setCareerProfile(savedProfile);
+                    }
+                    // Auto-save JD as job target
+                    const savedJobTarget = await autoSaveJobTarget(inputs, activeJobTarget, session.user.id);
+                    if (savedJobTarget) {
+                      setActiveJobTarget(savedJobTarget);
                     }
                   }
                   track("tool_completed", { tool_id: toolId });
@@ -653,16 +745,23 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             if (missionAction) {
               await completeAction(missionAction.id);
             }
-            // Auto-save detected profile if career profile is sparse
+            // Auto-save detected profile data
             const jsonResultObj = data.result as Record<string, unknown>;
-            if (session?.user?.id && jsonResultObj?.detected_profile) {
+            if (session?.user?.id) {
               const savedProfile = await autoSaveDetectedProfile(
                 jsonResultObj,
                 careerProfile,
                 session.user.id,
+                inputs,
+                toolId,
               );
               if (savedProfile) {
                 setCareerProfile(savedProfile);
+              }
+              // Auto-save JD as job target
+              const savedJobTarget = await autoSaveJobTarget(inputs, activeJobTarget, session.user.id);
+              if (savedJobTarget) {
+                setActiveJobTarget(savedJobTarget);
               }
             }
             track("tool_completed", { tool_id: toolId });
@@ -691,7 +790,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         isRunning.current = false;
       }
     },
-    [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget, careerProfile, setCareerProfile]
+    [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget, careerProfile, setCareerProfile, setActiveJobTarget]
   );
 
   const handleReset = useCallback(() => {
@@ -782,34 +881,23 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
 
-      {/* Data completeness nudge — helps users get better results */}
+      {/* Data completeness nudge — inline resume upload */}
       {state === "input" && !careerProfile?.resume_text && toolId !== "headshots" && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <FileText className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-amber-900">Add your resume for significantly better results</p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              Our AI uses your full resume to personalize every analysis — quoting your real achievements, matching your actual skills, and tailoring advice to your experience.
-            </p>
-            <Link href="/settings" className="text-xs font-semibold text-amber-700 hover:text-amber-900 mt-1 inline-block">
-              Upload resume in Settings →
-            </Link>
-          </div>
-        </div>
+        <ResumeUploadOrPaste
+          value=""
+          onChange={() => {
+            // After upload, the component auto-saves to DB and updates the Zustand store
+          }}
+          compact
+          label="Add your resume for better results"
+          autoSave
+        />
       )}
       {state === "input" && careerProfile?.resume_text && !careerProfile?.title && toolId !== "headshots" && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <User className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-amber-900">Complete your career profile for better accuracy</p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              Adding your job title, industry, and years of experience helps our AI calibrate scores and recommendations to your specific situation.
-            </p>
-            <Link href="/settings" className="text-xs font-semibold text-amber-700 hover:text-amber-900 mt-1 inline-block">
-              Complete profile in Settings →
-            </Link>
-          </div>
-        </div>
+        <InlineProfileForm
+          careerProfile={careerProfile}
+          compact
+        />
       )}
 
       {/* Context verification — show what the AI will use */}
@@ -837,7 +925,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             ) : (
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-amber-500">&#9888;</span>
-                <span className="text-gray-500">No resume — results will be less personalized</span>
+                <span className="text-gray-500">No resume uploaded — add one above for personalized results</span>
               </div>
             )}
 
@@ -869,7 +957,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             ) : (
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-amber-500">&#9888;</span>
-                <span className="text-gray-500">No career profile — AI will try to detect from inputs</span>
+                <span className="text-gray-500">No career profile — complete the form above for better accuracy</span>
               </div>
             )}
           </div>

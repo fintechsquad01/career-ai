@@ -5,6 +5,7 @@ import { Ring } from "@/components/shared/Ring";
 import { useEffect, useState } from "react";
 import { MissionCard } from "./MissionCard";
 import { WelcomeModal } from "@/components/modals/WelcomeModal";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   Sparkles,
@@ -99,62 +100,151 @@ interface DashboardContentProps {
   recentResults: ToolResultRow[];
 }
 
-/** Build the journey steps with their completion states */
-function buildJourneySteps(results: ToolResultRow[]) {
-  const ran = new Set(results.map((r) => r.tool_id));
+interface SmartRec {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  tokens: number | "Free";
+  priority: number; // lower = higher priority
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
+  reason: string; // why this is recommended
+}
 
-  return [
-    {
-      id: "displacement",
-      title: "AI Displacement Score",
-      desc: "Understand how AI affects your role",
-      icon: ShieldAlert,
-      tokens: 0,
-      tokenLabel: "Free",
-      href: "/tools/displacement",
-      completed: ran.has("displacement"),
-    },
-    {
-      id: "jd_match",
-      title: "JD Match Score",
-      desc: "Match yourself against a job posting",
-      icon: Target,
-      tokens: 2,
-      tokenLabel: "2 tokens",
-      href: "/tools/jd_match",
-      completed: ran.has("jd_match"),
-    },
-    {
-      id: "resume",
-      title: "Resume Optimizer",
-      desc: "ATS-optimized resume that sounds like you",
+/** Build context-aware, prioritized recommendations based on user state. */
+function getSmartRecommendations(
+  careerProfile: CareerProfile | null,
+  activeJobTarget: JobTarget | null,
+  recentResults: ToolResultRow[],
+): SmartRec[] {
+  const completedTools = new Set(recentResults.map((r) => r.tool_id));
+  const recs: SmartRec[] = [];
+
+  // Priority 1: Missing resume — everything is better with a resume
+  if (!careerProfile?.resume_text) {
+    recs.push({
+      id: "add_resume",
+      title: "Upload your resume",
+      description: "Unlock personalized insights across all tools",
+      href: "/settings",
+      tokens: "Free",
+      priority: 0,
       icon: FileText,
-      tokens: 10,
-      tokenLabel: "10 tokens",
+      iconBg: "bg-violet-50",
+      iconColor: "text-violet-600",
+      reason: "Unlocks personalized analysis",
+    });
+  }
+
+  // Priority 2: Free displacement score
+  if (!completedTools.has("displacement")) {
+    recs.push({
+      id: "displacement",
+      title: "Check your AI displacement risk",
+      description: careerProfile?.title
+        ? `See how AI affects ${careerProfile.title} roles`
+        : "Find out which of your tasks AI can automate",
+      href: "/tools/displacement",
+      tokens: "Free",
+      priority: 1,
+      icon: ShieldAlert,
+      iconBg: "bg-blue-50",
+      iconColor: "text-blue-600",
+      reason: "Always free",
+    });
+  }
+
+  // Priority 3: JD Match if they have a job target
+  if (activeJobTarget && !completedTools.has("jd_match")) {
+    recs.push({
+      id: "jd_match",
+      title: `Check your fit for ${activeJobTarget.title || "target role"}`,
+      description: activeJobTarget.company
+        ? `At ${activeJobTarget.company}`
+        : "Evidence-based match analysis",
+      href: "/tools/jd_match",
+      tokens: 2,
+      priority: 2,
+      icon: Target,
+      iconBg: "bg-blue-50",
+      iconColor: "text-blue-600",
+      reason: "You have a target job saved",
+    });
+  }
+
+  // Priority 4: Resume optimizer if JD match was run and score < 80
+  const jdMatchResult = recentResults.find((r) => r.tool_id === "jd_match");
+  const jdMatchScore = jdMatchResult?.result
+    ? ((jdMatchResult.result as Record<string, unknown>)?.overall_score as number | undefined)
+    : undefined;
+  if (jdMatchResult && (!jdMatchScore || jdMatchScore < 80) && !completedTools.has("resume")) {
+    recs.push({
+      id: "resume",
+      title: "Optimize your resume",
+      description: jdMatchScore
+        ? `Your match score is ${jdMatchScore}% — let's improve it`
+        : "Enhance your resume for your target role",
       href: "/tools/resume",
-      completed: ran.has("resume"),
-    },
-    {
-      id: "cover_letter",
-      title: "Cover Letter",
-      desc: "Tailored from your actual experience",
-      icon: Mail,
-      tokens: 3,
-      tokenLabel: "3 tokens",
-      href: "/tools/cover_letter",
-      completed: ran.has("cover_letter"),
-    },
-    {
+      tokens: 10,
+      priority: 3,
+      icon: FileText,
+      iconBg: "bg-violet-50",
+      iconColor: "text-violet-600",
+      reason: jdMatchScore ? `Match score: ${jdMatchScore}%` : "Improve your match",
+    });
+  }
+
+  // Priority 5: Interview prep if JD match done
+  if (jdMatchResult && !completedTools.has("interview")) {
+    recs.push({
       id: "interview",
-      title: "Interview Prep",
-      desc: "Likely questions with coached answers",
-      icon: MessageSquare,
-      tokens: 3,
-      tokenLabel: "3 tokens",
+      title: `Prep for ${activeJobTarget?.title || "your"} interview`,
+      description: "AI-generated questions and winning answers",
       href: "/tools/interview",
-      completed: ran.has("interview"),
-    },
-  ];
+      tokens: 3,
+      priority: 4,
+      icon: MessageSquare,
+      iconBg: "bg-amber-50",
+      iconColor: "text-amber-600",
+      reason: "Based on your target job",
+    });
+  }
+
+  // Priority 6: Cover letter if resume + JD exist
+  if (careerProfile?.resume_text && activeJobTarget && !completedTools.has("cover_letter")) {
+    recs.push({
+      id: "cover_letter",
+      title: "Generate a cover letter",
+      description: `Tailored for ${activeJobTarget.title || "your target role"}`,
+      href: "/tools/cover_letter",
+      tokens: 3,
+      priority: 5,
+      icon: Mail,
+      iconBg: "bg-violet-50",
+      iconColor: "text-violet-600",
+      reason: "Resume + JD available",
+    });
+  }
+
+  // Priority 7: Skills gap
+  if (!completedTools.has("skills_gap") && (activeJobTarget || careerProfile?.title)) {
+    recs.push({
+      id: "skills_gap",
+      title: "Identify your skill gaps",
+      description: "Know exactly what to learn next",
+      href: "/tools/skills_gap",
+      tokens: 5,
+      priority: 6,
+      icon: TrendingUp,
+      iconBg: "bg-violet-50",
+      iconColor: "text-violet-600",
+      reason: "Plan your growth",
+    });
+  }
+
+  return recs.sort((a, b) => a.priority - b.priority).slice(0, 4); // Show top 4
 }
 
 export function DashboardContent({
@@ -166,8 +256,6 @@ export function DashboardContent({
   const [showWelcome, setShowWelcome] = useState(profile?.onboarding_completed !== true);
   const { dailyCreditsAwarded, dailyBalance } = useTokens();
   const careerHealth = useCareerHealth(careerProfile, recentResults);
-
-  const [preAuthResume, setPreAuthResume] = useState<string | null>(null);
 
   // Auto-return to pending tool after Stripe purchase
   useEffect(() => {
@@ -183,19 +271,11 @@ export function DashboardContent({
         }, 1500);
       }
     }
-
-    // Check for pre-auth resume text
-    const savedResume = localStorage.getItem("aiskillscore_pre_auth_resume");
-    if (savedResume) {
-      setPreAuthResume(savedResume);
-    }
   }, []);
 
   const completeness = getProfileCompleteness(careerProfile, activeJobTarget);
 
-  const journeySteps = buildJourneySteps(recentResults);
-  const completedCount = journeySteps.filter((s) => s.completed).length;
-  const nextStep = journeySteps.find((s) => !s.completed);
+  const recommendations = getSmartRecommendations(careerProfile, activeJobTarget, recentResults);
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -215,27 +295,6 @@ export function DashboardContent({
     <div className="max-w-2xl mx-auto px-4 py-5 sm:py-8 space-y-5 stagger-children">
       {showWelcome && profile && (
         <WelcomeModal userId={profile.id} onClose={() => setShowWelcome(false)} />
-      )}
-
-      {/* Pre-auth resume restoration banner */}
-      {preAuthResume && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-blue-900">We saved your resume</p>
-            <p className="text-xs text-blue-600 mt-0.5">Run a free AI Displacement Score to see where you stand.</p>
-          </div>
-          <Link
-            href="/tools/displacement"
-            onClick={() => {
-              // Keep resume in localStorage for the tool to pick up
-              localStorage.removeItem("aiskillscore_pre_auth_resume");
-              setPreAuthResume(null);
-            }}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors whitespace-nowrap min-h-[44px] flex items-center"
-          >
-            Analyze Free
-          </Link>
-        </div>
       )}
 
       {/* Greeting + Avatar */}
@@ -399,93 +458,80 @@ export function DashboardContent({
             <p className="text-xs text-gray-500 mt-0.5">
               More context = more accurate AI results.
             </p>
-            {(() => {
-              const nextItem = completeness.items.find((i) => !i.done);
-              if (!nextItem) return null;
-              return (
-                <Link href={nextItem.href} className="text-xs font-medium text-blue-600 hover:text-blue-700 mt-1 inline-block">
-                  {nextItem.label} →
-                </Link>
-              );
-            })()}
+            {completeness.score < 100 && (
+              <div className="mt-3 space-y-1.5">
+                {completeness.items.filter((i) => !i.done).slice(0, 3).map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* Your Journey — progress narrative */}
-      <div className="glass-card p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-gray-900">Your Journey</h2>
-          <span className="text-xs text-gray-400">{completedCount} of {journeySteps.length} complete</span>
-        </div>
-
-        {/* Progress bar */}
-        <div className="w-full bg-gray-100 rounded-full h-2 mb-4">
-          <div
-            className="bg-gradient-to-r from-blue-600 to-violet-600 h-2 rounded-full transition-all duration-700"
-            style={{ width: `${(completedCount / journeySteps.length) * 100}%` }}
-          />
-        </div>
-
-        {/* Step list */}
-        <div className="space-y-1">
-          {journeySteps.map((step, i) => {
-            const isNext = !step.completed && (i === 0 || journeySteps[i - 1].completed);
-
-            return (
+      {/* Smart Recommendations */}
+      {recommendations.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Recommended Next</h2>
+          <div className="space-y-2">
+            {recommendations.map((rec) => (
               <Link
-                key={step.id}
-                href={step.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors group ${
-                  step.completed
-                    ? "bg-gray-50/50"
-                    : isNext
-                    ? "bg-blue-50/50 hover:bg-blue-50"
-                    : "opacity-50"
-                }`}
+                key={rec.id}
+                href={rec.href}
+                className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 hover:shadow-sm transition-all group"
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  step.completed
-                    ? "bg-green-100"
-                    : isNext
-                    ? "bg-blue-100"
-                    : "bg-gray-100"
-                }`}>
-                  {step.completed ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <step.icon className={`w-4 h-4 ${isNext ? "text-blue-600" : "text-gray-400"}`} />
-                  )}
+                <div className={`w-10 h-10 rounded-xl ${rec.iconBg} flex items-center justify-center flex-shrink-0`}>
+                  <rec.icon className={`w-5 h-5 ${rec.iconColor}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium ${
-                    step.completed ? "text-gray-400 line-through" : "text-gray-900"
-                  }`}>
-                    {step.title}
-                  </p>
-                  {isNext && (
-                    <p className="text-xs text-gray-500">{step.desc}</p>
-                  )}
+                  <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{rec.title}</p>
+                  <p className="text-xs text-gray-500 truncate">{rec.description}</p>
                 </div>
-                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 ${
-                  step.tokens === 0 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
-                }`}>
-                  {step.tokenLabel}
-                </span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    rec.tokens === "Free" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"
+                  }`}>
+                    {rec.tokens === "Free" ? "Free" : `${rec.tokens} tokens`}
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                </div>
               </Link>
-            );
-          })}
-        </div>
-
-        {completedCount === journeySteps.length && (
-          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200/60 rounded-xl text-center">
-            <p className="text-sm font-semibold text-emerald-800">Journey complete!</p>
-            <p className="text-xs text-emerald-600 mt-0.5">
-              Explore more tools or start a new mission.
-            </p>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Career Metrics */}
+      {(careerProfile?.displacement_score != null || careerProfile?.resume_score != null) && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Your Scores</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {careerProfile.displacement_score != null && (
+              <Link href="/tools/displacement" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
+                <p className="text-xs text-gray-500 mb-1">AI Displacement Risk</p>
+                <p className={`text-2xl font-bold ${
+                  careerProfile.displacement_score >= 70 ? "text-red-600" : careerProfile.displacement_score >= 40 ? "text-amber-600" : "text-green-600"
+                }`}>{careerProfile.displacement_score}%</p>
+              </Link>
+            )}
+            {careerProfile.resume_score != null && (
+              <Link href="/tools/resume" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
+                <p className="text-xs text-gray-500 mb-1">Resume ATS Score</p>
+                <p className={`text-2xl font-bold ${
+                  careerProfile.resume_score >= 70 ? "text-green-600" : careerProfile.resume_score >= 40 ? "text-amber-600" : "text-red-600"
+                }`}>{careerProfile.resume_score}%</p>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Active Mission — only show if exists */}
       {activeJobTarget && <MissionCard activeJobTarget={activeJobTarget} />}

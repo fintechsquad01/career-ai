@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FileSignature } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { JdUploadOrPaste } from "@/components/shared/JdUploadOrPaste";
 
 interface CoverLetterInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
@@ -47,26 +48,17 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="coverletter-jd" className="block text-sm font-medium text-gray-700 mb-2">
-          Job Description <span className="text-red-500">*</span>
-        </label>
-        <p className="text-xs text-gray-500 mb-2">Paste the job posting so we can personalize your letter</p>
-        <textarea
-          id="coverletter-jd"
-          value={jdText || activeJobTarget?.jd_text || ""}
-          onChange={(e) => setJdText(e.target.value)}
-          placeholder="Paste the full job description here..."
-          rows={5}
-          className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none min-h-[120px] resize-y"
-          aria-label="Job description"
-        />
-        {!hasJd && (
-          <p className="text-xs text-amber-600 mt-1.5">
-            A job description is required for a personalized cover letter.
-          </p>
-        )}
-      </div>
+      <JdUploadOrPaste
+        value={jdText}
+        onChange={setJdText}
+        activeJobTarget={activeJobTarget ? { title: activeJobTarget.title, company: activeJobTarget.company, jd_text: activeJobTarget.jd_text } : null}
+        label="Job Description"
+      />
+      {!hasJd && (
+        <p className="text-xs text-amber-600 mt-1.5">
+          A job description is required for a personalized cover letter.
+        </p>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Tone</label>

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FileText } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
+import { JdUploadOrPaste } from "@/components/shared/JdUploadOrPaste";
 
 interface ResumeInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
@@ -11,16 +13,7 @@ interface ResumeInputProps {
 export function ResumeInput({ onSubmit }: ResumeInputProps) {
   const [resumeText, setResumeText] = useState("");
   const [targetJd, setTargetJd] = useState("");
-  const [hasSyncedFromProfile, setHasSyncedFromProfile] = useState(false);
   const { activeJobTarget, careerProfile } = useAppStore();
-
-  // Pre-fill from career profile when available (one-time sync)
-  useEffect(() => {
-    if (careerProfile?.resume_text && !hasSyncedFromProfile) {
-      setResumeText(careerProfile.resume_text);
-      setHasSyncedFromProfile(true);
-    }
-  }, [careerProfile?.resume_text, hasSyncedFromProfile]);
 
   const effectiveResume = resumeText.trim() || careerProfile?.resume_text || "";
   const effectiveTargetJd = targetJd || activeJobTarget?.jd_text || "";
@@ -37,33 +30,21 @@ export function ResumeInput({ onSubmit }: ResumeInputProps) {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="resume-text" className="block text-sm font-medium text-gray-700 mb-1">Resume Text</label>
-        <textarea
-          id="resume-text"
-          value={resumeText}
-          onChange={(e) => setResumeText(e.target.value)}
-          placeholder="Paste your resume text here..."
-          rows={6}
-          aria-label="Resume text"
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-        />
-      </div>
+      <ResumeUploadOrPaste
+        value={resumeText}
+        onChange={setResumeText}
+        profileResumeText={careerProfile?.resume_text}
+        profileTitle={careerProfile?.title}
+        profileCompany={careerProfile?.company}
+        label="Your Resume"
+      />
 
-      <div>
-        <label htmlFor="resume-target-jd" className="block text-sm font-medium text-gray-700 mb-1">
-          Target Job Description <span className="text-gray-400">(optional)</span>
-        </label>
-        <textarea
-          id="resume-target-jd"
-          value={targetJd || activeJobTarget?.jd_text || ""}
-          onChange={(e) => setTargetJd(e.target.value)}
-          placeholder="Paste the target job description to optimize against..."
-          rows={5}
-          aria-label="Target job description"
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-        />
-      </div>
+      <JdUploadOrPaste
+        value={targetJd}
+        onChange={setTargetJd}
+        activeJobTarget={activeJobTarget ? { title: activeJobTarget.title, company: activeJobTarget.company, jd_text: activeJobTarget.jd_text } : null}
+        label="Target Job Description (optional)"
+      />
 
       <div className="text-xs text-gray-400 space-y-1 mb-3">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>

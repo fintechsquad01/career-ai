@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { parseFile } from "@/lib/file-parser";
 import { toast } from "@/components/shared/Toast";
 import { INDUSTRIES } from "@/lib/constants";
+import { useAppStore } from "@/stores/app-store";
 import type { Profile, CareerProfile, TokenTransaction } from "@/types";
 import type { Json } from "@/types/database";
 
@@ -125,10 +126,15 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase
+      const { data: savedCareer, error } = await supabase
         .from("career_profiles")
-        .upsert(careerData, { onConflict: "user_id" });
+        .upsert(careerData, { onConflict: "user_id" })
+        .select()
+        .single();
 
+      if (savedCareer) {
+        useAppStore.getState().setCareerProfile(savedCareer as CareerProfile);
+      }
       toast("Career profile saved!");
       router.refresh();
     } catch (err) {
@@ -247,9 +253,11 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
       };
 
       if (existing) {
-        await supabase.from("career_profiles").update(updateData).eq("user_id", user.id);
+        const { data: updated } = await supabase.from("career_profiles").update(updateData).eq("user_id", user.id).select().single();
+        if (updated) useAppStore.getState().setCareerProfile(updated as CareerProfile);
       } else {
-        await supabase.from("career_profiles").insert({ user_id: user.id, ...updateData });
+        const { data: inserted } = await supabase.from("career_profiles").insert({ user_id: user.id, ...updateData }).select().single();
+        if (inserted) useAppStore.getState().setCareerProfile(inserted as CareerProfile);
       }
 
       setUploadSuccess(true);
