@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Brain, Loader2, Mail, ChevronDown } from "lucide-react";
+import { Brain, Loader2, Lock, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function AuthPage() {
@@ -25,23 +25,29 @@ function AuthContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [magicLinkSent, setMagicLinkSent] = useState(false);
-  const [magicLinkLoading, setMagicLinkLoading] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [hasPreAuthAnalysis, setHasPreAuthAnalysis] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref");
   const supabase = createClient();
 
-  // Read error from OAuth callback
+  // Check for pre-auth analysis and errors
   useEffect(() => {
+    const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
+    setHasPreAuthAnalysis(!!preAuthJd);
+
     const callbackError = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
     if (callbackError) {
-      setError(decodeURIComponent(callbackError));
+      if (errorDescription) {
+        setError(`Google sign-in failed: ${decodeURIComponent(errorDescription)}. Please try email sign-in instead.`);
+      } else {
+        setError(decodeURIComponent(callbackError));
+      }
     }
   }, [searchParams]);
 
-  // Read referral code from query params if present
+  // Store referral code
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref) {
@@ -51,42 +57,21 @@ function AuthContent() {
 
   const handleGoogleAuth = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) setError(error.message);
-    setLoading(false);
-  };
-
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      setError("Please enter your email.");
-      return;
-    }
     setError("");
-    setMagicLinkLoading(true);
-
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: fullName ? { full_name: fullName } : undefined,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      if (error) throw error;
-      if (refCode) {
-        localStorage.setItem("aiskillscore_referral_code", refCode);
+      if (error) {
+        setError("Google sign-in is temporarily unavailable. Please use email sign-in instead.");
       }
-      setMagicLinkSent(true);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to send magic link");
+    } catch {
+      setError("Google sign-in is temporarily unavailable. Please use email sign-in instead.");
     } finally {
-      setMagicLinkLoading(false);
+      setLoading(false);
     }
   };
 
@@ -104,8 +89,6 @@ function AuthContent() {
         });
         if (error) throw error;
 
-        // If no session returned (user already exists — Supabase anti-enumeration),
-        // fall back to sign-in with password
         if (!data.session) {
           const { error: signInError } = await supabase.auth.signInWithPassword({
             email,
@@ -134,60 +117,51 @@ function AuthContent() {
     }
   };
 
-  // Magic link sent confirmation
-  if (magicLinkSent) {
-    return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12 relative overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="w-full max-w-md relative">
-          <div className="glass-card p-8 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center mx-auto mb-6">
-              <Mail className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Check your email</h1>
-            <p className="text-sm text-gray-500 leading-relaxed mb-2">
-              We sent a sign-in link to
-            </p>
-            <p className="text-sm font-semibold text-gray-900 mb-6">{email}</p>
-            <p className="text-xs text-gray-400 mb-6">
-              Click the link in the email to sign in. It expires in 1 hour.
-            </p>
-            <button
-              onClick={() => { setMagicLinkSent(false); setEmail(""); }}
-              className="text-sm text-blue-600 font-medium hover:underline"
-            >
-              Use a different email
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12 relative overflow-hidden">
       {/* Background gradient blobs */}
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-200/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="w-full max-w-md relative">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
             <Brain className="w-6 h-6 text-white" />
           </div>
           <span className="font-bold text-2xl text-gray-900">AISkillScore</span>
-        </div>
+        </Link>
+
+        {/* Pre-auth analysis preview card */}
+        {hasPreAuthAnalysis && mode === "signup" && (
+          <div className="glass-card p-4 mb-4 flex items-center gap-3 border-blue-200 bg-blue-50/50">
+            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <Lock className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900">Your analysis is ready</p>
+              <p className="text-xs text-gray-500">Sign up to unlock your full results and action plan.</p>
+            </div>
+          </div>
+        )}
 
         <div className="glass-card p-8">
-          <h1 className="text-2xl font-bold text-gray-900 text-center mb-6 tracking-tight">
-            {mode === "signup" ? "Create your account" : "Welcome back"}
+          <h1 className="text-2xl font-bold text-gray-900 text-center mb-2 tracking-tight">
+            {mode === "signup"
+              ? hasPreAuthAnalysis
+                ? "Unlock your results"
+                : "Get started free"
+              : "Welcome back"
+            }
           </h1>
+          {mode === "signup" && (
+            <p className="text-sm text-gray-500 text-center mb-6">
+              No credit card required. Set up in 30 seconds.
+            </p>
+          )}
+          {mode === "signin" && <div className="mb-6" />}
 
-          {/* Google OAuth */}
+          {/* Google OAuth — primary CTA */}
           <button
             onClick={handleGoogleAuth}
             disabled={loading}
@@ -212,7 +186,7 @@ function AuthContent() {
             </div>
           </div>
 
-          {/* Email + Password Form — primary */}
+          {/* Email + Password Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
               <div>
@@ -268,57 +242,30 @@ function AuthContent() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-colors min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {mode === "signup" ? "Create Account — 5 Free Tokens" : "Sign In"}
+              {mode === "signup"
+                ? hasPreAuthAnalysis
+                  ? "Unlock Results — Free"
+                  : "Create Account — 15 Free Tokens"
+                : "Sign In"
+              }
             </button>
           </form>
-
-          {/* Magic link option — secondary */}
-          <div className="mt-4">
-            <button
-              onClick={() => setShowPasswordForm(!showPasswordForm)}
-              className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors py-2"
-            >
-              <Mail className="w-3 h-3" />
-              Sign in with magic link instead
-              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showPasswordForm ? "rotate-180" : ""}`} />
-            </button>
-
-            {showPasswordForm && (
-              <form onSubmit={handleMagicLink} className="space-y-3 mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-xs text-gray-400 text-center">
-                  We&apos;ll email you a passwordless sign-in link.
-                </p>
-                <button
-                  type="submit"
-                  disabled={magicLinkLoading || !email.trim()}
-                  className="w-full py-2.5 px-4 rounded-xl text-sm font-medium border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  {magicLinkLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Mail className="w-4 h-4" />
-                  )}
-                  Send Magic Link {email.trim() ? `to ${email}` : ""}
-                </button>
-              </form>
-            )}
-          </div>
 
           <p className="mt-5 text-center text-sm text-gray-500">
             {mode === "signup" ? (
               <>
                 Have an account?{" "}
-                <button onClick={() => { setMode("signin"); setShowPasswordForm(false); setError(""); }} className="text-blue-600 font-medium hover:underline">
+                <button onClick={() => { setMode("signin"); setError(""); }} className="text-blue-600 font-medium hover:underline">
                   Sign in
                 </button>
               </>
             ) : (
               <>
                 New?{" "}
-                <button onClick={() => { setMode("signup"); setShowPasswordForm(false); setError(""); }} className="text-blue-600 font-medium hover:underline">
+                <button onClick={() => { setMode("signup"); setError(""); }} className="text-blue-600 font-medium hover:underline">
                   Sign up free
                 </button>
               </>
@@ -326,9 +273,17 @@ function AuthContent() {
           </p>
         </div>
 
-        <p className="mt-4 text-center text-xs text-gray-400">
-          Encrypted · Never sold · 30 second analysis
-        </p>
+        {/* Trust signals */}
+        <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-400">
+          <span className="inline-flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            Encrypted
+          </span>
+          <span>·</span>
+          <span>Never sold</span>
+          <span>·</span>
+          <span>30 second setup</span>
+        </div>
       </div>
     </div>
   );

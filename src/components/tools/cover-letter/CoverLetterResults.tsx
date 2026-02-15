@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Copy, Download, CheckCircle, Lightbulb, MessageSquare, Sparkles, AlertCircle } from "lucide-react";
+import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TCoverLetterResult, ToolResult } from "@/types";
 
 interface CoverLetterResultsProps {
@@ -55,6 +56,24 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
           <p className="text-gray-800 whitespace-pre-wrap">{data.letter_text}</p>
         </div>
       </div>
+
+      {/* Source Verification */}
+      {data.highlighted_sections && data.highlighted_sections.length > 0 && (
+        <SourceVerification
+          items={data.highlighted_sections.map((s) => ({
+            text: s.text.slice(0, 80) + (s.text.length > 80 ? "..." : ""),
+            verified: s.type === "achievement" || s.type === "job_specific",
+            source:
+              s.type === "achievement"
+                ? "From resume"
+                : s.type === "company_specific"
+                  ? "Company research"
+                  : s.type === "storytelling"
+                    ? "Narrative framing"
+                    : "Keyword match",
+          }))}
+        />
+      )}
 
       {/* Opening hook strategy */}
       {data.opening_hook && (

@@ -2,7 +2,7 @@
 // Main AI tool executor for all 11 AISkillScore tools
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { toolPrompts } from "./prompts.ts";
+import { toolPrompts, type RecentResult } from "./prompts.ts";
 
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -210,12 +210,17 @@ Deno.serve(async (req: Request) => {
         // Step 2: Token check
         send("progress", { step: 2, total: 5, message: "Checking tokens..." });
 
-        const [profileRes, careerProfileRes, jobTargetRes] = await Promise.all([
+        const [profileRes, careerProfileRes, jobTargetRes, recentResultsRes] = await Promise.all([
           fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=*`, { headers }),
           fetch(`${SUPABASE_URL}/rest/v1/career_profiles?user_id=eq.${userId}&select=*`, { headers }),
           job_target_id
             ? fetch(`${SUPABASE_URL}/rest/v1/job_targets?id=eq.${job_target_id}&select=*`, { headers })
             : Promise.resolve(null),
+          // Fetch 5 most recent tool results for cross-tool context (Batch 5a)
+          fetch(
+            `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}&select=tool_id,result,summary,metric_value,created_at&order=created_at.desc&limit=5`,
+            { headers },
+          ),
         ]);
 
         const [profiles, careerProfiles] = await Promise.all([
@@ -223,6 +228,14 @@ Deno.serve(async (req: Request) => {
           careerProfileRes.json(),
         ]);
         const jobTargets = jobTargetRes ? await jobTargetRes.json() : [];
+        let recentResults: RecentResult[] = [];
+        try {
+          const parsed = await recentResultsRes.json();
+          if (Array.isArray(parsed)) recentResults = parsed as RecentResult[];
+        } catch {
+          // Non-critical — proceed without prior results
+          console.warn("Failed to parse recent tool results for cross-tool context");
+        }
 
         const profile = profiles[0] || null;
         const careerProfile = careerProfiles[0] || null;
@@ -250,7 +263,7 @@ Deno.serve(async (req: Request) => {
           ? promptConfig.systemPrompt
           : "You are AISkillScore, an expert career intelligence engine. Always respond with valid JSON only.";
         const userPrompt = promptConfig
-          ? promptConfig.buildUserPrompt(careerProfile, jobTarget, sanitizedInputs)
+          ? promptConfig.buildUserPrompt(careerProfile, jobTarget, sanitizedInputs, recentResults)
           : buildPromptLegacy(tool_id, careerProfile, jobTarget, sanitizedInputs);
         const toolTemperature = promptConfig ? promptConfig.temperature : 0.7;
 

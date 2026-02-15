@@ -2,7 +2,7 @@
 
 > AISkillScore is an AI-powered career intelligence platform with 11 tools for resume optimization, job matching, interview prep, and career growth. Pay per use with tokens — no subscriptions.
 
-AISkillScore helps job seekers and career changers understand exactly where they stand. Paste a job posting or resume and get an honest AI assessment with evidence in 30 seconds. Tools range from free (AI Displacement Score) to 20 tokens (AI Headshots), with token packs starting at $5.
+AISkillScore helps job seekers and career changers understand exactly where they stand. Paste a job posting or resume and get an honest AI assessment with evidence in 30 seconds. Tools range from free (AI Displacement Score) to 20 tokens (AI Headshots), with token packs starting at $9.
 
 ## Core AI Tools
 
@@ -20,8 +20,8 @@ AISkillScore helps job seekers and career changers understand exactly where they
 
 ## Pricing
 
-- [Pricing](https://aiskillscore.com/pricing): Pay per use. No subscriptions. Starter ($5/50 tokens), Pro ($15/200 tokens), Power ($39/600 tokens).
-- [Lifetime Deal](https://aiskillscore.com/lifetime): $49 one-time for 100 tokens/month forever. Limited to 500 early bird spots.
+- [Pricing](https://aiskillscore.com/pricing): Pay per use. No subscriptions. Starter ($9/50 tokens), Pro ($19/200 tokens), Power ($49/500 tokens).
+- [Lifetime Deal](https://aiskillscore.com/lifetime): From $79 one-time for 100 tokens/month forever. Limited to 500 early bird spots.
 
 ## How It Works
 
@@ -37,7 +37,7 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - Evidence-based analysis, not generic keyword counting
 - Preserves your authentic voice instead of rewriting into AI cliches
 - Dual-track approach: job hunting + income building simultaneously
-- Free daily tokens (2/day) plus 5 free tokens on signup
+- Free daily tokens (2/day) plus 15 free tokens on signup
 
 ## Blog — Guides & Research
 
@@ -63,5 +63,5 @@ AISkillScore helps job seekers and career changers understand exactly where they
 
 ## Optional
 
-- [Sign Up](https://aiskillscore.com/auth): Create a free account with 5 tokens
+- [Sign Up](https://aiskillscore.com/auth): Create a free account with 15 tokens
 - [Referral Program](https://aiskillscore.com/referral): Give 5 tokens, get 10 for each referral

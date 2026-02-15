@@ -2,12 +2,21 @@
 // Structured prompt system for all AISkillScore tools.
 // Each tool has: systemPrompt, buildUserPrompt(context, inputs), temperature.
 
+export type RecentResult = {
+  tool_id: string;
+  result: Record<string, unknown>;
+  summary: string | null;
+  metric_value: number | null;
+  created_at: string;
+};
+
 export interface ToolPromptConfig {
   systemPrompt: string;
   buildUserPrompt: (
     careerProfile: Record<string, unknown> | null,
     jobTarget: Record<string, unknown> | null,
     inputs: Record<string, unknown>,
+    recentResults?: RecentResult[],
   ) => string;
   temperature: number;
 }
@@ -25,6 +34,7 @@ export interface ToolPromptConfig {
 function buildContext(
   careerProfile: Record<string, unknown> | null,
   jobTarget: Record<string, unknown> | null,
+  inputs: Record<string, unknown>,
   options: { includeResume?: boolean; includeJdText?: boolean } = {},
 ): string {
   const { includeResume = false, includeJdText = false } = options;
@@ -41,11 +51,12 @@ function buildContext(
     if (careerProfile.skills) ctx += `- Skills: ${JSON.stringify(careerProfile.skills)}\n`;
     if (careerProfile.resume_score != null) ctx += `- Current Resume Score: ${careerProfile.resume_score}/100\n`;
     ctx += "\n";
+  }
 
-    // Include full resume text when requested — this is the #1 quality lever
-    if (includeResume && careerProfile.resume_text) {
-      const resumeText = String(careerProfile.resume_text);
-      // Cap at 12K chars to stay within token limits while preserving most resumes
+  // Include full resume text when requested — inputs take priority over DB profile
+  if (includeResume) {
+    const resumeText = String(inputs.resume_text || careerProfile?.resume_text || "");
+    if (resumeText) {
       ctx += `CANDIDATE RESUME:\n${resumeText.slice(0, 12000)}\n\n`;
     }
   }
@@ -55,10 +66,12 @@ function buildContext(
     if (jobTarget.salary_range) ctx += `- Salary: ${jobTarget.salary_range}\n`;
     if (jobTarget.location) ctx += `- Location: ${jobTarget.location}\n`;
     ctx += "\n";
+  }
 
-    // Include full JD text when requested — enables precise requirement matching
-    if (includeJdText && jobTarget.jd_text) {
-      const jdText = String(jobTarget.jd_text);
+  // Include full JD text when requested — inputs take priority over DB job target
+  if (includeJdText) {
+    const jdText = String(inputs.jd_text || inputs.target_jd || jobTarget?.jd_text || "");
+    if (jdText) {
       ctx += `JOB DESCRIPTION:\n${jdText.slice(0, 8000)}\n\n`;
     }
   }
@@ -66,7 +79,7 @@ function buildContext(
   return ctx;
 }
 
-/** Anti-hallucination block added to data-backed tools */
+/** Anti-hallucination block added to all tools */
 const ANTI_HALLUCINATION_RULES = `
 ANTI-HALLUCINATION RULES (STRICT):
 - Do NOT invent statistics, percentages, or data points. If you cite a number, it must be based on real, widely-reported data.
@@ -76,6 +89,130 @@ ANTI-HALLUCINATION RULES (STRICT):
 - If information is insufficient for a confident assessment, say so explicitly rather than guessing.
 `;
 
+/** Factual grounding block for creative content tools (cover letter, interview, linkedin) */
+const FACTUAL_GROUNDING_RULES = `
+FACTUAL GROUNDING (MANDATORY):
+- You MUST ONLY reference work experiences, projects, achievements, skills, companies, and job titles that are EXPLICITLY stated in the candidate's resume or profile above.
+- If the resume does not mention a specific project, metric, company, or achievement — DO NOT invent one.
+- When writing content that references the candidate's background, include a mental citation: ask yourself "where in the resume does this appear?" If you cannot point to it, do not include it.
+- If the resume is insufficient to write compelling content, explicitly note what additional information would improve the output rather than fabricating details.
+- It is BETTER to write a shorter, accurate piece than a longer piece with fabricated details.
+`;
+
+// ---------------------------------------------------------------------------
+// Prior Results Context Builder
+// ---------------------------------------------------------------------------
+
+/** Which prior tool results are relevant when running each tool */
+const RELEVANT_PRIORS: Record<string, string[]> = {
+  resume: ["jd_match"],
+  cover_letter: ["jd_match", "resume"],
+  interview: ["jd_match", "resume"],
+  salary: ["jd_match"],
+  skills_gap: ["displacement", "jd_match"],
+  roadmap: ["skills_gap", "displacement", "jd_match"],
+  linkedin: ["resume", "jd_match"],
+  entrepreneurship: ["displacement", "skills_gap"],
+};
+
+/** Build context from prior tool runs relevant to the current tool */
+function buildPriorResultsContext(
+  currentToolId: string,
+  recentResults: RecentResult[],
+): string {
+  if (!recentResults || recentResults.length === 0) return "";
+
+  const relevantToolIds = RELEVANT_PRIORS[currentToolId];
+  if (!relevantToolIds) return "";
+
+  const relevantResults = recentResults.filter((r) =>
+    relevantToolIds.includes(r.tool_id)
+  );
+  if (relevantResults.length === 0) return "";
+
+  let ctx =
+    "PRIOR ANALYSIS RESULTS (from this user's recent tool runs — use to improve accuracy and consistency):\n";
+
+  for (const r of relevantResults) {
+    const result = r.result as Record<string, unknown>;
+    ctx += `\n--- ${r.tool_id.toUpperCase()} (run ${r.created_at}) ---\n`;
+
+    switch (r.tool_id) {
+      case "jd_match": {
+        if (result.fit_score != null) ctx += `Fit Score: ${result.fit_score}/100\n`;
+        if (result.headline) ctx += `Verdict: ${result.headline}\n`;
+        const gaps = result.critical_gaps as
+          | Array<Record<string, unknown>>
+          | undefined;
+        if (gaps && gaps.length > 0) {
+          ctx += `Identified Gaps:\n`;
+          for (const g of gaps.slice(0, 5)) {
+            ctx += `  - ${g.gap} (${g.severity}): ${g.fix_action || ""}\n`;
+          }
+        }
+        const reqs = result.requirements as
+          | Array<Record<string, unknown>>
+          | undefined;
+        if (reqs) {
+          const matched = reqs.filter(
+            (req) => req.match === true
+          ).length;
+          const total = reqs.length;
+          ctx += `Requirements: ${matched}/${total} matched\n`;
+        }
+        break;
+      }
+      case "resume": {
+        if (result.score_before != null)
+          ctx += `Resume Score: ${result.score_before} → ${result.score_after}\n`;
+        if (result.headline) ctx += `Summary: ${result.headline}\n`;
+        if (result.optimized_resume_text) {
+          const optimized = String(result.optimized_resume_text);
+          ctx += `Optimized Resume (first 3000 chars):\n${optimized.slice(0, 3000)}\n`;
+        }
+        break;
+      }
+      case "displacement": {
+        if (result.score != null)
+          ctx += `AI Displacement Score: ${result.score}/100 (${result.risk_level})\n`;
+        if (result.headline) ctx += `Summary: ${result.headline}\n`;
+        const safeTasks = result.safe_tasks as
+          | Array<Record<string, unknown>>
+          | undefined;
+        if (safeTasks && safeTasks.length > 0) {
+          ctx += `Safe/Strong Tasks:\n`;
+          for (const t of safeTasks.slice(0, 3)) {
+            ctx += `  - ${t.task}: ${t.why_safe}\n`;
+          }
+        }
+        break;
+      }
+      case "skills_gap": {
+        if (result.headline) ctx += `Summary: ${result.headline}\n`;
+        const skillGaps = result.gaps as
+          | Array<Record<string, unknown>>
+          | undefined;
+        if (skillGaps && skillGaps.length > 0) {
+          ctx += `Skill Gaps:\n`;
+          for (const g of skillGaps.slice(0, 5)) {
+            ctx += `  - ${g.skill} (current: ${g.current_level}, required: ${g.required_level}, priority: ${g.priority})\n`;
+          }
+        }
+        break;
+      }
+      default: {
+        if (r.summary) ctx += `Summary: ${r.summary}\n`;
+        if (r.metric_value != null) ctx += `Score: ${r.metric_value}\n`;
+      }
+    }
+  }
+
+  ctx +=
+    "\nUse these prior results to ensure consistency and build upon previous findings. Do NOT contradict prior scores or assessments unless the input data has changed.\n\n";
+
+  return ctx;
+}
+
 // ---------------------------------------------------------------------------
 // 1. Displacement Score (FREE – Hook Tool)
 // ---------------------------------------------------------------------------
@@ -83,8 +220,8 @@ ANTI-HALLUCINATION RULES (STRICT):
 const displacement: ToolPromptConfig = {
   systemPrompt: `You are an AI labor economist with expertise in occupational task analysis, using frameworks derived from the ILO Generative AI Susceptibility Index and McKinsey Global Institute automation research. You provide honest, evidence-based assessments that help professionals understand and adapt to AI's impact on their specific role. You never fear-monger or inflate risks. Most jobs will be transformed, not eliminated -- you frame advice around augmentation and adaptation.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, _recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
 
     // Use inline inputs as fallback when career profile lacks title
     const title = careerProfile?.title || inputs.job_title || "Unknown Role";
@@ -126,6 +263,13 @@ FOR EACH RECOMMENDATION, provide:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "score": <0-100>,
   "risk_level": "minimal|low|moderate|high|critical",
   "headline": "<compelling one-line summary designed for social sharing, e.g., 'Your analytical skills are safe, but your reporting tasks face disruption within 18 months'>",
@@ -182,16 +326,10 @@ Respond ONLY in valid JSON:
 const jd_match: ToolPromptConfig = {
   systemPrompt: `You are a senior technical recruiter with 15 years of experience screening applications at Fortune 500 companies and high-growth startups. You have reviewed over 50,000 applications and understand both ATS parsing behavior and what makes a hiring manager say "interview this person." You evaluate candidates the way a real recruiter does: considering semantic skill matches, career trajectory, cultural signals, and competitive positioning -- not just keyword counting.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, _recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
 
-    // Also include resume text explicitly if provided via inputs (Smart Input flow)
-    const hasResumeInCtx = careerProfile?.resume_text;
-    const resumeBlock = !hasResumeInCtx && inputs.resume_text
-      ? `\nCANDIDATE RESUME:\n${String(inputs.resume_text).slice(0, 12000)}\n`
-      : "";
-
-    return `${ctx}${resumeBlock}Compare this candidate's resume/profile against the job description. Evaluate as a real recruiter would.
+    return `${ctx}Compare this candidate's resume/profile against the job description. Evaluate as a real recruiter would.
 
 JOB DESCRIPTION:
 ${inputs.jd_text || "Not provided"}
@@ -217,6 +355,13 @@ COMPETITIVE POSITIONING:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "fit_score": <0-100>,
   "headline": "<one-line recruiter verdict, e.g., 'Strong technical match but missing the leadership experience they will probe in the interview'>",
   "requirements": [
@@ -277,14 +422,15 @@ Respond ONLY in valid JSON:
 const resume: ToolPromptConfig = {
   systemPrompt: `You are a dual expert: (1) an ATS systems engineer who understands how Greenhouse, Lever, Workday, and iCIMS parse and rank resumes in 2026, and (2) a senior recruiter who knows what makes a human hiring manager say "yes" after the ATS passes a resume through. Your mission is to ENHANCE the candidate's authentic resume for both machines and humans. You never rewrite a resume into generic corporate language. You strengthen what's already there.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeJdText: true });
+    const priorCtx = buildPriorResultsContext("resume", recentResults || []);
     const resumeText = (inputs.resume_text as string) || (careerProfile?.resume_text as string) || "Not available";
     const targetJd = inputs.target_jd
       ? `\n\nTARGET JOB DESCRIPTION:\n${inputs.target_jd}`
       : (jobTarget?.jd_text ? "" : ""); // JD already injected by buildContext if available
 
-    return `${ctx}Optimize this resume for both ATS parsing and human recruiter appeal.${targetJd}
+    return `${ctx}${priorCtx}Optimize this resume for both ATS parsing and human recruiter appeal.${targetJd}
 
 RESUME TEXT:
 ${resumeText}
@@ -317,6 +463,13 @@ SCORE CALIBRATION:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "score_before": <assessed current score based on resume as provided>,
   "score_after": <projected score after all recommended changes>,
   "headline": "<one-line summary, e.g., 'Strengthened 8 impact statements and added 14 missing keywords while keeping your direct writing style'>",
@@ -367,8 +520,9 @@ Respond ONLY in valid JSON:
 const cover_letter: ToolPromptConfig = {
   systemPrompt: `You are an executive communications coach who specializes in career narratives. You have helped 500+ professionals write cover letters that led to interviews at top companies. You believe cover letters should tell a STORY, not summarize a resume. The best cover letters sound like a compelling email from a smart, enthusiastic person -- not a formal document. A 38-year veteran recruiter said the most memorable cover letter he ever read opened with raw, personal storytelling.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("cover_letter", recentResults || []);
     const tone = (inputs.tone as string) || "professional";
     const length = (inputs.length as string) || "standard";
 
@@ -382,8 +536,9 @@ const cover_letter: ToolPromptConfig = {
           ? "Energetic and genuine. Show real excitement. Like someone who truly wants THIS specific role, not just any job."
           : "Relaxed and natural. Like a smart LinkedIn message from someone you'd want to work with. Conversational but substantive.";
 
-    return `${ctx}${jdFromInput}Write a ${tone} cover letter (${length} length: short=150-200 words, standard=250-350 words, detailed=400-500 words).
-
+    return `${ctx}${priorCtx}${jdFromInput}Write a ${tone} cover letter (${length} length: short=150-200 words, standard=250-350 words, detailed=400-500 words).
+${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Use the candidate's ACTUAL resume achievements and experience as the foundation for the cover letter. Do not invent experiences or projects not mentioned in the resume.
 
 STORYTELLING FRAMEWORK:
@@ -410,6 +565,13 @@ TONE MATCHING:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "letter_text": "<the full cover letter>",
   "word_count": <actual word count>,
   "tone": "<the tone achieved>",
@@ -438,15 +600,17 @@ Respond ONLY in valid JSON:
 const interview: ToolPromptConfig = {
   systemPrompt: `You are a hiring manager with 15 years of experience conducting interviews at technology companies ranging from startups to Fortune 500. You have conducted over 3,000 interviews and know exactly what separates candidates who receive offers from those who don't: it is not the initial answer -- it is how they handle the FOLLOW-UP questions. You design interview preparation that builds authentic, defensible responses.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("interview", recentResults || []);
     const interviewType = (inputs.interview_type as string) || "behavioral and technical";
 
     // Include JD from inputs if not from job target
     const jdFromInput = inputs.jd_text ? `\nJOB DESCRIPTION:\n${String(inputs.jd_text).slice(0, 8000)}\n` : "";
 
-    return `${ctx}${jdFromInput}Generate ${interviewType} interview questions tailored to this specific candidate and target role.
-
+    return `${ctx}${priorCtx}${jdFromInput}Generate ${interviewType} interview questions tailored to this specific candidate and target role.
+${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Base all suggested answers on the candidate's ACTUAL experience from their resume. Reference specific projects, companies, and achievements mentioned in their resume — not generic examples.
 
 QUESTION DESIGN RULES:
@@ -463,6 +627,13 @@ FOR EACH SUGGESTED ANSWER:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "questions": [
     {
       "question": "<the interview question>",
@@ -508,12 +679,14 @@ Respond ONLY in valid JSON:
 const linkedin: ToolPromptConfig = {
   systemPrompt: `You are a LinkedIn growth strategist who understands both the 2026 LinkedIn algorithm (including the new AI Hiring Assistant that performs first-pass screening for recruiters) and recruiter search behavior. You have helped 1,000+ professionals increase profile views by 5-10x and generate inbound career opportunities. You know that a LinkedIn profile is not a static resume -- it is a living brand that should attract opportunities proactively.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("linkedin", recentResults || []);
     const targetRole = (inputs.target_role as string) || "similar";
 
-    return `${ctx}Optimize this LinkedIn profile for ${targetRole} roles AND create a personal brand strategy.
-
+    return `${ctx}${priorCtx}Optimize this LinkedIn profile for ${targetRole} roles AND create a personal brand strategy.
+${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Use the candidate's ACTUAL resume content as the source material for all rewritten sections. Reference their real job titles, companies, achievements, and metrics. Never invent experience.
 
 LINKEDIN AI AWARENESS (CRITICAL FOR 2026):
@@ -536,6 +709,13 @@ ABOUT SECTION STRUCTURE:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "headlines": [
     {
       "text": "<optimized headline>",
@@ -599,11 +779,12 @@ Respond ONLY in valid JSON:
 const skills_gap: ToolPromptConfig = {
   systemPrompt: `You are a career development specialist with expertise in skills taxonomy (O*NET, LinkedIn Skills Graph), learning design, and current hiring trends. You have helped 500+ professionals close skill gaps and transition careers. You understand that most professionals UNDERVALUE their transferable skills and OVERESTIMATE the gaps they need to close. You always start with strengths before addressing gaps.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("skills_gap", recentResults || []);
     const targetRole = (inputs.target_role as string) || "target role";
 
-    return `${ctx}Analyze the skills gap between this candidate's current profile and their target role: ${targetRole}.
+    return `${ctx}${priorCtx}Analyze the skills gap between this candidate's current profile and their target role: ${targetRole}.
 ${ANTI_HALLUCINATION_RULES}
 IMPORTANT: Identify transferable skills by analyzing the candidate's ACTUAL resume content — not just their job title. Look for specific projects, tools, and achievements that demonstrate transferable competencies.
 
@@ -632,6 +813,13 @@ TIMELINE REALISM:
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "headline": "<one-line summary, e.g., 'You are closer than you think: 2 critical gaps to close, but 5 strong transferable skills already in place'>",
   "transferable_skills": [
     {
@@ -704,13 +892,14 @@ Respond ONLY in valid JSON:
 const roadmap: ToolPromptConfig = {
   systemPrompt: `You are a career strategist who creates actionable development plans. You have coached professionals at McKinsey, Google, and Y Combinator startups through career transitions. You believe career plans fail when they are too vague -- every milestone needs a measurable checkpoint, a specific deadline, and a backup plan. You also believe every professional should build multiple income streams for career resilience.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("roadmap", recentResults || []);
     const timeHorizon = (inputs.time_horizon as string) || "12";
     const targetRole = (inputs.target_role as string) || "target";
 
-    return `${ctx}Create a ${timeHorizon}-month career roadmap for transitioning to or advancing toward ${targetRole} roles.
-
+    return `${ctx}${priorCtx}Create a ${timeHorizon}-month career roadmap for transitioning to or advancing toward ${targetRole} roles.
+${ANTI_HALLUCINATION_RULES}
 IMPORTANT: Base the roadmap on the candidate's ACTUAL current skills, experience level, and career history from their resume. Tailor income-building suggestions to their real expertise areas.
 
 ROADMAP DESIGN RULES:
@@ -728,6 +917,13 @@ Both tracks should reinforce each other -- freelance work builds skills AND gene
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "headline": "<one-line vision statement, e.g., 'From Senior Analyst to Product Manager in 9 months, with consulting income starting Month 2'>",
   "milestones": [
     {
@@ -809,12 +1005,27 @@ Respond ONLY in valid JSON:
 const salary: ToolPromptConfig = {
   systemPrompt: `You are a compensation analyst and negotiation coach who has guided 500+ professionals through salary negotiations at companies ranging from seed-stage startups to FAANG. You know that negotiation outcomes depend on LEVERAGE more than scripts, and that the best negotiators know when to push and when to hold. You are HONEST about the limitations of your salary estimates -- you do not have access to real-time salary databases.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true, includeJdText: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
+    const priorCtx = buildPriorResultsContext("salary", recentResults || []);
     const currentSalary = inputs.current_salary ? `Current salary: ${inputs.current_salary}.` : "";
     const location = (inputs.location as string) || (careerProfile?.location as string) || "US";
 
-    return `${ctx}Create a salary negotiation strategy. ${currentSalary} Location: ${location}.
+    // Extract role from multiple sources — never default to generic
+    const role = (inputs.target_role as string)
+      || (jobTarget?.title as string)
+      || (careerProfile?.title as string)
+      || "";
+    const roleContext = role
+      ? `Target role for salary analysis: ${role}.`
+      : "IMPORTANT: Extract the target role from the resume or job description provided above. Do not default to 'Software Engineer' or any generic role.";
+
+    return `${ctx}${priorCtx}Create a salary negotiation strategy. ${currentSalary} ${roleContext} Location: ${location}.
+${ANTI_HALLUCINATION_RULES}
+ROLE DETECTION (CRITICAL):
+- If no explicit target role is provided, you MUST extract the role from the resume (most recent title) or job description (job title).
+- NEVER default to "Software Engineer" or any generic role. If truly no role information is available, state this limitation explicitly in your analysis.
+- The salary range MUST be for the specific detected role, not a generic range.
 
 IMPORTANT: Tailor the leverage assessment to the candidate's ACTUAL experience, skills, and career history from their resume. Assess their scarcity value based on real skills, not assumptions.
 
@@ -837,6 +1048,13 @@ Tailor ALL scripts to their actual leverage level. A script for someone with 3 c
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "market_range": {
     "p25": <25th percentile estimate>,
     "p50": <50th percentile / median estimate>,
@@ -906,15 +1124,16 @@ Respond ONLY in valid JSON:
 const entrepreneurship: ToolPromptConfig = {
   systemPrompt: `You are a startup advisor who has mentored 200+ founders across bootstrapped SaaS, freelance consulting, content businesses, and venture-backed startups. You specialize in helping professionals transition from employment to entrepreneurship -- whether as a full career pivot or a side income stream built alongside job hunting. You believe the best businesses are built on existing expertise and unfair advantages, not trendy ideas. You are realistic about success rates and timelines.`,
 
-  buildUserPrompt: (careerProfile, jobTarget, inputs) => {
-    const ctx = buildContext(careerProfile, jobTarget, { includeResume: true });
+  buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
+    const priorCtx = buildPriorResultsContext("entrepreneurship", recentResults || []);
     const businessIdea = inputs.business_idea
       ? `They are considering: ${inputs.business_idea}`
       : "Help them discover their best business opportunity based on their existing skills and career experience.";
     const riskTolerance = (inputs.risk_tolerance as string) || "moderate";
 
-    return `${ctx}Assess this candidate's entrepreneurship potential and create an actionable plan. ${businessIdea} Risk tolerance: ${riskTolerance}.
-
+    return `${ctx}${priorCtx}Assess this candidate's entrepreneurship potential and create an actionable plan. ${businessIdea} Risk tolerance: ${riskTolerance}.
+${ANTI_HALLUCINATION_RULES}
 IMPORTANT: Base all "unfair advantages" and business model suggestions on the candidate's ACTUAL career experience, skills, and industry knowledge from their resume. Do not suggest business models that require skills they don't have.
 
 ASSESSMENT APPROACH:
@@ -933,6 +1152,13 @@ BUSINESS MODEL EVALUATION CRITERIA (for each model):
 
 Respond ONLY in valid JSON:
 {
+  "detected_profile": {
+    "name": "<name if provided, or 'Not provided'>",
+    "role": "<role/title the AI is using for this analysis>",
+    "industry": "<industry the AI is using>",
+    "experience_years": "<years of experience detected, or 'Not specified'>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+  },
   "founder_market_fit": <0-100>,
   "headline": "<one-line verdict, e.g., 'Your 8 years in B2B sales is an unfair advantage for consulting. Start there, not with an app.'>",
   "unfair_advantages": [

@@ -4,12 +4,15 @@
 You are building AISkillScore, an AI-powered career intelligence platform. The app is a mobile-first web app built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe.
 
 Reference these docs in the project root:
+- **`UNIFIED_MASTER_PLAN.md`** — Canonical product/engineering plan. All features, prompts, and UX must align with it. Check batch status and §7 checklist before implementing.
 - `PRD.md` — Full product requirements, user flows, tools, pricing
 - `TECHSTACK.md` — Architecture, project structure, patterns
 - `DATAMODEL.md` — Database schema, RLS policies, JSONB schemas
 - `API.md` — Edge Functions, API routes, Stripe config
 - `PAGES.md` — Page-by-page specs, components, states
 - `CONVENTIONS.md` — Code style and patterns
+- `SPRINT_PLANNING_BRIEF.md` — Persona audit, Sprints 1–4, prompt specifics
+- `SPRINT_NEXT.md` — Research, full prompts per tool, microcopy, token economics, Sprints A–E
 
 The prototype (`prototype-v5.jsx`) is a 2,495-line React component that defines all UI patterns, copy, data structures, and interactions. Use it as the source of truth for visual design, copy, and UX flows.
 

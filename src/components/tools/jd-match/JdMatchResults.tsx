@@ -190,16 +190,6 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
         </div>
       )}
 
-      {/* Freelance Angle (Track B) */}
-      {data.freelance_angle && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-5">
-          <h4 className="font-semibold text-emerald-900 mb-2 flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-emerald-600" />
-            Freelance Opportunity
-          </h4>
-          <p className="text-sm text-gray-700">{data.freelance_angle}</p>
-        </div>
-      )}
 
       {/* Applicant Pool */}
       {data.applicant_pool_estimate && (

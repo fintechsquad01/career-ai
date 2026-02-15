@@ -187,7 +187,7 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
         {/* CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Switch from {comp.competitor} — Start free</h2>
-          <p className="text-blue-100 mb-6">5 tokens free + AI Displacement Score always free. No credit card.</p>
+          <p className="text-blue-100 mb-6">15 tokens free + AI Displacement Score always free. No credit card.</p>
           <Link
             href="/auth"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"

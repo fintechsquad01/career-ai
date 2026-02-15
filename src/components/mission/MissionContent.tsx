@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
 import { useMission } from "@/hooks/useMission";
-import { MISSION_ACTIONS, INCOME_ACTIONS } from "@/lib/constants";
+import { MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
 const ACTION_ICONS: Record<string, typeof FileText> = {
@@ -263,45 +263,40 @@ export function MissionContent() {
         })}
       </div>
 
-      {/* Track B: Income Building Actions */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-gray-900">Income Track</h3>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
-            Track B
-          </span>
-        </div>
-        <p className="text-xs text-gray-500 -mt-1">
-          Build income while you prepare for this role. These are optional but can strengthen your application.
-        </p>
-        {INCOME_ACTIONS.map((action) => {
-          const Icon = ACTION_ICONS[action.id] || Rocket;
-          return (
-            <div
-              key={action.id}
-              className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-5 hover:shadow-md transition-all"
+      {/* Career Growth section — unlocked after 3+ actions completed */}
+      {completed >= 3 && (
+        <div className="glass-card p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="font-semibold text-gray-900">Beyond the Job Search</h3>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+              Unlocked
+            </span>
+          </div>
+          <p className="text-xs text-gray-500 mb-3">
+            You&apos;ve made strong progress. Explore tools to build income and grow your career beyond this role.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/tools/entrepreneurship"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-emerald-100">
-                  <Icon className="w-5 h-5 text-emerald-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold text-gray-900">{action.title}</h4>
-                  </div>
-                  <p className="text-sm text-gray-500">{action.description}</p>
-                </div>
-                <Link
-                  href={`/tools/${action.toolId}`}
-                  className="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 transition-colors min-h-[44px] flex items-center gap-1.5 flex-shrink-0"
-                >
-                  Run — {action.tokens} tok
-                </Link>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+              Entrepreneurship Assessment · 8 tok
+            </Link>
+            <Link
+              href="/tools/roadmap"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
+            >
+              Career Roadmap · 8 tok
+            </Link>
+            <Link
+              href="/tools/linkedin"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
+            >
+              LinkedIn Optimizer · 10 tok
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Mission Complete */}
       {completed === 5 && (

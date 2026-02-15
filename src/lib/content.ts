@@ -75,7 +75,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["ATS", "resume optimization", "job applications", "applicant tracking system"],
     heroEmoji: "📄",
     relatedTools: ["resume", "jd_match", "cover_letter"],
-    tldr: "43% of ATS rejections are formatting errors, not qualification gaps. Modern ATS systems like Workday, Greenhouse, and Lever use AI-powered parsing that goes beyond keyword matching. To pass ATS in 2026: use standard section headers, avoid tables and columns, match exact keywords from the job description, and quantify achievements. AISkillScore's Resume Optimizer costs 10 tokens (~$0.75) and rewrites your resume to pass ATS while keeping your authentic voice.",
+    tldr: "43% of ATS rejections are formatting errors, not qualification gaps. Modern ATS systems like Workday, Greenhouse, and Lever use AI-powered parsing that goes beyond keyword matching. To pass ATS in 2026: use standard section headers, avoid tables and columns, match exact keywords from the job description, and quantify achievements. AISkillScore's Resume Optimizer costs 10 tokens (~$0.95) and rewrites your resume to pass ATS while keeping your authentic voice.",
     sections: [
       {
         heading: "How ATS Systems Actually Work in 2026",
@@ -95,7 +95,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "The Complete ATS Optimization Checklist",
-        body: "Before you submit your next application, verify:\n\n☑ Standard file format (.docx or clean .pdf)\n☑ No tables, columns, text boxes, or graphics\n☑ Standard section headers (Professional Experience, Education, Skills)\n☑ Contact info in main body, not headers/footers\n☑ Job title from JD appears in your resume\n☑ 5+ keyword matches from the job description\n☑ All achievements are quantified with numbers\n☑ Consistent date formatting throughout\n☑ No AI-detectable language patterns\n☑ Tailored for this specific role (not a generic resume)\n\nOr let AISkillScore handle it: the Resume Optimizer (10 tokens, ~$0.75) runs all these checks automatically and rewrites problem areas while keeping your authentic voice. Compare that to Jobscan at $49.95/month for keyword counting alone.",
+        body: "Before you submit your next application, verify:\n\n☑ Standard file format (.docx or clean .pdf)\n☑ No tables, columns, text boxes, or graphics\n☑ Standard section headers (Professional Experience, Education, Skills)\n☑ Contact info in main body, not headers/footers\n☑ Job title from JD appears in your resume\n☑ 5+ keyword matches from the job description\n☑ All achievements are quantified with numbers\n☑ Consistent date formatting throughout\n☑ No AI-detectable language patterns\n☑ Tailored for this specific role (not a generic resume)\n\nOr let AISkillScore handle it: the Resume Optimizer (10 tokens, ~$0.95) runs all these checks automatically and rewrites problem areas while keeping your authentic voice. Compare that to Jobscan at $49.95/month for keyword counting alone.",
       },
     ],
   },
@@ -124,7 +124,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "How AI Interview Prep Tools Actually Help",
-        body: "Generic interview prep ('practice common questions') wastes time because every job is different. AI-powered interview prep analyzes the specific job description to predict:\n\n**Role-specific questions:** A product manager interview looks nothing like a data engineer interview. AI maps JD requirements to likely question topics.\n\n**Company-specific angles:** If the JD emphasizes 'fast-paced environment' or 'cross-functional collaboration,' expect questions testing those exact qualities.\n\n**Follow-up predictions:** Based on common interviewer patterns and the role level (entry vs. senior vs. executive), AI predicts the most likely follow-up probes.\n\n**Coached answers:** Not scripts to memorize — frameworks that help you structure your real experiences into compelling answers.\n\nAISkillScore's Interview Prep (3 tokens, about $0.23) generates all of this from the actual job description plus your resume. Compare that to FinalRound at $149/month — and they don't even prep follow-up questions.",
+        body: "Generic interview prep ('practice common questions') wastes time because every job is different. AI-powered interview prep analyzes the specific job description to predict:\n\n**Role-specific questions:** A product manager interview looks nothing like a data engineer interview. AI maps JD requirements to likely question topics.\n\n**Company-specific angles:** If the JD emphasizes 'fast-paced environment' or 'cross-functional collaboration,' expect questions testing those exact qualities.\n\n**Follow-up predictions:** Based on common interviewer patterns and the role level (entry vs. senior vs. executive), AI predicts the most likely follow-up probes.\n\n**Coached answers:** Not scripts to memorize — frameworks that help you structure your real experiences into compelling answers.\n\nAISkillScore's Interview Prep (3 tokens, about $0.29) generates all of this from the actual job description plus your resume. Compare that to FinalRound at $149/month — and they don't even prep follow-up questions.",
       },
       {
         heading: "Technical Interview Preparation in the AI Age",
@@ -149,7 +149,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["salary negotiation", "counter-offer", "compensation", "career growth"],
     heroEmoji: "💰",
     relatedTools: ["salary", "interview", "jd_match"],
-    tldr: "76% of professionals who negotiate earn $5,000-$10,000 more than those who accept the first offer, according to Glassdoor research. Yet 57% never negotiate at all. The key is preparation: know your market value, have word-for-word scripts ready, and understand the psychology of anchoring. AISkillScore's Salary Negotiation tool (3 tokens, ~$0.23) provides personalized market data and scripts based on your specific role, location, and experience.",
+    tldr: "76% of professionals who negotiate earn $5,000-$10,000 more than those who accept the first offer, according to Glassdoor research. Yet 57% never negotiate at all. The key is preparation: know your market value, have word-for-word scripts ready, and understand the psychology of anchoring. AISkillScore's Salary Negotiation tool (3 tokens, ~$0.29) provides personalized market data and scripts based on your specific role, location, and experience.",
     sections: [
       {
         heading: "Why Most People Leave Money on the Table",
@@ -302,8 +302,8 @@ export const COMPARISONS: TComparison[] = [
         detail: "AISkillScore provides resume optimization, cover letters, interview prep, skills gap analysis, career roadmap, salary negotiation, and more — all in one platform.",
       },
       {
-        title: "Pay per use vs $49.95/month",
-        detail: "Why pay $600/year when you can pay $5-15 for what you actually use? A full JD match scan costs just 2 tokens (~$0.15).",
+        title: "Pay per use vs $599/year",
+        detail: "Why pay $599/year when you can pay $9-49 for what you actually use? A full JD match scan costs just 2 tokens (~$0.18).",
       },
       {
         title: "Evidence-based vs keyword counting",
@@ -328,7 +328,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "AI Headshots", us: true, them: false },
       { name: "Daily Free Credits", us: "2/day", them: false },
       { name: "Pay Per Use Option", us: true, them: false },
-      { name: "Price", us: "From $5", them: "$49.95/mo" },
+      { name: "Price", us: "From $9", them: "$49.95/mo" },
     ],
     verdict: "Jobscan is a solid ATS keyword scanner, but at $49.95/month it's expensive for a single-purpose tool. AISkillScore provides the same keyword matching plus 10 additional AI career tools, all at pay-per-use pricing. If you're actively job hunting and need more than just resume scanning — interview prep, cover letters, salary data — AISkillScore delivers significantly more value at a fraction of the cost.",
   },
@@ -389,7 +389,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "Chrome Extension", us: false, them: true },
       { name: "Daily Free Credits", us: "2/day", them: false },
       { name: "Voice Preservation", us: true, them: false },
-      { name: "Price", us: "From $5", them: "$29/mo" },
+      { name: "Price", us: "From $9", them: "$29/mo" },
     ],
     verdict: "Teal excels at job application tracking and provides a solid resume builder with its Chrome extension. However, it relies on templates rather than AI-powered personalization, and its $29/month subscription adds up quickly. AISkillScore is the better choice if you want AI-personalized content that preserves your authentic voice, plus access to interview prep, salary negotiation, and career planning tools — all without a recurring subscription.",
   },
@@ -400,7 +400,7 @@ export const COMPARISONS: TComparison[] = [
     competitorPrice: "$149/month",
     title: "AISkillScore vs FinalRound AI: Complete Comparison (2026)",
     description:
-      "FinalRound AI charges $149/month for interview prep. AISkillScore provides interview prep plus 10 more tools from $0.23/use.",
+      "FinalRound AI charges $149/month for interview prep. AISkillScore provides interview prep plus 10 more tools from $0.29/use.",
     updatedAt: "2026-02-13",
     competitorFeatures: [
       "AI mock interview practice",
@@ -424,7 +424,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "3 tokens vs $149/month",
-        detail: "AISkillScore's Interview Prep costs 3 tokens (~$0.23). FinalRound costs $149/month ($1,788/year). That's 7,700x more expensive per interview prep session.",
+        detail: "AISkillScore's Interview Prep costs 3 tokens (~$0.29). FinalRound costs $149/month ($1,788/year). That's 6,200x more expensive per interview prep session.",
       },
       {
         title: "Full career toolkit",
@@ -447,7 +447,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "Career Roadmap", us: true, them: false },
       { name: "AI Displacement Score", us: "Free", them: false },
       { name: "Daily Free Credits", us: "2/day", them: false },
-      { name: "Price per interview prep", us: "~$0.23", them: "$149/mo" },
+      { name: "Price per interview prep", us: "~$0.29", them: "$149/mo" },
     ],
     verdict: "FinalRound AI is specialized in real-time interview assistance — a niche use case that raises ethical concerns with many employers. At $149/month, it's the most expensive option in the career tools space. AISkillScore provides comprehensive interview preparation including follow-up questions (which FinalRound doesn't cover), plus 10 additional career tools, all at pay-per-use pricing. For genuine interview preparation that makes you a better candidate rather than giving you a hidden earpiece, AISkillScore is the clear choice.",
   },
@@ -484,7 +484,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "Pay per use vs $19/month",
-        detail: "Kickresume's monthly fee adds up to $228/year. AISkillScore's Resume Optimizer costs 10 tokens (~$0.75 per use) with no recurring commitment.",
+        detail: "Kickresume's monthly fee adds up to $228/year. AISkillScore's Resume Optimizer costs 10 tokens (~$0.95 per use) with no recurring commitment.",
       },
       {
         title: "Voice preservation vs homogenization",
@@ -546,7 +546,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "Pay per use vs $24.95/month",
-        detail: "Resume.io costs $299/year for template access. AISkillScore's full resume optimization is 10 tokens (~$0.75) — use it when you need it.",
+        detail: "Resume.io costs $299/year for template access. AISkillScore's full resume optimization is 10 tokens (~$0.95) — use it when you need it.",
       },
       {
         title: "11 tools vs 2",

@@ -47,19 +47,27 @@ function CountdownTimer() {
 }
 
 const LIFETIME_FAQ = [
-  { q: "What happens after I buy?", a: "You immediately receive 100 tokens. Every 30 days, another 100 tokens are added automatically. Unused tokens cap at 300." },
-  { q: "Is this really one-time?", a: "Yes. One payment of $49, tokens forever. No hidden fees, no recurring charges." },
+  { q: "What happens after I buy?", a: "You immediately receive 100 tokens (150 for VIP). Every 30 days, tokens are refilled automatically. Unused tokens cap at 300." },
+  { q: "Is this really one-time?", a: "Yes. One payment, tokens forever. No hidden fees, no recurring charges." },
   { q: "What if I'm not satisfied?", a: "30-day money-back guarantee. Full refund, no questions asked." },
-  { q: "How many spots are left?", a: "We're limiting early bird pricing to 500 users. Once filled, the price goes to $79." },
+  { q: "How many spots are left?", a: "We're limiting early bird pricing to 500 users. Once filled, the price goes to $129." },
+  { q: "What's the difference between tiers?", a: "Early Bird ($79) and Standard ($129) both get 100 tokens/month. VIP ($199) gets 150 tokens/month plus priority AI processing for faster results." },
 ];
 
-const PACK_ID = "lifetime_early";
+const LIFETIME_TIERS = [
+  { id: "lifetime_early", label: "Early Bird", price: 79, tokens: 100 },
+  { id: "lifetime_standard", label: "Standard", price: 129, tokens: 100 },
+  { id: "lifetime_vip", label: "VIP", price: 199, tokens: 150 },
+] as const;
 
 export default function LifetimePage() {
+  const [selectedTier, setSelectedTier] = useState<string>("lifetime_early");
   const [purchaseError, setPurchaseError] = useState("");
   const [purchasing, setPurchasing] = useState(false);
   const [spotsClaimed, setSpotsClaimed] = useState<number | null>(null);
   const TOTAL_SPOTS = 500;
+
+  const activeTier = LIFETIME_TIERS.find((t) => t.id === selectedTier) ?? LIFETIME_TIERS[0];
 
   useEffect(() => {
     async function fetchSpotsClaimed() {
@@ -85,7 +93,7 @@ export default function LifetimePage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ packId: PACK_ID }),
+        body: JSON.stringify({ packId: selectedTier }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -133,19 +141,51 @@ export default function LifetimePage() {
         </div>
 
         {/* Price comparison */}
-        <div className="grid grid-cols-2 gap-4 mb-10">
-          <div className="bg-white rounded-2xl border-2 border-violet-600 p-6 text-center ring-1 ring-violet-600">
-            <p className="text-xs font-bold text-violet-600 uppercase mb-2">Early Bird</p>
-            <p className="text-4xl font-bold text-gray-900">$49</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+          <button
+            type="button"
+            onClick={() => setSelectedTier("lifetime_early")}
+            className={`bg-white rounded-2xl p-5 text-center relative transition-all cursor-pointer ${
+              selectedTier === "lifetime_early"
+                ? "border-2 border-violet-600 ring-2 ring-violet-600/30"
+                : "border-2 border-gray-200 hover:border-violet-300"
+            }`}
+          >
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-violet-600 text-white text-[10px] font-bold rounded-full uppercase">Best Value</span>
+            <p className="text-xs font-bold text-violet-600 uppercase mb-2 mt-1">Early Bird</p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$79</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-violet-600 font-medium mt-2">$0.041/token</p>
-          </div>
-          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6 text-center opacity-60">
-            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Standard (Later)</p>
-            <p className="text-4xl font-bold text-gray-400 line-through">$79</p>
-            <p className="text-sm text-gray-400 mt-1">one-time</p>
-            <p className="text-xs text-gray-400 font-medium mt-2">$0.066/token</p>
-          </div>
+            <p className="text-xs text-violet-600 font-medium mt-2">100 tokens/mo · $0.066/tok</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedTier("lifetime_standard")}
+            className={`rounded-2xl p-5 text-center transition-all cursor-pointer ${
+              selectedTier === "lifetime_standard"
+                ? "bg-white border-2 border-violet-600 ring-2 ring-violet-600/30"
+                : "bg-gray-50 border-2 border-gray-200 hover:border-violet-300"
+            }`}
+          >
+            <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>Standard</p>
+            <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$129</p>
+            <p className={`text-sm mt-1 ${selectedTier === "lifetime_standard" ? "text-gray-500" : "text-gray-400"}`}>one-time</p>
+            <p className={`text-xs font-medium mt-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>100 tokens/mo · $0.108/tok</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedTier("lifetime_vip")}
+            className={`bg-gradient-to-b from-amber-50 to-white rounded-2xl p-5 text-center transition-all cursor-pointer ${
+              selectedTier === "lifetime_vip"
+                ? "border-2 border-amber-500 ring-2 ring-amber-500/30"
+                : "border-2 border-amber-200 hover:border-amber-400"
+            }`}
+          >
+            <p className="text-xs font-bold text-amber-600 uppercase mb-2">VIP</p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$199</p>
+            <p className="text-sm text-gray-500 mt-1">one-time</p>
+            <p className="text-xs text-amber-600 font-medium mt-2">150 tokens/mo · $0.111/tok</p>
+            <p className="text-[10px] text-amber-700 mt-1">+ priority processing</p>
+          </button>
         </div>
 
         {/* ROI */}
@@ -154,23 +194,23 @@ export default function LifetimePage() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-500">Monthly tokens</span>
-              <span className="font-medium text-gray-900">100 tokens</span>
+              <span className="font-medium text-gray-900">100 tokens (150 VIP)</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Value at Pro rate ($0.075/tok)</span>
-              <span className="font-medium text-gray-900">$7.50/month</span>
+              <span className="text-gray-500">Value at Pro rate ($0.095/tok)</span>
+              <span className="font-medium text-gray-900">$9.50/month</span>
             </div>
             <div className="flex justify-between border-t border-gray-100 pt-3">
               <span className="text-gray-500">Break even in</span>
-              <span className="font-bold text-green-600">~7 months</span>
+              <span className="font-bold text-green-600">~8 months</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Year 1 token value</span>
-              <span className="font-bold text-green-600">$90 worth of tokens</span>
+              <span className="font-bold text-green-600">$114 worth of tokens</span>
             </div>
             <div className="flex justify-between border-t border-gray-100 pt-3">
-              <span className="text-gray-500">Potential side income (Track B tools)</span>
-              <span className="font-bold text-violet-600">$500–5,000/month</span>
+              <span className="text-gray-500">vs. Jobscan annual cost</span>
+              <span className="font-bold text-red-500">$599/year</span>
             </div>
           </div>
           <p className="text-xs text-gray-400 mt-4">
@@ -235,7 +275,9 @@ export default function LifetimePage() {
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-center text-white mb-10">
           <Sparkles className="w-8 h-8 mx-auto mb-3 text-blue-200" />
           <h2 className="text-2xl font-bold mb-2">Lock in your lifetime deal</h2>
-          <p className="text-blue-100 mb-6">$49 today. 100 tokens every month. Forever.</p>
+          <p className="text-blue-100 mb-6">
+            ${activeTier.price} today. {activeTier.tokens} tokens every month. Forever.
+          </p>
           <button
             onClick={handlePurchase}
             disabled={purchasing}
@@ -248,7 +290,7 @@ export default function LifetimePage() {
               </>
             ) : (
               <>
-                Get Lifetime Deal — $49
+                Get {activeTier.label} Deal — ${activeTier.price}
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

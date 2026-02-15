@@ -755,7 +755,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
           {!profile?.lifetime_deal && (
             <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white">
               <h3 className="font-bold mb-1">Lifetime Deal Available</h3>
-              <p className="text-sm text-blue-100 mb-3">$49 for 100 tokens/month forever</p>
+              <p className="text-sm text-blue-100 mb-3">$79 for 100 tokens/month forever</p>
               <Link href="/lifetime" className="inline-block px-4 py-2 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50">
                 Learn More
               </Link>

@@ -8,7 +8,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 export const metadata: Metadata = {
   title: "AISkillScore vs Competitors — Feature Comparison | 2026",
   description:
-    "Compare AISkillScore with Jobscan ($49.95/mo), Teal ($29/mo), and FinalRound ($149/mo). 11 AI career tools, pay per use, no subscriptions.",
+    "Compare AISkillScore with Jobscan ($599/yr), Teal ($348/yr), and FinalRound ($1,788/yr). 11 AI career tools, pay per use, no subscriptions.",
   alternates: { canonical: `${APP_URL}/compare` },
   openGraph: {
     title: "AISkillScore vs Jobscan vs Teal vs FinalRound — 2026 Comparison",
@@ -110,7 +110,7 @@ export default function ComparePage() {
         {/* CTA */}
         <div className="mt-16 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Try it free — no credit card required</h2>
-          <p className="text-blue-100 mb-6">5 free tokens + AI Displacement Score always free.</p>
+          <p className="text-blue-100 mb-6">15 free tokens + AI Displacement Score always free.</p>
           <Link
             href="/auth"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"

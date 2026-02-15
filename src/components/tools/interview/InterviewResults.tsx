@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Lightbulb, AlertTriangle, AlertCircle, Zap, MessageSquare, CheckCircle, Briefcase } from "lucide-react";
+import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TInterviewResult, ToolResult } from "@/types";
 
 interface InterviewResultsProps {
@@ -225,16 +226,20 @@ export function InterviewResults({ result }: InterviewResultsProps) {
         </div>
       )}
 
-      {/* Freelance Positioning (Track B) */}
-      {data.freelance_positioning && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-5">
-          <h4 className="font-semibold text-emerald-900 mb-2 flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-emerald-600" />
-            Freelance Positioning
-          </h4>
-          <p className="text-sm text-gray-700">{data.freelance_positioning}</p>
-        </div>
+      {/* Source Verification — Coaching answers reference experience */}
+      {data.questions && data.questions.length > 0 && (
+        <SourceVerification
+          items={data.questions
+            .filter((q) => q.suggested_answer)
+            .slice(0, 5)
+            .map((q) => ({
+              text: q.suggested_answer.slice(0, 80) + (q.suggested_answer.length > 80 ? "..." : ""),
+              verified: true,
+              source: `Based on your experience (${q.type.replace(/_/g, " ")} question)`,
+            }))}
+        />
       )}
+
     </div>
   );
 }

@@ -11,7 +11,7 @@ const MAX_TRACKED = 1000;
 const PACK_TOKENS: Record<string, number> = {
   starter: 50,
   pro: 200,
-  power: 600,
+  power: 500,
 };
 
 export async function POST(request: NextRequest) {
@@ -85,7 +85,15 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        if (packId === "lifetime_early" || packId === "lifetime_standard") {
+        if (packId === "lifetime_early" || packId === "lifetime_standard" || packId === "lifetime_vip") {
+          const lifetimeTokens = packId === "lifetime_vip" ? 150 : 100;
+          const tierName =
+            packId === "lifetime_vip"
+              ? "VIP"
+              : packId === "lifetime_standard"
+                ? "Standard"
+                : "Early Bird";
+
           await supabaseAdmin
             .from("profiles")
             .update({
@@ -99,9 +107,9 @@ export async function POST(request: NextRequest) {
 
           await supabaseAdmin.rpc("add_tokens", {
             p_user_id: userId,
-            p_amount: 100,
+            p_amount: lifetimeTokens,
             p_type: "lifetime_refill",
-            p_description: "Lifetime deal activation — 100 tokens",
+            p_description: `Lifetime ${tierName} activation — ${lifetimeTokens} tokens`,
             p_stripe_session_id: session.id,
           });
         } else {

@@ -204,6 +204,19 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         </div>
       )}
 
+      {/* Monetizable Skills — Track B */}
+      {data.monetizable_skills && Array.isArray(data.monetizable_skills) && data.monetizable_skills.length > 0 && (
+        <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-2">💰 Monetizable Skills</h3>
+          <p className="text-xs text-gray-500 mb-2">Skills in your resume that could generate freelance or consulting income:</p>
+          <div className="flex flex-wrap gap-2">
+            {data.monetizable_skills.map((skill, i) => (
+              <span key={i} className="px-2.5 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">{skill}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Next Steps */}
       {data.next_steps && data.next_steps.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
@@ -220,22 +233,6 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         </div>
       )}
 
-      {/* Monetizable Skills (Track B) */}
-      {data.monetizable_skills && data.monetizable_skills.length > 0 && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-5">
-          <h4 className="font-semibold text-emerald-900 mb-2 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-            Monetizable Skills
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {data.monetizable_skills.map((skill, i) => (
-              <span key={i} className="px-3 py-1.5 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-lg">
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Action buttons */}
       <div className="flex gap-3">

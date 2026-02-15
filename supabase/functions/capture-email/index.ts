@@ -113,10 +113,10 @@ Deno.serve(async (req: Request) => {
                Thanks for trying AISkillScore! Create a free account to save your results, unlock all 11 AI career tools, and start your Job Mission.
              </p>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-               You'll get <strong>5 free tokens</strong> plus <strong>2 daily credits</strong> — enough for a free JD Match scan every day.
+               You'll get <strong>15 free tokens</strong> plus <strong>2 daily credits</strong> — enough for a free JD Match scan every day.
              </p>
              <div style="text-align:center;margin-top:20px;">
-               <a href="${APP_URL}/auth" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right,#2563eb,#7c3aed);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:14px;">Create Account — 5 Free Tokens</a>
+               <a href="${APP_URL}/auth" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right,#2563eb,#7c3aed);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:14px;">Create Account — 15 Free Tokens</a>
              </div>`
           : `<h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Welcome to AISkillScore</h1>
              <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
@@ -131,7 +131,7 @@ Deno.serve(async (req: Request) => {
                <li><strong>Resume Optimizer</strong> — ATS + recruiter optimized, voice preserved</li>
              </ul>
              <div style="text-align:center;margin-top:20px;">
-               <a href="${APP_URL}/auth" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right,#2563eb,#7c3aed);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:14px;">Get Started — 5 Free Tokens</a>
+               <a href="${APP_URL}/auth" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right,#2563eb,#7c3aed);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:14px;">Get Started — 15 Free Tokens</a>
              </div>`;
 
         const emailHtml = `<!DOCTYPE html>
