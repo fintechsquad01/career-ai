@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { Ring } from "@/components/shared/Ring";
 import Link from "next/link";
 import { Brain, ArrowRight, Users, Star, TrendingUp, Twitter, Linkedin, Eye } from "lucide-react";
@@ -32,28 +32,23 @@ export async function generateMetadata({ params }: SharePageProps) {
   let scoreValue: number | null = null;
   let scoreType = "";
 
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    try {
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
-      const { data: score } = await supabase
-        .from("shared_scores")
-        .select("score_type, score_value, title, industry")
-        .eq("hash", hash)
-        .maybeSingle();
+  try {
+    const supabase = createAdminClient();
+    const { data: score } = await supabase
+      .from("shared_scores")
+      .select("score_type, score_value, title, industry")
+      .eq("hash", hash)
+      .maybeSingle();
 
-      if (score) {
-        const typeLabel = TYPE_LABELS[score.score_type] || "Career Score";
-        scoreType = score.score_type;
-        scoreValue = score.score_value;
-        title = `${typeLabel}: ${score.score_value}/100 — AISkillScore`;
-        description = `${score.title ? `${score.title} — ` : ""}${typeLabel} scored ${score.score_value}/100.${score.industry ? ` Industry: ${score.industry}.` : ""} Get your own AI career analysis free.`;
-      }
-    } catch {
-      // Fallback to generic metadata
+    if (score) {
+      const typeLabel = TYPE_LABELS[score.score_type] || "Career Score";
+      scoreType = score.score_type;
+      scoreValue = score.score_value;
+      title = `${typeLabel}: ${score.score_value}/100 — AISkillScore`;
+      description = `${score.title ? `${score.title} — ` : ""}${typeLabel} scored ${score.score_value}/100.${score.industry ? ` Industry: ${score.industry}.` : ""} Get your own AI career analysis free.`;
     }
+  } catch {
+    // Fallback to generic metadata
   }
 
   return {
@@ -87,22 +82,16 @@ export async function generateMetadata({ params }: SharePageProps) {
 export default async function SharePage({ params }: SharePageProps) {
   const { hash } = await params;
 
-  let score = null;
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-    const { data } = await supabase
-      .from("shared_scores")
-      .select("*")
-      .eq("hash", hash)
-      .maybeSingle();
-    score = data;
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("shared_scores")
+    .select("*")
+    .eq("hash", hash)
+    .maybeSingle();
+  const score = data;
 
-    if (score) {
-      await supabase.rpc("increment_view_count", { p_score_id: score.id });
-    }
+  if (score) {
+    await supabase.rpc("increment_view_count", { p_score_id: score.id });
   }
 
   if (!score) {

@@ -45,8 +45,6 @@ export async function POST(request: Request) {
 
     if (type === "daily_reminder_batch") {
       // Cron job: find users who haven't logged in for 2+ days and send reminders
-      // This requires RESEND_API_KEY and SUPABASE_SERVICE_ROLE_KEY
-      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
       const cronSecret = process.env.CRON_SECRET;
       const authHeader = request.headers.get("authorization");
 
@@ -55,15 +53,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      if (!serviceKey || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-        return NextResponse.json({ error: "Missing service role config" }, { status: 500 });
-      }
-
-      const { createClient: createServiceClient } = await import("@supabase/supabase-js");
-      const supabaseAdmin = createServiceClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        serviceKey,
-      );
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      const supabaseAdmin = createAdminClient();
 
       // Find users who:
       // 1. Have daily_credits_balance < 14 (haven't maxed out)
@@ -103,6 +94,7 @@ export async function POST(request: Request) {
         const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(user.id);
         if (!authUser?.user?.email) continue;
 
+        if (!user.last_daily_credit_at) continue;
         const lastCredit = new Date(user.last_daily_credit_at);
         const daysMissed = Math.floor((Date.now() - lastCredit.getTime()) / (1000 * 60 * 60 * 24));
 

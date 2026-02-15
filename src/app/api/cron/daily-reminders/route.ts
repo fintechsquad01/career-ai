@@ -20,16 +20,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!serviceKey || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      return NextResponse.json({ error: "Missing service role config" }, { status: 500 });
-    }
-
-    const { createClient } = await import("@supabase/supabase-js");
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      serviceKey,
-    );
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabaseAdmin = createAdminClient();
 
     // Find users who:
     // 1. Have daily_credits_balance < 14 (haven't maxed out)
@@ -63,6 +55,7 @@ export async function GET(request: Request) {
       const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(user.id);
       if (!authUser?.user?.email) continue;
 
+      if (!user.last_daily_credit_at) continue;
       const lastCredit = new Date(user.last_daily_credit_at);
       const daysMissed = Math.floor((Date.now() - lastCredit.getTime()) / (1000 * 60 * 60 * 24));
 

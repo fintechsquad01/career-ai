@@ -23,9 +23,7 @@ export function NpsWidget({ toolId, onDismiss }: NpsWidgetProps) {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
 
-      // feedback table is created via migration — not yet in generated types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any).from("feedback").insert({
+      await supabase.from("feedback").insert({
         user_id: session?.user?.id || null,
         tool_id: toolId,
         nps_score: score,

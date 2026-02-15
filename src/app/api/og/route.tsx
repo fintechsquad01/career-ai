@@ -1,6 +1,6 @@
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "edge";
 
@@ -66,10 +66,7 @@ export async function GET(request: NextRequest) {
   let industry = searchParams.get("industry") || "";
 
   if (hash && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    const supabase = createAdminClient();
     const { data } = await supabase
       .from("shared_scores")
       .select("score_type, score_value, title, industry")

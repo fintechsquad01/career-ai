@@ -26,16 +26,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!serviceKey || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      return NextResponse.json({ error: "Missing config" }, { status: 500 });
-    }
-
-    const { createClient } = await import("@supabase/supabase-js");
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      serviceKey,
-    );
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabaseAdmin = createAdminClient();
 
     const now = new Date();
     const results = { day1: 0, day3: 0, day7: 0, reengagement: 0, errors: 0, skippedOptOut: 0 };

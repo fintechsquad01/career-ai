@@ -310,6 +310,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      feedback: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          tool_id: string;
+          nps_score: number;
+          comment: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          tool_id: string;
+          nps_score: number;
+          comment?: string | null;
+        };
+        Update: {
+          comment?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -344,6 +365,12 @@ export interface Database {
           p_user_id: string;
         };
         Returns: Json;
+      };
+      increment_view_count: {
+        Args: {
+          p_score_id: string;
+        };
+        Returns: void;
       };
     };
     Enums: Record<string, never>;

@@ -21,16 +21,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!serviceKey || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      return NextResponse.json({ error: "Missing config" }, { status: 500 });
-    }
-
-    const { createClient } = await import("@supabase/supabase-js");
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      serviceKey,
-    );
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabaseAdmin = createAdminClient();
 
     const results = { sent: 0, skipped: 0, errors: 0 };
 
@@ -81,6 +73,9 @@ export async function GET(request: Request) {
     };
 
     for (const profile of profiles) {
+      // Type narrowing: the query filters out nulls, but TS doesn't know that
+      if (!profile.title || !profile.industry) continue;
+
       try {
         // Get user email
         const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);

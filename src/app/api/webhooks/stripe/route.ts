@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -15,11 +15,14 @@ const PACK_TOKENS: Record<string, number> = {
 };
 
 export async function POST(request: NextRequest) {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("STRIPE_WEBHOOK_SECRET is not configured");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-  );
+  const supabaseAdmin = createAdminClient();
 
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET || ""
+      webhookSecret
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
