@@ -1,6 +1,10 @@
-import { Sparkles } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 
-export function HeroSection() {
+interface HeroSectionProps {
+  onCtaClick?: () => void;
+}
+
+export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <div className="text-center space-y-8">
       {/* Badge */}
@@ -18,11 +22,25 @@ export function HeroSection() {
         </span>
       </h1>
 
-      {/* Subtitle */}
-      <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-        Paste a job posting or your resume. In 30 seconds, get an honest assessment
-        with evidence — not generic keyword scores.
+      {/* Subheadline */}
+      <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-medium">
+        Find out if AI is coming for your job — in 30 seconds. Free.
       </p>
+
+      {/* Primary CTA */}
+      <div className="space-y-4">
+        <button
+          onClick={onCtaClick}
+          className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-lg font-semibold rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/25 min-h-[48px]"
+        >
+          Get Your Free AI Risk Score
+          <ArrowRight className="w-5 h-5" />
+        </button>
+
+        <p className="text-sm text-gray-400">
+          No signup required · Takes 30 seconds · 100% free
+        </p>
+      </div>
     </div>
   );
 }

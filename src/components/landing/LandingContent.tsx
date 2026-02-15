@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { HeroSection } from "./HeroSection";
 import { SmartInput } from "./SmartInput";
@@ -8,8 +8,7 @@ import { Loader } from "./Loader";
 import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
-import { EmailCapture } from "./EmailCapture";
-import { TOOLS, PACKS, FAQ_ITEMS } from "@/lib/constants";
+import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES } from "@/lib/constants";
 import { track } from "@/lib/analytics";
 import {
   ShieldAlert,
@@ -17,14 +16,7 @@ import {
   FileText,
   Mail,
   Linkedin,
-  Camera,
   MessageSquare,
-  TrendingUp,
-  Map,
-  DollarSign,
-  Rocket,
-  Star,
-  Zap,
   ArrowRight,
   Sparkles,
   AlertCircle,
@@ -32,7 +24,9 @@ import {
   ClipboardPaste,
   Brain,
   MousePointerClick,
+  DollarSign,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { InputType } from "@/lib/detect-input";
 import type { ParseInputResult } from "@/types/landing";
 
@@ -52,14 +46,14 @@ function StickyCtaBar() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-3 animate-in slide-in-from-bottom-2 duration-300 md:block hidden">
-      <div className="max-w-4xl mx-auto flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-700">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-3 animate-in slide-in-from-bottom-2 duration-300">
+      <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-gray-700 hidden sm:block">
           Ready to analyze? Paste your resume or job description.
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px] w-full sm:w-auto"
         >
           Get Started — Free
           <ArrowRight className="w-4 h-4" />
@@ -86,19 +80,6 @@ const JD_STEPS = [
   "Calculating fit score...",
 ];
 
-const ICON_MAP: Record<string, typeof ShieldAlert> = {
-  ShieldAlert,
-  Target,
-  FileText,
-  Mail,
-  Linkedin,
-  Camera,
-  MessageSquare,
-  TrendingUp,
-  Map,
-  DollarSign,
-  Rocket,
-};
 
 function getMockResumeResult(): ParseInputResult {
   return {
@@ -140,6 +121,83 @@ function getMockJdResult(): ParseInputResult {
   };
 }
 
+const HERO_TOOLS: {
+  id: string;
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
+}[] = [
+  { id: "displacement", icon: ShieldAlert, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
+  { id: "jd_match", icon: Target, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
+  { id: "resume", icon: FileText, iconBg: "bg-violet-50", iconColor: "text-violet-600" },
+  { id: "cover_letter", icon: Mail, iconBg: "bg-violet-50", iconColor: "text-violet-600" },
+  { id: "interview", icon: MessageSquare, iconBg: "bg-amber-50", iconColor: "text-amber-600" },
+  { id: "linkedin", icon: Linkedin, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
+];
+
+function QuickDisplacementForm({
+  onSubmit,
+}: {
+  onSubmit: (text: string) => void;
+}) {
+  const [jobTitle, setJobTitle] = useState("");
+  const [industry, setIndustry] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!jobTitle.trim()) return;
+    const input = `Role: ${jobTitle.trim()}${industry ? `, Industry: ${industry}` : ""}`;
+    onSubmit(input);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="quick-job-title" className="sr-only">
+            Your job title
+          </label>
+          <input
+            id="quick-job-title"
+            type="text"
+            value={jobTitle}
+            onChange={(e) => setJobTitle(e.target.value)}
+            placeholder="e.g. Marketing Manager"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-300 transition-shadow min-h-[44px]"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="quick-industry" className="sr-only">
+            Your industry
+          </label>
+          <select
+            id="quick-industry"
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-300 transition-shadow min-h-[44px] appearance-none"
+          >
+            <option value="">Select your industry</option>
+            {INDUSTRIES.map((ind) => (
+              <option key={ind} value={ind}>
+                {ind}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <button
+        type="submit"
+        disabled={!jobTitle.trim()}
+        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ShieldAlert className="w-5 h-5" />
+        Analyze My AI Risk — Free
+      </button>
+    </form>
+  );
+}
+
 export function LandingContent() {
   const [pageState, setPageState] = useState<LandingState>("default");
   const [analysisType, setAnalysisType] = useState<InputType>(null);
@@ -147,6 +205,15 @@ export function LandingContent() {
     useState<ParseInputResult | null>(null);
   const [analysisError, setAnalysisError] = useState(false);
   const [lastInput, setLastInput] = useState<{ text: string; type: InputType } | null>(null);
+  const quickFormRef = useRef<HTMLDivElement>(null);
+
+  const handleCtaClick = () => {
+    quickFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleQuickDisplacement = (text: string) => {
+    handleAnalyze(text, "resume");
+  };
 
   const handleAnalyze = async (text: string, type: InputType) => {
     track("landing_analyze", { type: type ?? "unknown" });
@@ -218,10 +285,42 @@ export function LandingContent() {
       {/* Hero + Smart Input / Loader / Results */}
       <section className="px-4 pt-16 sm:pt-24 pb-20 bg-gradient-to-b from-white to-[#F5F5F7]">
         <div className="max-w-4xl mx-auto space-y-10">
-          <HeroSection />
+          <HeroSection onCtaClick={handleCtaClick} />
 
           {pageState === "default" && (
-            <SmartInput onAnalyze={handleAnalyze} />
+            <>
+              {/* Quick Displacement Form */}
+              <div ref={quickFormRef} className="max-w-2xl mx-auto">
+                <div className="glass-card p-6 sm:p-8 space-y-5">
+                  <div className="flex items-center gap-3 mb-1">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                      <ShieldAlert className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900">AI Displacement Score</h2>
+                      <p className="text-sm text-gray-500">How vulnerable is your role to AI automation?</p>
+                    </div>
+                  </div>
+                  <QuickDisplacementForm onSubmit={handleQuickDisplacement} />
+                </div>
+              </div>
+
+              {/* Divider pointing to SmartInput */}
+              <div className="text-center space-y-2">
+                <p className="text-sm text-gray-400">
+                  Or paste your full resume or a job description for deeper analysis
+                </p>
+                <ArrowRight className="w-4 h-4 text-gray-300 mx-auto rotate-90" />
+              </div>
+
+              {/* Full SmartInput */}
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider text-center">
+                  Power users: paste anything for full analysis
+                </p>
+                <SmartInput onAnalyze={handleAnalyze} />
+              </div>
+            </>
           )}
 
           {pageState === "analyzing" && (
@@ -236,7 +335,7 @@ export function LandingContent() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Analysis unavailable right now</h3>
                 <p className="text-sm text-gray-500 max-w-md mx-auto">
-                  Our servers are temporarily busy. Sign up for 5 free tokens and try from your dashboard, or retry now.
+                  Our servers are temporarily busy. Sign up for 15 free tokens and try from your dashboard, or retry now.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   <button
@@ -250,7 +349,7 @@ export function LandingContent() {
                     href="/auth"
                     className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[44px]"
                   >
-                    Create Account — 5 Free Tokens
+                    Create Account — 15 Free Tokens
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -276,27 +375,22 @@ export function LandingContent() {
       {/* Below-fold sections — only show when default */}
       {pageState === "default" && (
         <>
-          {/* Social Proof */}
-          <section className="py-12 sm:py-16 bg-white">
-            <div className="gradient-divider mb-12 sm:mb-16" />
-            <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-start justify-center gap-12 sm:gap-20">
-              <div className="text-center">
-                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">12,400+</p>
-                <p className="text-sm text-gray-500 mt-1">Careers analyzed</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">4.8/5</p>
-                <p className="text-sm text-gray-500 mt-1">User rating</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">30 sec</p>
-                <p className="text-sm text-gray-500 mt-1">Analysis time</p>
-              </div>
+          {/* Trust line — honest value props */}
+          <section className="py-8 bg-white">
+            <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-8 sm:gap-16">
+              <p className="text-sm text-gray-400 font-medium">
+                <span className="text-2xl font-bold text-gray-900 mr-1.5">11</span> AI career tools
+              </p>
+              <p className="text-sm text-gray-400 font-medium">
+                <span className="text-2xl font-bold text-gray-900 mr-1.5">30 sec</span> analysis time
+              </p>
+              <p className="text-sm text-gray-400 font-medium">
+                <span className="text-2xl font-bold text-gray-900 mr-1.5">$0</span> to start
+              </p>
             </div>
-            <div className="gradient-divider mt-12 sm:mt-16" />
           </section>
 
-          {/* How It Works */}
+          {/* How It Works — 4 steps */}
           <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
@@ -306,6 +400,7 @@ export function LandingContent() {
                 {[
                   {
                     icon: ClipboardPaste,
+                    step: "1",
                     title: "Paste",
                     desc: "Drop in a job posting, URL, or your resume. We auto-detect the type.",
                     color: "from-blue-50 to-blue-100/50",
@@ -313,6 +408,7 @@ export function LandingContent() {
                   },
                   {
                     icon: Brain,
+                    step: "2",
                     title: "Analyze",
                     desc: "AI evaluates in 30 seconds — fit score, ATS compatibility, gaps, and opportunities.",
                     color: "from-violet-50 to-violet-100/50",
@@ -320,6 +416,7 @@ export function LandingContent() {
                   },
                   {
                     icon: MousePointerClick,
+                    step: "3",
                     title: "Act",
                     desc: "Get an action plan: optimize resume, prep for interviews, close skill gaps.",
                     color: "from-emerald-50 to-emerald-100/50",
@@ -327,6 +424,7 @@ export function LandingContent() {
                   },
                   {
                     icon: DollarSign,
+                    step: "4",
                     title: "Earn",
                     desc: "Discover freelance and consulting opportunities based on your strongest skills.",
                     color: "from-amber-50 to-amber-100/50",
@@ -350,161 +448,99 @@ export function LandingContent() {
             </div>
           </section>
 
-          {/* Tools Preview */}
+          {/* What You Get — 6 hero tools */}
           <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 11 AI tools. No subscriptions. Start free.
               </h2>
-              <p className="text-gray-500 text-center mb-10">
-                Land your dream job AND build income resilience. Pay per use,
-                starting at free.
+              <p className="text-gray-500 text-center mb-12">
+                Land your dream job AND build income resilience. Pay per use, starting at free.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {TOOLS.map((tool) => {
-                  const Icon = ICON_MAP[tool.icon] || Zap;
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {HERO_TOOLS.map((ht) => {
+                  const tool = TOOLS.find((t) => t.id === ht.id);
+                  if (!tool) return null;
                   return (
-                    <div
-                      key={tool.id}
-                      className="glass-card p-4 hover:shadow-lg transition-all duration-200"
-                    >
+                    <div key={tool.id} className="glass-card p-5 flex flex-col">
                       <div className="flex items-start justify-between mb-3">
-                        <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                          <Icon className="w-4.5 h-4.5 text-blue-600" />
+                        <div className={`w-10 h-10 rounded-xl ${ht.iconBg} flex items-center justify-center`}>
+                          <ht.icon className={`w-5 h-5 ${ht.iconColor}`} />
                         </div>
                         <span
-                          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             tool.tokens === 0
                               ? "bg-green-50 text-green-700"
-                              : "bg-gray-100 text-gray-600"
+                              : "bg-blue-50 text-blue-700"
                           }`}
                         >
-                          {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
+                          {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
                         </span>
                       </div>
-                      <h3 className="font-semibold text-sm text-gray-900 mb-1">
+                      <h3 className="text-sm font-bold text-gray-900 mb-1">
                         {tool.title}
                       </h3>
-                      <p className="text-xs text-gray-500 line-clamp-2">
+                      <p className="text-xs text-gray-500 leading-relaxed flex-1">
                         {tool.description}
                       </p>
+                      {tool.painPoint && (
+                        <p className="text-[11px] text-red-600/80 font-medium mt-2">
+                          {tool.painPoint}
+                        </p>
+                      )}
                     </div>
                   );
                 })}
               </div>
+              <p className="text-center mt-8">
+                <Link
+                  href="/tools"
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+                >
+                  See all 11 tools & pricing{" "}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </p>
             </div>
           </section>
 
-          {/* Track B: Entrepreneurship Promotion */}
-          <section className="py-20 sm:py-28 px-4 bg-gradient-to-br from-violet-50 to-purple-50">
-            <div className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-violet-100 text-violet-700 text-xs font-bold rounded-full uppercase mb-4">
-                    <Rocket className="w-3.5 h-3.5" />
-                    New: Track B
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-                    Earn while you search.
-                  </h2>
-                  <p className="text-gray-600 mb-6">
-                    Every AISkillScore tool surfaces freelance and consulting
-                    opportunities based on your skills. The Entrepreneurship
-                    Assessment identifies the business you could build with
-                    what you already know — starting this week.
-                  </p>
-                  <Link
-                    href="/auth"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:opacity-90 transition-opacity shadow-lg shadow-violet-600/20 min-h-[48px]"
-                  >
-                    Try Entrepreneurship Assessment
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    {
-                      label: "Unfair advantages",
-                      desc: "Discover what makes YOUR background uniquely valuable",
-                    },
-                    {
-                      label: "5 business models evaluated",
-                      desc: "Freelance, consulting, SaaS, content, and more — scored for your skills",
-                    },
-                    {
-                      label: "90-day launch plan",
-                      desc: "Week-by-week actions with income targets",
-                    },
-                    {
-                      label: "Works alongside job hunting",
-                      desc: "Everything suggested runs in parallel with your applications",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="bg-white/70 rounded-xl p-4 border border-violet-100"
-                    >
-                      <p className="text-sm font-semibold text-gray-900">
-                        {item.label}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {item.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Testimonials */}
+          {/* Why AISkillScore — honest competitive comparison */}
           <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
-                What users say
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
+                Why job seekers switch to AISkillScore
               </h2>
+              <p className="text-gray-500 text-center mb-12">
+                One platform replaces 5 subscriptions. Pay only for what you use.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
                   {
-                    name: "Alex Rivera",
-                    title: "Senior Developer, Austin",
-                    quote:
-                      "The JD Match tool showed me exactly WHY I wasn't getting callbacks — evidence from my actual resume. Fixed 3 things, got 4 interviews the next week.",
+                    pain: "Keyword matching isn't enough",
+                    detail: "Jobscan charges $599/year to count keywords. We analyze your actual resume with evidence — showing what a recruiter would think, not just what an algorithm counts.",
+                    vs: "vs. Jobscan ($599/yr)",
+                    color: "border-blue-100 bg-blue-50/30",
                   },
                   {
-                    name: "Priya Sharma",
-                    title: "Product Manager, NYC",
-                    quote:
-                      "I ran the Entrepreneurship Assessment while job hunting and started freelance consulting within 2 weeks. Now I earn $4K/month on the side AND have a stronger resume.",
+                    pain: "Templates destroy your voice",
+                    detail: "Teal and Kickresume use generic templates that make every resume sound the same. Our AI enhances YOUR voice — no detectable AI patterns, no corporate jargon.",
+                    vs: "vs. Teal ($348/yr)",
+                    color: "border-violet-100 bg-violet-50/30",
                   },
                   {
-                    name: "Marcus Johnson",
-                    title: "Marketing Manager, London",
-                    quote:
-                      "Jobscan gave me a 94% score and I still got rejected. AISkillScore told me my formatting was wrong — something Jobscan never flagged. Fixed it, got the interview.",
+                    pain: "Interview prep misses what matters",
+                    detail: "90% of candidates prepare first answers but fail follow-up questions — the part that actually decides interviews. We prep both, from your real experience.",
+                    vs: "vs. FinalRound ($1,788/yr)",
+                    color: "border-amber-100 bg-amber-50/30",
                   },
-                ].map((t) => (
+                ].map((item) => (
                   <div
-                    key={t.name}
-                    className="glass-card p-6"
+                    key={item.pain}
+                    className={`rounded-2xl border p-6 ${item.color}`}
                   >
-                    <div className="flex items-center gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-amber-400 text-amber-400"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-700 mb-4">
-                      &ldquo;{t.quote}&rdquo;
-                    </p>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {t.name}
-                      </p>
-                      <p className="text-xs text-gray-500">{t.title}</p>
-                    </div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-3">{item.vs}</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">{item.pain}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{item.detail}</p>
                   </div>
                 ))}
               </div>
@@ -518,8 +554,7 @@ export function LandingContent() {
                 Pay per use. No subscriptions.
               </h2>
               <p className="text-gray-500 text-center mb-10">
-                Others charge $29–$149/month. We charge per tool, starting at
-                free.
+                Jobscan costs $599/year. A full job prep on AISkillScore? Under $4.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
                 {PACKS.map((pack) => (
@@ -559,99 +594,16 @@ export function LandingContent() {
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
-
-          {/* Email Capture */}
-          <section className="py-20 sm:py-28 px-4 bg-white">
-            <div className="max-w-xl mx-auto text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-                Get career tips in your inbox
-              </h2>
-              <p className="text-gray-500 mb-6">
-                Weekly insights on job hunting, salary negotiation, and building
-                income on the side. No spam — unsubscribe anytime.
-              </p>
-              <EmailCapture context="landing_footer" />
-            </div>
-          </section>
-
-          {/* Final CTA */}
-          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
-            <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                Your career is worth 30 seconds.
-              </h2>
-              <p className="text-gray-500 mb-8">
-                Paste your resume or a job posting and get instant, AI-powered
-                insights.
-              </p>
-              <Link
-                href="#top"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
-              >
-                Get Started — Free
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </section>
-
-          {/* From the Blog */}
-          <section className="py-20 sm:py-28 px-4 bg-white">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
-                Guides &amp; research
-              </h2>
-              <p className="text-gray-500 text-center mb-10">
-                Data-backed insights for navigating the AI-age job market.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[
-                  {
-                    emoji: "🛡️",
-                    title: "Will AI Replace My Job?",
-                    desc: "Measure your personal risk using ILO 2025 data.",
-                    href: "/blog/will-ai-replace-my-job",
-                  },
-                  {
-                    emoji: "📄",
-                    title: "ATS Resume Optimization",
-                    desc: "43% of rejections are formatting errors, not qualifications.",
-                    href: "/blog/resume-ats-optimization-guide",
-                  },
-                  {
-                    emoji: "💬",
-                    title: "AI Interview Prep Guide",
-                    desc: "90% of candidates aren't prepared for follow-ups.",
-                    href: "/blog/ai-interview-prep-guide",
-                  },
-                ].map((post) => (
-                  <Link
-                    key={post.href}
-                    href={post.href}
-                    className="glass-card p-5 hover:shadow-md transition-shadow group"
-                  >
-                    <span className="text-2xl">{post.emoji}</span>
-                    <h3 className="text-sm font-bold text-gray-900 mt-3 mb-1 group-hover:text-blue-600 transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-xs text-gray-500">{post.desc}</p>
-                    <span className="text-xs text-blue-600 font-medium mt-2 inline-flex items-center gap-1">
-                      Read guide <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </Link>
-                ))}
-              </div>
-              <div className="text-center mt-6">
-                <Link href="/blog" className="text-sm text-gray-500 hover:text-gray-900 font-medium">
-                  View all articles →
+              <p className="text-center mt-6">
+                <Link href="/lifetime" className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+                  Or get the Lifetime Deal — $79 once, 100 tokens/mo forever →
                 </Link>
-              </div>
+              </p>
             </div>
           </section>
 
           {/* FAQ */}
-          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
+          <section className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
                 Frequently asked questions
@@ -661,7 +613,7 @@ export function LandingContent() {
           </section>
 
           {/* Footer */}
-          <footer className="py-12 px-4 bg-white border-t border-gray-200">
+          <footer className="py-12 px-4 bg-[#F5F5F7] border-t border-gray-200">
             <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">

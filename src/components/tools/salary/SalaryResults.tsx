@@ -206,41 +206,6 @@ export function SalaryResults({ result }: SalaryResultsProps) {
         </div>
       )}
 
-      {/* Freelance Rate Guidance (Track B) */}
-      {data.freelance_rate_guidance && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-6">
-          <h3 className="font-semibold text-emerald-900 mb-3 flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-emerald-600" />
-            Freelance Rate Guidance
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            {data.freelance_rate_guidance.hourly_rate && (
-              <div className="bg-white/70 rounded-xl p-3 text-center">
-                <p className="text-xs text-gray-500">Hourly</p>
-                <p className="text-lg font-bold text-emerald-700">{data.freelance_rate_guidance.hourly_rate}</p>
-              </div>
-            )}
-            {data.freelance_rate_guidance.day_rate && (
-              <div className="bg-white/70 rounded-xl p-3 text-center">
-                <p className="text-xs text-gray-500">Day Rate</p>
-                <p className="text-lg font-bold text-emerald-700">{data.freelance_rate_guidance.day_rate}</p>
-              </div>
-            )}
-          </div>
-          {data.freelance_rate_guidance.pricing_strategy && (
-            <p className="text-sm text-gray-700 mt-3">{data.freelance_rate_guidance.pricing_strategy}</p>
-          )}
-          {data.freelance_rate_guidance.platforms && data.freelance_rate_guidance.platforms.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {data.freelance_rate_guidance.platforms.map((p, i) => (
-                <span key={i} className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-lg">
-                  {p}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -214,65 +214,6 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
         </div>
       )}
 
-      {/* Income Building Plan (Track B) */}
-      {data.income_building_plan && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-6">
-          <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-            Income Building Plan
-          </h3>
-          <div className="space-y-4">
-            {data.income_building_plan.month_1_2 && (
-              <div className="bg-white/70 rounded-xl p-4">
-                <p className="text-xs font-semibold text-emerald-700 uppercase mb-1">Month 1-2</p>
-                <p className="text-sm text-gray-700">{data.income_building_plan.month_1_2.focus}</p>
-                {data.income_building_plan.month_1_2.expected_income && (
-                  <p className="text-xs font-semibold text-emerald-700 mt-1">{data.income_building_plan.month_1_2.expected_income}</p>
-                )}
-                {data.income_building_plan.month_1_2.platform && (
-                  <a
-                    href={getAffiliateUrl(data.income_building_plan.month_1_2.platform)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackAffiliateClick(data.income_building_plan!.month_1_2!.platform!, "roadmap", "income_plan_m1")}
-                    className="text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-0.5 inline-flex items-center gap-1"
-                  >
-                    Platform: {data.income_building_plan.month_1_2.platform}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
-                {data.income_building_plan.month_1_2.how_this_helps_job_hunt && (
-                  <p className="text-xs text-teal-700 mt-1 flex items-start gap-1">
-                    <ArrowRight className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                    {data.income_building_plan.month_1_2.how_this_helps_job_hunt}
-                  </p>
-                )}
-              </div>
-            )}
-            {data.income_building_plan.month_3_6 && (
-              <div className="bg-white/70 rounded-xl p-4">
-                <p className="text-xs font-semibold text-emerald-700 uppercase mb-1">Month 3-6</p>
-                <p className="text-sm text-gray-700">{data.income_building_plan.month_3_6.focus}</p>
-                {data.income_building_plan.month_3_6.expected_income && (
-                  <p className="text-xs font-semibold text-emerald-700 mt-1">{data.income_building_plan.month_3_6.expected_income}</p>
-                )}
-              </div>
-            )}
-            {data.income_building_plan.month_7_12 && (
-              <div className="bg-white/70 rounded-xl p-4">
-                <p className="text-xs font-semibold text-emerald-700 uppercase mb-1">Month 7-12</p>
-                <p className="text-sm text-gray-700">{data.income_building_plan.month_7_12.focus}</p>
-                {data.income_building_plan.month_7_12.expected_income && (
-                  <p className="text-xs font-semibold text-emerald-700 mt-1">{data.income_building_plan.month_7_12.expected_income}</p>
-                )}
-                {data.income_building_plan.month_7_12.decision_point && (
-                  <p className="text-xs text-amber-700 mt-1">{data.income_building_plan.month_7_12.decision_point}</p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Risk Mitigation */}
       {data.risk_mitigation && (

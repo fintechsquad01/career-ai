@@ -1,6 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
+import { SourceVerification } from "@/components/shared/SourceVerification";
 import { Hash, Users, DollarSign, Sparkles, ArrowRight, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import type { TLinkedInResult, ToolResult } from "@/types";
@@ -127,6 +128,17 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
         </div>
       )}
 
+      {/* Source Verification — Experience Improvements */}
+      {data.experience_improvements && data.experience_improvements.length > 0 && (
+        <SourceVerification
+          items={data.experience_improvements.map((exp) => ({
+            text: exp.improved.slice(0, 80) + (exp.improved.length > 80 ? "..." : ""),
+            verified: true,
+            source: exp.what_changed ? `Rewritten: ${exp.what_changed}` : "From resume experience",
+          }))}
+        />
+      )}
+
       {/* Content Strategy */}
       {data.content_strategy && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
@@ -186,48 +198,6 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
         </div>
       )}
 
-      {/* Personal Brand Monetization (Track B) */}
-      {data.personal_brand_monetization && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-6">
-          <h3 className="font-semibold text-emerald-900 mb-3 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-            Personal Brand Monetization
-          </h3>
-          <div className="space-y-3">
-            {data.personal_brand_monetization.positioning && (
-              <p className="text-sm text-gray-700">{data.personal_brand_monetization.positioning}</p>
-            )}
-            {data.personal_brand_monetization.content_to_income_path && (
-              <div>
-                <p className="text-xs font-semibold text-emerald-700 uppercase mb-1">Path to Income</p>
-                <p className="text-sm text-gray-700">{data.personal_brand_monetization.content_to_income_path}</p>
-              </div>
-            )}
-            {data.personal_brand_monetization.income_potential && (
-              <p className="text-sm font-semibold text-emerald-700">
-                Potential: {data.personal_brand_monetization.income_potential}
-              </p>
-            )}
-            {data.personal_brand_monetization.first_steps && data.personal_brand_monetization.first_steps.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-emerald-700 uppercase mb-1">Start This Week</p>
-                <ul className="space-y-1">
-                  {data.personal_brand_monetization.first_steps.map((s, i) => (
-                    <li key={i} className="text-sm text-gray-700">• {s}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <Link
-              href="/tools/entrepreneurship"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 transition-colors min-h-[44px] mt-2"
-            >
-              Get a full income plan
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      )}
 
       {/* Network Building */}
       {data.network_building && data.network_building.length > 0 && (

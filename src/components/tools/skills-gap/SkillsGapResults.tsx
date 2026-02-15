@@ -230,38 +230,6 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
         </div>
       )}
 
-      {/* Monetization Opportunities (Track B) */}
-      {data.monetization_opportunities && data.monetization_opportunities.length > 0 && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-6">
-          <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-            Monetize Your Strengths
-          </h3>
-          <div className="space-y-4">
-            {data.monetization_opportunities.map((mo, i) => (
-              <div key={i} className="bg-white/70 rounded-xl p-4">
-                <p className="text-sm font-medium text-gray-900">{mo.skill_area}</p>
-                {mo.opportunity && <p className="text-xs text-gray-600 mt-1">{mo.opportunity}</p>}
-                <div className="flex flex-wrap items-center gap-3 mt-2">
-                  {mo.income_potential && (
-                    <span className="text-xs font-semibold text-emerald-700">{mo.income_potential}</span>
-                  )}
-                  {mo.platforms && mo.platforms.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {mo.platforms.map((p, j) => (
-                        <span key={j} className="text-xs text-gray-500">{p}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {mo.how_to_start && (
-                  <p className="text-xs text-emerald-700 mt-1">Start: {mo.how_to_start}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

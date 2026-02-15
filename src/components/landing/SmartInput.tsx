@@ -1,22 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Link as LinkIcon, Crosshair, FileText, Sparkles, ArrowRight, X, Upload } from "lucide-react";
+import { Link as LinkIcon, Crosshair, FileText, ArrowRight } from "lucide-react";
 import { useSmartInput } from "@/hooks/useSmartInput";
 import { parseFile, isResumeFile } from "@/lib/file-parser";
 import type { InputType } from "@/lib/detect-input";
-
-const DEMO_CHIPS = [
-  { label: "Sample job posting", emoji: "📋", type: "jd" as const },
-  { label: "LinkedIn URL", emoji: "🔗", type: "url" as const },
-  { label: "Sample resume", emoji: "📄", type: "resume" as const },
-];
-
-const DEMO_DATA: Record<string, string> = {
-  jd: `Product Marketing Manager — Anthropic (San Francisco, CA)\n\nAbout the Role:\nWe're looking for a Product Marketing Manager to lead go-to-market strategy for our AI products.\n\nResponsibilities:\n• Develop and execute product launch strategies\n• Create compelling product narratives and positioning\n• Conduct competitive analysis and market research\n• Collaborate with product, sales, and engineering teams\n\nRequirements:\n• 5+ years in product marketing, preferably in AI/ML or enterprise SaaS\n• Experience with B2B go-to-market strategies\n• Strong analytical skills and data-driven mindset\n• Excellent written and verbal communication\n\nPreferred Qualifications:\n• Experience in the AI industry\n• Technical background or understanding of ML concepts\n• MBA or equivalent experience\n\nSalary Range: $140,000–$180,000 + equity`,
-  url: "https://www.linkedin.com/jobs/view/product-marketing-manager-at-anthropic-3847291054",
-  resume: `SARAH CHEN\nsarah.chen@email.com | (415) 555-0123 | San Francisco, CA | linkedin.com/in/sarahchen\n\nPROFESSIONAL SUMMARY\nSenior Marketing Manager with 8 years of experience in B2B technology marketing.\n\nEXPERIENCE\nSenior Marketing Manager | TechCorp Inc. | 2020 – Present\n• Led marketing campaigns generating $2.5M in pipeline\n• Managed team of 4 marketing coordinators\n• Increased brand awareness by 45% through content strategy\n\nMarketing Manager | StartupXYZ | 2017 – 2020\n• Developed go-to-market strategy for 3 product launches\n• Built and managed $500K annual marketing budget\n\nEDUCATION\nB.S. Marketing, UC Berkeley, 2016\n\nSKILLS\nSEO, Content Strategy, Google Analytics, HubSpot, Salesforce, Social Media Marketing`,
-};
 
 const BADGE_CONFIG: Record<string, { color: string; icon: typeof LinkIcon; label: string }> = {
   url: { color: "bg-blue-100 text-blue-700", icon: LinkIcon, label: "Job URL detected" },
@@ -69,29 +57,13 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           if (f) handleFile(f);
         }}
       >
-        {/* Demo chips */}
-        {!text && (
-          <div className="px-4 pt-4 flex flex-wrap gap-2">
-            {DEMO_CHIPS.map((chip) => (
-              <button
-                key={chip.type}
-                onClick={() => setText(DEMO_DATA[chip.type] || "")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-100 transition-colors"
-              >
-                <span>{chip.emoji}</span>
-                <span>{chip.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
-
         {/* Textarea */}
-        <div className="px-4 pt-3 pb-2">
+        <div className="px-4 pt-4 pb-2">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={`Paste anything here...\n\n- A job description you're considering\n- A LinkedIn/Greenhouse/Indeed job URL\n- Your resume text\n\nWe auto-detect the type and analyze in 30 seconds.`}
-            rows={text ? 6 : 4}
+            placeholder="Paste a job posting or your resume..."
+            rows={text ? 6 : 3}
             aria-label="Paste a job description, job URL, or resume text"
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
           />
@@ -115,23 +87,23 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
                 Clear
               </button>
             )}
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.docx,.txt"
-                onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
-                aria-label="Upload resume file"
-                className="hidden"
-              />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx,.txt"
+              onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+              aria-label="Upload resume file"
+              className="hidden"
+            />
+            {!text && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs text-gray-400 hover:text-blue-600 hidden sm:inline transition-colors"
+                className="text-xs text-gray-400 hover:text-blue-600 transition-colors"
               >
                 or upload a file
               </button>
-            </>
+            )}
           </div>
         </div>
 
@@ -158,13 +130,10 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
         )}
       </div>
 
-      {/* Supported platforms + privacy */}
-      <div className="mt-5 text-center space-y-2">
-        <p className="text-xs text-gray-400 font-medium">
-          Works with LinkedIn · Greenhouse · Lever · Indeed · Workday
-        </p>
-        <p className="text-xs text-gray-400">Encrypted · Never stored permanently · Your data, your control</p>
-      </div>
+      {/* Privacy line */}
+      <p className="mt-4 text-center text-xs text-gray-400">
+        Encrypted · Never stored permanently · Your data, your control
+      </p>
     </div>
   );
 }

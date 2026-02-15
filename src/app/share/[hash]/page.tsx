@@ -184,6 +184,40 @@ export default async function SharePage({ params }: SharePageProps) {
           </div>
         </div>
 
+        {/* Conversion section for visitors */}
+        <div className="mt-6 bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+          <h3 className="font-semibold text-gray-900 text-center">
+            {score.score_type === "displacement" 
+              ? "Is AI coming for YOUR job?" 
+              : "How do YOU compare?"}
+          </h3>
+          <p className="text-sm text-gray-500 text-center">
+            {score.score_type === "displacement"
+              ? "1 in 4 workers have roles exposed to generative AI. Get your own AI risk analysis — free, 30 seconds, no signup."
+              : "Get your own AI career analysis in 30 seconds. Free to start, no credit card needed."}
+          </p>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="p-3 bg-blue-50 rounded-xl">
+              <p className="text-lg font-bold text-blue-700">11</p>
+              <p className="text-[10px] text-blue-600">AI Tools</p>
+            </div>
+            <div className="p-3 bg-violet-50 rounded-xl">
+              <p className="text-lg font-bold text-violet-700">30s</p>
+              <p className="text-[10px] text-violet-600">Analysis</p>
+            </div>
+            <div className="p-3 bg-green-50 rounded-xl">
+              <p className="text-lg font-bold text-green-700">Free</p>
+              <p className="text-[10px] text-green-600">To Start</p>
+            </div>
+          </div>
+          <Link
+            href="/auth"
+            className="block w-full py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl text-center hover:opacity-90 transition-opacity min-h-[48px]"
+          >
+            Create Free Account — 15 Tokens
+          </Link>
+        </div>
+
         {/* Social proof */}
         <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-400">
           <span className="flex items-center gap-1"><Users className="w-3 h-3" /> 11 AI career tools</span>

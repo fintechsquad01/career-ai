@@ -17,7 +17,7 @@ function TokenCalculator() {
     return base;
   }, [jobApps]);
 
-  const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : "Power";
+  const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : tokensNeeded <= 500 ? "Power" : "Lifetime";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-16">
@@ -57,10 +57,10 @@ function TokenCalculator() {
 }
 
 const COMPETITORS = [
-  { name: "AISkillScore", price: "From $5", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
-  { name: "Jobscan", price: "$49.95/mo", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false, gap: "Keyword counting only. No evidence, no recruiter perspective." },
-  { name: "Teal", price: "$29/mo", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false, gap: "Generic templates. Destroys your authentic voice." },
-  { name: "FinalRound", price: "$149/mo", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false, gap: "No follow-up prep. The thing that actually decides interviews." },
+  { name: "AISkillScore", price: "From $9", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
+  { name: "Jobscan", price: "$599/yr", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false, gap: "Keyword counting only. No evidence, no recruiter perspective." },
+  { name: "Teal", price: "$348/yr", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false, gap: "Generic templates. Destroys your authentic voice." },
+  { name: "FinalRound", price: "$1,788/yr", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false, gap: "No follow-up prep. The thing that actually decides interviews." },
 ];
 
 export default function PricingPage() {
@@ -144,12 +144,12 @@ export default function PricingPage() {
             Pay per use. No subscriptions.
           </h1>
           <p className="text-lg text-gray-500 mb-4">
-            Others charge $29–$149/month. We charge per tool, starting at free.
+            Jobscan costs $599/year. A full job prep on AISkillScore? Under $4.
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
             Log in daily for 2 free tokens. That&apos;s a free JD Match scan every day.
           </div>
-          <Insight type="competitive" text="Jobscan = $49.95/mo for just resume scanning. Teal = $29/mo. FinalRound = $149/mo. AISkillScore = pay per use." />
+          <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $9." />
         </div>
 
         {/* Packs */}
@@ -322,8 +322,8 @@ export default function PricingPage() {
         {/* Lifetime Deal CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center mb-16">
           <h2 className="text-2xl font-bold mb-2">Want unlimited value?</h2>
-          <p className="text-blue-100 mb-4">Get the Lifetime Deal — $49 for 100 tokens/month forever.</p>
-          <p className="text-xs text-blue-200 mb-6">Already a lifetime subscriber? You can top up with any pack above for extra tokens in busy months.</p>
+          <p className="text-blue-100 mb-4">Get the Lifetime Deal — from $79 for 100 tokens/month forever.</p>
+          <p className="text-xs text-blue-200 mb-6">Less than the cost of one TopResume review ($149). Already a lifetime subscriber? Top up with any pack above for extra tokens.</p>
           <Link
             href="/lifetime"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"

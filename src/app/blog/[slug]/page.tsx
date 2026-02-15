@@ -184,7 +184,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {/* Bottom CTA */}
         <div className="mt-12 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Take action on what you learned</h2>
-          <p className="text-blue-100 mb-6">Free AI Displacement Score + 5 tokens on signup. No credit card.</p>
+          <p className="text-blue-100 mb-6">Free AI Displacement Score + 15 tokens on signup. No credit card.</p>
           <Link
             href="/auth"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"

@@ -69,4 +69,10 @@ export const EVENTS = {
   MISSION_STEP_COMPLETE: "mission_step_complete",
   AFFILIATE_CLICK: "affiliate_click",
   DAILY_CREDITS_AWARDED: "daily_credits_awarded",
+  NPS_SUBMITTED: "nps_submitted",
+  REFERRAL_PROMPTED: "referral_prompted",
+  SHARE_SCORE: "share_score",
+  EMAIL_SEQUENCE_SENT: "email_sequence_sent",
+  AB_EXPERIMENT_VIEWED: "ab_experiment_viewed",
+  LANDING_VARIANT_VIEW: "landing_variant_view",
 } as const;

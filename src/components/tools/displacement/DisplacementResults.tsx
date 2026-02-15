@@ -1,7 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
-import { AlertTriangle, Shield, ArrowRight, Lightbulb, DollarSign } from "lucide-react";
+import { AlertTriangle, Shield, ArrowRight, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
 import type { TDisplacementResult, ToolResult } from "@/types";
 
 interface DisplacementResultsProps {
@@ -43,6 +43,37 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
         {data.headline && (
           <p className="text-sm text-gray-700 mt-3 max-w-md mx-auto">{data.headline}</p>
         )}
+      </div>
+
+      {/* Share CTA */}
+      <div className="bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 text-center">
+        <p className="text-sm font-semibold text-gray-900 mb-1">Share your score and compare with friends</p>
+        <p className="text-xs text-gray-500 mb-4">
+          {data.score >= 60 
+            ? "Your score is high — challenge your network to check theirs."
+            : "Share your results and see how colleagues compare."}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My AI displacement risk score is ${data.score}/100. How safe is YOUR job? Find out free:`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors min-h-[44px]"
+          >
+            <Twitter className="w-4 h-4" />
+            Share on X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0077B5] text-white text-sm font-semibold rounded-xl hover:bg-[#006699] transition-colors min-h-[44px]"
+          >
+            <Linkedin className="w-4 h-4" />
+            Share on LinkedIn
+          </a>
+        </div>
+        <p className="text-[11px] text-gray-400 mt-3">#AISkillScore · What&apos;s your score?</p>
       </div>
 
       {/* Tasks at risk */}
@@ -177,27 +208,23 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
         </div>
       )}
 
-      {/* Entrepreneurship opportunities (Track B) */}
-      {data.entrepreneurship_opportunities && data.entrepreneurship_opportunities.length > 0 && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-6">
-          <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-            Income Opportunities
+      {/* Income Opportunities — Track B */}
+      {data.entrepreneurship_opportunities && Array.isArray(data.entrepreneurship_opportunities) && data.entrepreneurship_opportunities.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+            <span className="text-green-600">💡</span> Income Opportunities
           </h3>
-          <div className="space-y-4">
+          <div className="grid gap-3">
             {data.entrepreneurship_opportunities.map((opp, i) => (
-              <div key={i} className="bg-white/70 rounded-xl p-4">
+              <div key={i} className="bg-green-50 border border-green-100 rounded-xl p-4 space-y-2">
                 <p className="text-sm font-medium text-gray-900">{opp.opportunity}</p>
-                {opp.why_you && <p className="text-xs text-gray-600 mt-1">{opp.why_you}</p>}
-                <div className="flex items-center gap-4 mt-2">
+                {opp.why_you && <p className="text-xs text-gray-600">{opp.why_you}</p>}
+                <div className="flex items-center justify-between text-xs">
                   {opp.income_potential && (
-                    <span className="text-xs font-semibold text-emerald-700">{opp.income_potential}</span>
+                    <span className="text-green-700 font-medium">{opp.income_potential}</span>
                   )}
                   {opp.first_step && (
-                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                      <ArrowRight className="w-3 h-3" />
-                      {opp.first_step}
-                    </span>
+                    <span className="text-gray-500">First step: {opp.first_step}</span>
                   )}
                 </div>
               </div>
@@ -205,6 +232,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
           </div>
         </div>
       )}
+
     </div>
   );
 }

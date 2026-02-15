@@ -53,7 +53,10 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith(route)
   );
 
-  if (!user && isProtected) {
+  // Allow /tools hub page to be public (but not /tools/[toolId])
+  const isPublicToolsHub = request.nextUrl.pathname === "/tools";
+
+  if (!user && isProtected && !isPublicToolsHub) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     return NextResponse.redirect(url);

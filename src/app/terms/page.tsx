@@ -36,16 +36,16 @@ export default function TermsPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">2. Account &amp; Eligibility</h2>
-            <p>You must be at least 16 years old to use AISkillScore. You are responsible for maintaining the confidentiality of your account credentials. Each new account receives 5 free tokens upon signup, plus 3 daily credits that reset every 24 hours.</p>
+            <p>You must be at least 16 years old to use AISkillScore. You are responsible for maintaining the confidentiality of your account credentials. Each new account receives 15 free tokens upon signup, plus 3 daily credits that reset every 24 hours.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">3. Tokens &amp; Pricing</h2>
             <p>AISkillScore operates on a token-based pricing model. Tokens are purchased in packs:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li><strong>Starter Pack:</strong> 50 tokens — $5.00</li>
-              <li><strong>Pro Pack:</strong> 200 tokens — $15.00</li>
-              <li><strong>Power Pack:</strong> 600 tokens — $39.00</li>
-              <li><strong>Lifetime Deal:</strong> 100 tokens/month — $49.00 (early bird) or $79.00</li>
+              <li><strong>Starter Pack:</strong> 50 tokens — $9.00</li>
+              <li><strong>Pro Pack:</strong> 200 tokens — $19.00</li>
+              <li><strong>Power Pack:</strong> 500 tokens — $49.00</li>
+              <li><strong>Lifetime Deal:</strong> 100 tokens/month — $79.00 (early bird), $129.00, or $199.00 (VIP, 150 tokens/month)</li>
             </ul>
             <p className="mt-2">Purchased tokens never expire. Token costs per tool range from 0 (free tools) to 10 tokens, as displayed on each tool page before use. All prices are in USD.</p>
           </section>
