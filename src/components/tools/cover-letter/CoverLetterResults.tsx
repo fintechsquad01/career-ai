@@ -55,6 +55,11 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
         <div className="prose prose-sm max-w-none">
           <p className="text-gray-800 whitespace-pre-wrap">{data.letter_text}</p>
         </div>
+        {data.letter_text && (() => {
+          const wordCount = data.letter_text.trim().split(/\s+/).length;
+          const readTime = Math.ceil(wordCount / 200);
+          return <p className="text-xs text-gray-400 mt-2">{wordCount} words · {readTime} min read</p>;
+        })()}
       </div>
 
       {/* Source Verification */}
@@ -155,17 +160,17 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
       )}
 
       {/* Action buttons */}
-      <div className="flex gap-3">
+      <div className="space-y-3">
         <button
           onClick={handleCopy}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[48px]"
+          className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
         >
           {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copied!" : "Copy"}
+          {copied ? "Copied!" : "Copy Letter"}
         </button>
         <button
           onClick={handleDownload}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <Download className="w-4 h-4" />
           Download

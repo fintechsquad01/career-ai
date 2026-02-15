@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Lock, ArrowRight } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
 import { InlineSignup } from "./InlineSignup";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import type { ResumeAnalysisData } from "@/types/landing";
 
 interface XrayResultsProps {
@@ -28,7 +29,7 @@ export function XrayResults({ data }: XrayResultsProps) {
       </div>
 
       {/* Score rings — visible */}
-      <div className="flex flex-wrap justify-center gap-8 sm:gap-12">
+      <div className="flex flex-wrap justify-center gap-8 sm:gap-12 celebrate stagger-children">
         <div className="flex flex-col items-center gap-2">
           <Ring
             score={data.resume_score}
@@ -51,7 +52,7 @@ export function XrayResults({ data }: XrayResultsProps) {
 
       {/* Top skills — visible (up to 3) */}
       {data.skills.length > 0 && (
-        <div>
+        <AnimateOnScroll>
           <h3 className="text-sm font-semibold text-gray-900 mb-2">Top skills</h3>
           <div className="flex flex-wrap gap-2">
             {data.skills.slice(0, 3).map((skill) => (
@@ -68,7 +69,7 @@ export function XrayResults({ data }: XrayResultsProps) {
               </span>
             )}
           </div>
-        </div>
+        </AnimateOnScroll>
       )}
 
       {/* Blurred/locked content */}
@@ -79,7 +80,7 @@ export function XrayResults({ data }: XrayResultsProps) {
             {/* Salary benchmark */}
             <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 text-center">
               <p className="text-sm text-gray-700 font-medium">
-                Estimated range: $90,000–$120,000 for your role
+                Sign up to see salary data for your role
               </p>
             </div>
 
@@ -112,15 +113,15 @@ export function XrayResults({ data }: XrayResultsProps) {
 
         {/* Gate overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4 text-center">
+          <div className="glass-card shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4 text-center">
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
               <Lock className="w-5 h-5 text-blue-600" />
             </div>
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              Unlock your full Career X-Ray
+              See exactly what&apos;s holding you back — and how to fix it
             </h3>
             <p className="text-xs text-gray-500 mb-4">
-              Salary data, skill gaps, and a personalized action plan — free.
+              ATS fixes, keyword gaps, salary data, and your personalized action plan — free.
             </p>
 
             {showSignup ? (
@@ -131,7 +132,7 @@ export function XrayResults({ data }: XrayResultsProps) {
                   onClick={() => setShowSignup(true)}
                   className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
                 >
-                  Sign Up Free — Unlock Results
+                  Create Account — 15 Free Tokens
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <p className="text-xs text-gray-400">No credit card required</p>

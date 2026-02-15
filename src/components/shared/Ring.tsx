@@ -51,8 +51,12 @@ export function Ring({ score, size = "md", label, showLabel = true }: RingProps)
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="transition-all duration-700"
-          style={{ filter: `drop-shadow(0 0 4px ${stroke}40)` }}
+          className="ring-animate"
+          style={{
+            "--ring-circumference": circumference,
+            "--ring-offset": offset,
+            filter: `drop-shadow(0 0 4px ${stroke}40)`,
+          } as React.CSSProperties}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

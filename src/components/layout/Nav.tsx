@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Brain, Menu, X, ChevronRight, Settings, LogOut } from "lucide-react";
+import { Brain, Menu, X, ChevronRight, Settings, LogOut, Plus } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
@@ -21,7 +21,7 @@ function useBreadcrumb(pathname: string) {
   if (segments[0] === "dashboard") {
     crumbs.push({ label: "Dashboard" });
   } else if (segments[0] === "mission") {
-    crumbs.push({ label: "Mission" });
+    crumbs.push({ label: "App HQ" });
   } else if (segments[0] === "tools") {
     crumbs.push({ label: "Tools", href: "/dashboard" });
     if (segments[1]) {
@@ -46,7 +46,7 @@ function useBreadcrumb(pathname: string) {
 export function Nav({ isLoggedIn }: NavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { mobileMenuOpen, setMobileMenuOpen, profile } = useAppStore();
+  const { mobileMenuOpen, setMobileMenuOpen, profile, dailyCreditsBalance, dailyCreditsAwarded } = useAppStore();
   const breadcrumbs = useBreadcrumb(pathname);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
@@ -118,7 +118,16 @@ export function Nav({ isLoggedIn }: NavProps) {
           {/* Right side */}
           {isLoggedIn ? (
             <div className="hidden md:flex items-center gap-4">
-              <TokBadge />
+              <div className="relative inline-flex items-center">
+                <TokBadge />
+                {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
+                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm animate-bounce"
+                    style={{ animationDuration: "2s", animationIterationCount: 3 }}
+                  >
+                    <Plus className="w-2.5 h-2.5" strokeWidth={3} />
+                  </span>
+                )}
+              </div>
               <div className="relative" ref={avatarMenuRef}>
                 <button
                   onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
@@ -189,7 +198,7 @@ export function Nav({ isLoggedIn }: NavProps) {
             {isLoggedIn ? (
               <>
                 <MobileLink href="/dashboard" label="Dashboard" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/mission" label="Mission" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/mission" label="App HQ" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/tools" label="Tools" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/pricing" label="Tokens" onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/history" label="History" onClick={() => setMobileMenuOpen(false)} />

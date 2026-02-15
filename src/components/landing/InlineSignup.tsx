@@ -118,9 +118,11 @@ export function InlineSignup() {
           className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          Unlock Results Free
+          Create Account — 15 Free Tokens
         </button>
       </form>
+      <p className="text-xs text-gray-400 mt-2 text-center">That&apos;s enough for a full resume optimization + job match</p>
+      <p className="text-xs text-center mt-1"><a href="/auth" className="text-blue-600 hover:text-blue-700 font-medium">Already have an account? Sign in</a></p>
     </div>
   );
 }

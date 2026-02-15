@@ -32,7 +32,8 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
   return (
     <div className="space-y-6">
       {/* Score hero */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center celebrate">
+        <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.score} size="lg" label="AI Risk" />
         <div className="mt-4 flex items-center justify-center gap-2">
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${riskColors[data.risk_level] || riskColors.moderate}`}>
@@ -40,9 +41,6 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
           </span>
           <span className="text-xs text-gray-400">Timeline: {data.timeline}</span>
         </div>
-        {data.headline && (
-          <p className="text-sm text-gray-700 mt-3 max-w-md mx-auto">{data.headline}</p>
-        )}
       </div>
 
       {/* Share CTA */}
@@ -232,6 +230,13 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
           </div>
         </div>
       )}
+
+      {/* Challenge friends share CTA */}
+      <div className="bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl p-5 text-center">
+        <p className="text-sm font-semibold text-gray-900 mb-1">Think your friends are safe from AI?</p>
+        <p className="text-xs text-gray-500 mb-3">Challenge them to check their score — it&apos;s free.</p>
+        <button onClick={() => {}} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]">Share Your Score</button>
+      </div>
 
     </div>
   );

@@ -13,8 +13,8 @@ const BADGE_CONFIG: Record<string, { color: string; icon: typeof LinkIcon; label
 };
 
 const CTA_CONFIG: Record<string, { text: string; color: string }> = {
-  url: { text: "Analyze Job Posting", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
-  jd: { text: "Match Against Job", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
+  url: { text: "Analyze This Job", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
+  jd: { text: "See How You Match", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
   resume: { text: "X-Ray My Resume", color: "bg-violet-600 hover:bg-violet-700 shadow-violet-600/20" },
 };
 
@@ -47,7 +47,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
   return (
     <div className="w-full max-w-xl mx-auto">
       <div
-        className="glass-card overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-lg transition-shadow duration-300"
+        className="glass-card overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-lg transition-all duration-300"
         onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-blue-400"); }}
         onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove("ring-2", "ring-blue-400"); }}
         onDrop={(e) => {
@@ -62,7 +62,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Paste a job posting or your resume..."
+            placeholder={"Paste anything here...\n\n• A job description you\u2019re considering\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"}
             rows={text ? 6 : 3}
             aria-label="Paste a job description, job URL, or resume text"
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none min-h-[80px]"
@@ -115,7 +115,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
 
         {/* CTA */}
         {text && (
-          <div className="px-4 pb-4">
+          <div className="px-4 pb-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
             <button
               onClick={() => onAnalyze?.(text, detectedType)}
               disabled={!detectedType}
@@ -132,7 +132,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
 
       {/* Privacy line */}
       <p className="mt-4 text-center text-xs text-gray-400">
-        Encrypted · Never stored permanently · Your data, your control
+        Encrypted · Never sold · 30 second analysis
       </p>
     </div>
   );

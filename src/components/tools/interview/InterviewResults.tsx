@@ -142,7 +142,7 @@ export function InterviewResults({ result }: InterviewResultsProps) {
                 {/* Follow-up questions */}
                 {q.follow_ups && q.follow_ups.length > 0 && (
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase mb-2">Follow-Up Questions</p>
+                    <p className="text-[10px] font-semibold text-gray-500 uppercase mb-2">The Follow-Up Questions That Decide Who Gets Hired</p>
                     <div className="space-y-2">
                       {q.follow_ups.map((fu, j) => (
                         <div key={j} className="p-3 bg-gray-50 rounded-xl">
@@ -239,6 +239,10 @@ export function InterviewResults({ result }: InterviewResultsProps) {
             }))}
         />
       )}
+
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center text-sm text-blue-700">
+        Want to practice these questions out loud? <span className="font-semibold">Coming soon.</span>
+      </div>
 
     </div>
   );

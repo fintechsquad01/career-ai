@@ -5,6 +5,7 @@ import { Ring } from "@/components/shared/Ring";
 import { useEffect, useState } from "react";
 import { MissionCard } from "./MissionCard";
 import { WelcomeModal } from "@/components/modals/WelcomeModal";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
@@ -292,7 +293,7 @@ export function DashboardContent({
   const firstName = profile?.full_name?.split(" ")[0];
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-5 sm:py-8 space-y-5 stagger-children">
+    <div className="max-w-2xl mx-auto px-4 py-5 sm:py-8 space-y-5 pb-24 sm:pb-8">
       {showWelcome && profile && (
         <WelcomeModal userId={profile.id} onClose={() => setShowWelcome(false)} />
       )}
@@ -337,7 +338,9 @@ export function DashboardContent({
       <div className="glass-card p-6">
         {careerHealth.score !== null ? (
           <div className="flex items-center gap-6">
-            <Ring score={careerHealth.score} size="lg" label="Career Health" showLabel />
+            <div className="celebrate">
+              <Ring score={careerHealth.score} size="lg" label="Career Health" showLabel />
+            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <h2 className="text-sm font-semibold text-gray-900">Career Health Score</h2>
@@ -447,8 +450,8 @@ export function DashboardContent({
         </div>
       )}
 
-      {/* Profile Completeness — only when < 100% */}
-      {completeness.score < 100 && (
+      {/* Profile Completeness — hide once mostly done */}
+      {completeness.score < 60 && (
         <div className="glass-card p-4 flex items-center gap-4">
           <div className="flex-shrink-0">
             <Ring score={completeness.score} size="sm" label="" showLabel={false} />
@@ -476,47 +479,32 @@ export function DashboardContent({
         </div>
       )}
 
-      {/* Smart Recommendations */}
+      {/* Smart Recommendations — single next step */}
       {recommendations.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Recommended Next</h2>
-          <div className="space-y-2">
-            {recommendations.map((rec) => (
-              <Link
-                key={rec.id}
-                href={rec.href}
-                className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 hover:shadow-sm transition-all group"
-              >
-                <div className={`w-10 h-10 rounded-xl ${rec.iconBg} flex items-center justify-center flex-shrink-0`}>
-                  <rec.icon className={`w-5 h-5 ${rec.iconColor}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{rec.title}</p>
-                  <p className="text-xs text-gray-500 truncate">{rec.description}</p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    rec.tokens === "Free" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"
-                  }`}>
-                    {rec.tokens === "Free" ? "Free" : `${rec.tokens} tokens`}
-                  </span>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
-                </div>
-              </Link>
-            ))}
+        <Link href={recommendations[0].href} className="block glass-card p-5 hover:shadow-lg transition-all group">
+          <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">Your next move</p>
+          <p className="text-base font-bold text-gray-900 group-hover:text-blue-700 mb-1">{recommendations[0].title}</p>
+          <p className="text-sm text-gray-500 mb-3">{recommendations[0].description}</p>
+          <div className="flex items-center justify-between">
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${recommendations[0].tokens === "Free" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"}`}>
+              {recommendations[0].tokens === "Free" ? "Free" : `${recommendations[0].tokens} tokens`}
+            </span>
+            <span className="text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center gap-1">
+              Start <ArrowRight className="w-4 h-4" />
+            </span>
           </div>
-        </div>
+        </Link>
       )}
 
       {/* Career Metrics */}
       {(careerProfile?.displacement_score != null || careerProfile?.resume_score != null) && (
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Your Scores</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Your Numbers</h2>
+          <div className="grid grid-cols-2 gap-3 stagger-children">
             {careerProfile.displacement_score != null && (
               <Link href="/tools/displacement" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
                 <p className="text-xs text-gray-500 mb-1">AI Displacement Risk</p>
-                <p className={`text-2xl font-bold ${
+                <p className={`text-2xl font-bold celebrate ${
                   careerProfile.displacement_score >= 70 ? "text-red-600" : careerProfile.displacement_score >= 40 ? "text-amber-600" : "text-green-600"
                 }`}>{careerProfile.displacement_score}%</p>
               </Link>
@@ -524,7 +512,7 @@ export function DashboardContent({
             {careerProfile.resume_score != null && (
               <Link href="/tools/resume" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
                 <p className="text-xs text-gray-500 mb-1">Resume ATS Score</p>
-                <p className={`text-2xl font-bold ${
+                <p className={`text-2xl font-bold celebrate ${
                   careerProfile.resume_score >= 70 ? "text-green-600" : careerProfile.resume_score >= 40 ? "text-amber-600" : "text-red-600"
                 }`}>{careerProfile.resume_score}%</p>
               </Link>
@@ -566,7 +554,7 @@ export function DashboardContent({
       })()}
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 stagger-children">
         <Link
           href="/tools/displacement"
           className="glass-card p-4 text-center hover:shadow-md transition-shadow"
@@ -590,26 +578,30 @@ export function DashboardContent({
         </Link>
       </div>
 
-      {/* Value comparison */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">What you'd pay elsewhere</p>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Resume + JD Match + Interview Prep</p>
-            <p className="text-sm font-bold text-gray-300 line-through">$1,048+/year</p>
-            <p className="text-[10px] text-gray-400">Jobscan + Resume Genius + FinalRound</p>
+      {/* Value comparison — only for new users */}
+      {recentResults.length === 0 && (
+        <AnimateOnScroll>
+          <div className="glass-card p-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">What this costs elsewhere</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Resume + JD Match + Interview Prep</p>
+                <p className="text-sm font-bold text-gray-300 line-through">$1,048+/year</p>
+                <p className="text-[10px] text-gray-400">Jobscan + Resume Genius + FinalRound</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Same tools at AISkillScore</p>
+                <p className="text-sm font-bold text-green-600">~$1.15 in tokens</p>
+                <p className="text-[10px] text-green-600/70">Pay per use, no subscriptions</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Same tools at AISkillScore</p>
-            <p className="text-sm font-bold text-green-600">~$1.15 in tokens</p>
-            <p className="text-[10px] text-green-600/70">Pay per use, no subscriptions</p>
-          </div>
-        </div>
-      </div>
+        </AnimateOnScroll>
+      )}
 
       {/* Getting Started — only for brand new users with 0 results */}
       {recentResults.length === 0 && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-5 sm:p-6 text-white">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-5 sm:p-6 text-white celebrate">
           <div className="absolute -top-16 -right-16 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
           <div className="relative flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
@@ -632,56 +624,61 @@ export function DashboardContent({
 
       {/* Insight cards */}
       {recentResults.length === 0 && (
-        <div className="space-y-2">
-          <div className="flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-            <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-red-700">
-              <span className="font-semibold">1 in 4 workers</span> globally have roles exposed to generative AI. Understanding your risk is the first step.
-            </p>
+        <AnimateOnScroll>
+          <div className="space-y-2">
+            <div className="flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
+              <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-red-700">
+                <span className="font-semibold">1 in 4 workers</span> globally have roles exposed to generative AI. Understanding your risk is the first step.
+              </p>
+            </div>
+            <div className="flex items-start gap-3 px-4 py-3 bg-green-50 border border-green-100 rounded-xl">
+              <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-green-700">
+                <span className="font-semibold">Jobscan charges $49.95/mo</span> for resume scanning. AISkillScore gives you 11 tools for tokens starting at $0.065 each.
+              </p>
+            </div>
           </div>
-          <div className="flex items-start gap-3 px-4 py-3 bg-green-50 border border-green-100 rounded-xl">
-            <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-green-700">
-              <span className="font-semibold">Jobscan charges $49.95/mo</span> for resume scanning. AISkillScore gives you 11 tools for tokens starting at $0.065 each.
-            </p>
-          </div>
-        </div>
+        </AnimateOnScroll>
       )}
 
       {/* Recent Activity — compact */}
       {recentResults.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-semibold text-gray-900">Recent Activity</h2>
-            <Link href="/history" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
-              View all
-            </Link>
-          </div>
-          <div className="glass-card divide-y divide-gray-100">
-            {recentResults.slice(0, 3).map((r) => (
-              <Link
-                key={r.id}
-                href={`/history?expand=${r.id}`}
-                className="px-4 py-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors block"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 capitalize truncate">{r.tool_id.replace(/_/g, " ")}</p>
-                  <p className="text-xs text-gray-400 truncate">{r.summary || "Complete"}</p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                  {r.metric_value && <Ring score={r.metric_value} size="sm" showLabel={false} />}
-                  <span className="text-[10px] text-gray-400">
-                    {new Date(r.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                  </span>
-                </div>
+        <AnimateOnScroll>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-gray-900">Recent Activity</h2>
+              <Link href="/history" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                View all
               </Link>
-            ))}
+            </div>
+            <div className="glass-card divide-y divide-gray-100">
+              {recentResults.slice(0, 3).map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/history?expand=${r.id}`}
+                  className="px-4 py-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors block"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 capitalize truncate">{r.tool_id.replace(/_/g, " ")}</p>
+                    <p className="text-xs text-gray-400 truncate">{r.summary || "Complete"}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                    {r.metric_value && <Ring score={r.metric_value} size="sm" showLabel={false} />}
+                    <span className="text-[10px] text-gray-400">
+                      {new Date(r.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        </AnimateOnScroll>
       )}
 
       {/* Referral + Lifetime nudge cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <AnimateOnScroll>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">
         <Link href="/referral" className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow group">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
@@ -706,7 +703,8 @@ export function DashboardContent({
             </div>
           </Link>
         )}
-      </div>
+        </div>
+      </AnimateOnScroll>
     </div>
   );
 }

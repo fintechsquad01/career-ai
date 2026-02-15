@@ -11,6 +11,7 @@ import { FAQ } from "@/components/shared/FAQ";
 import { EmailCapture } from "./EmailCapture";
 import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES } from "@/lib/constants";
 import { track } from "@/lib/analytics";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import {
   ShieldAlert,
   Target,
@@ -22,10 +23,6 @@ import {
   Sparkles,
   AlertCircle,
   RotateCcw,
-  ClipboardPaste,
-  Brain,
-  MousePointerClick,
-  DollarSign,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { InputType } from "@/lib/detect-input";
@@ -379,7 +376,7 @@ export function LandingContent() {
       {pageState === "default" && (
         <>
           {/* Trust line — honest value props */}
-          <section className="py-8 bg-white">
+          <AnimateOnScroll as="section" className="py-8 bg-white">
             <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-8 sm:gap-16">
               <p className="text-sm text-gray-400 font-medium">
                 <span className="text-2xl font-bold text-gray-900 mr-1.5">11</span> AI career tools
@@ -391,68 +388,74 @@ export function LandingContent() {
                 <span className="text-2xl font-bold text-gray-900 mr-1.5">$0</span> to start
               </p>
             </div>
-          </section>
+          </AnimateOnScroll>
 
-          {/* How It Works — 4 steps */}
-          <section className="py-20 sm:py-28 px-4 bg-white">
+          <div className="gradient-divider max-w-4xl mx-auto" />
+
+          {/* See What You'll Get — interactive preview */}
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-warm-gradient">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
-                How it works
+                See what you&apos;ll get in 30 seconds
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  {
-                    icon: ClipboardPaste,
-                    step: "1",
-                    title: "Paste",
-                    desc: "Drop in a job posting, URL, or your resume. We auto-detect the type.",
-                    color: "from-blue-50 to-blue-100/50",
-                    iconColor: "text-blue-600",
-                  },
-                  {
-                    icon: Brain,
-                    step: "2",
-                    title: "Analyze",
-                    desc: "AI evaluates in 30 seconds — fit score, ATS compatibility, gaps, and opportunities.",
-                    color: "from-violet-50 to-violet-100/50",
-                    iconColor: "text-violet-600",
-                  },
-                  {
-                    icon: MousePointerClick,
-                    step: "3",
-                    title: "Act",
-                    desc: "Get an action plan: optimize resume, prep for interviews, close skill gaps.",
-                    color: "from-emerald-50 to-emerald-100/50",
-                    iconColor: "text-emerald-600",
-                  },
-                  {
-                    icon: DollarSign,
-                    step: "4",
-                    title: "Earn",
-                    desc: "Discover freelance and consulting opportunities based on your strongest skills.",
-                    color: "from-amber-50 to-amber-100/50",
-                    iconColor: "text-amber-600",
-                  },
-                ].map((s) => (
-                  <div
-                    key={s.title}
-                    className="text-center p-6 sm:p-8 rounded-2xl bg-white/60 backdrop-blur-sm border border-gray-100/50 shadow-sm"
-                  >
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-5`}>
-                      <s.icon className={`w-7 h-7 ${s.iconColor}`} />
+
+              {/* Blurred preview card */}
+              <div className="relative max-w-2xl mx-auto mb-10">
+                <div className="glass-card p-6 sm:p-8">
+                  <div className="blur-[3px] select-none pointer-events-none space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                        <span className="text-2xl font-bold text-amber-700">67</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Your ATS Score: 67/100</p>
+                        <p className="text-sm text-gray-500">3 formatting issues found, 2 missing keywords...</p>
+                      </div>
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      {s.title}
-                    </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+                    <div className="h-2 bg-gradient-to-r from-amber-400 to-amber-300 rounded-full w-2/3" />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="h-20 rounded-xl bg-gray-100" />
+                      <div className="h-20 rounded-xl bg-gray-100" />
+                    </div>
                   </div>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px] rounded-2xl">
+                    <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4 text-center px-4">
+                      This could be yours in 30 seconds
+                    </p>
+                    <button
+                      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                      className="btn-shine inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[44px]"
+                    >
+                      Try It Free
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stat pills */}
+              <div className="flex items-center justify-center gap-3 sm:gap-4 stagger-children">
+                {[
+                  { label: "ATS Score", color: "bg-blue-50 text-blue-700 border-blue-100" },
+                  { label: "Skill Gaps", color: "bg-violet-50 text-violet-700 border-violet-100" },
+                  { label: "Action Plan", color: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+                ].map((pill) => (
+                  <span
+                    key={pill.label}
+                    className={`px-4 py-2 rounded-full text-xs font-semibold border ${pill.color}`}
+                  >
+                    {pill.label}
+                  </span>
                 ))}
               </div>
             </div>
-          </section>
+          </AnimateOnScroll>
+
+          <div className="gradient-divider max-w-4xl mx-auto" />
 
           {/* What You Get — 6 hero tools */}
-          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 11 AI tools. No subscriptions. Start free.
@@ -460,7 +463,7 @@ export function LandingContent() {
               <p className="text-gray-500 text-center mb-12">
                 Land your dream job AND build income resilience. Pay per use, starting at free.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
                 {HERO_TOOLS.map((ht) => {
                   const tool = TOOLS.find((t) => t.id === ht.id);
                   if (!tool) return null;
@@ -505,10 +508,12 @@ export function LandingContent() {
                 </Link>
               </p>
             </div>
-          </section>
+          </AnimateOnScroll>
 
-          {/* Why AISkillScore — honest competitive comparison */}
-          <section className="py-20 sm:py-28 px-4 bg-white">
+          <div className="gradient-divider max-w-4xl mx-auto" />
+
+          {/* Why AISkillScore — pain-point-first comparison */}
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 Why job seekers switch to AISkillScore
@@ -516,42 +521,83 @@ export function LandingContent() {
               <p className="text-gray-500 text-center mb-12">
                 One platform replaces 5 subscriptions. Pay only for what you use.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
                 {[
                   {
-                    pain: "Keyword matching isn't enough",
-                    detail: "Jobscan charges $599/year to count keywords. We analyze your actual resume with evidence — showing what a recruiter would think, not just what an algorithm counts.",
-                    vs: "vs. Jobscan ($599/yr)",
+                    heading: "We show evidence, not just scores",
+                    body: "Jobscan gives you a number. We quote your resume back to you and explain why each skill matches or doesn\u2019t. Like having a recruiter review your application.",
                     color: "border-blue-100 bg-blue-50/30",
                   },
                   {
-                    pain: "Templates destroy your voice",
-                    detail: "Teal and Kickresume use generic templates that make every resume sound the same. Our AI enhances YOUR voice — no detectable AI patterns, no corporate jargon.",
-                    vs: "vs. Teal ($348/yr)",
+                    heading: "Your voice stays yours",
+                    body: "Other tools rewrite your resume into \u2018spearheaded\u2019 and \u2018leveraged.\u2019 We enhance what\u2019s already there. Recruiters can tell the difference.",
                     color: "border-violet-100 bg-violet-50/30",
                   },
                   {
-                    pain: "Interview prep misses what matters",
-                    detail: "90% of candidates prepare first answers but fail follow-up questions — the part that actually decides interviews. We prep both, from your real experience.",
-                    vs: "vs. FinalRound ($1,788/yr)",
-                    color: "border-amber-100 bg-amber-50/30",
+                    heading: "We help you earn while you search",
+                    body: "Every tool surfaces freelance and consulting opportunities from your existing skills. Because job hunting shouldn\u2019t mean zero income.",
+                    color: "border-emerald-100 bg-emerald-50/30",
                   },
                 ].map((item) => (
                   <div
-                    key={item.pain}
+                    key={item.heading}
                     className={`rounded-2xl border p-6 ${item.color}`}
                   >
-                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-3">{item.vs}</p>
-                    <h3 className="font-semibold text-gray-900 mb-2">{item.pain}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{item.detail}</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">{item.heading}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
                   </div>
                 ))}
               </div>
             </div>
-          </section>
+          </AnimateOnScroll>
+
+          <div className="gradient-divider max-w-4xl mx-auto" />
+
+          {/* Your Career Journey — timeline */}
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
+                From first paste to first offer
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
+                <div className="glass-card p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-xl font-bold text-blue-600">1</span>
+                  </div>
+                  <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Day 1</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paste &amp; discover</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Paste your resume, get a free AI risk score. See exactly where you stand in 30 seconds.
+                  </p>
+                </div>
+                <div className="glass-card p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-xl font-bold text-violet-600">2</span>
+                  </div>
+                  <p className="text-xs font-bold text-violet-600 uppercase tracking-wider mb-2">Week 1</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Match &amp; optimize</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Match against jobs, optimize your resume, prep for interviews. All in one place.
+                  </p>
+                </div>
+                <div className="glass-card p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-xl font-bold text-emerald-600">3</span>
+                  </div>
+                  <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Ongoing</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Track &amp; grow</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Track your progress, build new skills, and grow your income with freelance opportunities.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </AnimateOnScroll>
+
+          <div className="gradient-divider max-w-4xl mx-auto" />
 
           {/* Pricing Preview */}
-          <section className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-[#F5F5F7]">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 Pay per use. No subscriptions.
@@ -559,7 +605,7 @@ export function LandingContent() {
               <p className="text-gray-500 text-center mb-10">
                 Jobscan costs $599/year. A full job prep on AISkillScore? Under $4.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto stagger-children">
                 {PACKS.map((pack) => (
                   <div
                     key={pack.id}
@@ -603,20 +649,22 @@ export function LandingContent() {
                 </Link>
               </p>
             </div>
-          </section>
+          </AnimateOnScroll>
+
+          <div className="gradient-divider max-w-4xl mx-auto" />
 
           {/* FAQ */}
-          <section className="py-20 sm:py-28 px-4 bg-white">
+          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
                 Frequently asked questions
               </h2>
               <FAQ items={FAQ_ITEMS} />
             </div>
-          </section>
+          </AnimateOnScroll>
 
           {/* Footer */}
-          <footer className="py-12 px-4 bg-[#F5F5F7] border-t border-gray-200">
+          <AnimateOnScroll as="div" className="py-12 px-4 bg-[#F5F5F7] border-t border-gray-200">
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Email capture */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -653,7 +701,7 @@ export function LandingContent() {
                 </p>
               </div>
             </div>
-          </footer>
+          </AnimateOnScroll>
         </>
       )}
     </div>

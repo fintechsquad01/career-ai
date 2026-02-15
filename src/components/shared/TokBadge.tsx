@@ -23,13 +23,18 @@ export function TokBadge() {
       <Coins className="w-4 h-4" />
       {!tokensLoaded ? (
         <span className="inline-block w-8 h-4 bg-current opacity-10 rounded animate-pulse" />
+      ) : dailyCreditsBalance > 0 && tokenBalance > 0 ? (
+        <span className="tabular-nums">
+          <span style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>
+          <span className="text-xs opacity-60 mx-0.5">+</span>
+          <span className="text-xs opacity-70">{dailyCreditsBalance}</span>
+        </span>
       ) : dailyCreditsBalance > 0 ? (
-        <span>
-          {tokenBalance}
-          <span className="text-xs opacity-70"> + {dailyCreditsBalance} daily</span>
+        <span className="tabular-nums">
+          <span className="text-xs opacity-70">{dailyCreditsBalance} daily</span>
         </span>
       ) : (
-        <span>{tokenBalance}</span>
+        <span className="tabular-nums" style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>
       )}
     </div>
   );

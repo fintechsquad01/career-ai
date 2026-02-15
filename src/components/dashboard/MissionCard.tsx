@@ -40,7 +40,7 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
 
   return (
     <Link href="/mission" className="block">
-      <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white hover:opacity-95 transition-opacity">
+      <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white hover:opacity-95 transition-opacity celebrate">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
