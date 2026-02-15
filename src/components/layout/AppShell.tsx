@@ -6,6 +6,7 @@ import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
 import { ToastProvider } from "@/components/shared/Toast";
 import { useAppStore } from "@/stores/app-store";
+import { usePostAuthSync } from "@/hooks/usePostAuthSync";
 import type { Profile, CareerProfile, JobTarget } from "@/types";
 
 interface AppShellProps {
@@ -30,6 +31,9 @@ export function AppShell({
     if (careerProfile !== undefined) setCareerProfile(careerProfile ?? null);
     if (activeJobTarget !== undefined) setActiveJobTarget(activeJobTarget ?? null);
   }, [profile, careerProfile, activeJobTarget, setProfile, setCareerProfile, setActiveJobTarget]);
+
+  // Sync any pre-auth localStorage data (resume/JD) to the database
+  usePostAuthSync();
 
   return (
     <div className="min-h-screen bg-gray-50">

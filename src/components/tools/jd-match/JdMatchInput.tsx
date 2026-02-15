@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { Target } from "lucide-react";
+import { useAppStore } from "@/stores/app-store";
+import { JdUploadOrPaste } from "@/components/shared/JdUploadOrPaste";
 
 interface JdMatchInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
 export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
-  const [jdText, setJdText] = useState("");
+  const { activeJobTarget } = useAppStore();
+  const [jdText, setJdText] = useState(activeJobTarget?.jd_text || "");
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -22,18 +25,12 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="jdmatch-jd" className="sr-only">Job Description</label>
-        <textarea
-          id="jdmatch-jd"
-          value={jdText}
-          onChange={(e) => setJdText(e.target.value)}
-          placeholder="Paste the job description here..."
-          rows={8}
-          aria-label="Paste the full job description or URL"
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-        />
-      </div>
+      <JdUploadOrPaste
+        value={jdText}
+        onChange={setJdText}
+        activeJobTarget={activeJobTarget ? { title: activeJobTarget.title, company: activeJobTarget.company, jd_text: activeJobTarget.jd_text } : null}
+        label="Job Description"
+      />
 
       <div className="text-xs text-gray-400 space-y-1 mb-3">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>
