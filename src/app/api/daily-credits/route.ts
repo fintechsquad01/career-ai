@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,14 @@ export async function POST() {
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rateCheck = checkRateLimit(`daily-credits:${user.id}`, { limit: 5, windowSeconds: 60 });
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(rateCheck.resetMs / 1000)) } }
+      );
     }
 
     const { data, error } = await supabase.rpc("award_daily_credits", {

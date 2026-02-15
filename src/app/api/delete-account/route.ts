@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -12,14 +13,15 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  const rateCheck = checkRateLimit(`delete-account:${user.id}`, { limit: 2, windowSeconds: 60 });
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil(rateCheck.resetMs / 1000)) } }
+    );
   }
 
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const supabaseAdmin = createAdminClient();
 
   try {
     // Delete user data from all tables (order matters for FK constraints)

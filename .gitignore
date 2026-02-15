@@ -49,3 +49,24 @@ supabase/.temp/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ad-hoc test scripts and results
+/test-*.ts
+/complete-*.ts
+/diagnostic-*.ts
+/manual-*.ts
+/register-*.ts
+/persona_test_results_*.json
+/test-results/
+/playwright-report/
+/playwright.config.ts
+/tests/
+
+# Moved reports (never tracked, kept for local reference)
+/docs/reports/
+
+# Log files
+*.log
+
+# Cursor IDE
+.cursor/

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // Admin emails that can access the quality dashboard
 const ADMIN_EMAILS = [
@@ -19,14 +19,7 @@ export async function GET() {
   }
 
   // 2. Service role client for cross-user queries
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !serviceKey) {
-    return NextResponse.json({ error: "Missing configuration" }, { status: 500 });
-  }
-
-  const admin = createServiceClient(supabaseUrl, serviceKey);
+  const admin = createAdminClient();
 
   // 3. Fetch last 7 days of tool results
   const sevenDaysAgo = new Date();
