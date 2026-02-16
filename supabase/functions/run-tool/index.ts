@@ -31,16 +31,16 @@ const FALLBACK_MODEL = "openai/gpt-4.1-mini";
 
 const TOOL_COSTS: Record<string, number> = {
   displacement: 0,
-  jd_match: 2,
-  resume: 10,
-  cover_letter: 3,
-  linkedin: 10,
-  headshots: 20,
-  interview: 3,
-  skills_gap: 5,
-  roadmap: 8,
-  salary: 3,
-  entrepreneurship: 8,
+  jd_match: 5,
+  resume: 15,
+  cover_letter: 8,
+  linkedin: 15,
+  headshots: 25,
+  interview: 8,
+  skills_gap: 8,
+  roadmap: 15,
+  salary: 8,
+  entrepreneurship: 12,
 };
 
 // --- CORS: Dynamic origin check ---
@@ -246,9 +246,9 @@ Deno.serve(async (req: Request) => {
         let cost = TOOL_COSTS[tool_id];
         if (tool_id === "cover_letter") {
           const coverLength = sanitizedInputs.length as string | undefined;
-          if (coverLength === "short") cost = 2;
-          else if (coverLength === "detailed") cost = 5;
-          else cost = 3; // standard (default)
+          if (coverLength === "short") cost = 5;
+          else if (coverLength === "detailed") cost = 12;
+          else cost = 8; // standard (default)
         }
 
         if (cost > 0) {

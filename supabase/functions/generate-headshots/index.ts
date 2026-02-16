@@ -231,7 +231,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const COST = 20; // tokens — matches TOOL_COSTS in constants
+    const COST = 25; // tokens — matches TOOL_COSTS in constants
 
     // Check balance (don't deduct yet)
     const { data: profile } = await supabaseClient
