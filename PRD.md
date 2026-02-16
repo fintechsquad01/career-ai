@@ -31,7 +31,7 @@ Mid-career professionals (5-10 years experience) actively job searching or explo
 9. CTA to sign up (preserves analysis context)
 
 ### Flow 2: Auth → Dashboard → Mission Control
-1. Sign up (Google OAuth or email/password) → 5 free tokens
+1. Sign up (Google OAuth or email/password) → 15 free tokens
 2. Welcome modal (3-step onboarding carousel)
 3. Dashboard shows: profile card, scores (ATS/AI Risk/Tokens), active mission, alerts, all tools grid
 4. If JD was analyzed pre-auth → "Job Mission Control" auto-activates
@@ -111,7 +111,7 @@ Categories: `Analyze` → `Build` → `Prepare` → `Grow`
 | Power | 600 | $39 | $0.065 | 35% |
 | Lifetime | 100/mo | $49 one-time | $0.041 | 59% |
 
-- New users get 5 free tokens on signup
+- New users get 15 free tokens on signup
 - Tokens never expire (except Lifetime unused tokens cap at 300)
 - Referral: Give 5, Get 10 tokens
 

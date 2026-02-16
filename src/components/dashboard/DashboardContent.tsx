@@ -387,8 +387,8 @@ export function DashboardContent({
         </div>
       )}
 
-      {/* Profile Completeness — hide once mostly done */}
-      {completeness.score < 60 && (
+      {/* Profile Completeness — show until fully complete */}
+      {completeness.score < 100 && (
         <div className="glass-card p-4 flex items-center gap-4">
           <div className="flex-shrink-0">
             <Ring score={completeness.score} size="sm" label="" showLabel={false} />

@@ -127,7 +127,7 @@ Save these to the `career_profiles` table via upsert (same pattern as resume upl
 **Files:** `src/components/landing/LandingContent.tsx`
 **Effort:** 30 min | **Impact:** The landing page falls back to mock data if `parse-input` fails. This means the "free analysis" hook tool may show fake data, which destroys trust.
 **Fix:**
-- If the edge function call fails, show a clear error: "Analysis unavailable right now. Sign up for 5 free tokens and try from your dashboard."
+- If the edge function call fails, show a clear error: "Analysis unavailable right now. Sign up for 15 free tokens and try from your dashboard."
 - Remove mock/demo data fallback for production (keep for dev only via `process.env.NODE_ENV === 'development'`)
 - Add retry button: "Try Again" that re-calls the edge function
 

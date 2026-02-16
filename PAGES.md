@@ -115,7 +115,7 @@ const DESIGN = {
 - Google OAuth button (full width, white bg, Google logo SVG)
 - Divider: "or"
 - Form: Full name (signup only), Email, Password
-- Submit button: "Create Account — 5 Free Tokens" or "Sign In"
+- Submit button: "Create Account — 15 Free Tokens" or "Sign In"
 - Toggle link: "Have an account? Sign in" / "New? Sign up free"
 - On success: redirect to `/mission` (if JD analyzed) or `/dashboard`
 

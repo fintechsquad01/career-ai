@@ -93,7 +93,7 @@ The landing page Smart Input is the entry point. From there, build a progressive
 ```
 Landing Page (paste anything)
   → Free Analysis (instant value, no signup needed)
-    → "Want deeper insights? Create account" (5 free tokens)
+    → "Want deeper insights? Create account" (15 free tokens)
       → Profile Completeness Prompt
         → "Paste your resume for personalized results" (if not already given)
         → "What role are you targeting?" (if JD not given)

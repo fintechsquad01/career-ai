@@ -1400,7 +1400,7 @@ All copy changes are informed by the research findings in Section 1. Changes are
 ### 3.3 Auth Page
 
 #### `src/app/auth/page.tsx`
-- **Change CTA** from "Create Account -- 5 Free Tokens" to: "Create Account -- 5 Free Tokens + 2 Daily Credits"
+- **Change CTA** from "Create Account -- 15 Free Tokens" to: "Create Account -- 15 Free Tokens + 2 Daily Credits"
 - **Add trust line** below CTA: "Join 12,400+ professionals. No credit card required."
 
 ### 3.4 Dashboard Components
@@ -1577,7 +1577,7 @@ Primary affiliate integration points:
 ### 4.5 Revenue per User Model
 
 **Free user journey**:
-- Sign up: 5 free tokens
+- Sign up: 15 free tokens
 - Daily credits: 2/day (60/month if daily active)
 - Total free monthly tokens: ~65
 - Can run: Displacement (free) + ~6 JD Matches + 1 Interview Prep + 1 Salary

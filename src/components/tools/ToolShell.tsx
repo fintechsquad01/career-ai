@@ -909,7 +909,6 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
     setSavingVariant(true);
     try {
-      const { useResumeVariants } = await import("@/hooks/useResumeVariants");
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) return;
@@ -1064,7 +1063,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Context verification — show what the AI will use */}
       {state === "input" && (
-        <details className="group border border-gray-200 rounded-xl overflow-hidden">
+        <details open={!careerProfile?.resume_text} className="group border border-gray-200 rounded-xl overflow-hidden">
           <summary className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
             <span className="text-xs font-medium text-gray-500">
               Context the AI will use for this analysis
@@ -1245,6 +1244,36 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           <span>{careerProfile?.resume_text ? "Personalized from your resume" : "Add resume for deeper personalization"}</span>
         </div>
       )}
+
+      {/* Profile completion prompt — shown on results page when profile is sparse */}
+      {state === "result" && result && !error && (() => {
+        const completeness = calculateProfileCompleteness(careerProfile, activeJobTarget);
+        if (completeness.score >= 80) return null;
+        const missingItems = completeness.items.filter((i) => !i.done).slice(0, 3);
+        if (missingItems.length === 0) return null;
+        return (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-sm font-semibold text-gray-900 mb-1">
+              Complete your profile for better results
+            </p>
+            <p className="text-xs text-gray-500 mb-3">
+              Profile {completeness.score}% complete — more context means more accurate AI analysis.
+            </p>
+            <div className="space-y-1.5">
+              {missingItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center gap-2 text-xs text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Children render prop */}
       {state !== "loading" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}

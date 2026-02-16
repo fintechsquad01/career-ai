@@ -80,7 +80,7 @@ Before testing, ensure these environment variables are configured:
 ### 3a. Welcome Email (Email/Password)
 - [ ] Create new account via email/password
 - [ ] Verify `POST /api/send-email { type: "welcome" }` is called
-- [ ] Verify email arrives with correct template (5 free tokens, 2 daily, tool list, dashboard CTA)
+- [ ] Verify email arrives with correct template (15 free tokens, 2 daily, tool list, dashboard CTA)
 - [ ] Verify "Go to Dashboard" link works
 
 ### 3b. Welcome Email (Google OAuth)
