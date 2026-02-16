@@ -11,7 +11,7 @@ const APP_URL = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
 // --- OpenRouter Model Routing — All Premium (Gemini 2.5 Pro) ---
 // Best-in-class model for all tools. $1.25/$10 per M tokens.
-// Avg cost ~$0.04/call with ~$0.80 avg revenue = 95%+ gross margin.
+// Avg cost ~$0.06/call with ~$2.00 avg revenue = 97%+ gross margin.
 // Fallback: GPT-4.1 Mini for reliability if primary model fails.
 const MODEL_CONFIG: Record<string, { model: string; maxTokens: number; tier: string }> = {
   // All tools use Gemini 2.5 Pro for maximum output quality
@@ -25,7 +25,7 @@ const MODEL_CONFIG: Record<string, { model: string; maxTokens: number; tier: str
   roadmap: { model: "google/gemini-2.5-pro", maxTokens: 8192, tier: "premium" },       // 12-month plan with scripts
   entrepreneurship: { model: "google/gemini-2.5-pro", maxTokens: 6144, tier: "premium" }, // 5 business models
   salary: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
-  displacement: { model: "google/gemini-2.5-pro", maxTokens: 4096, tier: "premium" },
+  displacement: { model: "google/gemini-2.5-pro", maxTokens: 6144, tier: "premium" },  // Bumped: 7 schema sections need room
 };
 const FALLBACK_MODEL = "openai/gpt-4.1-mini";
 
@@ -276,12 +276,53 @@ Deno.serve(async (req: Request) => {
           : buildPromptLegacy(tool_id, careerProfile, jobTarget, sanitizedInputs);
         const toolTemperature = promptConfig ? promptConfig.temperature : 0.7;
 
-        // Step 4: AI processing
+        // Step 4: AI processing — with intermediate progress for slow tools
         send("progress", { step: 4, total: 5, message: "Running AI analysis..." });
 
         const startTime = Date.now();
         const modelConfig = MODEL_CONFIG[tool_id] || { model: FALLBACK_MODEL, maxTokens: 4096, tier: "fallback" };
         let usedModel = modelConfig.model;
+
+        // Timed progress messages for tools that take 40-90s
+        const SLOW_TOOLS: Record<string, Array<{ after: number; msg: string }>> = {
+          resume: [
+            { after: 10000, msg: "Analyzing your resume sections..." },
+            { after: 25000, msg: "Comparing against job requirements..." },
+            { after: 40000, msg: "Generating optimized content..." },
+          ],
+          interview: [
+            { after: 10000, msg: "Analyzing the role and your background..." },
+            { after: 25000, msg: "Crafting tailored questions..." },
+            { after: 45000, msg: "Generating coaching tips..." },
+          ],
+          linkedin: [
+            { after: 10000, msg: "Analyzing your profile..." },
+            { after: 25000, msg: "Crafting optimized content..." },
+          ],
+          roadmap: [
+            { after: 10000, msg: "Mapping your career trajectory..." },
+            { after: 25000, msg: "Building your personalized plan..." },
+            { after: 40000, msg: "Generating networking scripts..." },
+          ],
+          displacement: [
+            { after: 10000, msg: "Decomposing your daily tasks..." },
+            { after: 25000, msg: "Assessing AI impact per task..." },
+          ],
+          entrepreneurship: [
+            { after: 10000, msg: "Analyzing your monetizable skills..." },
+            { after: 25000, msg: "Building business models..." },
+            { after: 40000, msg: "Creating your 90-day plan..." },
+          ],
+        };
+        const progressSteps = SLOW_TOOLS[tool_id] || [];
+        const progressTimers: ReturnType<typeof setTimeout>[] = [];
+        for (const ps of progressSteps) {
+          progressTimers.push(
+            setTimeout(() => {
+              try { send("progress", { step: 4, total: 5, message: ps.msg }); } catch { /* stream may have closed */ }
+            }, ps.after),
+          );
+        }
 
         // Call OpenRouter with fallback
         let responseText: string;
@@ -346,6 +387,8 @@ Deno.serve(async (req: Request) => {
             usedModel = fallbackResult.model;
           } catch (fallbackError) {
             console.error("Fallback model also failed:", fallbackError);
+            // Clear progress timers before closing
+            for (const t of progressTimers) clearTimeout(t);
             if ((fallbackError as Error).name === "AbortError") {
               send("error", { error: "AI analysis timed out. Please try again." });
             } else {
@@ -355,6 +398,8 @@ Deno.serve(async (req: Request) => {
             return;
           }
         }
+        // Clear progress timers now that AI call completed
+        for (const t of progressTimers) clearTimeout(t);
 
         const latencyMs = Date.now() - startTime;
 

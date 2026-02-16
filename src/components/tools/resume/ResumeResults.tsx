@@ -12,7 +12,12 @@ interface ResumeResultsProps {
 export function ResumeResults({ result }: ResumeResultsProps) {
   const data = result as TResumeResult | null;
   const [copied, setCopied] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
+  // Auto-expand the first 3 sections (the most impactful diffs)
+  const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>(
+    data?.sections_rewritten
+      ? Object.fromEntries(data.sections_rewritten.slice(0, 3).map((_, i) => [i, true]))
+      : {},
+  );
 
   if (!data) {
     return (
@@ -80,23 +85,27 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         </div>
       )}
 
-      {/* Keywords added */}
+      {/* Keywords added — grouped by section */}
       {data.keywords_added && data.keywords_added.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Keywords Added</h3>
+          <h3 className="font-semibold text-gray-900 mb-1">Keywords Woven In</h3>
+          <p className="text-xs text-gray-500 mb-3">{data.keywords_added.length} JD keywords added to your resume</p>
           <div className="flex flex-wrap gap-2">
             {data.keywords_added.map((kw, i) => {
               const isObj = typeof kw === "object";
               const keyword = isObj ? kw.keyword : kw;
+              const section = isObj ? kw.where_added : null;
               return (
                 <div key={i} className="group relative">
-                  <span className="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full border border-green-100">
                     + {keyword}
+                    {section && (
+                      <span className="text-[9px] text-green-500 font-normal">→ {section}</span>
+                    )}
                   </span>
                   {isObj && kw.why && (
-                    <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 p-2 bg-gray-900 text-white text-xs rounded-lg max-w-[200px] z-10">
+                    <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 p-2 bg-gray-900 text-white text-xs rounded-lg max-w-[240px] z-10 shadow-lg">
                       {kw.why}
-                      {kw.where_added && <span className="block text-gray-400 mt-0.5">Section: {kw.where_added}</span>}
                     </div>
                   )}
                 </div>

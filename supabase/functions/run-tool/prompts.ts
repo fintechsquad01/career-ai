@@ -270,8 +270,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "score": <0-100>,
   "risk_level": "minimal|low|moderate|high|critical",
@@ -286,14 +287,6 @@ Respond ONLY in valid JSON:
       "augmentation_tip": "<how to USE AI for this task to become 2-3x more productive instead of being replaced>"
     }
   ],
-  "safe_tasks": [
-    {
-      "task": "<task that remains human-essential>",
-      "risk_pct": <0-100>,
-      "why_safe": "<specific reason AI cannot replicate this>",
-      "monetization_potential": "<could they freelance or consult on this skill? How?>"
-    }
-  ],
   "recommendations": [
     {
       "action": "<specific, actionable recommendation>",
@@ -303,11 +296,6 @@ Respond ONLY in valid JSON:
       "expected_impact": "<what this achieves for their career>"
     }
   ],
-  "industry_benchmark": {
-    "average_score": <estimated industry average>,
-    "percentile": <where this person ranks>,
-    "trend": "improving|stable|worsening"
-  },
   "entrepreneurship_opportunities": [
     {
       "opportunity": "<specific freelance, consulting, or business idea based on their safe/strong skills>",
@@ -315,8 +303,23 @@ Respond ONLY in valid JSON:
       "first_step": "<concrete action they can take this week>",
       "income_potential": "<realistic monthly income range>"
     }
-  ]
-}`;
+  ],
+  "safe_tasks": [
+    {
+      "task": "<task that remains human-essential>",
+      "risk_pct": <0-100>,
+      "why_safe": "<specific reason AI cannot replicate this>",
+      "monetization_potential": "<could they freelance or consult on this skill? How?>"
+    }
+  ],
+  "industry_benchmark": {
+    "average_score": <estimated industry average>,
+    "percentile": <where this person ranks>,
+    "trend": "improving|stable|worsening"
+  }
+}
+
+CRITICAL: Your response MUST include the recommendations array (at least 3 items) and entrepreneurship_opportunities array (at least 2 items). Budget your response to ensure ALL sections are populated. If running low on space, keep tasks_at_risk entries concise (3-4 sentences each) and safe_tasks entries brief.`;
   },
 
   temperature: 0.4,
@@ -359,8 +362,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "fit_score": <0-100>,
   "headline": "<one-line recruiter verdict, e.g., 'Strong technical match but missing the leadership experience they will probe in the interview'>",
@@ -461,8 +465,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "score_before": <assessed current score based on resume as provided>,
   "score_after": <projected score after all recommended changes>,
@@ -501,7 +506,9 @@ Respond ONLY in valid JSON:
     }
   ],
   "monetizable_skills": ["<skills visible in this resume that could generate freelance or consulting income>"]
-}`;
+}
+
+CRITICAL: You MUST include at least 3 entries in sections_rewritten showing the original text and your optimized version for the most impactful sections (e.g., Summary, Experience bullet points, Skills). The before/after diff is the PRIMARY deliverable users pay for. Do not skip this array or return it empty.`;
   },
 
   temperature: 0.5,
@@ -560,8 +567,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "letter_text": "<the full cover letter>",
   "word_count": <actual word count>,
@@ -577,7 +585,13 @@ Respond ONLY in valid JSON:
     }
   ],
   "what_makes_this_different": "<why this letter stands out from the 200 other applications the recruiter will see>",
-  "interview_talking_points": ["<topics from this letter the interviewer is likely to ask about -- prep for these>"]
+  "interview_talking_points": ["<topics from this letter the interviewer is likely to ask about -- prep for these>"],
+  "potential_objections": [
+    {
+      "objection": "<what the recruiter might flag as a concern, e.g., 'career gap', 'industry switch', 'overqualified', 'lacks specific certification'>",
+      "how_to_address": "<what to say if this comes up in the interview -- concise, honest, and reframing>"
+    }
+  ]
 }`;
   },
 
@@ -598,6 +612,8 @@ const interview: ToolPromptConfig = {
     return `${ctx}${priorCtx}Generate exactly 8 interview questions tailored to this specific candidate and target role. Distribution: 1 warm-up, 2 behavioral (STAR format), 2 technical/role-specific, 2 gap-probe questions targeting resume weaknesses, and 1 culture-fit question.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
+DETECTED_PROFILE RULE: The detected_profile must reflect the CANDIDATE's current background from their resume (role, industry, experience_years), NOT the target job's industry. For example, if a retail data analyst is applying to a SaaS company, detected_profile.industry should be "retail / data analytics", not "technology / saas". The interview content itself should target the new role.
+
 IMPORTANT: Base all suggested answers on the candidate's ACTUAL experience from their resume. Reference specific projects, companies, and achievements mentioned in their resume — not generic examples.
 
 QUESTION DESIGN RULES:
@@ -618,8 +634,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "questions": [
     {
@@ -700,8 +717,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "headlines": [
     {
@@ -775,6 +793,15 @@ const skills_gap: ToolPromptConfig = {
 ${ANTI_HALLUCINATION_RULES}
 IMPORTANT: Identify transferable skills by analyzing the candidate's ACTUAL resume content — not just their job title. Look for specific projects, tools, and achievements that demonstrate transferable competencies.
 
+LEVEL CALIBRATION (apply consistently to current_level and required_level):
+- 0: No exposure
+- 10-25: Awareness (tutorial level, read about it, watched a course)
+- 26-50: Working (uses with docs, has project experience, mentioned in resume)
+- 51-75: Proficient (daily use, solves non-trivial problems, appears in multiple resume bullets)
+- 76-90: Advanced (teaches others, architects solutions, led projects using this skill)
+- 91-100: Expert (thought leader, 5+ years deep, published or spoke on this topic)
+Base current_level on EVIDENCE in the resume: named tools, project descriptions, years of use, certifications. Do NOT inflate levels without evidence.
+
 ANALYSIS APPROACH:
 1. FIRST: Identify transferable skills the candidate already has that partially or fully cover requirements. Many candidates undervalue adjacent and complementary skills.
 2. THEN: Identify genuine gaps, prioritized by how much hiring managers actually care about them in screening
@@ -804,8 +831,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "headline": "<one-line summary, e.g., 'You are closer than you think: 2 critical gaps to close, but 5 strong transferable skills already in place'>",
   "transferable_skills": [
@@ -909,8 +937,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "headline": "<one-line vision statement, e.g., 'From Senior Analyst to Product Manager in 9 months, with consulting income starting Month 2'>",
   "milestones": [
@@ -934,7 +963,7 @@ Respond ONLY in valid JSON:
     {
       "who": "<specific type of person to connect with>",
       "where": "<LinkedIn, industry meetups, Slack communities, conferences>",
-      "outreach_script": "<actual message to send -- short, specific, non-spammy>",
+      "outreach_script": "<actual message to send -- MUST reference something specific from the candidate's resume that creates a natural connection point. Generic 'Hi, I noticed your role at [Company]' is NOT acceptable. Example: 'I led a similar migration from monolith to microservices at [Company] and would love to learn how your team approached X'>",
       "goal": "<what you want from this connection and what you offer in return>"
     }
   ],
@@ -1040,8 +1069,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "market_range": {
     "p25": <25th percentile estimate>,
@@ -1093,13 +1123,22 @@ Respond ONLY in valid JSON:
     "who_brings_it_up_first": "<strategy for controlling the anchoring>",
     "anchoring_strategy": "<how to set a high but reasonable anchor>"
   },
+  "total_compensation_estimate": {
+    "base_range": "<e.g., '$130K-$160K'>",
+    "bonus_estimate": "<e.g., '10-20% of base' or 'Not typical for this role'>",
+    "equity_estimate": "<e.g., '$50K-$150K over 4 years' or 'Not typical for this role level'>",
+    "total_range": "<e.g., '$155K-$230K total comp'>",
+    "caveat": "<explain what factors make total comp vary most for this specific role>"
+  },
   "freelance_rate_guidance": {
     "hourly_rate": "<what they could charge as an independent consultant>",
     "day_rate": "<daily consulting rate>",
     "pricing_strategy": "<how to set and communicate rates>",
     "platforms": ["<where to find freelance or consulting work>"]
   }
-}`;
+}
+
+For technology roles, estimate total compensation including equity and bonus. For non-tech roles, note whether bonus/equity is typical for this role level and include realistic estimates where applicable.`;
   },
 
   temperature: 0.4,
@@ -1145,8 +1184,9 @@ Respond ONLY in valid JSON:
     "name": "<name if provided, or 'Not provided'>",
     "role": "<role/title the AI is using for this analysis>",
     "industry": "<industry the AI is using>",
-    "experience_years": "<years of experience detected, or 'Not specified'>",
-    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>"
+    "experience_years": "<integer, e.g. 8. Use 0 if not specified>",
+    "source": "<where this info came from: 'resume', 'profile', 'user_input', or 'inferred'>",
+    "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "founder_market_fit": <0-100>,
   "headline": "<one-line verdict, e.g., 'Your 8 years in B2B sales is an unfair advantage for consulting. Start there, not with an app.'>",
@@ -1197,22 +1237,22 @@ Respond ONLY in valid JSON:
   "ninety_day_launch_plan": {
     "week_1_2": {
       "focus": "<primary focus>",
-      "deliverable": "<tangible output by end of week 2>",
+      "deliverable": "<SPECIFIC tangible output — name the tool/platform, reference specific resume experience, and define 'done' concretely. Not 'landing page live' but 'Carrd page with 3 case studies from [specific resume experience], Calendly link, LinkedIn post announcing the service'>",
       "income_target": "<realistic target, can be $0 if setting up>"
     },
     "week_3_4": {
       "focus": "<primary focus>",
-      "deliverable": "<tangible output>",
+      "deliverable": "<SPECIFIC tangible output with named tools and concrete 'done' definition>",
       "income_target": "<target>"
     },
     "month_2": {
       "focus": "<primary focus>",
-      "deliverable": "<tangible output>",
+      "deliverable": "<SPECIFIC tangible output with named tools and concrete 'done' definition>",
       "income_target": "<target>"
     },
     "month_3": {
       "focus": "<primary focus>",
-      "deliverable": "<tangible output>",
+      "deliverable": "<SPECIFIC tangible output with named tools and concrete 'done' definition>",
       "income_target": "<target>"
     }
   },

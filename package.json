@@ -7,7 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:personas": "playwright test --project=api tests/api/persona-tools.spec.ts",
+    "test:tokens": "playwright test --project=api tests/api/token-economy.spec.ts",
+    "test:cross-tool": "playwright test --project=api tests/api/cross-tool.spec.ts",
+    "test:api": "playwright test --project=api",
+    "test:ui": "playwright test --project=ui-desktop",
+    "test:mobile": "playwright test --project=ui-mobile",
+    "test:all": "playwright test",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
@@ -31,6 +40,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.6.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "playwright": "^1.58.2",

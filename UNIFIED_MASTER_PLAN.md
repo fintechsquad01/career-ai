@@ -2,8 +2,8 @@
 
 > **Canonical reference for all product and engineering work.** Every feature, prompt, and UX change must align with this plan. Do not implement in contradiction to it.
 
-**Last updated:** February 15, 2026  
-**Status:** All 6 batches COMPLETE  
+**Last updated:** February 16, 2026  
+**Status:** All 6 batches COMPLETE + V3 post-baseline sprint (Batches A-D) COMPLETE  
 **Source docs:** `SPRINT_PLANNING_BRIEF.md` (persona audit, sprints 1-4), `SPRINT_NEXT.md` (research, prompts, microcopy, token economics, Sprints A-E)
 
 ---
@@ -78,7 +78,7 @@ All batches are complete. Each was self-contained; later batches depended on ear
 ## 5. Token & Signup
 
 - **Signup bonus:** 15 tokens (migration `20260215000001_token_rebalance.sql` and all copy updated).
-- **Daily credits:** 2/day, cap 14, 7-day expiry (planned -- not yet implemented in code).
+- **Daily credits:** 2/day, cap 14, 7-day expiry. Implemented: migration, `award_daily_credits` RPC, `spend_tokens` spends daily first, `/api/daily-credits` endpoint, `useTokens` hook.
 - **Spend:** Use `spend_tokens` RPC only; never update balance directly.
 
 ---
@@ -110,12 +110,17 @@ If any answer is no, align the work with this plan before proceeding.
 
 ---
 
-## 8. Remaining Future Work (Not Yet Implemented)
+## 8. Remaining Future Work
 
-These items from the original plan are deferred for future sprints:
+### Completed (previously listed as deferred)
 
-- **Daily credits system** (Sprint C from SPRINT_NEXT): DB migration for `daily_credits_balance`, award logic, spend-daily-first, 7-day expiry, UI
-- **Affiliate integration** (Sprint D): `src/lib/affiliates.ts`, CourseCard component, affiliate links in Skills Gap/Roadmap/Entrepreneurship results
-- **Mission Control multi-job** (Sprint 4): Full application management, resume variants per target, quick re-run flow, application status tracker
-- **Score change notifications**: "Your displacement score changed" alerts
+These items were implemented during the V3 post-baseline sprint (Feb 16, 2026):
+
+- **Daily credits system** — DONE: Migration `20260212000003_daily_credits.sql`, `award_daily_credits` RPC, updated `spend_tokens` (daily-first, 7-day expiry), `useTokens` hook, `/api/daily-credits` endpoint
+- **Affiliate integration** — DONE: `src/lib/affiliates.ts` (15+ platform configs), `CourseCard` component with affiliate links, PostHog click tracking, integrated in Skills Gap/Roadmap/Entrepreneurship results
+- **Mission Control multi-job** — DONE: `/mission` page, `MissionContent`/`MissionCard`/`MissionOverview` components, `useMission`/`useMissionResults` hooks, per-job-target workflow tracking
+- **Score change notifications** — DONE: Backend delta calculation in `run-tool` Edge Function, `ScoreDelta` component, `useScoreHistory` hook, ToolShell banner showing score improvements
+
+### Still Pending
+
 - **Headshots prompt improvement**: Enhanced Replicate prompt per SPRINT_NEXT S2.11

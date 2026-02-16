@@ -74,40 +74,46 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
         <p className="text-[11px] text-gray-400 mt-3">#AISkillScore · What&apos;s your score?</p>
       </div>
 
-      {/* Tasks at risk */}
+      {/* Tasks at risk — lead with augmentation tips (empowering, not scary) */}
       {data.tasks_at_risk && data.tasks_at_risk.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-500" />
-            Tasks at Risk
+          <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
+            <Lightbulb className="w-4 h-4 text-blue-500" />
+            How to Use AI to Your Advantage
           </h3>
+          <p className="text-xs text-gray-500 mb-4">Each task at risk has an AI augmentation strategy — use these tools to become more productive, not replaced.</p>
           <div className="space-y-4">
             {data.tasks_at_risk.map((task, i) => (
-              <div key={i} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 truncate">{task.task}</p>
-                    {task.ai_tool && <p className="text-xs text-gray-400">Threatened by: {task.ai_tool}</p>}
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    {task.time_spent_pct != null && (
-                      <span className="text-[10px] text-gray-400">{task.time_spent_pct}% of day</span>
-                    )}
-                    <div className="w-20 bg-gray-100 rounded-full h-2">
-                      <div
-                        className="bg-red-500 h-2 rounded-full transition-all duration-700"
-                        style={{ width: `${task.risk_pct}%` }}
-                      />
-                    </div>
-                    <span className="text-xs font-bold text-red-600 w-8 text-right">{task.risk_pct}%</span>
-                  </div>
-                </div>
+              <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
+                {/* Augmentation tip — primary callout */}
                 {task.augmentation_tip && (
-                  <div className="flex items-start gap-2 ml-1 p-2 bg-blue-50 rounded-lg">
-                    <Lightbulb className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-blue-800">{task.augmentation_tip}</p>
+                  <div className="bg-blue-50 p-3 border-b border-blue-100">
+                    <div className="flex items-start gap-2">
+                      <Lightbulb className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-blue-900 font-medium">{task.augmentation_tip}</p>
+                    </div>
                   </div>
                 )}
+                <div className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900 truncate">{task.task}</p>
+                      {task.ai_tool && <p className="text-xs text-gray-400">AI tool: {task.ai_tool}</p>}
+                    </div>
+                    <div className="flex items-center gap-2 ml-4">
+                      {task.time_spent_pct != null && (
+                        <span className="text-[10px] text-gray-400">{task.time_spent_pct}% of day</span>
+                      )}
+                      <div className="w-20 bg-gray-100 rounded-full h-2">
+                        <div
+                          className="bg-blue-500 h-2 rounded-full transition-all duration-700"
+                          style={{ width: `${task.risk_pct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-bold text-blue-600 w-8 text-right">{task.risk_pct}%</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

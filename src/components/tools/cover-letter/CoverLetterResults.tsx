@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Download, CheckCircle, Lightbulb, MessageSquare, Sparkles, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { Copy, Download, CheckCircle, Lightbulb, MessageSquare, Sparkles, AlertCircle, ShieldAlert, ArrowRight } from "lucide-react";
 import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TCoverLetterResult, ToolResult } from "@/types";
 
@@ -40,8 +41,30 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
   const keywordCount = data.jd_keywords_used ?? 0;
 
+  // Type-safe access to potential_objections from Batch B schema
+  const objections = (data as Record<string, unknown>).potential_objections as
+    | Array<{ objection: string; how_to_address: string }>
+    | undefined;
+
   return (
     <div className="space-y-6">
+      {/* Primary action buttons — top of results */}
+      <div className="flex gap-3">
+        <button
+          onClick={handleCopy}
+          className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
+        >
+          {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? "Copied!" : "Copy Letter"}
+        </button>
+        <button
+          onClick={handleDownload}
+          className="px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px] flex items-center justify-center gap-2"
+        >
+          <Download className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* Letter */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6">
         <h3 className="font-semibold text-gray-900 mb-4">Your Cover Letter</h3>
@@ -140,7 +163,26 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
         </div>
       )}
 
-      {/* Interview Talking Points (bridges to Interview Prep tool) */}
+      {/* Potential Objections — recruiter coaching from Batch B */}
+      {objections && objections.length > 0 && (
+        <div className="bg-orange-50 rounded-2xl border border-orange-200 p-6">
+          <h3 className="font-semibold text-orange-900 mb-1 flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-orange-600" />
+            Prepare for These Objections
+          </h3>
+          <p className="text-xs text-orange-700 mb-4">What the recruiter might flag — and how to address it in the interview.</p>
+          <div className="space-y-3">
+            {objections.map((obj, i) => (
+              <div key={i} className="bg-white rounded-xl p-3 border border-orange-100">
+                <p className="text-sm font-medium text-gray-900 mb-1">{obj.objection}</p>
+                <p className="text-sm text-gray-600">{obj.how_to_address}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Interview Talking Points + CTA to Interview Prep tool */}
       {data.interview_talking_points && data.interview_talking_points.length > 0 && (
         <div className="bg-amber-50 rounded-2xl border border-amber-200 p-6">
           <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
@@ -156,26 +198,16 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
               </li>
             ))}
           </ul>
+          <Link
+            href="/tools/interview"
+            className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-amber-100 text-amber-900 text-sm font-semibold rounded-xl hover:bg-amber-200 transition-colors min-h-[44px]"
+          >
+            Prepare for These Questions
+            <ArrowRight className="w-4 h-4" />
+            <span className="text-xs font-normal text-amber-700 ml-1">3 tokens</span>
+          </Link>
         </div>
       )}
-
-      {/* Action buttons */}
-      <div className="space-y-3">
-        <button
-          onClick={handleCopy}
-          className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
-        >
-          {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copied!" : "Copy Letter"}
-        </button>
-        <button
-          onClick={handleDownload}
-          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
-        >
-          <Download className="w-4 h-4" />
-          Download
-        </button>
-      </div>
     </div>
   );
 }
