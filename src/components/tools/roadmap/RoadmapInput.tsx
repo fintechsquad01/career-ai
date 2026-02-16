@@ -14,7 +14,7 @@ const TIME_HORIZONS = [
 ] as const;
 
 export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
-  const { activeJobTarget } = useAppStore();
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
   const prefillTargetRole = activeJobTarget?.title || "";
 
@@ -43,7 +43,7 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
               onClick={() => setTimeHorizon(t.value)}
               className={`flex-1 px-4 py-3 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
                 timeHorizon === t.value
-                  ? "bg-teal-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -80,7 +80,7 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
       <button
         onClick={() => onSubmit({ time_horizon_months: timeHorizon, target_role: targetRole })}
         disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Generate Roadmap — 8 tokens
       </button>

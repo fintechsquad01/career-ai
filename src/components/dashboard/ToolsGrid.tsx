@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {
   ShieldAlert, Target, FileText, Mail, Linkedin, Camera,
-  MessageSquare, TrendingUp, Map, DollarSign, Rocket, Zap, Star,
+  MessageSquare, TrendingUp, Map, DollarSign, Rocket, Zap, Star, ArrowRight,
 } from "lucide-react";
 import { TOOLS, TOOL_CATEGORIES } from "@/lib/constants";
 
@@ -26,7 +26,7 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Grow: "Plan your long-term career trajectory",
 };
 
-const POPULAR_TOOLS = new Set(["jd_match", "resume", "displacement"]);
+const POPULAR_TOOLS = new Set(["displacement"]);
 
 interface ToolsGridProps {
   compact?: boolean;
@@ -78,6 +78,21 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
 
   return (
     <div className="space-y-8">
+      {/* Quick Apply banner */}
+      <Link
+        href="/quick-apply"
+        className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl hover:shadow-md transition-shadow group"
+      >
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shrink-0">
+          <Zap className="w-5 h-5 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">Quick Apply</h4>
+          <p className="text-xs text-gray-500 mt-0.5">Run JD Match + Resume Optimizer + Cover Letter in one go — 15 tokens</p>
+        </div>
+        <ArrowRight className="w-4 h-4 text-blue-400 group-hover:text-blue-600 transition-colors shrink-0" />
+      </Link>
+
       {TOOL_CATEGORIES.map((cat) => {
         const categoryTools = TOOLS.filter((t) => t.category === cat);
         if (categoryTools.length === 0) return null;
@@ -86,10 +101,10 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
         return (
           <div key={cat}>
             <div className="mb-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">{cat}</h3>
-              <p className="text-sm text-gray-400 mt-0.5">{CATEGORY_DESCRIPTIONS[cat]}</p>
+              <h3 className="text-overline">{cat}</h3>
+              <p className="text-caption mt-0.5">{CATEGORY_DESCRIPTIONS[cat]}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">
               {categoryTools.map((tool) => {
                 const Icon = ICON_MAP[tool.icon] || Zap;
                 const isPopular = POPULAR_TOOLS.has(tool.id);
@@ -98,44 +113,33 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                   <Link
                     key={tool.id}
                     href={`/tools/${tool.id}`}
-                    className="glass-card p-5 hover:shadow-lg hover:scale-[1.01] transition-all duration-200 group"
+                    className="glass-card p-4 hover:shadow-lg hover:scale-[1.01] transition-all duration-200 group flex items-center gap-4"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl ${styles.bg} flex items-center justify-center`}>
-                          <Icon className={`w-5 h-5 ${styles.text}`} strokeWidth={1.5} />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{tool.title}</h4>
-                            {isPopular && (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full uppercase">
-                                <Star className="w-2.5 h-2.5" fill="currentColor" />
-                                Popular
-                              </span>
-                            )}
-                          </div>
-                          <span className={`text-[10px] font-bold ${
-                            tool.tokens === 0 ? "text-green-600" : "text-gray-400"
-                          }`}>
-                            {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
-                          </span>
-                        </div>
-                      </div>
+                    <div className={`w-11 h-11 rounded-xl ${styles.bg} flex items-center justify-center shrink-0`}>
+                      <Icon className={`w-5 h-5 ${styles.text}`} strokeWidth={1.5} />
                     </div>
-
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">{tool.description}</p>
-
-                    {tool.painPoint && (
-                      <p className="text-xs text-red-600/70 italic mb-2 line-clamp-2">{tool.painPoint}</p>
-                    )}
-
-                    {tool.vsCompetitor && (
-                      <div className="flex items-start gap-1.5 mt-2">
-                        <span className="flex-shrink-0 text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full uppercase mt-px">vs</span>
-                        <p className="text-[11px] text-green-700 leading-snug line-clamp-2">{tool.vsCompetitor}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">{tool.title}</h4>
+                        {isPopular && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full uppercase shrink-0">
+                            <Star className="w-2.5 h-2.5" fill="currentColor" />
+                            Popular
+                          </span>
+                        )}
+                        {tool.beta && (
+                          <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full uppercase shrink-0 border border-amber-200">
+                            Beta
+                          </span>
+                        )}
                       </div>
-                    )}
+                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full shrink-0 ${
+                      tool.tokens === 0 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
+                    </span>
                   </Link>
                 );
               })}

@@ -27,72 +27,8 @@ import {
 } from "lucide-react";
 import { useTokens } from "@/hooks/useTokens";
 import { useCareerHealth } from "@/hooks/useCareerHealth";
+import { calculateProfileCompleteness } from "@/lib/constants";
 import type { Profile, CareerProfile, JobTarget, ToolResultRow } from "@/types";
-import type { Json } from "@/types";
-
-interface ProfileCompletenessItem {
-  label: string;
-  done: boolean;
-  href: string;
-}
-
-interface ProfileCompleteness {
-  score: number;
-  items: ProfileCompletenessItem[];
-}
-
-/** Calculate how complete the user's profile is (0–100). */
-function getProfileCompleteness(
-  careerProfile: CareerProfile | null,
-  activeJobTarget: JobTarget | null
-): ProfileCompleteness {
-  const skills: Json | undefined = careerProfile?.skills;
-  const hasSkills = Array.isArray(skills) && skills.length > 0;
-
-  const items: ProfileCompletenessItem[] = [
-    {
-      label: "Add your resume",
-      done: !!careerProfile?.resume_text,
-      href: "/settings",
-    },
-    {
-      label: "Set a job target",
-      done: !!activeJobTarget,
-      href: "/mission",
-    },
-    {
-      label: "Add title & industry",
-      done: !!(careerProfile?.title && careerProfile?.industry),
-      href: "/settings",
-    },
-    {
-      label: "Specify target role",
-      done: !!activeJobTarget?.title,
-      href: "/mission",
-    },
-    {
-      label: "Add your skills",
-      done: hasSkills,
-      href: "/settings",
-    },
-    {
-      label: "Set years of experience",
-      done: careerProfile?.years_experience != null,
-      href: "/settings",
-    },
-  ];
-
-  // Account created = +10 (always true on dashboard)
-  let score = 10;
-  if (careerProfile?.resume_text) score += 30;
-  if (activeJobTarget) score += 20;
-  if (careerProfile?.title && careerProfile?.industry) score += 15;
-  if (activeJobTarget?.title) score += 10;
-  if (hasSkills) score += 10;
-  if (careerProfile?.years_experience != null) score += 5;
-
-  return { score, items };
-}
 
 interface DashboardContentProps {
   profile: Profile | null;
@@ -266,6 +202,7 @@ export function DashboardContent({
       const pendingToolId = localStorage.getItem("pendingToolId");
       if (pendingToolId) {
         localStorage.removeItem("pendingToolId");
+        localStorage.removeItem("pendingInputs");
         // Small delay to let token balance refresh
         setTimeout(() => {
           window.location.href = `/tools/${pendingToolId}`;
@@ -274,7 +211,7 @@ export function DashboardContent({
     }
   }, []);
 
-  const completeness = getProfileCompleteness(careerProfile, activeJobTarget);
+  const completeness = calculateProfileCompleteness(careerProfile, activeJobTarget);
 
   const recommendations = getSmartRecommendations(careerProfile, activeJobTarget, recentResults);
 

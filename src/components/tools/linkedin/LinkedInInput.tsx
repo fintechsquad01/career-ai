@@ -9,7 +9,8 @@ interface LinkedInInputProps {
 }
 
 export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
-  const { careerProfile, activeJobTarget } = useAppStore();
+  const careerProfile = useAppStore((s) => s.careerProfile);
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
   const prefillTargetRole = activeJobTarget?.title || careerProfile?.title || "";
   const targetRoleSource = activeJobTarget?.title ? "job target" : careerProfile?.title ? "profile" : null;
@@ -71,7 +72,7 @@ export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
       <button
         onClick={() => onSubmit({ about_text: aboutText, target_role: targetRole })}
         disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 shadow-lg shadow-sky-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Optimize LinkedIn — 10 tokens
       </button>

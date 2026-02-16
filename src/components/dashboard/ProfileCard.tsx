@@ -2,14 +2,16 @@
 
 import { Ring } from "@/components/shared/Ring";
 import { TokBadge } from "@/components/shared/TokBadge";
-import type { Profile, CareerProfile } from "@/types";
+import { calculateProfileCompleteness } from "@/lib/constants";
+import type { Profile, CareerProfile, JobTarget } from "@/types";
 
 interface ProfileCardProps {
   profile: Profile | null;
   careerProfile: CareerProfile | null;
+  activeJobTarget?: JobTarget | null;
 }
 
-export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
+export function ProfileCard({ profile, careerProfile, activeJobTarget = null }: ProfileCardProps) {
   const initials = profile?.full_name
     ? profile.full_name
         .split(" ")
@@ -19,7 +21,7 @@ export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
         .slice(0, 2)
     : "?";
 
-  const completeness = calculateCompleteness(profile, careerProfile);
+  const { score: completeness } = calculateProfileCompleteness(careerProfile, activeJobTarget);
 
   return (
     <div className="glass-card p-6 sm:p-8">
@@ -75,13 +77,3 @@ export function ProfileCard({ profile, careerProfile }: ProfileCardProps) {
   );
 }
 
-function calculateCompleteness(profile: Profile | null, cp: CareerProfile | null): number {
-  let score = 0;
-  if (profile?.full_name) score += 20;
-  if (profile?.email) score += 10;
-  if (cp?.title) score += 20;
-  if (cp?.resume_text) score += 30;
-  if (cp?.resume_score != null) score += 10;
-  if (cp?.displacement_score != null) score += 10;
-  return score;
-}

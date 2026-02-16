@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, Scan, TrendingUp, BookOpen } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { ProcessSteps, SocialProof, ResultPreview } from "@/components/shared/ProcessSteps";
 
 interface SkillsGapInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
+const PROCESS_STEPS = [
+  { icon: Scan, label: "Audit Skills", detail: "Map what you have now" },
+  { icon: TrendingUp, label: "Market Match", detail: "What employers demand" },
+  { icon: BookOpen, label: "Learning Path", detail: "Courses & projects" },
+] as const;
+
 export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
-  const { careerProfile, activeJobTarget } = useAppStore();
+  const careerProfile = useAppStore((s) => s.careerProfile);
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
   const prefillTargetRole = activeJobTarget?.title || careerProfile?.title || "";
   const targetRoleSource = activeJobTarget?.title ? "job target" : careerProfile?.title ? "profile" : null;
@@ -28,6 +36,14 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
         </div>
       </div>
 
+      {/* How it works */}
+      <ProcessSteps steps={PROCESS_STEPS as unknown as { icon: typeof Scan; label: string; detail: string }[]} />
+
+      <SocialProof
+        stat="87%"
+        context="of workers say they have or will need new skills for their role — McKinsey Global Survey"
+      />
+
       <div>
         <label htmlFor="skillsgap-target-role" className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
         <input
@@ -43,7 +59,17 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
         )}
       </div>
 
-      <div className="text-xs text-gray-400 space-y-1 mb-3">
+      {/* Result preview */}
+      <ResultPreview
+        title="Sample output"
+        items={[
+          { label: "Gaps Found", value: "5", color: "text-amber-600" },
+          { label: "Transferable", value: "8", color: "text-green-600" },
+          { label: "Courses", value: "12", color: "text-indigo-600" },
+        ]}
+      />
+
+      <div className="text-xs text-gray-400 space-y-1">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>
         <ul className="list-disc pl-4">
           <li>Transferable skills you may be undervaluing</li>
@@ -55,7 +81,7 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
       <button
         onClick={() => onSubmit({ target_role: targetRole })}
         disabled={!targetRole.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Analyze Skills — 5 tokens
       </button>

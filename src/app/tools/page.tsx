@@ -36,8 +36,8 @@ export default async function ToolsHubPage() {
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
         <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-violet-400/20 rounded-full blur-2xl" />
         <div className="relative">
-          <h1 className="text-xl sm:text-2xl font-bold mb-2">AI-Powered Career Intelligence</h1>
-          <p className="text-sm sm:text-base text-blue-100 leading-relaxed max-w-lg mb-4">
+          <h1 className="text-h1 !text-white mb-2">AI-Powered Career Intelligence</h1>
+          <p className="text-body-sm !text-blue-100 leading-relaxed max-w-lg mb-4">
             Professional-grade analysis that costs others $50–200/month. Yours for tokens.
           </p>
           <div className="flex flex-wrap gap-3 text-xs font-medium">

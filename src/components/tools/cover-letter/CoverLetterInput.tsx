@@ -16,13 +16,19 @@ const TONES = [
 ] as const;
 
 const LENGTHS = [
-  { value: "short", label: "Short" },
-  { value: "standard", label: "Standard" },
-  { value: "detailed", label: "Detailed" },
+  { value: "short", label: "Short", desc: "~150 words", tokens: 2 },
+  { value: "standard", label: "Standard", desc: "~300 words", tokens: 3 },
+  { value: "detailed", label: "Detailed", desc: "~450 words", tokens: 5 },
 ] as const;
 
+const LENGTH_TOKENS: Record<string, number> = {
+  short: 2,
+  standard: 3,
+  detailed: 5,
+};
+
 export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
-  const { activeJobTarget } = useAppStore();
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
   const [tone, setTone] = useState<string>("professional");
   const [length, setLength] = useState<string>("standard");
   const [jdText, setJdText] = useState(activeJobTarget?.jd_text ?? "");
@@ -70,7 +76,7 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
               onClick={() => setTone(t.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
                 tone === t.value
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -90,11 +96,14 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
               onClick={() => setLength(l.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
                 length === l.value
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              {l.label}
+              <span>{l.label}</span>
+              <span className={`block text-xs mt-0.5 ${length === l.value ? "text-blue-100" : "text-gray-400"}`}>
+                {l.desc} · {l.tokens} tokens
+              </span>
             </button>
           ))}
         </div>
@@ -110,11 +119,11 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
       </div>
 
       <button
-        onClick={() => onSubmit({ tone, length, jd_text: effectiveJd })}
+        onClick={() => onSubmit({ tone, length, jd_text: effectiveJd, token_cost: LENGTH_TOKENS[length] || 3 })}
         disabled={!hasJd}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
-        Generate Cover Letter — 3 tokens
+        Generate Cover Letter — {LENGTH_TOKENS[length] || 3} tokens
       </button>
     </div>
   );

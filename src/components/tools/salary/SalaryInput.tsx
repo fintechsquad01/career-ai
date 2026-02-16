@@ -9,7 +9,8 @@ interface SalaryInputProps {
 }
 
 export function SalaryInput({ onSubmit }: SalaryInputProps) {
-  const { careerProfile, activeJobTarget } = useAppStore();
+  const careerProfile = useAppStore((s) => s.careerProfile);
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
   const prefillTargetRole = activeJobTarget?.title || careerProfile?.title || "";
   const targetRoleSource = activeJobTarget?.title ? "job target" : careerProfile?.title ? "profile" : null;
@@ -89,7 +90,7 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
       <button
         onClick={() => onSubmit({ current_salary: currentSalary || undefined, target_role: targetRole, location })}
         disabled={!targetRole.trim() || !location.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Research Salary — 3 tokens
       </button>

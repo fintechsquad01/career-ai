@@ -90,6 +90,12 @@ export default async function LandingPage() {
         name: "Get evidence-based results",
         text: "Receive a detailed AI analysis in 30 seconds with scores, evidence, and actionable recommendations — powered by Gemini 2.5 Pro.",
       },
+      {
+        "@type": "HowToStep",
+        position: 4,
+        name: "Apply and negotiate",
+        text: "Use Quick Apply to batch-run tools, craft custom cover letters, and negotiate your salary with data-backed scripts.",
+      },
     ],
   };
 

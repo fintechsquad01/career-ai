@@ -491,7 +491,7 @@ Deno.serve(async (req: Request) => {
         let scoreDelta = null;
         let previousScore = null;
         const currentMetric = extractMetric(tool_id, result);
-        if (currentMetric != null && job_target_id) {
+        if (currentMetric != null && job_target_id && resultId) {
           try {
             const prevRes = await fetch(
               `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}&tool_id=eq.${tool_id}&job_target_id=eq.${job_target_id}&id=neq.${resultId}&select=metric_value&order=created_at.desc&limit=1`,

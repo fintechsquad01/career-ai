@@ -148,7 +148,7 @@ type InsightType = "pain" | "competitive" | "data" | "info";
 
 - Landing H1: "Stop guessing. / Know exactly where you stand."
 - Smart Input placeholder: "Paste anything here...\n\n• A job description you want to apply for\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"
-- Signup CTA: "Create Account — 5 Free Tokens"
+- Signup CTA: "Create Account — 15 Free Tokens"
 - Mission label: "Job Mission Control"
 - Token language: Always "tokens", never "credits" or "points"
 - Privacy line: "Encrypted · Never sold · 30 second analysis"

@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Search, Cpu, Lightbulb } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { INDUSTRIES } from "@/lib/constants";
+import { ProcessSteps, SocialProof, ResultPreview } from "@/components/shared/ProcessSteps";
 
 interface DisplacementInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
+const PROCESS_STEPS = [
+  { icon: Search, label: "Map Tasks", detail: "Every daily task in your role" },
+  { icon: Cpu, label: "AI Analysis", detail: "Which tasks AI can automate" },
+  { icon: Lightbulb, label: "Action Plan", detail: "Skills to stay ahead" },
+] as const;
+
 export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
-  const { careerProfile } = useAppStore();
+  const careerProfile = useAppStore((s) => s.careerProfile);
   const [jobTitle, setJobTitle] = useState(careerProfile?.title || "");
   const [industry, setIndustry] = useState(careerProfile?.industry || "");
   const [yearsExperience, setYearsExperience] = useState(
@@ -38,6 +45,14 @@ export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
           <p className="text-xs text-gray-500">Find out which of your daily tasks AI threatens</p>
         </div>
       </div>
+
+      {/* How it works */}
+      <ProcessSteps steps={PROCESS_STEPS as unknown as { icon: typeof Search; label: string; detail: string }[]} />
+
+      <SocialProof
+        stat="47%"
+        context="of jobs have tasks that could be automated by current AI — World Economic Forum, 2025"
+      />
 
       {/* Job Title */}
       <div>
@@ -91,7 +106,17 @@ export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
         />
       </div>
 
-      <div className="text-xs text-gray-400 space-y-1 mb-3">
+      {/* Result preview */}
+      <ResultPreview
+        title="Sample output"
+        items={[
+          { label: "Risk Score", value: "62/100", color: "text-amber-600" },
+          { label: "Tasks at Risk", value: "4 of 8", color: "text-red-600" },
+          { label: "Safe Skills", value: "3", color: "text-green-600" },
+        ]}
+      />
+
+      <div className="text-xs text-gray-400 space-y-1">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>
         <ul className="list-disc pl-4">
           <li>Task-by-task risk breakdown</li>
@@ -103,7 +128,7 @@ export function DisplacementInput({ onSubmit }: DisplacementInputProps) {
       <button
         onClick={handleSubmit}
         disabled={!canSubmit}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Analyze My Risk — Free
       </button>

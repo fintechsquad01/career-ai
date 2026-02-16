@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Target } from "lucide-react";
+import { Target, FileText, GitCompare, CheckCircle } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { JdUploadOrPaste } from "@/components/shared/JdUploadOrPaste";
+import { ProcessSteps, SocialProof, ResultPreview } from "@/components/shared/ProcessSteps";
 
 interface JdMatchInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
+const PROCESS_STEPS = [
+  { icon: FileText, label: "Parse JD", detail: "Extract every requirement" },
+  { icon: GitCompare, label: "Cross-Match", detail: "Compare with your resume" },
+  { icon: CheckCircle, label: "Gap Report", detail: "Actionable fit score" },
+] as const;
+
 export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
-  const { activeJobTarget } = useAppStore();
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
   const [jdText, setJdText] = useState(activeJobTarget?.jd_text || "");
 
   return (
@@ -25,6 +32,14 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         </div>
       </div>
 
+      {/* How it works */}
+      <ProcessSteps steps={PROCESS_STEPS as unknown as { icon: typeof FileText; label: string; detail: string }[]} />
+
+      <SocialProof
+        stat="75%"
+        context="of resumes are rejected before a human sees them — tailoring to the JD changes that"
+      />
+
       <JdUploadOrPaste
         value={jdText}
         onChange={setJdText}
@@ -32,7 +47,17 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         label="Job Description"
       />
 
-      <div className="text-xs text-gray-400 space-y-1 mb-3">
+      {/* Result preview */}
+      <ResultPreview
+        title="Sample output"
+        items={[
+          { label: "Fit Score", value: "78/100", color: "text-green-600" },
+          { label: "Gaps Found", value: "3", color: "text-amber-600" },
+          { label: "Strengths", value: "7", color: "text-blue-600" },
+        ]}
+      />
+
+      <div className="text-xs text-gray-400 space-y-1">
         <p className="font-medium text-gray-500">What you&apos;ll get:</p>
         <ul className="list-disc pl-4">
           <li>Evidence-based match with resume quotes</li>
@@ -44,7 +69,7 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
       <button
         onClick={() => onSubmit({ jd_text: jdText })}
         disabled={!jdText.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-colors min-h-[48px] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Match Against Job — 2 tokens
       </button>

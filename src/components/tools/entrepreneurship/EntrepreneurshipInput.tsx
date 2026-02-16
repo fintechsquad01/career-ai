@@ -54,7 +54,7 @@ export function EntrepreneurshipInput({ onSubmit }: EntrepreneurshipInputProps) 
               onClick={() => setRiskTolerance(r.value)}
               className={`flex-1 px-4 py-3 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
                 riskTolerance === r.value
-                  ? "bg-orange-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -75,7 +75,7 @@ export function EntrepreneurshipInput({ onSubmit }: EntrepreneurshipInputProps) 
 
       <button
         onClick={() => onSubmit({ business_idea: businessIdea || undefined, risk_tolerance: riskTolerance })}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Assess Fit — 8 tokens
       </button>

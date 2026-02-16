@@ -1,4 +1,5 @@
-import type { Tool, Pack } from "@/types";
+import type { Tool, Pack, CareerProfile, JobTarget } from "@/types";
+import type { Json } from "@/types/database";
 
 export const TOOLS: Tool[] = [
   {
@@ -72,6 +73,7 @@ export const TOOLS: Tool[] = [
     painPoint: "Profiles with professional photos get 14x more views. First impressions happen before they read a single word.",
     vsCompetitor: "HeadshotPro charges $29+. We charge 20 tokens (~$1.50). Same AI, fraction of the price.",
     route: "headshots",
+    beta: true,
   },
   {
     id: "interview",
@@ -136,6 +138,74 @@ export const TOOLS: Tool[] = [
 ];
 
 export const TOOL_CATEGORIES = ["Analyze", "Build", "Prepare", "Grow"] as const;
+
+/* ------------------------------------------------------------------ */
+/*  Profile Completeness (single source of truth)                     */
+/* ------------------------------------------------------------------ */
+
+export interface ProfileCompletenessItem {
+  label: string;
+  done: boolean;
+  href: string;
+}
+
+export interface ProfileCompleteness {
+  score: number;
+  items: ProfileCompletenessItem[];
+}
+
+/** Calculate how complete the user's profile is (0–100). */
+export function calculateProfileCompleteness(
+  careerProfile: CareerProfile | null,
+  activeJobTarget: JobTarget | null,
+): ProfileCompleteness {
+  const skills: Json | undefined = careerProfile?.skills;
+  const hasSkills = Array.isArray(skills) && skills.length > 0;
+
+  const items: ProfileCompletenessItem[] = [
+    {
+      label: "Add your resume",
+      done: !!careerProfile?.resume_text,
+      href: "/settings",
+    },
+    {
+      label: "Set a job target",
+      done: !!activeJobTarget,
+      href: "/mission",
+    },
+    {
+      label: "Add title & industry",
+      done: !!(careerProfile?.title && careerProfile?.industry),
+      href: "/settings",
+    },
+    {
+      label: "Specify target role",
+      done: !!activeJobTarget?.title,
+      href: "/mission",
+    },
+    {
+      label: "Add your skills",
+      done: hasSkills,
+      href: "/settings",
+    },
+    {
+      label: "Set years of experience",
+      done: careerProfile?.years_experience != null,
+      href: "/settings",
+    },
+  ];
+
+  // Account created = +10 (always true when logged in)
+  let score = 10;
+  if (careerProfile?.resume_text) score += 30;
+  if (activeJobTarget) score += 20;
+  if (careerProfile?.title && careerProfile?.industry) score += 15;
+  if (activeJobTarget?.title) score += 10;
+  if (hasSkills) score += 10;
+  if (careerProfile?.years_experience != null) score += 5;
+
+  return { score, items };
+}
 
 export const INDUSTRIES = [
   "Technology",

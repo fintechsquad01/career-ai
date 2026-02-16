@@ -15,6 +15,7 @@ interface AppShellProps {
   profile?: Profile | null;
   careerProfile?: CareerProfile | null;
   activeJobTarget?: JobTarget | null;
+  jobTargets?: JobTarget[];
 }
 
 export function AppShell({
@@ -23,14 +24,19 @@ export function AppShell({
   profile,
   careerProfile,
   activeJobTarget,
+  jobTargets,
 }: AppShellProps) {
-  const { setProfile, setCareerProfile, setActiveJobTarget } = useAppStore();
+  const setProfile = useAppStore((s) => s.setProfile);
+  const setCareerProfile = useAppStore((s) => s.setCareerProfile);
+  const setActiveJobTarget = useAppStore((s) => s.setActiveJobTarget);
+  const setJobTargets = useAppStore((s) => s.setJobTargets);
 
   useEffect(() => {
     if (profile) setProfile(profile);
     if (careerProfile !== undefined) setCareerProfile(careerProfile ?? null);
     if (activeJobTarget !== undefined) setActiveJobTarget(activeJobTarget ?? null);
-  }, [profile, careerProfile, activeJobTarget, setProfile, setCareerProfile, setActiveJobTarget]);
+    if (jobTargets) setJobTargets(jobTargets);
+  }, [profile, careerProfile, activeJobTarget, jobTargets, setProfile, setCareerProfile, setActiveJobTarget, setJobTargets]);
 
   // Sync any pre-auth localStorage data (resume/JD) to the database
   usePostAuthSync();

@@ -13,7 +13,8 @@ interface ResumeInputProps {
 export function ResumeInput({ onSubmit }: ResumeInputProps) {
   const [resumeText, setResumeText] = useState("");
   const [targetJd, setTargetJd] = useState("");
-  const { activeJobTarget, careerProfile } = useAppStore();
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
+  const careerProfile = useAppStore((s) => s.careerProfile);
 
   const effectiveResume = resumeText.trim() || careerProfile?.resume_text || "";
   const effectiveTargetJd = targetJd || activeJobTarget?.jd_text || "";
@@ -58,7 +59,7 @@ export function ResumeInput({ onSubmit }: ResumeInputProps) {
       <button
         onClick={() => onSubmit({ resume_text: effectiveResume, target_jd: effectiveTargetJd })}
         disabled={!effectiveResume.trim()}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Optimize My Resume — 10 tokens
       </button>

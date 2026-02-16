@@ -4,7 +4,10 @@ import { Coins } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 
 export function TokBadge() {
-  const { tokenBalance, dailyCreditsBalance, tokenAnimating, tokensLoaded } = useAppStore();
+  const tokenBalance = useAppStore((s) => s.tokenBalance);
+  const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
+  const tokenAnimating = useAppStore((s) => s.tokenAnimating);
+  const tokensLoaded = useAppStore((s) => s.tokensLoaded);
 
   const totalBalance = tokenBalance + dailyCreditsBalance;
   const color =

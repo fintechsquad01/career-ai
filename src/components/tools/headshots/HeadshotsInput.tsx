@@ -117,18 +117,18 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
           onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.add("border-pink-400", "bg-pink-50/50");
+            e.currentTarget.classList.add("border-blue-400", "bg-blue-50/50");
           }}
           onDragLeave={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.remove("border-pink-400", "bg-pink-50/50");
+            e.currentTarget.classList.remove("border-blue-400", "bg-blue-50/50");
           }}
           onDrop={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.remove("border-pink-400", "bg-pink-50/50");
+            e.currentTarget.classList.remove("border-blue-400", "bg-blue-50/50");
             processFiles(e.dataTransfer?.files ?? null);
           }}
-          className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center min-h-[120px] flex flex-col items-center justify-center hover:border-pink-300 transition-colors cursor-pointer"
+          className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center min-h-[120px] flex flex-col items-center justify-center hover:border-blue-300 transition-colors cursor-pointer"
         >
           <Upload className="w-8 h-8 text-gray-400 mb-2" />
           <p className="text-sm text-gray-500">Drop your photo here or click to upload</p>
@@ -153,7 +153,7 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
               type="button"
               onClick={() => setStyle(s.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
-                style === s.value ? "bg-pink-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                style === s.value ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {s.label}
@@ -171,7 +171,7 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
               type="button"
               onClick={() => setBackground(b.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium min-h-[44px] transition-colors ${
-                background === b.value ? "bg-pink-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                background === b.value ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {b.label}
@@ -192,7 +192,7 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
       <button
         onClick={handleSubmitClick}
         disabled={files.length === 0}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-pink-600/20 transition-colors min-h-[48px]"
+        className="btn-primary"
       >
         Generate Headshots — 20 tokens
       </button>

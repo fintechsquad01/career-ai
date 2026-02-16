@@ -6,9 +6,13 @@ interface AppState {
   profile: Profile | null;
   careerProfile: CareerProfile | null;
   activeJobTarget: JobTarget | null;
+  jobTargets: JobTarget[];
+  jobTargetsLoaded: boolean;
   setProfile: (profile: Profile | null) => void;
   setCareerProfile: (cp: CareerProfile | null) => void;
   setActiveJobTarget: (jt: JobTarget | null) => void;
+  setJobTargets: (targets: JobTarget[]) => void;
+  setJobTargetsLoaded: (loaded: boolean) => void;
 
   // Tokens
   tokenBalance: number;
@@ -33,6 +37,8 @@ export const useAppStore = create<AppState>((set) => ({
   profile: null,
   careerProfile: null,
   activeJobTarget: null,
+  jobTargets: [],
+  jobTargetsLoaded: false,
   setProfile: (profile) =>
     set({
       profile,
@@ -41,6 +47,8 @@ export const useAppStore = create<AppState>((set) => ({
     }),
   setCareerProfile: (careerProfile) => set({ careerProfile }),
   setActiveJobTarget: (activeJobTarget) => set({ activeJobTarget }),
+  setJobTargets: (jobTargets) => set({ jobTargets, jobTargetsLoaded: true }),
+  setJobTargetsLoaded: (jobTargetsLoaded) => set({ jobTargetsLoaded }),
 
   tokenBalance: 0,
   dailyCreditsBalance: 0,

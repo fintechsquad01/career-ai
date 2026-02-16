@@ -36,6 +36,9 @@ export type ToolResultRow = Database["public"]["Tables"]["tool_results"]["Row"];
 export type TokenTransaction = Database["public"]["Tables"]["token_transactions"]["Row"];
 export type EmailCapture = Database["public"]["Tables"]["email_captures"]["Row"];
 export type SharedScore = Database["public"]["Tables"]["shared_scores"]["Row"];
+export type ResumeVariant = Database["public"]["Tables"]["resume_variants"]["Row"];
+
+export type JobTargetStatus = "saved" | "applied" | "interviewing" | "offer" | "rejected" | "withdrawn";
 
 export interface UserWithProfile {
   user: {

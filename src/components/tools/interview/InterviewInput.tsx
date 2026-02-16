@@ -16,7 +16,7 @@ const INTERVIEW_TYPES = [
 ] as const;
 
 export function InterviewInput({ onSubmit }: InterviewInputProps) {
-  const { activeJobTarget } = useAppStore();
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
   const [interviewType, setInterviewType] = useState<string>("behavioral_case");
 
   return (
@@ -48,7 +48,7 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
               onClick={() => setInterviewType(t.value)}
               className={`w-full px-4 py-3 rounded-xl text-sm font-medium text-left min-h-[44px] transition-colors ${
                 interviewType === t.value
-                  ? "bg-amber-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -69,7 +69,7 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
 
       <button
         onClick={() => onSubmit({ interview_type: interviewType })}
-        className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/20 transition-colors min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary"
       >
         Generate Questions — 3 tokens
       </button>

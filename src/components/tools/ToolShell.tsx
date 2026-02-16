@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, X, Save } from "lucide-react";
+import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, X, Save, Target } from "lucide-react";
 import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
 import { InlineProfileForm } from "@/components/shared/InlineProfileForm";
 import { JobTargetSelector } from "@/components/shared/JobTargetSelector";
@@ -13,11 +13,18 @@ import { useTokens } from "@/hooks/useTokens";
 import { useMission } from "@/hooks/useMission";
 import { useAppStore } from "@/stores/app-store";
 import { track } from "@/lib/analytics";
-import { TOOLS_MAP, MISSION_ACTIONS } from "@/lib/constants";
+import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
 import type { InsightCategory } from "@/lib/loading-insights";
 import type { ToolState, ToolProgress, ToolResult, CareerProfile, JobTarget } from "@/types";
+
+/** Blocklist for placeholder values returned by AI detected_profile fields. */
+const PLACEHOLDER_VALUES = ["not provided", "n/a", "unknown", "unknown role", "not specified", "none", ""];
+function isPlaceholderValue(val: unknown): boolean {
+  if (typeof val !== "string") return true;
+  return !val.trim() || PLACEHOLDER_VALUES.includes(val.toLowerCase().trim());
+}
 
 /** Narrative copy linking current tool to the recommended next */
 const NARRATIVE_TRANSITIONS: Record<string, Record<string, string>> = {
@@ -289,19 +296,19 @@ async function autoSaveDetectedProfile(
 
   // Save title/industry/name/experience from detected_profile
   if (detected) {
-    if (!hasTitle && detected.role && detected.role !== "Not provided" && detected.role !== "Unknown") {
+    if (!hasTitle && !isPlaceholderValue(detected.role)) {
       updates.title = String(detected.role);
       fieldCount++;
     }
-    if (!hasIndustry && detected.industry && detected.industry !== "Not provided" && detected.industry !== "Unknown") {
+    if (!hasIndustry && !isPlaceholderValue(detected.industry)) {
       updates.industry = String(detected.industry);
       fieldCount++;
     }
-    if (detected.name && detected.name !== "Not provided" && !currentCareerProfile?.name) {
+    if (!isPlaceholderValue(detected.name) && !currentCareerProfile?.name) {
       updates.name = String(detected.name);
       fieldCount++;
     }
-    if (detected.experience_years && detected.experience_years !== "Not specified" && !currentCareerProfile?.years_experience) {
+    if (!isPlaceholderValue(detected.experience_years) && !currentCareerProfile?.years_experience) {
       const years = parseInt(String(detected.experience_years), 10);
       if (!isNaN(years)) {
         updates.years_experience = years;
@@ -429,7 +436,12 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [error, setError] = useState<string | null>(null);
   const { balance, refreshBalance } = useTokens();
   const { completeAction } = useMission();
-  const { careerProfile, activeJobTarget, jobTargets, setCareerProfile, setActiveJobTarget, setJobTargets } = useAppStore();
+  const careerProfile = useAppStore((s) => s.careerProfile);
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
+  const jobTargets = useAppStore((s) => s.jobTargets);
+  const setCareerProfile = useAppStore((s) => s.setCareerProfile);
+  const setActiveJobTarget = useAppStore((s) => s.setActiveJobTarget);
+  const setJobTargets = useAppStore((s) => s.setJobTargets);
 
   const isRunning = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -447,6 +459,15 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
     return sessionStorage.getItem(`insights-dismissed-${toolId}`) === "1";
   });
   // (target editor state removed — now handled by JobTargetSelector)
+
+  // Restore pendingInputs from localStorage after Stripe redirect
+  useEffect(() => {
+    const stored = localStorage.getItem("pendingInputs");
+    if (stored) {
+      try { setPendingInputs(JSON.parse(stored)); } catch { /* ignore */ }
+      localStorage.removeItem("pendingInputs");
+    }
+  }, []);
 
   // Memoize loading insights so they shuffle once per tool, not per render
   const loadingInsights = useMemo(() => getLoadingInsights(toolId), [toolId]);
@@ -541,6 +562,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       const effectiveCost = typeof inputs.token_cost === "number" ? inputs.token_cost : tool.tokens;
       if (effectiveCost > 0 && balance < effectiveCost) {
         setPendingInputs(inputs);
+        try { localStorage.setItem("pendingInputs", JSON.stringify(inputs)); } catch { /* ignore */ }
         setShowPaywall(true);
         isRunning.current = false;
         return;
@@ -1009,6 +1031,18 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {/* Job Target Selector — switch between multiple targets */}
       <JobTargetSelector />
 
+      {/* JD nudge — shown when no active job target on tools that benefit from one */}
+      {state === "input" && !activeJobTarget && ["jd_match", "resume", "cover_letter", "interview", "salary"].includes(toolId) && (
+        <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3">
+          <Target className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-blue-800">
+              <span className="font-semibold">Tip:</span> Paste a job description to get results tailored to a specific role.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Data completeness nudge — inline resume upload */}
       {state === "input" && !careerProfile?.resume_text && toolId !== "headshots" && (
         <ResumeUploadOrPaste
@@ -1017,7 +1051,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             // After upload, the component auto-saves to DB and updates the Zustand store
           }}
           compact
-          label="Add your resume for better results"
+          label="Paste your resume for personalized results"
           autoSave
         />
       )}

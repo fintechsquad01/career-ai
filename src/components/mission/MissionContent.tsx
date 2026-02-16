@@ -8,9 +8,15 @@ import {
   FileText, Mail, TrendingUp, MessageSquare, Rocket, Linkedin, Map
 } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
+import { ScoreDelta } from "@/components/shared/ScoreDelta";
 import { useMission } from "@/hooks/useMission";
+import { useMissionResults } from "@/hooks/useMissionResults";
+import { useBatchScoreDeltas } from "@/hooks/useScoreHistory";
+import { MissionOverview } from "@/components/mission/MissionOverview";
+import { JobTargetSelector } from "@/components/shared/JobTargetSelector";
 import { MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import type { JobTarget } from "@/types";
 
 const ACTION_ICONS: Record<string, typeof FileText> = {
   optimize: FileText,
@@ -30,8 +36,13 @@ const PRIORITY_COLORS: Record<string, string> = {
   Low: "bg-gray-100 text-gray-500",
 };
 
-export function MissionContent() {
+interface MissionContentProps {
+  allJobTargets?: JobTarget[];
+}
+
+export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
   const [creatingFromPreAuth, setCreatingFromPreAuth] = useState(false);
+  const [view, setView] = useState<"overview" | "detail">("overview");
   const {
     activeJobTarget,
     completed,
@@ -40,6 +51,20 @@ export function MissionContent() {
     isComplete,
     getActionState,
   } = useMission();
+
+  const { toolResults } = useMissionResults(activeJobTarget?.id);
+
+  const missionToolIds = MISSION_ACTIONS.map((a) => a.toolId);
+  const { deltas: scoreDeltas } = useBatchScoreDeltas(missionToolIds, activeJobTarget?.id);
+
+  // Default to overview when multiple targets exist
+  useEffect(() => {
+    if (allJobTargets.length >= 2 && activeJobTarget) {
+      setView("overview");
+    } else if (allJobTargets.length <= 1) {
+      setView("detail");
+    }
+  }, [allJobTargets.length, activeJobTarget]);
 
   useEffect(() => {
     const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
@@ -202,16 +227,44 @@ export function MissionContent() {
     );
   }
 
+  // Show overview if user has multiple targets and is on overview view
+  if (view === "overview" && allJobTargets.length >= 2) {
+    return (
+      <MissionOverview
+        jobTargets={allJobTargets}
+        onSelectTarget={(targetId) => {
+          setView("detail");
+          // switchTarget is handled by the overview card click
+        }}
+      />
+    );
+  }
+
   const requirements = (activeJobTarget.requirements as Array<{ skill: string; match: boolean | "partial" }>) || [];
   const matched = requirements.filter((r) => r.match === true).length;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
       {/* Back */}
-      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
-        <ArrowLeft className="w-4 h-4" />
-        Dashboard
-      </Link>
+      <div className="flex items-center gap-3">
+        {allJobTargets.length >= 2 ? (
+          <button
+            onClick={() => setView("overview")}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            All Missions
+          </button>
+        ) : (
+          <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <ArrowLeft className="w-4 h-4" />
+            Dashboard
+          </Link>
+        )}
+        <div className="ml-auto">
+          <JobTargetSelector compact />
+        </div>
+      </div>
 
       {/* Mission Header */}
       <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white">
@@ -319,10 +372,19 @@ export function MissionContent() {
                       {action.priority}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">
-                    {action.description}
-                    <span className="text-xs text-gray-400 ml-1">· ~30 sec</span>
-                  </p>
+                  {state === "completed" && toolResults[action.toolId] ? (
+                    <p className="text-sm text-green-700 font-medium">
+                      {toolResults[action.toolId].summary}
+                      <span className="text-xs text-gray-400 font-normal ml-1.5">
+                        · {new Date(toolResults[action.toolId].created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      {action.description}
+                      {state !== "completed" && <span className="text-xs text-gray-400 ml-1">· ~30 sec</span>}
+                    </p>
+                  )}
                 </div>
 
                 {state === "available" && (
@@ -335,9 +397,22 @@ export function MissionContent() {
                 )}
 
                 {state === "completed" && (
-                  <span className="text-xs font-medium text-green-600 flex items-center gap-1 flex-shrink-0">
-                    <CheckCircle className="w-3.5 h-3.5" /> Done
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <Link
+                      href={`/tools/${action.toolId}`}
+                      className="text-xs font-medium text-green-600 flex items-center gap-1 hover:text-green-800 min-h-[44px]"
+                    >
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      {toolResults[action.toolId]?.metric_value != null ? (
+                        <span>{toolResults[action.toolId].metric_value}%</span>
+                      ) : (
+                        <span>Done</span>
+                      )}
+                    </Link>
+                    {scoreDeltas[action.toolId] && (
+                      <ScoreDelta delta={scoreDeltas[action.toolId].delta} size="sm" />
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -381,7 +456,7 @@ export function MissionContent() {
       )}
 
       {/* Mission Complete */}
-      {completed === 5 && (
+      {isComplete && (
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 text-center space-y-4 relative overflow-hidden">
           {/* CSS confetti effect */}
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">

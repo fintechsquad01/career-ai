@@ -14,17 +14,33 @@ async function getPdfJs() {
     throw new Error("PDF parsing is only available in the browser.");
   }
   pdfjsLib = await import("pdfjs-dist");
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+  // Use locally bundled worker instead of CDN to avoid network dependency
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
   return pdfjsLib;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MIN_RESUME_WORDS = 30; // A real resume should have at least 30 words
+
+export type ParseQuality = "good" | "partial" | "failed";
 
 export type FileParseResult = {
   text: string;
   fileName: string;
   fileType: string;
+  wordCount: number;
+  quality: ParseQuality;
 };
+
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+export function getParseQuality(wordCount: number): ParseQuality {
+  if (wordCount >= 100) return "good";
+  if (wordCount >= MIN_RESUME_WORDS) return "partial";
+  return "failed";
+}
 
 export async function parseFile(file: File): Promise<FileParseResult> {
   if (file.size > MAX_FILE_SIZE) {
@@ -37,13 +53,16 @@ export async function parseFile(file: File): Promise<FileParseResult> {
   // Plain text files
   if (fileType === "text/plain" || fileName.endsWith(".txt")) {
     const text = await file.text();
-    return { text, fileName, fileType };
+    const wc = countWords(text);
+    return { text, fileName, fileType, wordCount: wc, quality: getParseQuality(wc) };
   }
 
   // PDF files
   if (fileType === "application/pdf" || fileName.endsWith(".pdf")) {
     const text = await extractPdfText(file);
-    return { text, fileName, fileType: "application/pdf" };
+    const wc = countWords(text);
+    const quality = getParseQuality(wc);
+    return { text, fileName, fileType: "application/pdf", wordCount: wc, quality };
   }
 
   // DOCX files
@@ -52,7 +71,9 @@ export async function parseFile(file: File): Promise<FileParseResult> {
     fileName.endsWith(".docx")
   ) {
     const text = await extractDocxText(file);
-    return { text, fileName, fileType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
+    const wc = countWords(text);
+    const quality = getParseQuality(wc);
+    return { text, fileName, fileType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", wordCount: wc, quality };
   }
 
   throw new Error(`Unsupported file type: ${fileType || fileName}`);
@@ -68,23 +89,61 @@ async function extractPdfText(file: File): Promise<string> {
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const pageText = content.items
-        .map((item) => ("str" in item ? item.str : ""))
-        .join(" ");
-      if (pageText.trim()) {
+
+      // Build text with line-break detection using Y-coordinate positions
+      let lastY: number | null = null;
+      const lineParts: string[] = [];
+
+      for (const item of content.items) {
+        if (!("str" in item) || !item.str) continue;
+
+        const currentY = "transform" in item ? (item.transform as number[])[5] : null;
+
+        if (lastY !== null && currentY !== null) {
+          const yDiff = Math.abs(lastY - currentY);
+          if (yDiff > 3) {
+            // Different line — add a newline
+            lineParts.push("\n");
+          } else if (lineParts.length > 0) {
+            // Same line, add space separator if needed
+            const lastPart = lineParts[lineParts.length - 1];
+            if (lastPart && !lastPart.endsWith(" ") && !item.str.startsWith(" ")) {
+              lineParts.push(" ");
+            }
+          }
+        }
+
+        lineParts.push(item.str);
+        lastY = currentY;
+      }
+
+      const pageText = lineParts.join("").trim();
+      if (pageText) {
         textParts.push(pageText);
       }
     }
 
     if (textParts.length === 0) {
-      throw new Error("No text content found in PDF.");
+      throw new Error(
+        "No text content found in PDF. The file may be image-based or scanned. Please paste your resume text directly."
+      );
     }
 
-    return textParts.join("\n\n");
+    const fullText = textParts.join("\n\n");
+    const wordCount = countWords(fullText);
+
+    if (wordCount < MIN_RESUME_WORDS) {
+      throw new Error(
+        `Only ${wordCount} words extracted from the PDF. The file may have complex formatting or be image-based. Please paste your resume text directly for best results.`
+      );
+    }
+
+    return fullText;
   } catch (err) {
-    if (err instanceof Error && err.message.includes("No text content")) {
+    if (err instanceof Error && (err.message.includes("No text content") || err.message.includes("words extracted"))) {
       throw err;
     }
+    console.error("PDF extraction error:", err);
     throw new Error("Could not extract text from PDF. Please paste the text directly.");
   }
 }

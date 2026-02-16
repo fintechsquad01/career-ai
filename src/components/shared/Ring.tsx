@@ -1,10 +1,13 @@
 "use client";
 
+import { useCountUp } from "@/hooks/useCountUp";
+
 interface RingProps {
   score: number;
   size?: "sm" | "md" | "lg";
   label?: string;
   showLabel?: boolean;
+  animate?: boolean;
 }
 
 const SIZES = {
@@ -19,19 +22,20 @@ function getColor(score: number) {
   return { stroke: "#22C55E", text: "text-green-500" };
 }
 
-export function Ring({ score, size = "md", label, showLabel = true }: RingProps) {
+export function Ring({ score, size = "md", label, showLabel = true, animate = true }: RingProps) {
   const px = SIZES[size];
   const strokeWidth = size === "sm" ? 5 : size === "md" ? 6 : 8;
   const radius = (px - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
   const { stroke, text } = getColor(score);
+  const displayScore = useCountUp(score, { duration: 1200, delay: 200, enabled: animate });
 
   const fontSize = size === "sm" ? "text-sm" : size === "md" ? "text-xl" : "text-3xl";
   const labelSize = size === "sm" ? "text-[9px]" : "text-xs";
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: px, height: px }}>
+    <div className={`relative inline-flex items-center justify-center ${animate ? "score-reveal" : ""}`} style={{ width: px, height: px }}>
       <svg width={px} height={px} className="-rotate-90">
         <circle
           cx={px / 2}
@@ -60,7 +64,7 @@ export function Ring({ score, size = "md", label, showLabel = true }: RingProps)
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`font-bold ${fontSize} ${text}`}>{score}</span>
+        <span className={`font-bold ${fontSize} ${text}`}>{displayScore}</span>
         {showLabel && label && (
           <span className={`${labelSize} text-gray-400 font-medium`}>{label}</span>
         )}

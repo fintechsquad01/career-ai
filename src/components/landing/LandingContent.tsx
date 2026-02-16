@@ -559,7 +559,7 @@ export function LandingContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
                 From first paste to first offer
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
                 <div className="glass-card p-6 sm:p-8 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
                     <span className="text-xl font-bold text-blue-600">1</span>
@@ -588,6 +588,16 @@ export function LandingContent() {
                   <h3 className="font-semibold text-gray-900 mb-2">Track &amp; grow</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">
                     Track your progress, build new skills, and grow your income with freelance opportunities.
+                  </p>
+                </div>
+                <div className="glass-card p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-xl font-bold text-amber-600">4</span>
+                  </div>
+                  <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Month 1+</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Apply &amp; negotiate</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Use Quick Apply to batch-run tools, craft cover letters, and negotiate salary with confidence.
                   </p>
                 </div>
               </div>

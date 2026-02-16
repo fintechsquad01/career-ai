@@ -154,6 +154,8 @@ export interface Database {
           mission_actions: Json;
           jd_text: string | null;
           source: string | null;
+          status: string;
+          status_updated_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -173,6 +175,8 @@ export interface Database {
           mission_actions?: Json;
           jd_text?: string | null;
           source?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
         };
         Update: {
           title?: string;
@@ -188,6 +192,8 @@ export interface Database {
           mission_actions?: Json;
           jd_text?: string | null;
           source?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -228,6 +234,37 @@ export interface Database {
           summary?: string | null;
           metric_value?: number | null;
           detail?: string | null;
+        };
+        Relationships: [];
+      };
+      resume_variants: {
+        Row: {
+          id: string;
+          user_id: string;
+          job_target_id: string | null;
+          name: string;
+          resume_text: string;
+          source: string;
+          tool_result_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          job_target_id?: string | null;
+          name: string;
+          resume_text: string;
+          source?: string;
+          tool_result_id?: string | null;
+        };
+        Update: {
+          name?: string;
+          resume_text?: string;
+          job_target_id?: string | null;
+          source?: string;
+          tool_result_id?: string | null;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -371,6 +408,12 @@ export interface Database {
           p_score_id: string;
         };
         Returns: void;
+      };
+      set_active_job_target: {
+        Args: {
+          target_id: string;
+        };
+        Returns: string;
       };
     };
     Enums: Record<string, never>;

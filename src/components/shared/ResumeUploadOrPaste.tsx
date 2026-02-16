@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import { FileText, Upload, Check, X, ChevronDown } from "lucide-react";
-import { parseFile, isResumeFile } from "@/lib/file-parser";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { FileText, Upload, Check, AlertTriangle, X, ChevronDown, Files } from "lucide-react";
+import { parseFile, isResumeFile, getParseQuality } from "@/lib/file-parser";
+import type { ParseQuality } from "@/lib/file-parser";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/stores/app-store";
+import type { ResumeVariant } from "@/types";
 
 interface ResumeUploadOrPasteProps {
   value: string;
@@ -64,6 +66,36 @@ function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+const QUALITY_STYLES: Record<ParseQuality, {
+  bg: string;
+  border: string;
+  iconColor: string;
+  textColor: string;
+  Icon: typeof Check;
+}> = {
+  good: {
+    bg: "bg-green-50",
+    border: "border-green-200",
+    iconColor: "text-green-600",
+    textColor: "text-green-800",
+    Icon: Check,
+  },
+  partial: {
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    iconColor: "text-amber-600",
+    textColor: "text-amber-800",
+    Icon: AlertTriangle,
+  },
+  failed: {
+    bg: "bg-red-50",
+    border: "border-red-200",
+    iconColor: "text-red-600",
+    textColor: "text-red-800",
+    Icon: AlertTriangle,
+  },
+};
+
 export function ResumeUploadOrPaste({
   value,
   onChange,
@@ -81,6 +113,29 @@ export function ResumeUploadOrPaste({
   const [parsing, setParsing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [variants, setVariants] = useState<ResumeVariant[]>([]);
+  const [showVariants, setShowVariants] = useState(false);
+
+  // Fetch saved resume variants
+  useEffect(() => {
+    const fetchVariants = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user?.id) return;
+        const { data } = await supabase
+          .from("resume_variants")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .order("updated_at", { ascending: false })
+          .limit(20);
+        if (data) setVariants(data as ResumeVariant[]);
+      } catch {
+        // Non-critical
+      }
+    };
+    fetchVariants();
+  }, []);
 
   // Determine the effective text
   const effectiveText = value || profileResumeText || "";
@@ -109,6 +164,10 @@ export function ResumeUploadOrPaste({
         const result = await parseFile(file);
         onChange(result.text);
         setMode("prefilled");
+
+        if (result.quality === "partial") {
+          setError("Partial extraction — some text may be missing. For best results, paste your resume text directly.");
+        }
 
         if (autoSave) {
           void saveResumeToProfile(result.text, "upload");
@@ -171,12 +230,55 @@ export function ResumeUploadOrPaste({
     setError(null);
   }, [onChange]);
 
-  // --- Prefilled badge ---
+  const handleSelectVariant = useCallback(
+    (variant: ResumeVariant) => {
+      onChange(variant.resume_text);
+      setMode("prefilled");
+      setShowVariants(false);
+    },
+    [onChange]
+  );
+
+  const variantSelector = variants.length > 0 && (
+    <div className="mb-2">
+      <button
+        type="button"
+        onClick={() => setShowVariants(!showVariants)}
+        className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors min-h-[36px]"
+      >
+        <Files className="w-3.5 h-3.5" />
+        {showVariants ? "Hide" : "Select from"} saved resumes ({variants.length})
+        <ChevronDown className={`w-3 h-3 transition-transform ${showVariants ? "rotate-180" : ""}`} />
+      </button>
+      {showVariants && (
+        <div className="mt-1.5 max-h-48 overflow-y-auto rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
+          {variants.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => handleSelectVariant(v)}
+              className="w-full text-left px-3 py-2 hover:bg-blue-50 transition-colors"
+            >
+              <p className="text-xs font-medium text-gray-900 truncate">{v.name}</p>
+              <p className="text-[10px] text-gray-400">
+                {v.source === "optimizer" ? "From optimizer" : "Manual"} · {new Date(v.updated_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+              </p>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // --- Prefilled badge with quality indicator ---
   if (currentMode === "prefilled" && hasPrefill) {
     const titleLine = [profileTitle, profileCompany]
       .filter(Boolean)
       .join(" at ");
     const words = wordCount(effectiveText);
+    const quality = getParseQuality(words);
+    const styles = QUALITY_STYLES[quality];
+    const QualityIcon = styles.Icon;
 
     return (
       <div className="space-y-1">
@@ -185,21 +287,32 @@ export function ResumeUploadOrPaste({
             {label}
           </label>
         )}
-        <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-3">
-          <Check className="h-4 w-4 text-green-600 shrink-0" />
-          <span className="text-sm text-green-800 truncate flex-1">
-            Using saved resume
-            {titleLine ? ` — ${titleLine}` : ""}
-            {words > 0 ? ` (${words} words)` : ""}
+        <div className={`flex items-center gap-2 rounded-xl ${styles.bg} border ${styles.border} px-4 py-3`}>
+          <QualityIcon className={`h-4 w-4 ${styles.iconColor} shrink-0`} />
+          <span className={`text-sm ${styles.textColor} truncate flex-1`}>
+            {quality === "good" && (
+              <>Using saved resume{titleLine ? ` — ${titleLine}` : ""} ({words} words)</>
+            )}
+            {quality === "partial" && (
+              <>Resume partially extracted ({words} words) — paste text for better results</>
+            )}
+            {quality === "failed" && (
+              <>Resume extraction incomplete ({words} words) — please paste text directly</>
+            )}
           </span>
           <button
             type="button"
             onClick={handleSwitchToEdit}
-            className="text-sm font-medium text-green-700 hover:text-green-900 min-h-[44px] flex items-center"
+            className={`text-sm font-medium ${quality === "good" ? "text-green-700 hover:text-green-900" : quality === "partial" ? "text-amber-700 hover:text-amber-900" : "text-red-700 hover:text-red-900"} min-h-[44px] flex items-center`}
           >
-            Change
+            {quality === "good" ? "Change" : "Paste Text"}
           </button>
         </div>
+        {quality !== "good" && (
+          <p className={`text-xs ${quality === "partial" ? "text-amber-600" : "text-red-600"}`}>
+            For best AI results, paste your resume text directly. PDF extraction captured only {words} words.
+          </p>
+        )}
       </div>
     );
   }
@@ -213,6 +326,7 @@ export function ResumeUploadOrPaste({
             {label}
           </label>
         )}
+        {variantSelector}
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -255,6 +369,7 @@ export function ResumeUploadOrPaste({
           {label}
         </label>
       )}
+      {variantSelector}
 
       {/* Drop zone */}
       <div

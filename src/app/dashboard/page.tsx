@@ -29,12 +29,13 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  const { data: activeJobTarget } = await supabase
+  const { data: allJobTargets } = await supabase
     .from("job_targets")
     .select("*")
     .eq("user_id", user.id)
-    .eq("is_active", true)
-    .maybeSingle();
+    .order("updated_at", { ascending: false });
+
+  const activeJobTarget = allJobTargets?.find((t) => t.is_active) ?? null;
 
   const { data: recentResults } = await supabase
     .from("tool_results")
@@ -49,6 +50,7 @@ export default async function DashboardPage() {
       profile={profile}
       careerProfile={careerProfile}
       activeJobTarget={activeJobTarget}
+      jobTargets={allJobTargets || []}
     >
       <DashboardContent
         profile={profile}

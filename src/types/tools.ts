@@ -24,6 +24,7 @@ export interface Tool {
   painPoint: string;
   vsCompetitor: string | null;
   route: string;
+  beta?: boolean;
 }
 
 export type ToolState = "input" | "loading" | "result";

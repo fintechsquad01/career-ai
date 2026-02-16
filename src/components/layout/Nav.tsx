@@ -46,7 +46,11 @@ function useBreadcrumb(pathname: string) {
 export function Nav({ isLoggedIn }: NavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { mobileMenuOpen, setMobileMenuOpen, profile, dailyCreditsBalance, dailyCreditsAwarded } = useAppStore();
+  const mobileMenuOpen = useAppStore((s) => s.mobileMenuOpen);
+  const setMobileMenuOpen = useAppStore((s) => s.setMobileMenuOpen);
+  const profile = useAppStore((s) => s.profile);
+  const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
+  const dailyCreditsAwarded = useAppStore((s) => s.dailyCreditsAwarded);
   const breadcrumbs = useBreadcrumb(pathname);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
