@@ -42,7 +42,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
   const keywordCount = data.jd_keywords_used ?? 0;
 
   // Type-safe access to potential_objections from Batch B schema
-  const objections = (data as Record<string, unknown>).potential_objections as
+  const objections = (data as unknown as Record<string, unknown>).potential_objections as
     | Array<{ objection: string; how_to_address: string }>
     | undefined;
 
