@@ -212,7 +212,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                   onClick={handleSignOut}
                   className="flex items-center gap-2.5 w-full px-3 py-3 rounded-xl text-base font-medium text-gray-500 hover:bg-gray-50 min-h-[44px]"
                 >
-                  <LogOut className="w-4.5 h-4.5" />
+                  <LogOut className="w-[18px] h-[18px]" />
                   Sign Out
                 </button>
               </>
