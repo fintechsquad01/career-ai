@@ -217,8 +217,9 @@ Deno.serve(async (req: Request) => {
             ? fetch(`${SUPABASE_URL}/rest/v1/job_targets?id=eq.${job_target_id}&select=*`, { headers })
             : Promise.resolve(null),
           // Fetch 5 most recent tool results for cross-tool context (Batch 5a)
+          // Scope to active job target when provided so context from other applications doesn't leak in
           fetch(
-            `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}&select=tool_id,result,summary,metric_value,created_at&order=created_at.desc&limit=5`,
+            `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}${job_target_id ? `&job_target_id=eq.${job_target_id}` : ""}&select=tool_id,job_target_id,result,summary,metric_value,created_at&order=created_at.desc&limit=5`,
             { headers },
           ),
         ]);
@@ -241,7 +242,15 @@ Deno.serve(async (req: Request) => {
         const careerProfile = careerProfiles[0] || null;
         const jobTarget = jobTargets[0] || null;
 
-        const cost = TOOL_COSTS[tool_id];
+        // Dynamic cost for cover letter based on length selection
+        let cost = TOOL_COSTS[tool_id];
+        if (tool_id === "cover_letter") {
+          const coverLength = sanitizedInputs.length as string | undefined;
+          if (coverLength === "short") cost = 2;
+          else if (coverLength === "detailed") cost = 5;
+          else cost = 3; // standard (default)
+        }
+
         if (cost > 0) {
           // Check combined balance (purchased + daily credits)
           const purchasedBalance = profile?.token_balance ?? 0;
@@ -331,7 +340,7 @@ Deno.serve(async (req: Request) => {
           try {
             const isTimeout = (primaryError as Error).name === "AbortError";
             send("progress", { step: 4, total: 5, message: isTimeout ? "Switching to faster model..." : "Retrying with backup model..." });
-            const fallbackResult = await callOpenRouter(FALLBACK_MODEL, 4096, 60000);
+            const fallbackResult = await callOpenRouter(FALLBACK_MODEL, modelConfig.maxTokens || 4096, 60000);
             responseText = fallbackResult.text;
             aiUsage = fallbackResult.usage;
             usedModel = fallbackResult.model;
@@ -385,6 +394,11 @@ Deno.serve(async (req: Request) => {
           console.error(`Result validation failed for ${tool_id}:`, validationResult.reason);
           // Return the result anyway but log the issue — the output might still have value
           // We just won't charge tokens for clearly broken output
+        }
+
+        // Soft check: warn if detected_profile is missing (all tools should return it)
+        if (!result.detected_profile) {
+          console.warn(`[${tool_id}] Result is missing detected_profile — client-side auto-profile save may fail`);
         }
 
         // Step 5: Storing results
@@ -473,7 +487,35 @@ Deno.serve(async (req: Request) => {
           }
         }
 
-        send("complete", { result_id: resultId, result });
+        // Score delta: compare with previous result for same tool + target
+        let scoreDelta = null;
+        let previousScore = null;
+        const currentMetric = extractMetric(tool_id, result);
+        if (currentMetric != null && job_target_id) {
+          try {
+            const prevRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/tool_results?user_id=eq.${userId}&tool_id=eq.${tool_id}&job_target_id=eq.${job_target_id}&id=neq.${resultId}&select=metric_value&order=created_at.desc&limit=1`,
+              { headers }
+            );
+            if (prevRes.ok) {
+              const prevData = await prevRes.json();
+              if (prevData.length > 0 && prevData[0].metric_value != null) {
+                previousScore = prevData[0].metric_value;
+                scoreDelta = currentMetric - previousScore;
+              }
+            }
+          } catch {
+            // Non-critical — skip delta
+          }
+        }
+
+        send("complete", {
+          result_id: resultId,
+          result,
+          metric_value: currentMetric,
+          score_delta: scoreDelta,
+          previous_score: previousScore,
+        });
       } catch (error) {
         console.error("run-tool error:", error);
         send("error", { error: (error as Error).message || "Tool execution failed" });

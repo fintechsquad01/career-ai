@@ -4,6 +4,7 @@
 
 export type RecentResult = {
   tool_id: string;
+  job_target_id: string | null;
   result: Record<string, unknown>;
   summary: string | null;
   metric_value: number | null;
@@ -223,7 +224,7 @@ const displacement: ToolPromptConfig = {
   systemPrompt: `You are an AI labor economist with expertise in occupational task analysis, using frameworks derived from the ILO Generative AI Susceptibility Index and McKinsey Global Institute automation research. You provide honest, evidence-based assessments that help professionals understand and adapt to AI's impact on their specific role. You never fear-monger or inflate risks. Most jobs will be transformed, not eliminated -- you frame advice around augmentation and adaptation.`,
 
   buildUserPrompt: (careerProfile, jobTarget, inputs, _recentResults) => {
-    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
 
     // Use inline inputs as fallback when career profile lacks title
     const title = careerProfile?.title || inputs.job_title || "Unknown Role";
@@ -329,12 +330,9 @@ const jd_match: ToolPromptConfig = {
   systemPrompt: `You are a senior technical recruiter with 15 years of experience screening applications at Fortune 500 companies and high-growth startups. You have reviewed over 50,000 applications and understand both ATS parsing behavior and what makes a hiring manager say "interview this person." You evaluate candidates the way a real recruiter does: considering semantic skill matches, career trajectory, cultural signals, and competitive positioning -- not just keyword counting.`,
 
   buildUserPrompt: (careerProfile, jobTarget, inputs, _recentResults) => {
-    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
 
     return `${ctx}Compare this candidate's resume/profile against the job description. Evaluate as a real recruiter would.
-
-JOB DESCRIPTION:
-${inputs.jd_text || "Not provided"}
 ${ANTI_HALLUCINATION_RULES}
 ANALYSIS RULES:
 - Match skills SEMANTICALLY: "React" = "React.js" = "ReactJS"; "project management" partially matches "program management"; "Python" partially matches "data analysis"
@@ -425,18 +423,12 @@ const resume: ToolPromptConfig = {
   systemPrompt: `You are a dual expert: (1) an ATS systems engineer who understands how Greenhouse, Lever, Workday, and iCIMS parse and rank resumes in 2026, and (2) a senior recruiter who knows what makes a human hiring manager say "yes" after the ATS passes a resume through. Your mission is to ENHANCE the candidate's authentic resume for both machines and humans. You never rewrite a resume into generic corporate language. You strengthen what's already there.`,
 
   buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
-    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeJdText: true });
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
     const priorCtx = buildPriorResultsContext("resume", recentResults || []);
-    const resumeText = (inputs.resume_text as string) || (careerProfile?.resume_text as string) || "Not available";
-    const targetJd = inputs.target_jd
-      ? `\n\nTARGET JOB DESCRIPTION:\n${inputs.target_jd}`
-      : (jobTarget?.jd_text ? "" : ""); // JD already injected by buildContext if available
 
-    return `${ctx}${priorCtx}Optimize this resume for both ATS parsing and human recruiter appeal.${targetJd}
-
-RESUME TEXT:
-${resumeText}
+    return `${ctx}${priorCtx}Optimize this resume for both ATS parsing and human recruiter appeal.
 ${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 VOICE PRESERVATION RULES (CRITICAL):
 1. MAINTAIN the candidate's writing style, vocabulary level, and personality throughout
 2. If they write conversationally, keep it conversational. If formal, stay formal.
@@ -528,9 +520,6 @@ const cover_letter: ToolPromptConfig = {
     const tone = (inputs.tone as string) || "professional";
     const length = (inputs.length as string) || "standard";
 
-    // Include JD from inputs if not from job target
-    const jdFromInput = inputs.jd_text ? `\nJOB DESCRIPTION TO TAILOR FOR:\n${String(inputs.jd_text).slice(0, 8000)}\n` : "";
-
     const toneGuidance =
       tone === "professional"
         ? "Polished but warm. Confident without being stiff. Like a well-spoken colleague, not a legal document."
@@ -538,7 +527,7 @@ const cover_letter: ToolPromptConfig = {
           ? "Energetic and genuine. Show real excitement. Like someone who truly wants THIS specific role, not just any job."
           : "Relaxed and natural. Like a smart LinkedIn message from someone you'd want to work with. Conversational but substantive.";
 
-    return `${ctx}${priorCtx}${jdFromInput}Write a ${tone} cover letter (${length} length: short=150-200 words, standard=250-350 words, detailed=400-500 words).
+    return `${ctx}${priorCtx}Write a ${tone} cover letter (${length} length: short=150-200 words, standard=250-350 words, detailed=400-500 words).
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Use the candidate's ACTUAL resume achievements and experience as the foundation for the cover letter. Do not invent experiences or projects not mentioned in the resume. NEVER fabricate metrics, percentages, revenue figures, or quantified achievements — only use numbers the candidate explicitly provided.
@@ -605,12 +594,8 @@ const interview: ToolPromptConfig = {
   buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
     const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
     const priorCtx = buildPriorResultsContext("interview", recentResults || []);
-    const interviewType = (inputs.interview_type as string) || "behavioral and technical";
 
-    // Include JD from inputs if not from job target
-    const jdFromInput = inputs.jd_text ? `\nJOB DESCRIPTION:\n${String(inputs.jd_text).slice(0, 8000)}\n` : "";
-
-    return `${ctx}${priorCtx}${jdFromInput}Generate exactly 8 interview questions tailored to this specific candidate and target role. Distribution: 1 warm-up, 2 behavioral (STAR format), 2 technical/role-specific, 2 gap-probe questions targeting resume weaknesses, and 1 culture-fit question.
+    return `${ctx}${priorCtx}Generate exactly 8 interview questions tailored to this specific candidate and target role. Distribution: 1 warm-up, 2 behavioral (STAR format), 2 technical/role-specific, 2 gap-probe questions targeting resume weaknesses, and 1 culture-fit question.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Base all suggested answers on the candidate's ACTUAL experience from their resume. Reference specific projects, companies, and achievements mentioned in their resume — not generic examples.
@@ -902,6 +887,7 @@ const roadmap: ToolPromptConfig = {
 
     return `${ctx}${priorCtx}Create a ${timeHorizon}-month career roadmap for transitioning to or advancing toward ${targetRole} roles.
 ${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Base the roadmap on the candidate's ACTUAL current skills, experience level, and career history from their resume. Tailor income-building suggestions to their real expertise areas.
 
 ROADMAP DESIGN RULES:
@@ -1127,7 +1113,7 @@ const entrepreneurship: ToolPromptConfig = {
   systemPrompt: `You are a startup advisor who has mentored 200+ founders across bootstrapped SaaS, freelance consulting, content businesses, and venture-backed startups. You specialize in helping professionals transition from employment to entrepreneurship -- whether as a full career pivot or a side income stream built alongside job hunting. You believe the best businesses are built on existing expertise and unfair advantages, not trendy ideas. You are realistic about success rates and timelines.`,
 
   buildUserPrompt: (careerProfile, jobTarget, inputs, recentResults) => {
-    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true });
+    const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
     const priorCtx = buildPriorResultsContext("entrepreneurship", recentResults || []);
     const businessIdea = inputs.business_idea
       ? `They are considering: ${inputs.business_idea}`
@@ -1136,6 +1122,7 @@ const entrepreneurship: ToolPromptConfig = {
 
     return `${ctx}${priorCtx}Assess this candidate's entrepreneurship potential and create an actionable plan. ${businessIdea} Risk tolerance: ${riskTolerance}.
 ${ANTI_HALLUCINATION_RULES}
+${FACTUAL_GROUNDING_RULES}
 IMPORTANT: Base all "unfair advantages" and business model suggestions on the candidate's ACTUAL career experience, skills, and industry knowledge from their resume. Do not suggest business models that require skills they don't have.
 
 ASSESSMENT APPROACH:

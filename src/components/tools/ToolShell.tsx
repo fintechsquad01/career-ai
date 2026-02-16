@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles } from "lucide-react";
+import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, X, Save } from "lucide-react";
 import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
 import { InlineProfileForm } from "@/components/shared/InlineProfileForm";
-import { Insight } from "@/components/shared/Insight";
+import { JobTargetSelector } from "@/components/shared/JobTargetSelector";
 import { NpsWidget } from "@/components/shared/NpsWidget";
 import { ShareModal } from "@/components/shared/ShareModal";
 import { Paywall } from "./Paywall";
@@ -429,7 +429,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [error, setError] = useState<string | null>(null);
   const { balance, refreshBalance } = useTokens();
   const { completeAction } = useMission();
-  const { careerProfile, activeJobTarget, setCareerProfile, setActiveJobTarget } = useAppStore();
+  const { careerProfile, activeJobTarget, jobTargets, setCareerProfile, setActiveJobTarget, setJobTargets } = useAppStore();
 
   const isRunning = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -439,6 +439,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [completedToolIds, setCompletedToolIds] = useState<Set<string>>(new Set());
   const [showNps, setShowNps] = useState(false);
   const [showReferralPrompt, setShowReferralPrompt] = useState(false);
+  const [variantSaved, setVariantSaved] = useState(false);
+  const [savingVariant, setSavingVariant] = useState(false);
+  const [scoreDelta, setScoreDelta] = useState<{ previous: number; current: number; delta: number } | null>(null);
+  const [insightsDismissed, setInsightsDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem(`insights-dismissed-${toolId}`) === "1";
+  });
+  // (target editor state removed — now handled by JobTargetSelector)
 
   // Memoize loading insights so they shuffle once per tool, not per render
   const loadingInsights = useMemo(() => getLoadingInsights(toolId), [toolId]);
@@ -529,8 +537,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       track("tool_started", { tool_id: toolId });
 
-      // Check tokens
-      if (tool.tokens > 0 && balance < tool.tokens) {
+      // Check tokens — use dynamic cost from inputs if provided (e.g. cover letter length pricing)
+      const effectiveCost = typeof inputs.token_cost === "number" ? inputs.token_cost : tool.tokens;
+      if (effectiveCost > 0 && balance < effectiveCost) {
         setPendingInputs(inputs);
         setShowPaywall(true);
         isRunning.current = false;
@@ -612,8 +621,23 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           });
 
           if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error || "Headshot generation failed");
+            let errorMsg = "Headshot generation failed";
+            try {
+              const err = await response.json();
+              const raw = err.error || "";
+              if (raw.includes("timeout") || raw.includes("timed out")) {
+                errorMsg = "Image generation timed out. This usually resolves on retry — please try again.";
+              } else if (raw.includes("content") || raw.includes("policy") || raw.includes("safety")) {
+                errorMsg = "Image couldn't be generated due to content guidelines. Try a different photo.";
+              } else if (raw.includes("rate") || raw.includes("limit")) {
+                errorMsg = "Too many requests. Please wait a minute and try again.";
+              } else if (raw) {
+                errorMsg = raw;
+              }
+            } catch {
+              errorMsg = "Image generation failed. Please try again — your tokens were not charged.";
+            }
+            throw new Error(errorMsg);
           }
 
           setProgress({ step: 3, total: 4, message: "Generating headshots..." });
@@ -697,6 +721,15 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                   setProgress({ step: data.step, total: data.total, message: data.message });
                 } else if (event === "complete") {
                   setResult(data.result as ToolResult);
+                  // Score delta from backend comparison
+                  if (data.score_delta != null && data.previous_score != null) {
+                    const metricVal = data.metric_value ?? data.score_delta + data.previous_score;
+                    setScoreDelta({
+                      previous: data.previous_score,
+                      current: metricVal,
+                      delta: data.score_delta,
+                    });
+                  }
                   // Tokens already deducted server-side in run-tool; just refresh balance
                   if (tool.tokens > 0) {
                     await refreshBalance();
@@ -723,6 +756,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                     const savedJobTarget = await autoSaveJobTarget(inputs, activeJobTarget, session.user.id);
                     if (savedJobTarget) {
                       setActiveJobTarget(savedJobTarget);
+                      setJobTargets([savedJobTarget, ...jobTargets.map((t) => ({ ...t, is_active: false }))]);
                     }
                   }
                   track("tool_completed", { tool_id: toolId });
@@ -736,6 +770,15 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             // Fallback: plain JSON response (when Edge Function isn't deployed with SSE yet)
             const data = await response.json();
             setResult(data.result as ToolResult);
+            // Score delta from backend comparison
+            if (data.score_delta != null && data.previous_score != null) {
+              const metricVal = data.metric_value ?? data.score_delta + data.previous_score;
+              setScoreDelta({
+                previous: data.previous_score,
+                current: metricVal,
+                delta: data.score_delta,
+              });
+            }
             // Tokens already deducted server-side in run-tool; just refresh balance
             if (tool.tokens > 0) {
               await refreshBalance();
@@ -762,6 +805,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               const savedJobTarget = await autoSaveJobTarget(inputs, activeJobTarget, session.user.id);
               if (savedJobTarget) {
                 setActiveJobTarget(savedJobTarget);
+                setJobTargets([savedJobTarget, ...jobTargets.map((t) => ({ ...t, is_active: false }))]);
               }
             }
             track("tool_completed", { tool_id: toolId });
@@ -790,7 +834,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         isRunning.current = false;
       }
     },
-    [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget, careerProfile, setCareerProfile, setActiveJobTarget]
+    [tool, balance, refreshBalance, completeAction, toolId, activeJobTarget, jobTargets, careerProfile, setCareerProfile, setActiveJobTarget, setJobTargets]
   );
 
   const handleReset = useCallback(() => {
@@ -800,6 +844,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
     setResult(null);
     setError(null);
     setProgress({ step: 0, total: 5, message: "" });
+    setVariantSaved(false);
+    setSavingVariant(false);
+    setScoreDelta(null);
   }, []);
 
   const handleShare = useCallback(async () => {
@@ -833,9 +880,48 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
     }
   }, [result, tool, toolId, careerProfile]);
 
+  const handleSaveResumeVariant = useCallback(async () => {
+    if (!result || toolId !== "resume" || savingVariant || variantSaved) return;
+    const resumeResult = result as unknown as { optimized_resume_text?: string };
+    if (!resumeResult.optimized_resume_text) return;
+
+    setSavingVariant(true);
+    try {
+      const { useResumeVariants } = await import("@/hooks/useResumeVariants");
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) return;
+
+      const targetName = activeJobTarget?.title || "General";
+      const name = `Optimized for ${targetName} — ${new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+
+      const { data, error: insertError } = await supabase
+        .from("resume_variants")
+        .insert({
+          user_id: session.user.id,
+          name,
+          resume_text: resumeResult.optimized_resume_text,
+          job_target_id: activeJobTarget?.id || null,
+          source: "optimizer",
+        })
+        .select()
+        .single();
+
+      if (!insertError && data) {
+        setVariantSaved(true);
+      }
+    } catch (err) {
+      console.error("Failed to save resume variant:", err);
+    } finally {
+      setSavingVariant(false);
+    }
+  }, [result, toolId, savingVariant, variantSaved, activeJobTarget]);
+
+  // handleSaveNewTarget removed — now handled by JobTargetSelector component
+
   if (!tool) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-8 text-center">
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
         <p className="text-gray-500">This tool isn&apos;t available yet. Check back soon or try one of our 11 other tools.</p>
         <Link href="/dashboard" className="text-blue-600 text-sm mt-2 inline-block">
           Browse all tools
@@ -845,11 +931,11 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-4">
+    <div className="max-w-4xl mx-auto px-4 py-5 sm:py-8 space-y-4">
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">{tool.title}</h1>
+          <h1 className="text-h1">{tool.title}</h1>
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
             tool.tokens === 0 ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"
           }`}>
@@ -858,15 +944,60 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
             {tool.category}
           </span>
+          {tool.beta && (
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+              Beta
+            </span>
+          )}
         </div>
-        <p className="text-gray-500 text-sm">{tool.description}</p>
+        <p className="text-body-sm">{tool.description}</p>
       </div>
 
-      {/* Insights */}
-      <div className="space-y-1.5">
-        <Insight type="pain" text={tool.painPoint} />
-        {tool.vsCompetitor && <Insight type="competitive" text={tool.vsCompetitor} />}
-      </div>
+      {/* Consolidated insight banner — dismissible, once per session */}
+      {!insightsDismissed && state === "input" && (
+        <div className="relative bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+          <button
+            type="button"
+            onClick={() => {
+              setInsightsDismissed(true);
+              sessionStorage.setItem(`insights-dismissed-${toolId}`, "1");
+            }}
+            className="absolute top-2.5 right-2.5 text-gray-300 hover:text-gray-500 transition-colors"
+            aria-label="Dismiss insight"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+          <p className="text-sm text-gray-600 pr-6">{tool.painPoint}</p>
+          {tool.vsCompetitor && (
+            <p className="text-sm text-blue-700 font-medium mt-1.5">{tool.vsCompetitor}</p>
+          )}
+        </div>
+      )}
+
+      {/* Tool dependency hint (b5b) — rendered early so it's visible above the fold on mobile */}
+      {state === "input" && (() => {
+        const dep = TOOL_DEPENDENCIES[toolId];
+        if (!dep) return null;
+        if (completedToolIds.has(dep.prereqToolId)) return null;
+
+        return (
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
+            <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-amber-800">
+                <span className="font-semibold">Tip:</span> {dep.hint}
+              </p>
+              <Link
+                href={`/tools/${dep.prereqToolId}`}
+                className="text-xs font-medium text-amber-700 hover:text-amber-900 mt-1 inline-flex items-center gap-1"
+              >
+                Run {dep.prereqLabel} first
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Context */}
       {careerProfile?.title && (
@@ -875,11 +1006,8 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           {careerProfile.company && ` at ${careerProfile.company}`}
         </div>
       )}
-      {activeJobTarget && (
-        <div className="text-sm text-gray-500 bg-blue-50/60 backdrop-blur-sm border border-blue-100/50 px-4 py-2.5 rounded-xl">
-          Targeting: <strong className="text-blue-700">{activeJobTarget.title}</strong> at {activeJobTarget.company}
-        </div>
-      )}
+      {/* Job Target Selector — switch between multiple targets */}
+      <JobTargetSelector />
 
       {/* Data completeness nudge — inline resume upload */}
       {state === "input" && !careerProfile?.resume_text && toolId !== "headshots" && (
@@ -964,31 +1092,6 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </details>
       )}
 
-      {/* Tool dependency hint (b5b) */}
-      {state === "input" && (() => {
-        const dep = TOOL_DEPENDENCIES[toolId];
-        if (!dep) return null;
-        if (completedToolIds.has(dep.prereqToolId)) return null;
-
-        return (
-          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
-            <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-amber-800">
-                <span className="font-semibold">Tip:</span> {dep.hint}
-              </p>
-              <Link
-                href={`/tools/${dep.prereqToolId}`}
-                className="text-xs font-medium text-amber-700 hover:text-amber-900 mt-1 inline-flex items-center gap-1"
-              >
-                Run {dep.prereqLabel} first
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-          </div>
-        );
-      })()}
-
       {/* Loading state — Rich experience with rotating insights */}
       {state === "loading" && (
         <div className="py-8 space-y-6 stagger-children" role="status" aria-live="polite">
@@ -1006,7 +1109,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             </div>
             <div className="w-56 bg-gray-200 rounded-full h-1.5 mx-auto overflow-hidden">
               <div
-                className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-700 ease-out"
+                className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-700 ease-out progress-glow"
                 style={{ width: `${Math.max(5, (progress.step / progress.total) * 100)}%` }}
               />
             </div>
@@ -1081,6 +1184,24 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
 
+      {/* Score delta banner — shown when score changed from previous run */}
+      {state === "result" && result && !error && scoreDelta && scoreDelta.delta !== 0 && (
+        <div className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium celebrate ${
+          scoreDelta.delta > 0
+            ? "bg-green-50 border border-green-200 text-green-800"
+            : "bg-red-50 border border-red-200 text-red-800"
+        }`}>
+          <span className="text-lg">
+            {scoreDelta.delta > 0 ? "↑" : "↓"}
+          </span>
+          <span>
+            Your score {scoreDelta.delta > 0 ? "improved" : "decreased"} from{" "}
+            <strong>{scoreDelta.previous}</strong> to <strong>{scoreDelta.current}</strong>{" "}
+            ({scoreDelta.delta > 0 ? "+" : ""}{scoreDelta.delta})
+          </span>
+        </div>
+      )}
+
       {/* Premium analysis badge — shown on successful results */}
       {state === "result" && result && !error && (
         <div className="flex items-center gap-2 text-xs text-gray-400 celebrate">
@@ -1111,6 +1232,20 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             <Share2 className="w-4 h-4" />
             Share Results
           </button>
+          {toolId === "resume" && result && (result as unknown as { optimized_resume_text?: string }).optimized_resume_text && (
+            <button
+              onClick={handleSaveResumeVariant}
+              disabled={savingVariant || variantSaved}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 border text-sm font-medium rounded-xl transition-colors min-h-[44px] ${
+                variantSaved
+                  ? "border-green-200 bg-green-50 text-green-700"
+                  : "border-gray-200 text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <Save className="w-4 h-4" />
+              {variantSaved ? "Variant Saved" : savingVariant ? "Saving..." : "Save Resume Variant"}
+            </button>
+          )}
           {activeJobTarget && (
             <Link
               href="/mission"
