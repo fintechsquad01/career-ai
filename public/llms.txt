@@ -2,26 +2,26 @@
 
 > AISkillScore is an AI-powered career intelligence platform with 11 tools for resume optimization, job matching, interview prep, and career growth. Pay per use with tokens — no subscriptions.
 
-AISkillScore helps job seekers and career changers understand exactly where they stand. Paste a job posting or resume and get an honest AI assessment with evidence in 30 seconds. Tools range from free (AI Displacement Score) to 20 tokens (AI Headshots), with token packs starting at $9.
+AISkillScore helps job seekers and career changers understand exactly where they stand. Paste a job posting or resume and get an honest AI assessment with evidence in 30 seconds. Tools range from free (AI Displacement Score) to 25 tokens (AI Headshots), with token packs starting at $14.
 
 ## Core AI Tools
 
 - [AI Displacement Score](https://aiskillscore.com/tools/displacement): Free tool — see which of your tasks AI can replace, and which can't. Uses ILO 2025 data.
-- [JD Match Score](https://aiskillscore.com/tools/jd_match): 2 tokens — how well you match a job posting, scored with evidence from your actual resume.
-- [Resume Optimizer](https://aiskillscore.com/tools/resume): 10 tokens — ATS-optimized resume that still sounds like you. No detectable AI cliches.
-- [Cover Letter](https://aiskillscore.com/tools/cover_letter): 3 tokens — tailored cover letter written from your actual experience, not templates.
-- [LinkedIn Optimizer](https://aiskillscore.com/tools/linkedin): 10 tokens — profile optimized for LinkedIn's 2026 AI recruiter algorithm.
-- [AI Headshots](https://aiskillscore.com/tools/headshots): 20 tokens — professional headshots in minutes using AI, not hours in a studio.
-- [Interview Prep](https://aiskillscore.com/tools/interview): 3 tokens — likely questions plus follow-ups, with coached answers.
-- [Skills Gap Analysis](https://aiskillscore.com/tools/skills_gap): 5 tokens — what's missing for your target role plus a plan to close it.
-- [Career Roadmap](https://aiskillscore.com/tools/roadmap): 8 tokens — job hunt and income plan with weekly checkpoints.
-- [Salary Negotiation](https://aiskillscore.com/tools/salary): 3 tokens — market data plus word-for-word negotiation scripts.
-- [Entrepreneurship Assessment](https://aiskillscore.com/tools/entrepreneurship): 8 tokens — business ideas based on skills you already have.
+- [JD Match Score](https://aiskillscore.com/tools/jd_match): 5 tokens — how well you match a job posting, scored with evidence from your actual resume.
+- [Resume Optimizer](https://aiskillscore.com/tools/resume): 15 tokens — ATS-optimized resume that still sounds like you. No detectable AI cliches.
+- [Cover Letter](https://aiskillscore.com/tools/cover_letter): 8 tokens — tailored cover letter written from your actual experience, not templates.
+- [LinkedIn Optimizer](https://aiskillscore.com/tools/linkedin): 15 tokens — profile optimized for LinkedIn's 2026 AI recruiter algorithm.
+- [AI Headshots](https://aiskillscore.com/tools/headshots): 25 tokens — professional headshots in minutes using AI, not hours in a studio.
+- [Interview Prep](https://aiskillscore.com/tools/interview): 8 tokens — likely questions plus follow-ups, with coached answers.
+- [Skills Gap Analysis](https://aiskillscore.com/tools/skills_gap): 8 tokens — what's missing for your target role plus a plan to close it.
+- [Career Roadmap](https://aiskillscore.com/tools/roadmap): 15 tokens — job hunt and income plan with weekly checkpoints.
+- [Salary Negotiation](https://aiskillscore.com/tools/salary): 8 tokens — market data plus word-for-word negotiation scripts.
+- [Entrepreneurship Assessment](https://aiskillscore.com/tools/entrepreneurship): 12 tokens — business ideas based on skills you already have.
 
 ## Pricing
 
-- [Pricing](https://aiskillscore.com/pricing): Pay per use. No subscriptions. Starter ($9/50 tokens), Pro ($19/200 tokens), Power ($49/500 tokens).
-- [Lifetime Deal](https://aiskillscore.com/lifetime): From $79 one-time for 100 tokens/month forever. Limited to 500 early bird spots.
+- [Pricing](https://aiskillscore.com/pricing): Pay per use. No subscriptions. Starter ($14/50 tokens), Pro ($39/200 tokens), Power ($79/500 tokens).
+- [Lifetime Deal](https://aiskillscore.com/lifetime): From $119 one-time for 120 tokens/month forever. Limited to 500 early bird spots.
 
 ## How It Works
 

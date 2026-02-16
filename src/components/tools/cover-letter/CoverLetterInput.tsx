@@ -16,15 +16,15 @@ const TONES = [
 ] as const;
 
 const LENGTHS = [
-  { value: "short", label: "Short", desc: "~150 words", tokens: 2 },
-  { value: "standard", label: "Standard", desc: "~300 words", tokens: 3 },
-  { value: "detailed", label: "Detailed", desc: "~450 words", tokens: 5 },
+  { value: "short", label: "Short", desc: "~150 words", tokens: 5 },
+  { value: "standard", label: "Standard", desc: "~300 words", tokens: 8 },
+  { value: "detailed", label: "Detailed", desc: "~450 words", tokens: 12 },
 ] as const;
 
 const LENGTH_TOKENS: Record<string, number> = {
-  short: 2,
-  standard: 3,
-  detailed: 5,
+  short: 5,
+  standard: 8,
+  detailed: 12,
 };
 
 export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
@@ -123,7 +123,7 @@ export function CoverLetterInput({ onSubmit }: CoverLetterInputProps) {
         disabled={!hasJd}
         className="btn-primary"
       >
-        Generate Cover Letter — {LENGTH_TOKENS[length] || 3} tokens
+        Generate Cover Letter — {LENGTH_TOKENS[length] || 8} tokens
       </button>
     </div>
   );

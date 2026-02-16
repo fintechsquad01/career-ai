@@ -47,9 +47,9 @@ Mid-career professionals (5-10 years experience) actively job searching or explo
 
 ### Flow 4: Token Purchase
 1. Triggered by: token gate on tool run, pricing page, low-token nudges
-2. Three packs: Starter (50/$5), Pro (200/$15), Power (600/$39)
+2. Three packs: Starter (50tk/$14), Pro (200tk/$39), Power (500tk/$79)
 3. Purchase animation → tokens added → auto-continues blocked action
-4. Lifetime deal: $49 early bird for 100 tokens/month forever
+4. Lifetime deal: Early Bird $119/120tk/mo, Standard $179/120tk/mo, VIP $279/180tk/mo
 
 ---
 
@@ -63,18 +63,18 @@ Mid-career professionals (5-10 years experience) actively job searching or explo
 | `mission` | Mission Control | Yes | Job-specific 5-step action plan |
 | `tools` | Tools Hub | Yes | All 11 tools in categorized grid |
 | `displacement` | AI Displacement | Yes | Free tool — AI risk score |
-| `jd_match` | JD Match | Yes | 2 tokens — fit % against job posting |
-| `resume` | Resume Optimizer | Yes | 10 tokens — ATS rewrite |
-| `cover_letter` | Cover Letter | Yes | 3 tokens — tailored letter |
-| `linkedin` | LinkedIn Optimizer | Yes | 10 tokens — headline/about/keywords |
-| `headshots` | AI Headshots | Yes | 20 tokens — professional photos |
-| `interview` | Interview Prep | Yes | 3 tokens — company-specific Qs |
-| `skills_gap` | Skills Gap | Yes | 5 tokens — gap analysis + learning path |
-| `roadmap` | Career Roadmap | Yes | 8 tokens — 6-12 month plan |
-| `salary` | Salary Negotiation | Yes | 3 tokens — market data + scripts |
-| `entrepreneurship` | Entrepreneur Assessment | Yes | 8 tokens — founder-market fit |
+| `jd_match` | JD Match | Yes | 5 tokens — fit % against job posting |
+| `resume` | Resume Optimizer | Yes | 15 tokens — ATS rewrite |
+| `cover_letter` | Cover Letter | Yes | 5/8/12 tokens — short/standard/detailed letter |
+| `linkedin` | LinkedIn Optimizer | Yes | 15 tokens — headline/about/keywords |
+| `headshots` | AI Headshots | Yes | 25 tokens — professional photos |
+| `interview` | Interview Prep | Yes | 8 tokens — company-specific Qs |
+| `skills_gap` | Skills Gap | Yes | 8 tokens — gap analysis + learning path |
+| `roadmap` | Career Roadmap | Yes | 15 tokens — 6-12 month plan |
+| `salary` | Salary Negotiation | Yes | 8 tokens — market data + scripts |
+| `entrepreneurship` | Entrepreneur Assessment | Yes | 12 tokens — founder-market fit |
 | `pricing` | Pricing | No | Token packs + competitor comparison |
-| `lifetime` | Lifetime Deal | Yes | $49 early bird offer |
+| `lifetime` | Lifetime Deal | Yes | Early Bird $119, Standard $179, VIP $279 |
 | `referral` | Refer & Earn | Yes | Referral link, stats, share buttons |
 | `history` | Result History | Yes | All past tool results, filterable |
 | `share_score` | Share Score | No | Public viral share page (OG card) |
@@ -87,16 +87,16 @@ Mid-career professionals (5-10 years experience) actively job searching or explo
 | ID | Tool | Tokens | Category | Phase |
 |----|------|--------|----------|-------|
 | `displacement` | AI Displacement Score | 0 (Free) | Analyze | 1 |
-| `jd_match` | JD Match Score | 2 | Analyze | 1 |
-| `resume` | Resume Optimizer | 10 | Build | 1 |
-| `cover_letter` | Cover Letter Generator | 3 | Build | 2 |
-| `linkedin` | LinkedIn Optimizer | 10 | Build | 2 |
-| `headshots` | AI Pro Headshots | 20 | Build | 2 |
-| `interview` | Interview Prep | 3 | Prepare | 3 |
-| `skills_gap` | Skills Gap Analysis | 5 | Grow | 3 |
-| `roadmap` | Career Roadmap | 8 | Grow | 3 |
-| `salary` | Salary Negotiation | 3 | Prepare | 3 |
-| `entrepreneurship` | Entrepreneurship Assessment | 8 | Grow | 4 |
+| `jd_match` | JD Match Score | 5 | Analyze | 1 |
+| `resume` | Resume Optimizer | 15 | Build | 1 |
+| `cover_letter` | Cover Letter Generator | 5/8/12 (short/standard/detailed) | Build | 2 |
+| `linkedin` | LinkedIn Optimizer | 15 | Build | 2 |
+| `headshots` | AI Pro Headshots | 25 | Build | 2 |
+| `interview` | Interview Prep | 8 | Prepare | 3 |
+| `skills_gap` | Skills Gap Analysis | 8 | Grow | 3 |
+| `roadmap` | Career Roadmap | 15 | Grow | 3 |
+| `salary` | Salary Negotiation | 8 | Prepare | 3 |
+| `entrepreneurship` | Entrepreneurship Assessment | 12 | Grow | 4 |
 
 Categories: `Analyze` → `Build` → `Prepare` → `Grow`
 
@@ -106,10 +106,12 @@ Categories: `Analyze` → `Build` → `Prepare` → `Grow`
 
 | Pack | Tokens | Price | Per-Token | Savings |
 |------|--------|-------|-----------|---------|
-| Starter | 50 | $5 | $0.10 | — |
-| Pro | 200 | $15 | $0.075 | 25% |
-| Power | 600 | $39 | $0.065 | 35% |
-| Lifetime | 100/mo | $49 one-time | $0.041 | 59% |
+| Starter | 50 | $14 | $0.28 | — |
+| Pro | 200 | $39 | $0.195 | 30% |
+| Power | 500 | $79 | $0.158 | 44% |
+| Lifetime Early Bird | 120/mo | $119 one-time | — | — |
+| Lifetime Standard | 120/mo | $179 one-time | — | — |
+| Lifetime VIP | 180/mo | $279 one-time | — | — |
 
 - New users get 15 free tokens on signup
 - Tokens never expire (except Lifetime unused tokens cap at 300)
@@ -120,7 +122,7 @@ Categories: `Analyze` → `Build` → `Prepare` → `Grow`
 ## Monetization Hooks
 
 1. **Token Gate**: Tool pages show paywall when balance < cost
-2. **Inline upsell**: "Pro pack covers ~10 full job applications"
+2. **Inline upsell**: "Pro pack covers ~5 full job applications"
 3. **Competitive anchoring**: Every tool shows competitor pricing (e.g., "Jobscan = $49.95/mo for less")
 4. **Mission urgency**: Progress bar + "become top candidate" framing
 5. **Lifetime FOMO**: Counter showing spots left (e.g., "127 of 500 spots left")

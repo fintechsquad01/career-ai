@@ -32,7 +32,7 @@ Six personas representing key market segments for AISkillScore. Each includes a 
 - Willing to invest in career tools but cost-conscious
 - Would balk at $50/month subscriptions
 - Token model appeals to her -- pay for what she uses
-- Expected spend: Pro pack ($15 for 200 tokens)
+- Expected spend: Pro pack ($39 for 200 tokens)
 
 ### Resume Text
 ```
@@ -155,8 +155,8 @@ Does the platform help a career pivoter understand their gaps, reposition their 
 ### Budget Sensitivity
 - Has disposable income but skeptical of career tools
 - Free displacement score is the hook -- would not pay upfront
-- If free tool delivers value, willing to buy a Starter pack ($5)
-- Expected spend: Starter pack ($5 for 50 tokens)
+- If free tool delivers value, willing to buy a Starter pack ($14)
+- Expected spend: Starter pack ($14 for 50 tokens)
 
 ### Resume Text
 ```
@@ -270,9 +270,9 @@ Does the free AI Displacement tool hook an anxious engineer and convert them to 
 ### Budget Sensitivity
 - Very budget-conscious (entry-level salary, student loans)
 - Free tools are critical for initial engagement
-- Might buy Starter pack ($5) if free tool impresses her
-- $15+ feels like a significant investment
-- Expected spend: Starter pack ($5 for 50 tokens) at most
+- Might buy Starter pack ($14) if free tool impresses her
+- $39+ feels like a significant investment
+- Expected spend: Starter pack ($14 for 50 tokens) at most
 
 ### Resume Text
 ```
@@ -388,8 +388,8 @@ Does the platform deliver value for early-career users with thin resumes? Does t
 ### Budget Sensitivity
 - High income, not price-sensitive
 - Values thoroughness -- wants the full suite of tools
-- Would buy Pro pack ($15) immediately if platform delivers
-- Expected spend: Pro pack ($15 for 200 tokens)
+- Would buy Pro pack ($39) immediately if platform delivers
+- Expected spend: Pro pack ($39 for 200 tokens)
 
 ### Resume Text
 ```
@@ -516,7 +516,7 @@ Does the platform effectively help a career transitioner from a traditional indu
 - Dual income household, moderate budget
 - Willing to invest if it saves time in the job search
 - Values efficiency -- applying to many jobs per week
-- Expected spend: Pro pack ($15 for 200 tokens)
+- Expected spend: Pro pack ($39 for 200 tokens)
 
 ### Resume Text
 ```
@@ -645,7 +645,7 @@ Does the platform work well for non-tech industries? Does the Resume Optimizer s
 - Mid-high income, moderate price sensitivity
 - Willing to pay for tools that understand creative careers
 - Interested in LinkedIn optimization (recruiters are how he has gotten every job)
-- Expected spend: Pro pack ($15 for 200 tokens)
+- Expected spend: Pro pack ($39 for 200 tokens)
 
 ### Resume Text
 ```
@@ -750,32 +750,32 @@ Does the platform handle creative industry careers effectively? Does the AI Disp
 | Tool | Sarah | Marcus | Priya | David | Rachel | James | Total |
 |------|-------|--------|-------|-------|--------|-------|-------|
 | AI Displacement (0) | X | X | | X | | X | 4 |
-| JD Match (2) | X | X | X | X | X | | 5 |
-| Resume Optimizer (10) | X | | X | X | X | | 4 |
-| Cover Letter (3) | X | | | X | X | | 3 |
-| LinkedIn Optimizer (10) | X | | | | | X | 2 |
-| AI Headshots (20) | | | | | | X | 1 |
-| Interview Prep (3) | | X | X | | X | | 3 |
-| Skills Gap (5) | X | | X | X | | | 3 |
-| Career Roadmap (8) | | | | X | | X | 2 |
-| Salary Negotiation (3) | | X | | | X | | 2 |
-| Entrepreneurship (8) | | | | | | X | 1 |
+| JD Match (5) | X | X | X | X | X | | 5 |
+| Resume Optimizer (15) | X | | X | X | X | | 4 |
+| Cover Letter (5/8/12) | X | | | X | X | | 3 |
+| LinkedIn Optimizer (15) | X | | | | | X | 2 |
+| AI Headshots (25) | | | | | | X | 1 |
+| Interview Prep (8) | | X | X | | X | | 3 |
+| Skills Gap (8) | X | | X | X | | | 3 |
+| Career Roadmap (15) | | | | X | | X | 2 |
+| Salary Negotiation (8) | | X | | | X | | 2 |
+| Entrepreneurship (12) | | | | | | X | 1 |
 
 **Total tool executions: 30**
-**Total tokens needed across all personas: ~133 tokens**
+**Total tokens needed across all personas: ~250 tokens**
 
 ---
 
 ## Token Spend Simulation
 
-| Persona | Free (5) | Additional Tokens Needed | Likely Pack | Spend |
+| Persona | Free (15) | Additional Tokens Needed | Likely Pack | Spend |
 |---------|----------|-------------------------|-------------|-------|
-| Sarah Chen | 5 | 25 | Pro ($15) | $15 |
-| Marcus Johnson | 5 | 3 | Starter ($5) | $5 |
-| Priya Patel | 5 | 15 | Starter ($5) or Pro ($15) | $5-15 |
-| David Kim | 5 | 23 | Pro ($15) | $15 |
-| Rachel Torres | 5 | 16 | Pro ($15) | $15 |
-| James O'Brien | 5 | 21 | Pro ($15) | $15 |
+| Sarah Chen | 15 | 36 | Pro ($39) | $39 |
+| Marcus Johnson | 15 | 6 | Starter ($14) | $14 |
+| Priya Patel | 15 | 21 | Starter ($14) or Pro ($39) | $14-39 |
+| David Kim | 15 | 36 | Pro ($39) | $39 |
+| Rachel Torres | 15 | 29 | Pro ($39) | $39 |
+| James O'Brien | 15 | 27 | Pro ($39) | $39 |
 
-**Average spend per user: ~$12**
-**Estimated ARPU across personas: $11.67**
+**Average spend per user: ~$33**
+**Estimated ARPU across personas: $33**

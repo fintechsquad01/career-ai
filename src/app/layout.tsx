@@ -152,9 +152,9 @@ export default function RootLayout({
     offers: {
       "@type": "AggregateOffer",
       lowPrice: "0",
-      highPrice: "49",
+      highPrice: "279",
       priceCurrency: "USD",
-      offerCount: "4",
+      offerCount: "5",
       offers: [
         {
           "@type": "Offer",
@@ -166,23 +166,30 @@ export default function RootLayout({
         {
           "@type": "Offer",
           name: "Starter Pack",
-          price: "5",
+          price: "14",
           priceCurrency: "USD",
           description: "50 tokens — try 2-3 AI career tools.",
         },
         {
           "@type": "Offer",
           name: "Pro Pack",
-          price: "15",
+          price: "39",
           priceCurrency: "USD",
           description: "200 tokens — full career overhaul. Most popular.",
         },
         {
           "@type": "Offer",
-          name: "Lifetime Deal",
-          price: "49",
+          name: "Power Pack",
+          price: "79",
           priceCurrency: "USD",
-          description: "100 tokens/month forever. One-time payment. Limited to 500 spots.",
+          description: "500 tokens — power users and career changers.",
+        },
+        {
+          "@type": "Offer",
+          name: "Lifetime Deal",
+          price: "119",
+          priceCurrency: "USD",
+          description: "120 tokens/month forever. One-time payment. Limited to 500 spots.",
         },
       ],
     },

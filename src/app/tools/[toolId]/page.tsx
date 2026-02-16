@@ -96,9 +96,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
     serviceType: `AI ${tool.category} Tool`,
     offers: {
       "@type": "Offer",
-      price: tool.tokens === 0 ? "0" : String(tool.tokens * 0.075),
+      price: tool.tokens === 0 ? "0" : String(tool.tokens * 0.195),
       priceCurrency: "USD",
-      description: tool.tokens === 0 ? "Free — no tokens required" : `${tool.tokens} tokens (from $${(tool.tokens * 0.065).toFixed(2)} at Power rate)`,
+      description: tool.tokens === 0 ? "Free — no tokens required" : `${tool.tokens} tokens (from $${(tool.tokens * 0.158).toFixed(2)} at Power rate)`,
     },
     ...(tool.painPoint ? { slogan: tool.painPoint } : {}),
   } : null;

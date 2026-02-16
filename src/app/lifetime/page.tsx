@@ -47,17 +47,17 @@ function CountdownTimer() {
 }
 
 const LIFETIME_FAQ = [
-  { q: "What happens after I buy?", a: "You immediately receive 100 tokens (150 for VIP). Every 30 days, tokens are refilled automatically. Unused tokens cap at 300." },
+  { q: "What happens after I buy?", a: "You immediately receive 120 tokens (180 for VIP). Every 30 days, tokens are refilled automatically. Unused tokens cap at 300." },
   { q: "Is this really one-time?", a: "Yes. One payment, tokens forever. No hidden fees, no recurring charges." },
   { q: "What if I'm not satisfied?", a: "30-day money-back guarantee. Full refund, no questions asked." },
-  { q: "How many spots are left?", a: "We're limiting early bird pricing to 500 users. Once filled, the price goes to $129." },
-  { q: "What's the difference between tiers?", a: "Early Bird ($79) and Standard ($129) both get 100 tokens/month. VIP ($199) gets 150 tokens/month plus priority AI processing for faster results." },
+  { q: "How many spots are left?", a: "We're limiting early bird pricing to 500 users. Once filled, the price goes to $179." },
+  { q: "What's the difference between tiers?", a: "Early Bird ($119) and Standard ($179) both get 120 tokens/month. VIP ($279) gets 180 tokens/month plus priority AI processing for faster results." },
 ];
 
 const LIFETIME_TIERS = [
-  { id: "lifetime_early", label: "Early Bird", price: 79, tokens: 100 },
-  { id: "lifetime_standard", label: "Standard", price: 129, tokens: 100 },
-  { id: "lifetime_vip", label: "VIP", price: 199, tokens: 150 },
+  { id: "lifetime_early", label: "Early Bird", price: 119, tokens: 120 },
+  { id: "lifetime_standard", label: "Standard", price: 179, tokens: 120 },
+  { id: "lifetime_vip", label: "VIP", price: 279, tokens: 180 },
 ] as const;
 
 export default function LifetimePage() {
@@ -120,7 +120,7 @@ export default function LifetimePage() {
             <Gem className="w-4 h-4" /> Early Bird Lifetime Deal
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            100 tokens/month. Forever.
+            120 tokens/month. Forever.
           </h1>
           <p className="text-lg text-gray-500">
             One payment. Unlimited career growth.
@@ -153,9 +153,9 @@ export default function LifetimePage() {
           >
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-violet-600 text-white text-[10px] font-bold rounded-full uppercase whitespace-nowrap">Best Value</span>
             <p className="text-xs font-bold text-violet-600 uppercase mb-2 mt-1">Early Bird</p>
-            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$79</p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$119</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-violet-600 font-medium mt-2 break-words">100 tokens/mo · $0.066/tok</p>
+            <p className="text-xs text-violet-600 font-medium mt-2 break-words">120 tokens/mo · $0.083/tok</p>
           </button>
           <button
             type="button"
@@ -167,9 +167,9 @@ export default function LifetimePage() {
             }`}
           >
             <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>Standard</p>
-            <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$129</p>
+            <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$179</p>
             <p className={`text-sm mt-1 ${selectedTier === "lifetime_standard" ? "text-gray-500" : "text-gray-400"}`}>one-time</p>
-            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>100 tokens/mo · $0.108/tok</p>
+            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>120 tokens/mo · $0.124/tok</p>
           </button>
           <button
             type="button"
@@ -181,9 +181,9 @@ export default function LifetimePage() {
             }`}
           >
             <p className="text-xs font-bold text-amber-600 uppercase mb-2">VIP</p>
-            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$199</p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">$279</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-amber-600 font-medium mt-2">150 tokens/mo · $0.111/tok</p>
+            <p className="text-xs text-amber-600 font-medium mt-2">180 tokens/mo · $0.129/tok</p>
             <p className="text-[10px] text-amber-700 mt-1">+ priority processing</p>
           </button>
         </div>
@@ -194,19 +194,19 @@ export default function LifetimePage() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-500">Monthly tokens</span>
-              <span className="font-medium text-gray-900">100 tokens (150 VIP)</span>
+              <span className="font-medium text-gray-900">120 tokens (180 VIP)</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Value at Pro rate ($0.095/tok)</span>
-              <span className="font-medium text-gray-900">$9.50/month</span>
+              <span className="text-gray-500">Value at Pro rate ($0.195/tok)</span>
+              <span className="font-medium text-gray-900">$23.40/month</span>
             </div>
             <div className="flex justify-between border-t border-gray-100 pt-3">
               <span className="text-gray-500">Break even in</span>
-              <span className="font-bold text-green-600">~8 months</span>
+              <span className="font-bold text-green-600">~3 months</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Year 1 token value</span>
-              <span className="font-bold text-green-600">$114 worth of tokens</span>
+              <span className="font-bold text-green-600">$280 worth of tokens</span>
             </div>
             <div className="flex justify-between border-t border-gray-100 pt-3">
               <span className="text-gray-500">vs. Jobscan annual cost</span>
@@ -214,22 +214,22 @@ export default function LifetimePage() {
             </div>
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            100 tokens covers your job hunt AND an Entrepreneurship Assessment to start building income this month.
+            120 tokens covers a full application stack plus extra tools each month.
           </p>
         </div>
 
         {/* What 100 tokens covers */}
         <div className="glass-card p-6 sm:p-8 mb-10">
-          <h3 className="font-semibold text-gray-900 mb-4">What 100 tokens covers monthly</h3>
+          <h3 className="font-semibold text-gray-900 mb-4">What 120 tokens covers monthly</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              "2 Resume Optimizations (20 tok)",
-              "3 JD Match Analyses (6 tok)",
-              "2 Cover Letters (6 tok)",
-              "2 Interview Preps (6 tok)",
-              "1 Skills Gap Analysis (5 tok)",
-              "1 Career Roadmap (8 tok)",
-              "2 Salary Negotiations (6 tok)",
+              "1 Resume Optimization (15 tok)",
+              "2 JD Match Analyses (10 tok)",
+              "1 Cover Letter (8 tok)",
+              "1 Interview Prep (8 tok)",
+              "1 Skills Gap Analysis (8 tok)",
+              "1 Career Roadmap (15 tok)",
+              "1 Salary Negotiation (8 tok)",
               "Unlimited AI Displacement (Free)",
             ].map((item) => (
               <div key={item} className="flex items-start gap-2 text-sm">
@@ -246,7 +246,7 @@ export default function LifetimePage() {
           <div>
             <h3 className="font-semibold text-blue-900">Need more in a busy month? Top up anytime.</h3>
             <p className="text-sm text-blue-800 mt-1">
-              Lifetime subscribers can purchase any token pack on top of their monthly refill. Purchased tokens are separate from your 100/month and never expire.
+              Lifetime subscribers can purchase any token pack on top of their monthly refill. Purchased tokens are separate from your 120/month and never expire.
             </p>
             <Link href="/pricing" className="text-sm font-semibold text-blue-600 hover:text-blue-700 mt-2 inline-block">
               View token packs →

@@ -83,7 +83,7 @@ export function SkillsGapInput({ onSubmit }: SkillsGapInputProps) {
         disabled={!targetRole.trim()}
         className="btn-primary"
       >
-        Analyze Skills — 5 tokens
+        Analyze Skills — 8 tokens
       </button>
     </div>
   );

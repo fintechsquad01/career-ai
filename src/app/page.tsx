@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AISkillScore — Free AI Career Analysis in 30 Seconds",
     description:
-      "Paste a job posting or resume. Get AI-powered career intelligence with evidence. 11 tools from free to $0.075/use. No subscriptions.",
+      "Paste a job posting or resume. Get AI-powered career intelligence with evidence. 11 tools from free to $0.195/token. No subscriptions.",
     url: APP_URL,
     images: [
       {

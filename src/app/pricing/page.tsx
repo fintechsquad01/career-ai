@@ -10,9 +10,9 @@ import { EmailCapture } from "@/components/landing/EmailCapture";
 
 function TokenCalculator() {
   const [jobApps, setJobApps] = useState(5);
-  // Average tokens per full job application: JD Match (2) + Resume (10) + Cover Letter (3) + Interview (3) = 18
+  // Average tokens per full job application: JD Match (5) + Resume (15) + Cover Letter (8) + Interview (8) = 36
   const tokensNeeded = useMemo(() => {
-    const perApp = 18; // JD Match + Resume + Cover Letter + Interview
+    const perApp = 36; // JD Match + Resume + Cover Letter + Interview
     const base = jobApps * perApp;
     return base;
   }, [jobApps]);
@@ -57,7 +57,7 @@ function TokenCalculator() {
 }
 
 const COMPETITORS = [
-  { name: "AISkillScore", price: "From $9", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
+  { name: "AISkillScore", price: "From $14", ats: true, match: true, cover: true, interview: true, linkedin: true, mission: true, gap: "" },
   { name: "Jobscan", price: "$599/yr", ats: true, match: true, cover: false, interview: false, linkedin: false, mission: false, gap: "Keyword counting only. No evidence, no recruiter perspective." },
   { name: "Teal", price: "$348/yr", ats: true, match: false, cover: true, interview: false, linkedin: true, mission: false, gap: "Generic templates. Destroys your authentic voice." },
   { name: "FinalRound", price: "$1,788/yr", ats: false, match: false, cover: false, interview: true, linkedin: false, mission: false, gap: "No follow-up prep. The thing that actually decides interviews." },
@@ -144,12 +144,12 @@ export default function PricingPage() {
             Pay per use. No subscriptions.
           </h1>
           <p className="text-lg text-gray-500 mb-4">
-            Jobscan costs $599/year. A full job prep on AISkillScore? Under $4.
+            Jobscan costs $599/year. A full job prep on AISkillScore? Under $8.
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
-            Log in daily for 2 free tokens. That&apos;s a free JD Match scan every day.
+            Log in daily for 2 free tokens. Save up and run tools for free.
           </div>
-          <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $9." />
+          <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $14." />
         </div>
 
         {/* Packs */}
@@ -322,7 +322,7 @@ export default function PricingPage() {
         {/* Lifetime Deal CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center mb-16">
           <h2 className="text-2xl font-bold mb-2">Want unlimited value?</h2>
-          <p className="text-blue-100 mb-4">Get the Lifetime Deal — from $79 for 100 tokens/month forever.</p>
+          <p className="text-blue-100 mb-4">Get the Lifetime Deal — from $119 for 120 tokens/month forever.</p>
           <p className="text-xs text-blue-200 mb-6">Less than the cost of one TopResume review ($149). Already a lifetime subscriber? Top up with any pack above for extra tokens.</p>
           <Link
             href="/lifetime"

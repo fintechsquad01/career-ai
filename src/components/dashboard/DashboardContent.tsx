@@ -102,7 +102,7 @@ function getSmartRecommendations(
         ? `At ${activeJobTarget.company}`
         : "Evidence-based match analysis",
       href: "/tools/jd_match",
-      tokens: 2,
+      tokens: 5,
       priority: 2,
       icon: Target,
       iconBg: "bg-blue-50",
@@ -124,7 +124,7 @@ function getSmartRecommendations(
         ? `Your match score is ${jdMatchScore}% — let's improve it`
         : "Enhance your resume for your target role",
       href: "/tools/resume",
-      tokens: 10,
+      tokens: 15,
       priority: 3,
       icon: FileText,
       iconBg: "bg-violet-50",
@@ -140,7 +140,7 @@ function getSmartRecommendations(
       title: `Prep for ${activeJobTarget?.title || "your"} interview`,
       description: "AI-generated questions and winning answers",
       href: "/tools/interview",
-      tokens: 3,
+      tokens: 8,
       priority: 4,
       icon: MessageSquare,
       iconBg: "bg-amber-50",
@@ -156,7 +156,7 @@ function getSmartRecommendations(
       title: "Generate a cover letter",
       description: `Tailored for ${activeJobTarget.title || "your target role"}`,
       href: "/tools/cover_letter",
-      tokens: 3,
+      tokens: 8,
       priority: 5,
       icon: Mail,
       iconBg: "bg-violet-50",
@@ -172,7 +172,7 @@ function getSmartRecommendations(
       title: "Identify your skill gaps",
       description: "Know exactly what to learn next",
       href: "/tools/skills_gap",
-      tokens: 5,
+      tokens: 8,
       priority: 6,
       icon: TrendingUp,
       iconBg: "bg-violet-50",
@@ -362,7 +362,7 @@ export function DashboardContent({
                   <p className="text-sm font-semibold text-gray-900 group-hover:text-violet-700">JD Match</p>
                   <p className="text-xs text-gray-500">Match against a job posting</p>
                 </div>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full flex-shrink-0">2 tok</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full flex-shrink-0">5 tok</span>
               </Link>
             </div>
           </div>
@@ -572,7 +572,7 @@ export function DashboardContent({
             <div className="flex items-start gap-3 px-4 py-3 bg-green-50 border border-green-100 rounded-xl">
               <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-green-700">
-                <span className="font-semibold">Jobscan charges $49.95/mo</span> for resume scanning. AISkillScore gives you 11 tools for tokens starting at $0.065 each.
+                <span className="font-semibold">Competitors charge $50+/mo</span> for resume scanning. AISkillScore gives you 11 tools for tokens starting at $0.16 each.
               </p>
             </div>
           </div>
@@ -635,7 +635,7 @@ export function DashboardContent({
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900 group-hover:text-amber-700">Lifetime Deal</p>
-                <p className="text-xs text-gray-500">100 tokens/mo forever — $79</p>
+                <p className="text-xs text-gray-500">120 tokens/month forever — $119</p>
               </div>
             </div>
           </Link>

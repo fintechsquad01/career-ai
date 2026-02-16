@@ -82,7 +82,7 @@ export function RoadmapInput({ onSubmit }: RoadmapInputProps) {
         disabled={!targetRole.trim()}
         className="btn-primary"
       >
-        Generate Roadmap — 8 tokens
+        Generate Roadmap — 15 tokens
       </button>
     </div>
   );

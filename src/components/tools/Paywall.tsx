@@ -136,7 +136,7 @@ export function Paywall({
         {/* Competitive anchoring */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-center">
           <p className="text-xs font-medium text-blue-700">
-            Jobscan charges $599/year to count keywords. AISkillScore analyzes your actual resume — from $0.18/use.
+            Jobscan charges $599/year to count keywords. AISkillScore uses Gemini 2.5 Pro to analyze your actual resume — from $0.195/token.
           </p>
         </div>
 
@@ -190,7 +190,7 @@ export function Paywall({
             className="block w-full mt-3 p-3 bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200 rounded-xl text-center hover:shadow-md transition-all hover:scale-[1.01]"
           >
             <p className="text-xs font-bold text-violet-700">Or get the Lifetime Deal</p>
-            <p className="text-[11px] text-violet-600 mt-0.5">$79 once &rarr; 100 tokens/month forever</p>
+            <p className="text-[11px] text-violet-600 mt-0.5">$119 once &rarr; 120 tokens/month forever</p>
           </Link>
         </div>
       </div>

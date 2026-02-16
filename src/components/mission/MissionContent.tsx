@@ -208,7 +208,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <p className="text-xs text-amber-800">
             <span className="font-semibold">43% of ATS rejections</span> are from formatting errors alone.
-            Jobscan charges $49.95/month to scan resumes. We analyze and build your full application for tokens.
+            Competitors charge $50+/month to scan resumes. We analyze and build your full application for tokens.
           </p>
         </div>
 
@@ -437,19 +437,19 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               href="/tools/entrepreneurship"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              Entrepreneurship Assessment · 8 tok
+              Entrepreneurship Assessment · 12 tok
             </Link>
             <Link
               href="/tools/roadmap"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              Career Roadmap · 8 tok
+              Career Roadmap · 15 tok
             </Link>
             <Link
               href="/tools/linkedin"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              LinkedIn Optimizer · 10 tok
+              LinkedIn Optimizer · 15 tok
             </Link>
           </div>
         </div>

@@ -202,10 +202,10 @@ All tool pages use the **ToolShell** wrapper:
 
 1. Back button
 2. Urgency header: "Early Bird Lifetime Deal" + spots counter
-3. Price comparison: Early Bird $49 vs Standard $79
-4. ROI Calculator: monthly token value breakdown
+3. Price comparison: Early Bird $119 vs Standard $179 vs VIP $279
+4. ROI Calculator: monthly token value breakdown (120tk/mo for Early Bird/Standard, 180tk/mo for VIP)
 5. Lifetime vs Pay-as-you-go comparison table
-6. "What 100 tokens covers monthly" grid
+6. "What 120-180 tokens covers monthly" grid
 7. 30-day guarantee card
 8. CTA: Gradient card with "Lock in your lifetime deal"
 9. FAQ

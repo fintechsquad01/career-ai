@@ -194,7 +194,7 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
         disabled={files.length === 0}
         className="btn-primary"
       >
-        Generate Headshots — 20 tokens
+        Generate Headshots — 25 tokens
       </button>
     </div>
   );

@@ -92,7 +92,7 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
         disabled={!targetRole.trim() || !location.trim()}
         className="btn-primary"
       >
-        Research Salary — 3 tokens
+        Research Salary — 8 tokens
       </button>
     </div>
   );

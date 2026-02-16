@@ -244,12 +244,12 @@ function renderPageOG(pageType: string) {
   const configs: Record<string, { title: string; subtitle: string; badge: string; gradient: { from: string; to: string } }> = {
     pricing: {
       title: "Pay Per Use. No Subscriptions.",
-      subtitle: "11 AI career tools from free to $0.098/use\nvs Jobscan $599/yr · Teal $348/yr · FinalRound $1,788/yr",
+      subtitle: "11 AI career tools from free to $0.195/token\nvs Jobscan $599/yr · Teal $348/yr · FinalRound $1,788/yr",
       badge: "💰 Pricing",
       gradient: { from: "#059669", to: "#2563EB" },
     },
     lifetime: {
-      title: "$79 One-Time. 100 Tokens/Month. Forever.",
+      title: "$119 One-Time. 120 Tokens/Month. Forever.",
       subtitle: "Early bird lifetime deal — limited to 500 spots\n30-day money-back guarantee",
       badge: "💎 Lifetime Deal",
       gradient: { from: "#7C3AED", to: "#DB2777" },

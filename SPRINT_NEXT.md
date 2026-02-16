@@ -281,9 +281,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.2 JD Match Score (2 tokens)
+### 2.2 JD Match Score (5 tokens)
 
-**Token cost**: 2
+**Token cost**: 5
 **Model**: Gemini 2.5 Flash (premium tier)
 **Temperature**: 0.5 (lower for more consistent evaluation)
 
@@ -392,9 +392,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.3 Resume Optimizer (10 tokens -- Flagship)
+### 2.3 Resume Optimizer (15 tokens -- Flagship)
 
-**Token cost**: 10
+**Token cost**: 15
 **Model**: Gemini 2.5 Flash (premium tier)
 **Temperature**: 0.6
 
@@ -501,9 +501,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.4 Cover Letter Generator (3 tokens)
+### 2.4 Cover Letter Generator (5/8/12 tokens -- short/standard/detailed)
 
-**Token cost**: 3
+**Token cost**: 5 (short), 8 (standard), 12 (detailed)
 **Model**: Gemini 2.5 Flash (premium tier)
 **Temperature**: 0.75 (slightly higher for more creative, authentic output)
 
@@ -580,9 +580,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.5 Interview Prep (3 tokens)
+### 2.5 Interview Prep (8 tokens)
 
-**Token cost**: 3
+**Token cost**: 8
 **Model**: Gemini 2.5 Flash (premium tier)
 **Temperature**: 0.65
 
@@ -667,9 +667,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.6 LinkedIn Optimizer (10 tokens)
+### 2.6 LinkedIn Optimizer (15 tokens)
 
-**Token cost**: 10
+**Token cost**: 15
 **Model**: Gemini 2.5 Flash (premium tier)
 **Temperature**: 0.7
 
@@ -775,9 +775,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.7 Skills Gap Analysis (5 tokens)
+### 2.7 Skills Gap Analysis (8 tokens)
 
-**Token cost**: 5
+**Token cost**: 8
 **Model**: DeepSeek V3.2 (standard tier)
 **Temperature**: 0.6
 
@@ -901,9 +901,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.8 Career Roadmap (8 tokens)
+### 2.8 Career Roadmap (15 tokens)
 
-**Token cost**: 8
+**Token cost**: 15
 **Model**: DeepSeek V3.2 (standard tier)
 **Temperature**: 0.7
 
@@ -1025,9 +1025,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.9 Salary Negotiation (3 tokens)
+### 2.9 Salary Negotiation (8 tokens)
 
-**Token cost**: 3
+**Token cost**: 8
 **Model**: DeepSeek V3.2 (standard tier)
 **Temperature**: 0.6
 
@@ -1139,9 +1139,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.10 Entrepreneurship Assessment (8 tokens)
+### 2.10 Entrepreneurship Assessment (12 tokens)
 
-**Token cost**: 8
+**Token cost**: 12
 **Model**: DeepSeek V3.2 (standard tier)
 **Temperature**: 0.7
 
@@ -1270,9 +1270,9 @@ Respond ONLY in valid JSON:
 
 ---
 
-### 2.11 AI Headshots (20 tokens -- Image Generation)
+### 2.11 AI Headshots (25 tokens -- Image Generation)
 
-**Token cost**: 20
+**Token cost**: 25
 **Model**: FLUX 1.1 Pro via Replicate
 **Note**: This is image generation, not text. Prompt optimization is about the Replicate input.
 
@@ -1335,14 +1335,14 @@ All copy changes are informed by the research findings in Section 1. Changes are
 | Tool ID | Current | Recommended |
 |---|---|---|
 | jd_match | "Jobscan charges $49.95/mo for just resume scanning" | "Jobscan ($49.95/mo) counts keywords. We show you evidence from your actual resume and tell you what a recruiter would think." |
-| resume | "Jobscan charges $49.95/mo. We charge 10 tokens (~$0.75)" | "Other tools rewrite your resume into 'spearheaded' and 'leveraged.' We enhance your voice. 10 tokens (~$0.75)." |
-| cover_letter | "Resume Genius charges $7.95/letter. We charge 3 tokens (~$0.23)" | "Resume Genius ($7.95/letter) gives you a template. We give you a story. 3 tokens (~$0.23)." |
-| linkedin | "Teal charges $29/mo for LinkedIn tools. We charge 10 tokens (~$0.75)" | "Teal ($29/mo) optimizes your text. We optimize for LinkedIn's 2026 AI Hiring Assistant. 10 tokens (~$0.75)." |
-| headshots | "HeadshotPro charges $29+. We charge 20 tokens (~$1.50)" | "HeadshotPro charges $29+. We charge 20 tokens (~$1.50). Same AI, fraction of the price." |
-| interview | "FinalRound charges $149/mo. We charge 3 tokens (~$0.23)" | "FinalRound ($149/mo) preps your first answer. We prep you for the follow-up questions that actually decide outcomes. 3 tokens (~$0.23)." |
-| skills_gap | "Career coaches charge $200+/session for gap analysis" | "Career coaches charge $200+/session. We give you the same gap analysis with specific courses and portfolio projects. 5 tokens (~$0.38)." |
-| roadmap | "Career coaching packages start at $500+. We charge 8 tokens (~$0.60)" | "Career coaches charge $500+ for a plan. Ours includes an income-building track alongside job hunting. 8 tokens (~$0.60)." |
-| salary | "Levels.fyi Pro costs $12/mo. We charge 3 tokens (~$0.23)" | "Levels.fyi ($12/mo) gives you data. We give you data + leverage assessment + word-for-word negotiation scripts. 3 tokens (~$0.23)." |
+| resume | "Jobscan charges $49.95/mo. We charge 15 tokens (~$2.93)" | "Other tools rewrite your resume into 'spearheaded' and 'leveraged.' We enhance your voice. 15 tokens (~$2.93)." |
+| cover_letter | "Resume Genius charges $7.95/letter. We charge 5/8/12 tokens (~$0.98-$2.34)" | "Resume Genius ($7.95/letter) gives you a template. We give you a story. 5/8/12 tokens (~$0.98-$2.34)." |
+| linkedin | "Teal charges $29/mo for LinkedIn tools. We charge 15 tokens (~$2.93)" | "Teal ($29/mo) optimizes your text. We optimize for LinkedIn's 2026 AI Hiring Assistant. 15 tokens (~$2.93)." |
+| headshots | "HeadshotPro charges $29+. We charge 25 tokens (~$4.88)" | "HeadshotPro charges $29+. We charge 25 tokens (~$4.88). Same AI, fraction of the price." |
+| interview | "FinalRound charges $149/mo. We charge 8 tokens (~$1.56)" | "FinalRound ($149/mo) preps your first answer. We prep you for the follow-up questions that actually decide outcomes. 8 tokens (~$1.56)." |
+| skills_gap | "Career coaches charge $200+/session for gap analysis" | "Career coaches charge $200+/session. We give you the same gap analysis with specific courses and portfolio projects. 8 tokens (~$1.56)." |
+| roadmap | "Career coaching packages start at $500+. We charge 15 tokens (~$2.93)" | "Career coaches charge $500+ for a plan. Ours includes an income-building track alongside job hunting. 15 tokens (~$2.93)." |
+| salary | "Levels.fyi Pro costs $12/mo. We charge 8 tokens (~$1.56)" | "Levels.fyi ($12/mo) gives you data. We give you data + leverage assessment + word-for-word negotiation scripts. 8 tokens (~$1.56)." |
 
 #### New FAQ Items to Add
 
@@ -1357,7 +1357,7 @@ All copy changes are informed by the research findings in Section 1. Changes are
 },
 {
   q: "How is the Lifetime Deal different from token packs?",
-  a: "Token packs are one-time purchases. The Lifetime Deal ($49) refills 100 tokens every month forever, with a 300 token cap. Need more in a busy month? Top up with any pack."
+  a: "Token packs are one-time purchases. The Lifetime Deal (Early Bird $119, Standard $179, VIP $279) refills 120-180 tokens every month forever, with a token cap. Need more in a busy month? Top up with any pack."
 },
 {
   q: "Can AISkillScore help me make money while job hunting?",
@@ -1476,14 +1476,14 @@ All result components need updates to render the new expanded JSON output fields
 
 #### lifetime/page.tsx
 - **Update ROI Calculator** to include income potential:
-  - Current: "Year 1 value: $90 worth of tokens"
-  - New: "Year 1 value: $90 in tokens + potential $500-5,000/month side income from Track B tools"
-- **Add income angle**: "100 tokens covers your job hunt AND an Entrepreneurship Assessment to start building income this month."
+  - Current: "Year 1 value: $234 worth of tokens (120/mo at Pro rate)"
+  - New: "Year 1 value: $234 in tokens + potential $500-5,000/month side income from Track B tools"
+- **Add income angle**: "120 tokens covers your job hunt AND an Entrepreneurship Assessment to start building income this month."
 
 #### Paywall.tsx
 - **Update heading** from "Need more tokens" to: "You need {requiredTokens} more tokens"
 - **Add daily credits reminder**: "Come back tomorrow for 2 free credits, or grab a pack to continue now."
-- **Update footer** from "Pro pack covers ~10 full job applications" to: "Pro pack covers ~10 job applications + a full Entrepreneurship Assessment"
+- **Update footer** from "Pro pack covers ~10 full job applications" to: "Pro pack covers ~4 full job applications + an Entrepreneurship Assessment"
 
 ### 3.8 Share Page
 
@@ -1522,10 +1522,12 @@ Improve all "No results available. Please try again." messages to be more helpfu
 
 | Pack | Tokens | Price | Rate | API Cost/Token | Margin |
 |---|---|---|---|---|---|
-| Starter | 50 | $5 | $0.10 | ~$0.005-0.02 | 5-20x |
-| Pro | 200 | $15 | $0.075 | ~$0.005-0.02 | 3.75-15x |
-| Power | 600 | $39 | $0.065 | ~$0.005-0.02 | 3.25-13x |
-| Lifetime | 100/mo | $49 one-time | $0.041 (month 1) | ~$0.005-0.02 | Decreasing over time, break-even ~24 months |
+| Starter | 50 | $14 | $0.28 | ~$0.005-0.02 | 14-56x |
+| Pro | 200 | $39 | $0.195 | ~$0.005-0.02 | 9.75-39x |
+| Power | 500 | $79 | $0.158 | ~$0.005-0.02 | 7.9-31.6x |
+| Lifetime Early Bird | 120/mo | $119 one-time | $0.99 (month 1) | ~$0.005-0.02 | Decreasing over time |
+| Lifetime Standard | 120/mo | $179 one-time | $1.49 (month 1) | ~$0.005-0.02 | Decreasing over time |
+| Lifetime VIP | 180/mo | $279 one-time | $1.55 (month 1) | ~$0.005-0.02 | Decreasing over time |
 
 ### 4.2 Daily Free Credits System
 
@@ -1537,10 +1539,10 @@ Improve all "No results available. Please try again." messages to be more helpfu
 - Track in database: `daily_credits_balance` column on profiles, `last_daily_credit_at` timestamp
 
 **Rationale**:
-- 2 tokens/day = 1 JD Match scan daily for free, creating a sticky daily habit
+- 2 tokens/day = partial JD Match scan daily for free, creating a sticky daily habit
 - 7-day expiry prevents hoarding and encourages daily engagement
-- After 5 days of daily use, the user has enough for a Skills Gap analysis (5 tokens)
-- Weekly accumulated credits (14) cover an interview prep + salary research
+- After 4 days of daily use, the user has enough for a Skills Gap analysis (8 tokens)
+- Weekly accumulated credits (14) cover salary research (8 tokens) or partial interview prep
 
 **UI Integration**:
 - Show in nav badge: "5 + 2 daily" (purchased + daily separate)
@@ -1549,10 +1551,12 @@ Improve all "No results available. Please try again." messages to be more helpfu
 
 ### 4.3 Lifetime Subscription with Monthly Cap + Topup
 
-**Current model**: $49 one-time, 100 tokens/month forever, unused tokens cap at 300.
+**Current model**: Early Bird $119, Standard $179, VIP $279 one-time. 120-180 tokens/month forever, unused tokens cap at 300.
 
 **Enhanced model**:
-- Keep the $49 one-time price and 100 tokens/month
+- Early Bird $119: 120 tokens/month
+- Standard $179: 120 tokens/month
+- VIP $279: 180 tokens/month
 - Cap at 300 tokens (prevents hoarding)
 - **New: Allow token pack topup** -- lifetime subscribers can buy any pack to add tokens beyond the monthly refill
 - **New: Priority processing** -- lifetime subscribers get faster model routing (use premium tier models for all tools)
@@ -1580,19 +1584,19 @@ Primary affiliate integration points:
 - Sign up: 15 free tokens
 - Daily credits: 2/day (60/month if daily active)
 - Total free monthly tokens: ~65
-- Can run: Displacement (free) + ~6 JD Matches + 1 Interview Prep + 1 Salary
-- Conversion trigger: When they want Resume Optimizer (10 tok) or Cover Letter (3 tok)
+- Can run: Displacement (free) + ~2 JD Matches (5 each) + 1 Salary (8)
+- Conversion trigger: When they want Resume Optimizer (15 tok) or Cover Letter (5/8/12 tok)
 
-**Paid user journey** (Starter $5):
+**Paid user journey** (Starter $14):
 - 50 tokens + 60 daily = 110/month
-- Can run a FULL job application: JD Match (2) + Resume (10) + Cover Letter (3) + Interview (3) + Salary (3) = 21 tokens
-- 5 full applications per month at Starter level
+- Can run a FULL job application: JD Match (5) + Resume (15) + Cover Letter (8 standard) + Interview (8) + Salary (8) = 44 tokens
+- ~2 full applications per month at Starter level
 
-**Lifetime user journey** ($49):
-- 100 tokens/month + 60 daily = 160/month
-- 7+ full applications per month
-- Break-even vs Pro pack: month 4 (vs $15/mo equivalent)
-- Lifetime value at 12 months: $49 one-time vs $180 in Pro packs
+**Lifetime user journey** (Early Bird $119, Standard $179, VIP $279):
+- 120-180 tokens/month + 60 daily = 180-240/month
+- 3-5 full applications per month
+- Break-even vs Pro pack: month 3-4 (vs $39/mo equivalent)
+- Lifetime value at 12 months: $119-279 one-time vs $468 in Pro packs
 
 ---
 

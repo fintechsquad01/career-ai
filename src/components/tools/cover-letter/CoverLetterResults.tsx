@@ -204,7 +204,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
           >
             Prepare for These Questions
             <ArrowRight className="w-4 h-4" />
-            <span className="text-xs font-normal text-amber-700 ml-1">3 tokens</span>
+            <span className="text-xs font-normal text-amber-700 ml-1">8 tokens</span>
           </Link>
         </div>
       )}

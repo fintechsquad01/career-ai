@@ -12,9 +12,9 @@ import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 
 const QUICK_TOOLS = [
-  { id: "jd_match", title: "JD Match Score", tokens: 2, icon: Target, color: "blue" },
-  { id: "resume", title: "Resume Optimizer", tokens: 10, icon: FileText, color: "violet" },
-  { id: "cover_letter", title: "Cover Letter", tokens: 3, icon: Mail, color: "emerald" },
+  { id: "jd_match", title: "JD Match Score", tokens: 5, icon: Target, color: "blue" },
+  { id: "resume", title: "Resume Optimizer", tokens: 15, icon: FileText, color: "violet" },
+  { id: "cover_letter", title: "Cover Letter", tokens: 8, icon: Mail, color: "emerald" },
 ] as const;
 
 const TOTAL_TOKENS = QUICK_TOOLS.reduce((sum, t) => sum + t.tokens, 0);

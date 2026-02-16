@@ -613,7 +613,7 @@ export function LandingContent() {
                 Pay per use. No subscriptions.
               </h2>
               <p className="text-gray-500 text-center mb-10">
-                Jobscan costs $599/year. A full job prep on AISkillScore? Under $4.
+                Jobscan costs $599/year. A full job prep on AISkillScore? Under $8.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto stagger-children">
                 {PACKS.map((pack) => (
@@ -655,7 +655,7 @@ export function LandingContent() {
               </div>
               <p className="text-center mt-6">
                 <Link href="/lifetime" className="text-sm text-violet-600 hover:text-violet-700 font-medium">
-                  Or get the Lifetime Deal — $79 once, 100 tokens/mo forever →
+                  Or get the Lifetime Deal — $119 once, 120 tokens/mo forever →
                 </Link>
               </p>
             </div>

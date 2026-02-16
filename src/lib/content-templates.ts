@@ -60,7 +60,7 @@ Common ATS killers:
 - Graphics, icons, or fancy formatting
 - Non-standard section headers
 
-I built a tool that scores your resume against ATS requirements and shows exactly what's wrong. The JD Match feature is 2 tokens ($0.18) and the full Resume Optimizer is 10 tokens ($0.95). 
+I built a tool that scores your resume against ATS requirements and shows exactly what's wrong. The JD Match feature is 5 tokens (~$0.98) and the full Resume Optimizer is 15 tokens (~$2.93). 
 
 You get 15 free tokens on signup, which covers a full resume optimization + several JD matches.
 

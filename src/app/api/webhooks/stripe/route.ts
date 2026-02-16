@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (packId === "lifetime_early" || packId === "lifetime_standard" || packId === "lifetime_vip") {
-          const lifetimeTokens = packId === "lifetime_vip" ? 150 : 100;
+          const lifetimeTokens = packId === "lifetime_vip" ? 180 : 120;
           const tierName =
             packId === "lifetime_vip"
               ? "VIP"

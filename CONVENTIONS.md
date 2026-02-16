@@ -171,9 +171,9 @@ export const TOOLS: Tool[] = [
 export const TOOL_CATEGORIES = ["Analyze", "Build", "Prepare", "Grow"] as const;
 
 export const PACKS: Pack[] = [
-  { name: "Starter", tokens: 50, price: 5, rate: "$0.10", description: "Try 2–3 tools" },
-  { name: "Pro", tokens: 200, price: 15, rate: "$0.075", description: "Full career overhaul", highlighted: true, save: "25%", vsNote: "Jobscan = $49.95/mo for just resume scanning" },
-  { name: "Power", tokens: 600, price: 39, rate: "$0.065", description: "Career transformation", save: "35%" },
+  { name: "Starter", tokens: 50, price: 14, rate: "$0.28", description: "Try 2–3 tools" },
+  { name: "Pro", tokens: 200, price: 39, rate: "$0.195", description: "Full career overhaul", highlighted: true, save: "30%", vsNote: "Jobscan = $49.95/mo for just resume scanning" },
+  { name: "Power", tokens: 500, price: 79, rate: "$0.158", description: "Career transformation", save: "44%" },
 ];
 ```
 

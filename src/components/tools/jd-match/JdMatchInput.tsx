@@ -71,7 +71,7 @@ export function JdMatchInput({ onSubmit }: JdMatchInputProps) {
         disabled={!jdText.trim()}
         className="btn-primary"
       >
-        Match Against Job — 2 tokens
+        Match Against Job — 5 tokens
       </button>
     </div>
   );

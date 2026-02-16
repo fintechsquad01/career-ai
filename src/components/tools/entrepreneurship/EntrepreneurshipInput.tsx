@@ -77,7 +77,7 @@ export function EntrepreneurshipInput({ onSubmit }: EntrepreneurshipInputProps) 
         onClick={() => onSubmit({ business_idea: businessIdea || undefined, risk_tolerance: riskTolerance })}
         className="btn-primary"
       >
-        Assess Fit — 8 tokens
+        Assess Fit — 12 tokens
       </button>
     </div>
   );

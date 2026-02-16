@@ -74,7 +74,7 @@ export function LinkedInInput({ onSubmit }: LinkedInInputProps) {
         disabled={!targetRole.trim()}
         className="btn-primary"
       >
-        Optimize LinkedIn — 10 tokens
+        Optimize LinkedIn — 15 tokens
       </button>
     </div>
   );

@@ -7,7 +7,7 @@
 
 ## Strategic Goal
 
-Make AISkillScore the **undeniable best value** in the career intelligence market from Day 1. The product already has 100-500x pricing advantage over competitors. The improvements below focus on making the *output quality* match or exceed competitors at that dramatically lower price point.
+Make AISkillScore the **undeniable best value** in the career intelligence market from Day 1. The product already has 50-150x pricing advantage over competitors (full job prep ~$8.57 vs Jobscan $49.95/mo, Teal $29/mo, FinalRound $149/mo). The improvements below focus on making the *output quality* match or exceed competitors at that dramatically lower price point.
 
 ---
 
@@ -161,19 +161,19 @@ if (pendingInput) {
 
 ### 2.1 Increase Free Tokens from 5 to 10
 
-**Problem:** 5 tokens only allows Displacement (free) + JD Match (2) = 2 paid tokens used, 3 remaining. Users hit the paywall at their 3rd tool (Resume Optimizer = 10 tokens).
-**Impact:** Users never experience the highest-value tool (Resume Optimizer) for free.
+**Problem:** 15 free tokens allows Displacement (free) + JD Match (5) = 5 paid tokens used, 10 remaining. Users hit the paywall at their 3rd tool (Resume Optimizer = 15 tokens).
+**Impact:** Users experience JD Match before the paywall.
 
-**Recommendation:** Increase to 10 free tokens.
-- New user flow: Displacement (0) + JD Match (2) + Interview Prep (3) = 5 tokens used, 5 remaining
-- OR: Displacement (0) + Resume Optimizer (10) = 10 tokens used -- the user gets one premium experience
+**Current state:** 15 free tokens on signup.
+- New user flow: Displacement (0) + JD Match (5) = 5 tokens used, 10 remaining
+- OR: Displacement (0) + JD Match (5) + Salary (8) = 13 tokens used -- partial full flow
 - This is still far cheaper than any competitor's free tier
 - Conversion should increase because users experience more value before paying
 
 **Implementation:**
-- Change default in `profiles` table: `token_balance INTEGER NOT NULL DEFAULT 10`
-- Update sign-up trigger: `VALUES (NEW.id, 10, 10, 'signup_bonus', 'Welcome bonus - 10 free tokens')`
-- Update all copy: "Create Account -- 10 Free Tokens"
+- Default in `profiles` table: `token_balance INTEGER NOT NULL DEFAULT 15`
+- Update sign-up trigger: `VALUES (NEW.id, 15, 15, 'signup_bonus', 'Welcome bonus - 15 free tokens')`
+- Update all copy: "Create Account -- 15 Free Tokens"
 
 **Effort:** 15 minutes
 **Priority:** HIGH
@@ -189,7 +189,7 @@ if (pendingInput) {
 3. CTA: "Create a free account to see your full analysis"
 4. This gives users a taste of the value while requiring signup for details
 
-**Alternative (simpler):** Show a modal immediately after paste: "Your analysis is ready! Create a free account to see it. You'll get 10 free tokens to try any tool."
+**Alternative (simpler):** Show a modal immediately after paste: "Your analysis is ready! Create a free account to see it. You'll get 15 free tokens to try any tool."
 
 **Effort:** 2-4 hours
 **Priority:** HIGH (conversion rate)
@@ -197,7 +197,7 @@ if (pendingInput) {
 ### 2.3 Generate 8 Interview Questions (Not 4)
 
 **Problem:** Current output is 4 questions. Competitive standard is 8-10 (FinalRound does 10+).
-**Impact:** Feels thin for 3 tokens. Users might not feel prepared.
+**Impact:** Feels thin for 8 tokens. Users might not feel prepared.
 
 **Fix:** Update interview prompt:
 ```
@@ -218,7 +218,7 @@ Generate exactly 8 questions covering this distribution:
 **Impact:** Decision paralysis. Users don't know which tool to use first.
 
 **Recommendation:** 3-step onboarding modal:
-1. "Welcome! You have 10 free tokens." (show token balance)
+1. "Welcome! You have 15 free tokens." (show token balance)
 2. "Start by checking your AI displacement risk -- it's FREE." (CTA to displacement tool)
 3. "Then match your resume against any job description." (CTA to JD Match)
 
@@ -237,7 +237,7 @@ Generate exactly 8 questions covering this distribution:
 - After Cover Letter -> "Prepare for interviews" (Interview Prep)
 - After Interview Prep -> "Negotiate your salary" (Salary)
 
-This creates a natural funnel: Displacement (free) -> JD Match (2) -> Resume (10) -> Cover (3) -> Interview (3) -> Salary (3) = 21 tokens total for a complete job application prep.
+This creates a natural funnel: Displacement (free) -> JD Match (5) -> Resume (15) -> Cover (8 standard) -> Interview (8) -> Salary (8) = 44 tokens total for a complete job application prep.
 
 **Effort:** 1 hour
 **Priority:** HIGH (increases ARPU)
@@ -331,7 +331,7 @@ Changes:
 - Add: "Generate 4 counter-offer scripts for different scenarios: initial offer, lowball offer, competing offer, internal promotion"
 - Add: "Include a 'Total Compensation Worksheet' breaking down base, bonus, equity, benefits"
 - Add: "Include a 'Walk-Away Number' calculation based on cost of living and minimum acceptable terms"
-- Reduce token cost from 3 to 2 tokens (competing with free alternatives)
+- Salary tool at 8 tokens (competing with free alternatives)
 
 #### Entrepreneurship Assessment
 **Current Score:** 7.8/10 | **Target:** 9.0/10
@@ -392,7 +392,7 @@ INDUSTRY CONTEXT - CREATIVE:
 **Concept:**
 - Input: Portfolio URL (Behance, Dribbble, personal site)
 - Output: Portfolio strength score, missing project types, storytelling improvements, SEO optimization for portfolio sites
-- Cost: 5 tokens
+- Cost: 8 tokens
 
 **Effort:** 1-2 weeks (new edge function + UI)
 **Priority:** LOW (post-launch expansion)
@@ -409,11 +409,11 @@ Every user should feel they got $50+ of value in their first 5 minutes, complete
 Minute 0: Land on homepage
 Minute 1: Paste resume -> instant detection
 Minute 1-2: See blurred preview (ATS score estimate, top skills, displacement hint)
-Minute 2: Register (10 free tokens)
+Minute 2: Register (15 free tokens)
 Minute 2-3: Auto-run AI Displacement Score (FREE)
   -> User sees detailed AI risk analysis with specific tasks, tools, and recommendations
   -> Emotional hook: "Your role has a 38% displacement risk -- here's what to do about it"
-Minute 3-4: CTA: "Now check your fit against a specific job" (JD Match, 2 tokens)
+Minute 3-4: CTA: "Now check your fit against a specific job" (JD Match, 5 tokens)
   -> If user has a JD in clipboard, auto-detect and pre-fill
 Minute 4-5: JD Match results (fit score, requirements matrix, gaps)
   -> User has consumed ~$100+ worth of analysis for free
@@ -434,8 +434,8 @@ What you'd pay elsewhere:
 - Total for a full job prep: $1,048+
 
 What you pay at AISkillScore:
-- Full job prep (5 tools): $1.50-2.50
-- That's 419-698x less.
+- Full job prep (5 tools): ~$8.57 (44 tokens at Pro $0.195/tk rate)
+- That's 17-174x less.
 ```
 
 ### Competitive Moat Building
@@ -444,7 +444,7 @@ What you pay at AISkillScore:
 
 2. **Mission Control:** The sequential tool workflow (Displacement -> JD Match -> Resume -> Cover -> Interview -> Salary) creates a habit loop. Users don't just use one tool -- they complete the mission. This drives 6x the engagement vs. single-tool competitors.
 
-3. **Daily credits:** 2 free tokens/day creates a daily return habit. Over 30 days, that's 60 free tokens -- enough for a full job prep. Users who log in daily will never need to buy tokens for basic use.
+3. **Daily credits:** 2 free tokens/day creates a daily return habit. Over 30 days, that's 60 free tokens -- enough for partial job prep (e.g., 2 JD Matches + 1 Salary). Users who log in daily reduce their need to buy tokens.
 
 4. **Share/viral loop:** Score sharing creates social proof. "I just improved my ATS score from 55 to 80 with @AISkillScore" is a natural share. Each share is free marketing.
 
@@ -464,7 +464,7 @@ What you pay at AISkillScore:
 | 4 | Add hallucination guards | 45 min | HIGH |
 | 5 | Fix Cover Letter fabrication prompt | 15 min | HIGH |
 | 6 | Preserve Smart Input through auth | 1 hour | MEDIUM |
-| 7 | Increase free tokens to 10 | 15 min | MEDIUM |
+| 7 | Free tokens at 15 (already implemented) | — | — |
 | 8 | Generate 8 interview questions | 15 min | MEDIUM |
 
 **Total effort: ~4 hours**
@@ -522,8 +522,8 @@ What you pay at AISkillScore:
 | Metric | Target | Notes |
 |--------|--------|-------|
 | Day-2 return rate | >30% | Daily credits should drive this |
-| Average tokens purchased | 100+ | Pro pack ($15) is target |
-| ARPU (first week) | $10+ | Based on persona analysis: ~$12 average |
+| Average tokens purchased | 200+ | Pro pack ($39) is target |
+| ARPU (first week) | $30+ | Based on persona analysis: ~$33 average |
 | Tool completion rate (post-fix) | >90% | After latency fix |
 | Support tickets | <5% of users | Auth and token issues will dominate |
 
@@ -532,7 +532,7 @@ What you pay at AISkillScore:
 | Metric | Target | Notes |
 |--------|--------|-------|
 | Monthly active users | Track growth rate | Baseline from launch |
-| Lifetime deal conversion | 2-5% of users | $49 is impulse-buy territory |
+| Lifetime deal conversion | 2-5% of users | Early Bird $119 is impulse-buy territory |
 | Referral rate | >5% of users | Give 5, Get 10 is generous |
 | Churn (not returning after 14 days) | <60% | Daily credits should help |
 | Share rate | >10% of tool results | Social proof engine |
@@ -550,12 +550,12 @@ AISkillScore already has three unbeatable advantages:
 To make these advantages fully realized on Day 1:
 
 1. **Fix the 5 P0 bugs** (4 hours of work) so the product actually functions reliably
-2. **Increase free tokens to 10** so users experience premium value before paying
+2. **15 free tokens** so users experience premium value before paying
 3. **Add hallucination guards** so every output is trustworthy
 4. **Switch all models to Gemini 2.5 Pro** so every tool responds in under 25 seconds
 5. **Preserve Smart Input through auth** so the conversion funnel doesn't leak
 
-After these fixes, the product delivers $100+ of career intelligence value for free, with an additional $500+ of value available for $5-15. No competitor comes close.
+After these fixes, the product delivers $100+ of career intelligence value for free, with an additional $500+ of value available for $14-39. No competitor comes close.
 
 **Estimated effort for all P0+P1 fixes: 12 hours of development.**
 **Expected impact: Platform score from 7.4/10 to 9.0+/10.**

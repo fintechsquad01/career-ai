@@ -75,7 +75,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["ATS", "resume optimization", "job applications", "applicant tracking system"],
     heroEmoji: "📄",
     relatedTools: ["resume", "jd_match", "cover_letter"],
-    tldr: "43% of ATS rejections are formatting errors, not qualification gaps. Modern ATS systems like Workday, Greenhouse, and Lever use AI-powered parsing that goes beyond keyword matching. To pass ATS in 2026: use standard section headers, avoid tables and columns, match exact keywords from the job description, and quantify achievements. AISkillScore's Resume Optimizer costs 10 tokens (~$0.95) and rewrites your resume to pass ATS while keeping your authentic voice.",
+    tldr: "43% of ATS rejections are formatting errors, not qualification gaps. Modern ATS systems like Workday, Greenhouse, and Lever use AI-powered parsing that goes beyond keyword matching. To pass ATS in 2026: use standard section headers, avoid tables and columns, match exact keywords from the job description, and quantify achievements. AISkillScore's Resume Optimizer costs 15 tokens (~$2.93) and rewrites your resume to pass ATS while keeping your authentic voice.",
     sections: [
       {
         heading: "How ATS Systems Actually Work in 2026",
@@ -87,7 +87,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "Keyword Optimization Beyond Simple Matching",
-        body: "The old advice of 'stuff keywords from the job description into your resume' is outdated and can actually hurt you. Modern ATS and recruiter AI look for:\n\n**Contextual keywords.** Don't just list 'Python' in a skills section. Show it in context: 'Built automated data pipeline in Python reducing report generation time by 60%.'\n\n**Exact title matches.** If the JD says 'Senior Product Manager,' your resume should include that exact phrase, not 'Sr. PM' or 'Product Lead.'\n\n**Hard skills over soft skills.** ATS weighs technical terms, certifications, and tool names more heavily. 'Certified Scrum Master' outweighs 'team player' every time.\n\n**Quantified achievements.** Numbers are high-signal for both ATS and human reviewers. '23% revenue increase' is parseable and memorable. 'Significantly improved revenue' is neither.\n\nAISkillScore's JD Match Score (2 tokens) analyzes your resume against a specific job posting and shows exactly which keywords you're missing and where to add them.",
+        body: "The old advice of 'stuff keywords from the job description into your resume' is outdated and can actually hurt you. Modern ATS and recruiter AI look for:\n\n**Contextual keywords.** Don't just list 'Python' in a skills section. Show it in context: 'Built automated data pipeline in Python reducing report generation time by 60%.'\n\n**Exact title matches.** If the JD says 'Senior Product Manager,' your resume should include that exact phrase, not 'Sr. PM' or 'Product Lead.'\n\n**Hard skills over soft skills.** ATS weighs technical terms, certifications, and tool names more heavily. 'Certified Scrum Master' outweighs 'team player' every time.\n\n**Quantified achievements.** Numbers are high-signal for both ATS and human reviewers. '23% revenue increase' is parseable and memorable. 'Significantly improved revenue' is neither.\n\nAISkillScore's JD Match Score (5 tokens) analyzes your resume against a specific job posting and shows exactly which keywords you're missing and where to add them.",
       },
       {
         heading: "Why Most AI Resume Tools Make Things Worse",
@@ -95,7 +95,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "The Complete ATS Optimization Checklist",
-        body: "Before you submit your next application, verify:\n\n☑ Standard file format (.docx or clean .pdf)\n☑ No tables, columns, text boxes, or graphics\n☑ Standard section headers (Professional Experience, Education, Skills)\n☑ Contact info in main body, not headers/footers\n☑ Job title from JD appears in your resume\n☑ 5+ keyword matches from the job description\n☑ All achievements are quantified with numbers\n☑ Consistent date formatting throughout\n☑ No AI-detectable language patterns\n☑ Tailored for this specific role (not a generic resume)\n\nOr let AISkillScore handle it: the Resume Optimizer (10 tokens, ~$0.95) runs all these checks automatically and rewrites problem areas while keeping your authentic voice. Compare that to Jobscan at $49.95/month for keyword counting alone.",
+        body: "Before you submit your next application, verify:\n\n☑ Standard file format (.docx or clean .pdf)\n☑ No tables, columns, text boxes, or graphics\n☑ Standard section headers (Professional Experience, Education, Skills)\n☑ Contact info in main body, not headers/footers\n☑ Job title from JD appears in your resume\n☑ 5+ keyword matches from the job description\n☑ All achievements are quantified with numbers\n☑ Consistent date formatting throughout\n☑ No AI-detectable language patterns\n☑ Tailored for this specific role (not a generic resume)\n\nOr let AISkillScore handle it: the Resume Optimizer (15 tokens, ~$2.93) runs all these checks automatically and rewrites problem areas while keeping your authentic voice. Compare that to Jobscan at $49.95/month for keyword counting alone.",
       },
     ],
   },
@@ -112,7 +112,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["interview prep", "behavioral questions", "follow-up questions", "AI interview"],
     heroEmoji: "💬",
     relatedTools: ["interview", "jd_match", "salary"],
-    tldr: "90% of candidates aren't prepared for follow-up questions, yet follow-ups are what actually decide interviews. Interviewers use initial questions to set up deeper probes that test real understanding versus rehearsed answers. AISkillScore's Interview Prep tool (3 tokens) generates likely questions, predicted follow-ups, and coached answers based on the specific job description and your actual experience.",
+    tldr: "90% of candidates aren't prepared for follow-up questions, yet follow-ups are what actually decide interviews. Interviewers use initial questions to set up deeper probes that test real understanding versus rehearsed answers. AISkillScore's Interview Prep tool (8 tokens) generates likely questions, predicted follow-ups, and coached answers based on the specific job description and your actual experience.",
     sections: [
       {
         heading: "Why Follow-Up Questions Decide Interviews",
@@ -124,7 +124,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "How AI Interview Prep Tools Actually Help",
-        body: "Generic interview prep ('practice common questions') wastes time because every job is different. AI-powered interview prep analyzes the specific job description to predict:\n\n**Role-specific questions:** A product manager interview looks nothing like a data engineer interview. AI maps JD requirements to likely question topics.\n\n**Company-specific angles:** If the JD emphasizes 'fast-paced environment' or 'cross-functional collaboration,' expect questions testing those exact qualities.\n\n**Follow-up predictions:** Based on common interviewer patterns and the role level (entry vs. senior vs. executive), AI predicts the most likely follow-up probes.\n\n**Coached answers:** Not scripts to memorize — frameworks that help you structure your real experiences into compelling answers.\n\nAISkillScore's Interview Prep (3 tokens, about $0.29) generates all of this from the actual job description plus your resume. Compare that to FinalRound at $149/month — and they don't even prep follow-up questions.",
+        body: "Generic interview prep ('practice common questions') wastes time because every job is different. AI-powered interview prep analyzes the specific job description to predict:\n\n**Role-specific questions:** A product manager interview looks nothing like a data engineer interview. AI maps JD requirements to likely question topics.\n\n**Company-specific angles:** If the JD emphasizes 'fast-paced environment' or 'cross-functional collaboration,' expect questions testing those exact qualities.\n\n**Follow-up predictions:** Based on common interviewer patterns and the role level (entry vs. senior vs. executive), AI predicts the most likely follow-up probes.\n\n**Coached answers:** Not scripts to memorize — frameworks that help you structure your real experiences into compelling answers.\n\nAISkillScore's Interview Prep (8 tokens, about $1.56) generates all of this from the actual job description plus your resume. Compare that to FinalRound at $149/month — and they don't even prep follow-up questions.",
       },
       {
         heading: "Technical Interview Preparation in the AI Age",
@@ -132,7 +132,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "Salary Negotiation Starts in the Interview",
-        body: "Most candidates don't realize that salary negotiation doesn't start when you get the offer — it starts during the interview. Every answer you give either increases or decreases your perceived value.\n\n**Value-increasing signals:**\n- Quantified achievements ('increased conversion by 34%')\n- Evidence of leadership and initiative\n- Market awareness and industry knowledge\n- Enthusiasm calibrated to the role level\n\n**Value-decreasing signals:**\n- Revealing desperation ('I really need this job')\n- Underselling experience ('I just helped with...')\n- Not asking thoughtful questions back\n- Accepting the first number discussed\n\nAISkillScore's Salary Negotiation tool (3 tokens) provides market data and word-for-word scripts. Used together with Interview Prep, you enter every interview knowing your worth and how to communicate it.",
+        body: "Most candidates don't realize that salary negotiation doesn't start when you get the offer — it starts during the interview. Every answer you give either increases or decreases your perceived value.\n\n**Value-increasing signals:**\n- Quantified achievements ('increased conversion by 34%')\n- Evidence of leadership and initiative\n- Market awareness and industry knowledge\n- Enthusiasm calibrated to the role level\n\n**Value-decreasing signals:**\n- Revealing desperation ('I really need this job')\n- Underselling experience ('I just helped with...')\n- Not asking thoughtful questions back\n- Accepting the first number discussed\n\nAISkillScore's Salary Negotiation tool (8 tokens) provides market data and word-for-word scripts. Used together with Interview Prep, you enter every interview knowing your worth and how to communicate it.",
       },
     ],
   },
@@ -149,7 +149,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["salary negotiation", "counter-offer", "compensation", "career growth"],
     heroEmoji: "💰",
     relatedTools: ["salary", "interview", "jd_match"],
-    tldr: "76% of professionals who negotiate earn $5,000-$10,000 more than those who accept the first offer, according to Glassdoor research. Yet 57% never negotiate at all. The key is preparation: know your market value, have word-for-word scripts ready, and understand the psychology of anchoring. AISkillScore's Salary Negotiation tool (3 tokens, ~$0.29) provides personalized market data and scripts based on your specific role, location, and experience.",
+    tldr: "76% of professionals who negotiate earn $5,000-$10,000 more than those who accept the first offer, according to Glassdoor research. Yet 57% never negotiate at all. The key is preparation: know your market value, have word-for-word scripts ready, and understand the psychology of anchoring. AISkillScore's Salary Negotiation tool (8 tokens, ~$1.56) provides personalized market data and scripts based on your specific role, location, and experience.",
     sections: [
       {
         heading: "Why Most People Leave Money on the Table",
@@ -186,7 +186,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["career change", "skills gap", "transferable skills", "upskilling"],
     heroEmoji: "🎯",
     relatedTools: ["skills_gap", "roadmap", "displacement"],
-    tldr: "68% of career changers underestimate their transferable skills, according to LinkedIn's 2025 Workforce Report. The most successful career transitions follow a 'bridge role' strategy — finding intermediate positions that leverage existing skills while building new ones. AISkillScore's Skills Gap Analysis (5 tokens) maps your current skills against your target role and identifies exactly what's missing, what transfers, and the fastest path to close each gap.",
+    tldr: "68% of career changers underestimate their transferable skills, according to LinkedIn's 2025 Workforce Report. The most successful career transitions follow a 'bridge role' strategy — finding intermediate positions that leverage existing skills while building new ones. AISkillScore's Skills Gap Analysis (8 tokens) maps your current skills against your target role and identifies exactly what's missing, what transfers, and the fastest path to close each gap.",
     sections: [
       {
         heading: "The Myth of Starting Over",
@@ -194,11 +194,11 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "The Bridge Role Strategy",
-        body: "The most successful career changers don't leap directly from Role A to Dream Role. They use bridge roles — intermediate positions that combine skills from their current field with responsibilities from their target field.\n\n**Example bridges:**\n- Marketing Manager → Product Marketing Manager → Product Manager\n- Teacher → Corporate Trainer → Learning & Development Manager → HR Director\n- Accountant → Financial Analyst → Business Intelligence Analyst → Data Scientist\n- Journalist → Content Marketing → Content Strategy → VP of Marketing\n\n**How to find your bridge role:**\n1. List all skills from your current role\n2. List required skills for your dream role\n3. Identify roles that overlap both skill sets by 50%+\n4. That overlap role is your bridge\n\nAISkillScore's Career Roadmap tool (8 tokens) automates this process and generates a week-by-week plan for reaching your target role through strategic bridge positions.",
+        body: "The most successful career changers don't leap directly from Role A to Dream Role. They use bridge roles — intermediate positions that combine skills from their current field with responsibilities from their target field.\n\n**Example bridges:**\n- Marketing Manager → Product Marketing Manager → Product Manager\n- Teacher → Corporate Trainer → Learning & Development Manager → HR Director\n- Accountant → Financial Analyst → Business Intelligence Analyst → Data Scientist\n- Journalist → Content Marketing → Content Strategy → VP of Marketing\n\n**How to find your bridge role:**\n1. List all skills from your current role\n2. List required skills for your dream role\n3. Identify roles that overlap both skill sets by 50%+\n4. That overlap role is your bridge\n\nAISkillScore's Career Roadmap tool (15 tokens) automates this process and generates a week-by-week plan for reaching your target role through strategic bridge positions.",
       },
       {
         heading: "Closing the Gap: What to Learn (And What to Skip)",
-        body: "Not all skills gaps are equal. Focus your learning on high-impact, high-signal skills:\n\n**Learn first (highest ROI):**\n- Skills mentioned in >70% of target role job postings\n- Technical certifications that are non-negotiable (e.g., PMP for project management, AWS for cloud)\n- Tools and platforms specific to the industry (e.g., Figma for design, Salesforce for sales ops)\n\n**Learn later (nice-to-have):**\n- Skills in <30% of job postings\n- Soft skills that you can demonstrate through stories rather than credentials\n- Industry jargon you'll pick up on the job\n\n**Skip entirely:**\n- Degree requirements (75% of employers accept equivalent experience according to Indeed 2025)\n- Skills from a previous era of the role (look at 2026 postings, not 2020 requirements)\n- Anything you can learn in the first 30 days on the job\n\nAISkillScore's Skills Gap Analysis (5 tokens) scans current job postings in your target role to identify exactly which skills are mentioned most frequently and where your profile has gaps.",
+        body: "Not all skills gaps are equal. Focus your learning on high-impact, high-signal skills:\n\n**Learn first (highest ROI):**\n- Skills mentioned in >70% of target role job postings\n- Technical certifications that are non-negotiable (e.g., PMP for project management, AWS for cloud)\n- Tools and platforms specific to the industry (e.g., Figma for design, Salesforce for sales ops)\n\n**Learn later (nice-to-have):**\n- Skills in <30% of job postings\n- Soft skills that you can demonstrate through stories rather than credentials\n- Industry jargon you'll pick up on the job\n\n**Skip entirely:**\n- Degree requirements (75% of employers accept equivalent experience according to Indeed 2025)\n- Skills from a previous era of the role (look at 2026 postings, not 2020 requirements)\n- Anything you can learn in the first 30 days on the job\n\nAISkillScore's Skills Gap Analysis (8 tokens) scans current job postings in your target role to identify exactly which skills are mentioned most frequently and where your profile has gaps.",
       },
       {
         heading: "Building Proof Without the Job Title",
@@ -206,7 +206,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "Timeline Reality Check: How Long Career Changes Actually Take",
-        body: "Expectations vs. reality for career change timelines:\n\n**Adjacent move** (same industry, different function): 2-4 months\n- Example: Software developer → DevOps engineer\n- Strategy: Upskill in specific tools, leverage industry knowledge\n\n**Lateral move** (different industry, similar function): 3-6 months\n- Example: Banking project manager → Tech project manager\n- Strategy: Learn industry terminology, highlight transferable PM skills\n\n**Diagonal move** (different industry AND function): 6-12 months\n- Example: Teacher → UX designer\n- Strategy: Bridge role, portfolio building, certification\n\n**Complete reinvention**: 12-24 months\n- Example: Lawyer → Software engineer\n- Strategy: Bootcamp or self-study, bridge role, networking\n\n**How to accelerate any transition:**\n1. Start building proof of work immediately (don't wait until you 'finish learning')\n2. Network in your target field 3 months before you start applying\n3. Apply to bridge roles, not just dream roles\n4. Use your unique background as a differentiator, not a liability\n\nAISkillScore's Career Roadmap (8 tokens) generates a realistic timeline with weekly milestones based on your specific starting point and target.",
+        body: "Expectations vs. reality for career change timelines:\n\n**Adjacent move** (same industry, different function): 2-4 months\n- Example: Software developer → DevOps engineer\n- Strategy: Upskill in specific tools, leverage industry knowledge\n\n**Lateral move** (different industry, similar function): 3-6 months\n- Example: Banking project manager → Tech project manager\n- Strategy: Learn industry terminology, highlight transferable PM skills\n\n**Diagonal move** (different industry AND function): 6-12 months\n- Example: Teacher → UX designer\n- Strategy: Bridge role, portfolio building, certification\n\n**Complete reinvention**: 12-24 months\n- Example: Lawyer → Software engineer\n- Strategy: Bootcamp or self-study, bridge role, networking\n\n**How to accelerate any transition:**\n1. Start building proof of work immediately (don't wait until you 'finish learning')\n2. Network in your target field 3 months before you start applying\n3. Apply to bridge roles, not just dream roles\n4. Use your unique background as a differentiator, not a liability\n\nAISkillScore's Career Roadmap (15 tokens) generates a realistic timeline with weekly milestones based on your specific starting point and target.",
       },
     ],
   },
@@ -223,7 +223,7 @@ export const ARTICLES: TArticle[] = [
     tags: ["LinkedIn", "recruiter algorithm", "profile optimization", "job search"],
     heroEmoji: "🔗",
     relatedTools: ["linkedin", "jd_match", "resume"],
-    tldr: "LinkedIn's recruiter algorithm uses 6 primary signals to rank profiles in search results: headline keywords, current title match, skills endorsements, activity recency, location proximity, and connection degree. 87% of recruiters use LinkedIn as their primary sourcing tool. Optimizing these 6 signals can increase profile views by 3-5x. AISkillScore's LinkedIn Optimizer (10 tokens) rewrites your profile to maximize visibility for your target roles while keeping your authentic voice.",
+    tldr: "LinkedIn's recruiter algorithm uses 6 primary signals to rank profiles in search results: headline keywords, current title match, skills endorsements, activity recency, location proximity, and connection degree. 87% of recruiters use LinkedIn as their primary sourcing tool. Optimizing these 6 signals can increase profile views by 3-5x. AISkillScore's LinkedIn Optimizer (15 tokens) rewrites your profile to maximize visibility for your target roles while keeping your authentic voice.",
     sections: [
       {
         heading: "The 6 Signals LinkedIn's Algorithm Uses to Rank You",
@@ -243,7 +243,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "Open to Work: The Right Way to Signal Availability",
-        body: "LinkedIn's 'Open to Work' feature has two modes, and choosing the wrong one can hurt more than help.\n\n**Recruiters only (recommended):**\n- Green banner NOT visible to your network\n- Only visible to recruiters using LinkedIn Recruiter\n- Increases profile appearances in recruiter search by ~40%\n- No risk of your current employer seeing it\n\n**All LinkedIn members (use carefully):**\n- Green #OpenToWork photo frame visible to everyone\n- Can signal desperation to some recruiters\n- Best used if you're publicly job hunting (laid off, graduating, etc.)\n\n**Pro tip:** When setting Open to Work, be specific about:\n- Target job titles (up to 5)\n- Locations and remote preference\n- Start date\n- Job types (full-time, contract, etc.)\n\nThe more specific your preferences, the better LinkedIn matches you with relevant recruiter searches.\n\nAISkillScore's LinkedIn Optimizer (10 tokens) rewrites your entire profile — headline, About, Experience descriptions, and Skills — to maximize the 6 ranking signals while preserving your authentic voice. Compare that to hiring a LinkedIn consultant at $200-500 for the same service.",
+        body: "LinkedIn's 'Open to Work' feature has two modes, and choosing the wrong one can hurt more than help.\n\n**Recruiters only (recommended):**\n- Green banner NOT visible to your network\n- Only visible to recruiters using LinkedIn Recruiter\n- Increases profile appearances in recruiter search by ~40%\n- No risk of your current employer seeing it\n\n**All LinkedIn members (use carefully):**\n- Green #OpenToWork photo frame visible to everyone\n- Can signal desperation to some recruiters\n- Best used if you're publicly job hunting (laid off, graduating, etc.)\n\n**Pro tip:** When setting Open to Work, be specific about:\n- Target job titles (up to 5)\n- Locations and remote preference\n- Start date\n- Job types (full-time, contract, etc.)\n\nThe more specific your preferences, the better LinkedIn matches you with relevant recruiter searches.\n\nAISkillScore's LinkedIn Optimizer (15 tokens) rewrites your entire profile — headline, About, Experience descriptions, and Skills — to maximize the 6 ranking signals while preserving your authentic voice. Compare that to hiring a LinkedIn consultant at $200-500 for the same service.",
       },
     ],
   },
@@ -303,7 +303,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "Pay per use vs $599/year",
-        detail: "Why pay $599/year when you can pay $9-49 for what you actually use? A full JD match scan costs just 2 tokens (~$0.18).",
+        detail: "Why pay $599/year when you can pay $14-79 for what you actually use? A full JD match scan costs just 5 tokens (~$0.98).",
       },
       {
         title: "Evidence-based vs keyword counting",
@@ -328,7 +328,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "AI Headshots", us: true, them: false },
       { name: "Daily Free Credits", us: "2/day", them: false },
       { name: "Pay Per Use Option", us: true, them: false },
-      { name: "Price", us: "From $9", them: "$49.95/mo" },
+      { name: "Price", us: "From $14", them: "$49.95/mo" },
     ],
     verdict: "Jobscan is a solid ATS keyword scanner, but at $49.95/month it's expensive for a single-purpose tool. AISkillScore provides the same keyword matching plus 10 additional AI career tools, all at pay-per-use pricing. If you're actively job hunting and need more than just resume scanning — interview prep, cover letters, salary data — AISkillScore delivers significantly more value at a fraction of the cost.",
   },
@@ -389,7 +389,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "Chrome Extension", us: false, them: true },
       { name: "Daily Free Credits", us: "2/day", them: false },
       { name: "Voice Preservation", us: true, them: false },
-      { name: "Price", us: "From $9", them: "$29/mo" },
+      { name: "Price", us: "From $14", them: "$29/mo" },
     ],
     verdict: "Teal excels at job application tracking and provides a solid resume builder with its Chrome extension. However, it relies on templates rather than AI-powered personalization, and its $29/month subscription adds up quickly. AISkillScore is the better choice if you want AI-personalized content that preserves your authentic voice, plus access to interview prep, salary negotiation, and career planning tools — all without a recurring subscription.",
   },
@@ -400,7 +400,7 @@ export const COMPARISONS: TComparison[] = [
     competitorPrice: "$149/month",
     title: "AISkillScore vs FinalRound AI: Complete Comparison (2026)",
     description:
-      "FinalRound AI charges $149/month for interview prep. AISkillScore provides interview prep plus 10 more tools from $0.29/use.",
+      "FinalRound AI charges $149/month for interview prep. AISkillScore provides interview prep plus 10 more tools from $1.56/use.",
     updatedAt: "2026-02-13",
     competitorFeatures: [
       "AI mock interview practice",
@@ -423,8 +423,8 @@ export const COMPARISONS: TComparison[] = [
         detail: "FinalRound preps initial answers. AISkillScore preps the follow-up questions too — the part that actually decides interviews. 90% of candidates fail follow-ups.",
       },
       {
-        title: "3 tokens vs $149/month",
-        detail: "AISkillScore's Interview Prep costs 3 tokens (~$0.29). FinalRound costs $149/month ($1,788/year). That's 6,200x more expensive per interview prep session.",
+        title: "8 tokens vs $149/month",
+        detail: "AISkillScore's Interview Prep costs 8 tokens (~$1.56). FinalRound costs $149/month ($1,788/year). That's 6,200x more expensive per interview prep session.",
       },
       {
         title: "Full career toolkit",
@@ -447,7 +447,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "Career Roadmap", us: true, them: false },
       { name: "AI Displacement Score", us: "Free", them: false },
       { name: "Daily Free Credits", us: "2/day", them: false },
-      { name: "Price per interview prep", us: "~$0.29", them: "$149/mo" },
+      { name: "Price per interview prep", us: "~$1.56", them: "$149/mo" },
     ],
     verdict: "FinalRound AI is specialized in real-time interview assistance — a niche use case that raises ethical concerns with many employers. At $149/month, it's the most expensive option in the career tools space. AISkillScore provides comprehensive interview preparation including follow-up questions (which FinalRound doesn't cover), plus 10 additional career tools, all at pay-per-use pricing. For genuine interview preparation that makes you a better candidate rather than giving you a hidden earpiece, AISkillScore is the clear choice.",
   },
@@ -484,7 +484,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "Pay per use vs $19/month",
-        detail: "Kickresume's monthly fee adds up to $228/year. AISkillScore's Resume Optimizer costs 10 tokens (~$0.95 per use) with no recurring commitment.",
+        detail: "Kickresume's monthly fee adds up to $228/year. AISkillScore's Resume Optimizer costs 15 tokens (~$2.93 per use) with no recurring commitment.",
       },
       {
         title: "Voice preservation vs homogenization",
@@ -546,7 +546,7 @@ export const COMPARISONS: TComparison[] = [
       },
       {
         title: "Pay per use vs $24.95/month",
-        detail: "Resume.io costs $299/year for template access. AISkillScore's full resume optimization is 10 tokens (~$0.95) — use it when you need it.",
+        detail: "Resume.io costs $299/year for template access. AISkillScore's full resume optimization is 15 tokens (~$2.93) — use it when you need it.",
       },
       {
         title: "11 tools vs 2",

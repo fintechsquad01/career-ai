@@ -71,7 +71,7 @@ export function InterviewInput({ onSubmit }: InterviewInputProps) {
         onClick={() => onSubmit({ interview_type: interviewType })}
         className="btn-primary"
       >
-        Generate Questions — 3 tokens
+        Generate Questions — 8 tokens
       </button>
     </div>
   );

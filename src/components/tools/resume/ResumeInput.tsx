@@ -61,7 +61,7 @@ export function ResumeInput({ onSubmit }: ResumeInputProps) {
         disabled={!effectiveResume.trim()}
         className="btn-primary"
       >
-        Optimize My Resume — 10 tokens
+        Optimize My Resume — 15 tokens
       </button>
     </div>
   );

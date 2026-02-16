@@ -49,7 +49,7 @@ AISkillScore was evaluated across 6 distinct user personas representing key mark
 | Criteria | Score | Notes |
 |----------|-------|-------|
 | Form simplicity | 9/10 | Email + password only, clean form |
-| CTA clarity | 9/10 | "Create Account -- 5 Free Tokens" is compelling |
+| CTA clarity | 9/10 | "Create Account -- 15 Free Tokens" is compelling |
 | Post-registration redirect | 9/10 | Auto-redirects to dashboard immediately |
 | Token display on arrival | 5/10 | Shows "50 tokens" then drops to "7" -- confusing |
 | Welcome/onboarding | 6/10 | No welcome modal detected in persona tests |
@@ -106,7 +106,7 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 **Strengths:** Unique to market, emotionally engaging (fear-based hook), includes monetization angles
 **Issues:** Score inconsistency between runs, primary model (DeepSeek) times out frequently (35-104s), fallback model adds 60s+ latency
 
-### Tool 2: JD Match Score (2 tokens)
+### Tool 2: JD Match Score (5 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -115,13 +115,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 6/10 | HALLUCINATION BUG when career profile empty, fabricated person "Selen Inal" |
 | Value | 9/10 | Replaces hours of manual JD analysis |
 | UX | 9/10 | Clean textarea input, competitive anchoring visible |
-| Token Value | 9/10 | 2 tokens ($0.15-0.20) for comprehensive analysis is exceptional |
+| Token Value | 9/10 | 5 tokens (~$0.98 at Pro rate) for comprehensive analysis is exceptional |
 | **Average** | **8.3/10** | (7.0 without career profile data) |
 
 **Strengths:** Evidence-quoting is a genuine differentiator, recruiter perspective is realistic
 **Issues:** CRITICAL hallucination without profile data, network errors observed in some tests
 
-### Tool 3: Resume Optimizer (10 tokens)
+### Tool 3: Resume Optimizer (15 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -130,13 +130,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 7/10 | Referenced non-existent URL "babilenerji.com" |
 | Value | 8/10 | ATS score improvement of 25+ points is significant |
 | UX | 8/10 | Clear score ring, section-by-section diffs |
-| Token Value | 7/10 | 10 tokens ($0.75-1.00) is fair but at the higher end |
+| Token Value | 7/10 | 15 tokens (~$2.93 at Pro rate) is fair but at the higher end |
 | **Average** | **7.9/10** | |
 
 **Strengths:** Voice preservation ("Mekselina's writing style is direct..."), before/after format, ATS-specific optimizations
 **Issues:** URL hallucination, some keywords too generic, optimized_resume_text completeness not validated
 
-### Tool 4: Cover Letter Generator (3 tokens)
+### Tool 4: Cover Letter Generator (5/8/12 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -145,13 +145,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 4/10 | FABRICATED metrics: "15% reduction", "20% conversion" not from resume |
 | Value | 7/10 | Saves time but requires heavy editing |
 | UX | 8/10 | Tone and length selectors are good UX |
-| Token Value | 6/10 | 3 tokens ($0.22-0.30) for a letter needing significant edits |
+| Token Value | 6/10 | 5/8/12 tokens (~$0.98-$2.34 at Pro rate) for a letter needing significant edits |
 | **Average** | **6.3/10** | |
 
 **Strengths:** Avoids prohibited phrases ("I am writing to express..."), hook structure, interview talking points
 **Issues:** CRITICAL metric fabrication, placeholder text without job target, requires heavy editing -- low "done for you" value
 
-### Tool 5: LinkedIn Optimizer (10 tokens)
+### Tool 5: LinkedIn Optimizer (15 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -160,13 +160,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 8/10 | Some headlines slightly exceed LinkedIn's 220-char limit |
 | Value | 9/10 | Comprehensive LinkedIn overhaul in one output |
 | UX | 8/10 | Clean results with copy buttons |
-| Token Value | 8/10 | 10 tokens ($0.75-1.00) for a full LinkedIn makeover is good value |
+| Token Value | 8/10 | 15 tokens (~$2.93 at Pro rate) for a full LinkedIn makeover is good value |
 | **Average** | **8.5/10** | |
 
 **Strengths:** Best output quality of any tool, 2026 algorithm awareness, monetization angles, network building scripts
 **Issues:** Some headlines too long, could include more industry-specific hashtags
 
-### Tool 6: Interview Prep (3 tokens)
+### Tool 6: Interview Prep (8 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -175,13 +175,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 8/10 | Questions are realistic for the role |
 | Value | 8/10 | Replaces expensive interview coaching ($200+/session) |
 | UX | 8/10 | Collapsible cards, difficulty labels |
-| Token Value | 9/10 | 3 tokens ($0.22-0.30) for 4-5 questions with coaching is excellent |
+| Token Value | 9/10 | 8 tokens (~$1.56 at Pro rate) for 4-5 questions with coaching is excellent |
 | **Average** | **8.2/10** | |
 
 **Strengths:** Follow-up questions prepare for real interview dynamics, red flag answers identified, company-specific
 **Issues:** Only 4 questions generated (should be 6-8), missing difficulty labels on some, last question truncated in JSON
 
-### Tool 7: Skills Gap Analysis (5 tokens)
+### Tool 7: Skills Gap Analysis (8 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -190,13 +190,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 8/10 | Gap calibration realistic |
 | Value | 7/10 | Good but lacking specific course URLs |
 | UX | 7/10 | Clear gap visualization |
-| Token Value | 7/10 | 5 tokens ($0.37-0.50) -- adequate |
+| Token Value | 7/10 | 8 tokens (~$1.56 at Pro rate) -- adequate |
 | **Average** | **7.4/10** | |
 
 **Strengths:** Starts with strengths before gaps (positive framing), transferable skills identified
 **Issues:** Only 2 learning phases (should be 3-4), course recommendations lack specific URLs, needed fallback model (109s latency)
 
-### Tool 8: Career Roadmap (8 tokens)
+### Tool 8: Career Roadmap (15 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -205,13 +205,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 7/10 | Timeline reasonable but weekly commitments not specified |
 | Value | 7/10 | Comprehensive plan but could be more actionable |
 | UX | 7/10 | Timeline visualization |
-| Token Value | 6/10 | 8 tokens ($0.60-0.80) -- on the expensive side for output depth |
+| Token Value | 6/10 | 15 tokens (~$2.93 at Pro rate) -- on the expensive side for output depth |
 | **Average** | **7.1/10** | |
 
 **Strengths:** Dual-track approach is unique and practical, networking scripts included
 **Issues:** Very slow (116s), only 2 networking entries, lacks weekly time commitments
 
-### Tool 9: Salary Negotiation (3 tokens)
+### Tool 9: Salary Negotiation (8 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -220,13 +220,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 6/10 | Salary data is AI-estimated, not from verified databases |
 | Value | 7/10 | Counter-offer scripts are word-for-word usable |
 | UX | 7/10 | Clear data presentation |
-| Token Value | 7/10 | 3 tokens ($0.22-0.30) -- fair for the output |
+| Token Value | 7/10 | 8 tokens (~$1.56 at Pro rate) -- fair for the output |
 | **Average** | **6.8/10** | |
 
 **Strengths:** Counter-offer scripts are ready-to-use, freelance rate included, data caveat included
 **Issues:** Only 2 scripts (should be 3-4), 64s latency, should include USD equivalent alongside local currency
 
-### Tool 10: Entrepreneurship Assessment (8 tokens)
+### Tool 10: Entrepreneurship Assessment (12 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -235,13 +235,13 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | 8/10 | Business model match scores realistic |
 | Value | 8/10 | Unique tool not available from competitors |
 | UX | 7/10 | Clear visualization |
-| Token Value | 7/10 | 8 tokens ($0.60-0.80) -- reasonable for comprehensive assessment |
+| Token Value | 7/10 | 12 tokens (~$2.34 at Pro rate) -- reasonable for comprehensive assessment |
 | **Average** | **7.8/10** | |
 
 **Strengths:** Unique to market, practical 90-day plan, income projections realistic
 **Issues:** Very slow (125s), could include more first-week action items
 
-### Tool 11: AI Headshots (20 tokens)
+### Tool 11: AI Headshots (25 tokens)
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
@@ -250,7 +250,7 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Accuracy | N/A | |
 | Value | N/A | |
 | UX | N/A | |
-| Token Value | N/A | 20 tokens ($1.50-2.00) -- expensive, must deliver exceptional quality |
+| Token Value | N/A | 25 tokens (~$4.88 at Pro rate) -- expensive, must deliver exceptional quality |
 | **Average** | **N/A** | |
 
 ---
@@ -291,12 +291,12 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 |----------|-------|------------|
 | Thin resume handling | 6/10 | Resume Optimizer may over-embellish 1.5 years of experience |
 | Entry-level JD matching | 7/10 | JD Match would correctly assess 1-3 year requirement match |
-| Budget sensitivity | 6/10 | 5 free tokens only covers displacement (free) + JD Match (2). Needs more free tools to hook early-career users |
+| Budget sensitivity | 6/10 | 15 free tokens covers displacement (free) + JD Match (5). Needs more free tools to hook early-career users |
 | Interview prep for juniors | 7/10 | Questions would be appropriate but STAR answers hard with limited experience |
 | Skills Gap value | 8/10 | Most valuable tool for early-career -- clear learning path |
 | Overall segment fit | **6.8/10** | Platform is weakest for this segment -- early-career users need more free value |
 
-**Verdict:** Early-career users get the least value from 5 free tokens. The pricing model disadvantages this price-sensitive segment.
+**Verdict:** Early-career users get the least value from 15 free tokens. The pricing model disadvantages this price-sensitive segment.
 
 ### Persona 4: David Kim (Finance-to-Fintech Transition)
 
@@ -359,15 +359,15 @@ Based on 10 real AI tool executions from the Feb 13 test session (Mekselina Basa
 | Tool | Token Cost | High Value For | Low Value For |
 |------|-----------|----------------|---------------|
 | Displacement | FREE | Marcus (anxiety hook), James (creative fear) | Priya (not her primary concern) |
-| JD Match | 2 | Sarah, David (understanding gaps) | James (not applying via JD) |
-| Resume Optimizer | 10 | Rachel (jargon translation), Priya (thin resume) | James (portfolio > resume) |
-| Cover Letter | 3 | Nobody -- lowest quality tool | All personas (fabrication risk) |
-| LinkedIn Optimizer | 10 | Sarah, James (recruiter discovery) | Priya (too junior for recruiter outreach) |
-| Interview Prep | 3 | Marcus (FAANG prep), Priya (first real interview) | James (senior roles don't have standard interviews) |
-| Skills Gap | 5 | Priya (clear learning path), Sarah (pivot skills) | Marcus (already has the skills) |
-| Career Roadmap | 8 | David (transition plan), James (career shift) | Marcus (linear progression) |
-| Salary | 3 | Marcus (TC optimization), Rachel (remote pay equity) | James (portfolio determines pay) |
-| Entrepreneurship | 8 | James (creative consultancy), David (backup plan) | Priya (too early in career) |
+| JD Match | 5 | Sarah, David (understanding gaps) | James (not applying via JD) |
+| Resume Optimizer | 15 | Rachel (jargon translation), Priya (thin resume) | James (portfolio > resume) |
+| Cover Letter | 5/8/12 | Nobody -- lowest quality tool | All personas (fabrication risk) |
+| LinkedIn Optimizer | 15 | Sarah, James (recruiter discovery) | Priya (too junior for recruiter outreach) |
+| Interview Prep | 8 | Marcus (FAANG prep), Priya (first real interview) | James (senior roles don't have standard interviews) |
+| Skills Gap | 8 | Priya (clear learning path), Sarah (pivot skills) | Marcus (already has the skills) |
+| Career Roadmap | 15 | David (transition plan), James (career shift) | Marcus (linear progression) |
+| Salary | 8 | Marcus (TC optimization), Rachel (remote pay equity) | James (portfolio determines pay) |
+| Entrepreneurship | 12 | James (creative consultancy), David (backup plan) | Priya (too early in career) |
 
 ---
 
@@ -383,7 +383,7 @@ Smart Input -> Free Analysis
     |
     v (CTA: "Create Account -- 5 Free Tokens")
     |
-Registration -> Dashboard (5 purchased + 2 daily = 7 total)
+Registration -> Dashboard (15 purchased + 2 daily = 17 total)
     |
     v (Free tool hook)
     |
@@ -391,47 +391,47 @@ AI Displacement Score (0 tokens) -> "You should also check JD Match"
     |
     v (First paid action)
     |
-JD Match (2 tokens) -> Balance: 5 remaining
+JD Match (5 tokens) -> Balance: 12 remaining
     |
     v (Next recommendation: Resume Optimizer)
     |
-Resume Optimizer (10 tokens) -> PAYWALL (only 5 tokens left)
+Resume Optimizer (15 tokens) -> PAYWALL (only 12 tokens left)
     |
     v (Purchase decision point)
     |
-Starter ($5/50) or Pro ($15/200)
+Starter ($14/50) or Pro ($39/200)
 ```
 
 ### Token Sufficiency by Persona
 
-| Persona | Free Tokens (7) | First Paywall | Needed Total | Likely Pack | Perceived Value |
+| Persona | Free Tokens (15) | First Paywall | Needed Total | Likely Pack | Perceived Value |
 |---------|-----------------|---------------|-------------|-------------|-----------------|
-| Marcus | Displacement (0) + JD Match (2) + Interview (3) = 5 | After 3 tools | 8 tokens | Starter ($5) | Good -- 3 tools before needing to pay |
-| Sarah | Displacement (0) + JD Match (2) = 2 | Resume Optimizer (10) | 30 tokens | Pro ($15) | OK -- hits paywall at tool #3 |
-| Priya | JD Match (2) = 2 | Resume Optimizer (10) | 20 tokens | Starter ($5) | Poor -- hits paywall at tool #2 |
-| David | Displacement (0) + JD Match (2) = 2 | Resume Optimizer (10) | 28 tokens | Pro ($15) | OK -- same as Sarah |
-| Rachel | JD Match (2) = 2 | Resume Optimizer (10) | 21 tokens | Pro ($15) | OK -- same as Sarah |
-| James | Displacement (0) + LinkedIn (10) | LinkedIn exceeds free balance | 26 tokens | Pro ($15) | Poor -- second tool exceeds free balance |
+| Marcus | Displacement (0) + JD Match (5) + Interview (8) = 13 | After 3 tools | 21 tokens | Starter ($14) | Good -- 3 tools before needing to pay |
+| Sarah | Displacement (0) + JD Match (5) = 5 | Resume Optimizer (15) | 51 tokens | Pro ($39) | OK -- hits paywall at tool #3 |
+| Priya | JD Match (5) = 5 | Resume Optimizer (15) | 36 tokens | Pro ($39) | Poor -- hits paywall at tool #2 |
+| David | Displacement (0) + JD Match (5) = 5 | Resume Optimizer (15) | 51 tokens | Pro ($39) | OK -- same as Sarah |
+| Rachel | JD Match (5) = 5 | Resume Optimizer (15) | 44 tokens | Pro ($39) | OK -- same as Sarah |
+| James | Displacement (0) + LinkedIn (15) | LinkedIn exceeds free balance | 42 tokens | Pro ($39) | Poor -- second tool exceeds free balance |
 
-**Insight:** Users hit the paywall after only 2-3 tools. For budget-conscious personas (Priya, James), the free allocation feels insufficient. Consider giving 10 free tokens instead of 5 to allow one premium tool use before the paywall.
+**Insight:** Users hit the paywall after only 2-3 tools. For budget-conscious personas (Priya, James), the free allocation feels insufficient.
 
 ### Token Pricing Analysis
 
-| Tool | Tokens | Cost (Starter $0.10/tok) | Cost (Pro $0.075/tok) | Competitor Price | Value Ratio |
+| Tool | Tokens | Cost (Starter $0.28/tok) | Cost (Pro $0.195/tok) | Competitor Price | Value Ratio |
 |------|--------|-------------------------|----------------------|-----------------|-------------|
 | Displacement | 0 | FREE | FREE | No direct competitor | Infinite |
-| JD Match | 2 | $0.20 | $0.15 | Jobscan $49.95/mo | 250-333x cheaper |
-| Resume Optimizer | 10 | $1.00 | $0.75 | TopResume $149 | 149-199x cheaper |
-| Cover Letter | 3 | $0.30 | $0.23 | Jobscan $49.95/mo | 166-217x cheaper |
-| LinkedIn | 10 | $1.00 | $0.75 | No direct competitor | Unique |
-| Interview Prep | 3 | $0.30 | $0.23 | FinalRound $149/mo | 497-648x cheaper |
-| Skills Gap | 5 | $0.50 | $0.38 | No direct competitor | Unique |
-| Career Roadmap | 8 | $0.80 | $0.60 | Career coaching $200+/hr | 250-333x cheaper |
-| Salary | 3 | $0.30 | $0.23 | Levels.fyi free | Negative (free alternatives exist) |
-| Entrepreneurship | 8 | $0.80 | $0.60 | No direct competitor | Unique |
-| Headshots | 20 | $2.00 | $1.50 | Professional photos $300+ | 150-200x cheaper |
+| JD Match | 5 | $1.40 | $0.98 | Jobscan $49.95/mo | 51-50x cheaper |
+| Resume Optimizer | 15 | $4.20 | $2.93 | TopResume $149 | 51-51x cheaper |
+| Cover Letter | 5/8/12 | $1.40-$3.36 | $0.98-$2.34 | Jobscan $49.95/mo | 21-51x cheaper |
+| LinkedIn | 15 | $4.20 | $2.93 | No direct competitor | Unique |
+| Interview Prep | 8 | $2.24 | $1.56 | FinalRound $149/mo | 96-149x cheaper |
+| Skills Gap | 8 | $2.24 | $1.56 | No direct competitor | Unique |
+| Career Roadmap | 15 | $4.20 | $2.93 | Career coaching $200+/hr | 68-136x cheaper |
+| Salary | 8 | $2.24 | $1.56 | Levels.fyi free | Negative (free alternatives exist) |
+| Entrepreneurship | 12 | $3.36 | $2.34 | No direct competitor | Unique |
+| Headshots | 25 | $7.00 | $4.88 | Professional photos $300+ | 61-61x cheaper |
 
-**Insight:** Salary Negotiation is the weakest value prop because free alternatives (Levels.fyi, Glassdoor, Blind) exist with verified data. Either differentiate with negotiation scripts (which the tool does) or reduce cost to 1-2 tokens.
+**Insight:** Salary Negotiation is the weakest value prop because free alternatives (Levels.fyi, Glassdoor, Blind) exist with verified data. Either differentiate with negotiation scripts (which the tool does) or reduce cost.
 
 ---
 
@@ -526,20 +526,20 @@ Starter ($5/50) or Pro ($15/200)
 
 | Feature | AISkillScore | Jobscan ($49.95/mo) | Teal ($29/mo) | FinalRound ($149/mo) |
 |---------|-------------|---------------------|---------------|---------------------|
-| ATS Optimization | Yes (10 tokens) | Yes (core feature) | Yes | No |
-| JD Matching | Yes (2 tokens) | Yes (core feature) | Yes | No |
+| ATS Optimization | Yes (15 tokens) | Yes (core feature) | Yes | No |
+| JD Matching | Yes (5 tokens) | Yes (core feature) | Yes | No |
 | AI Displacement | Yes (FREE) | No | No | No |
-| Cover Letter | Yes (3 tokens) | No | Yes | No |
-| Interview Prep | Yes (3 tokens) | No | No | Yes (core feature) |
-| LinkedIn Optimization | Yes (10 tokens) | No | No | No |
-| Skills Gap Analysis | Yes (5 tokens) | No | No | No |
-| Career Roadmap | Yes (8 tokens) | No | No | No |
-| Salary Negotiation | Yes (3 tokens) | No | No | No |
-| Entrepreneurship | Yes (8 tokens) | No | No | No |
-| AI Headshots | Yes (20 tokens) | No | No | No |
-| Price for 1 JD Match | $0.15-0.20 | $49.95 | $29.00 | N/A |
-| Price for full job prep | $2.50-4.00 | $49.95 | $29.00 | $149.00 |
-| Free tier | 5 tokens + 2 daily | Limited scans | Limited features | None |
+| Cover Letter | Yes (5/8/12 tokens) | No | Yes | No |
+| Interview Prep | Yes (8 tokens) | No | No | Yes (core feature) |
+| LinkedIn Optimization | Yes (15 tokens) | No | No | No |
+| Skills Gap Analysis | Yes (8 tokens) | No | No | No |
+| Career Roadmap | Yes (15 tokens) | No | No | No |
+| Salary Negotiation | Yes (8 tokens) | No | No | No |
+| Entrepreneurship | Yes (12 tokens) | No | No | No |
+| AI Headshots | Yes (25 tokens) | No | No | No |
+| Price for 1 JD Match | ~$0.98 (Pro rate) | $49.95 | $29.00 | N/A |
+| Price for full job prep | ~$8.57 (44 tokens at Pro rate) | $49.95 | $29.00 | $149.00 |
+| Free tier | 15 tokens + 2 daily | Limited scans | Limited features | None |
 | Pricing model | Pay-per-use tokens | Monthly subscription | Monthly subscription | Monthly subscription |
 
 ### Competitive Advantages
@@ -619,7 +619,7 @@ Starter ($5/50) or Pro ($15/200)
 
 ### P1 -- Fix Within First Week
 
-6. **Increase free tokens to 10** -- Allows one premium tool use before paywall. Better for conversion.
+6. **Free tokens at 15** -- Allows one JD Match + partial Resume Optimizer before paywall. Better for conversion.
 
 7. **Preserve Smart Input content through auth** -- Store pasted resume/JD in localStorage, load after auth redirect.
 

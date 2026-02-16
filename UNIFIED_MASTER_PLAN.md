@@ -81,6 +81,11 @@ All batches are complete. Each was self-contained; later batches depended on ear
 - **Daily credits:** 2/day, cap 14, 7-day expiry. Implemented: migration, `award_daily_credits` RPC, `spend_tokens` spends daily first, `/api/daily-credits` endpoint, `useTokens` hook.
 - **Spend:** Use `spend_tokens` RPC only; never update balance directly.
 
+**Token economics:**
+- **Per-tool costs:** displacement=0, jd_match=5, resume=15, cover_letter=5/8/12 (short/standard/detailed), interview=8, linkedin=15, skills_gap=8, roadmap=15, salary=8, entrepreneurship=12, headshots=25
+- **Packs:** Starter 50tk/$14 ($0.28/tk), Pro 200tk/$39 ($0.195/tk, 30% savings), Power 500tk/$79 ($0.158/tk, 44% savings)
+- **Lifetime:** Early Bird $119/120tk/mo, Standard $179/120tk/mo, VIP $279/180tk/mo
+
 ---
 
 ## 6. Key Documents to Follow
