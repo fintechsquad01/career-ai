@@ -6,6 +6,7 @@ import { toolPrompts, type RecentResult } from "./prompts.ts";
 
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const APP_URL = Deno.env.get("APP_URL") || "https://aiskillscore.com";
 
@@ -121,7 +122,7 @@ Deno.serve(async (req: Request) => {
   let userId: string;
   try {
     const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: { Authorization: authHeader, apikey: SUPABASE_SERVICE_ROLE_KEY! },
+      headers: { Authorization: authHeader, apikey: SUPABASE_ANON_KEY! },
     });
     const userData = await userResponse.json();
     if (!userData.id) {

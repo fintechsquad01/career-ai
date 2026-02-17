@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 // --- CORS: Dynamic origin check ---
@@ -61,7 +62,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: { Authorization: authHeader, apikey: SUPABASE_SERVICE_ROLE_KEY! },
+      headers: { Authorization: authHeader, apikey: SUPABASE_ANON_KEY! },
     });
     const userData = await userResponse.json();
     if (!userData.id) {
