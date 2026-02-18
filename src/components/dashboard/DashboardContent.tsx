@@ -57,6 +57,7 @@ function getSmartRecommendations(
   recentResults: ToolResultRow[],
 ): SmartRec[] {
   const completedTools = new Set(recentResults.map((r) => r.tool_id));
+  const hasSavedDisplacementScore = careerProfile?.displacement_score != null;
   const recs: SmartRec[] = [];
 
   // Priority 1: Missing resume — everything is better with a resume
@@ -76,7 +77,7 @@ function getSmartRecommendations(
   }
 
   // Priority 2: Free displacement score
-  if (!completedTools.has("displacement")) {
+  if (!completedTools.has("displacement") && !hasSavedDisplacementScore) {
     recs.push({
       id: "displacement",
       title: "Check your AI displacement risk",

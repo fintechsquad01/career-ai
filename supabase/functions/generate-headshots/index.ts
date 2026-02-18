@@ -21,14 +21,24 @@ function getCorsHeaders(req: Request) {
 // --- Rate Limiting ---
 const rateLimitMap = new Map<string, number[]>();
 
-function checkRate(key: string, limit: number, windowMs: number): boolean {
+function checkRate(
+  key: string,
+  limit: number,
+  windowMs: number
+): { allowed: boolean; retryAfterSeconds: number } {
   const now = Date.now();
   const timestamps = rateLimitMap.get(key) || [];
   const valid = timestamps.filter((t) => now - t < windowMs);
-  if (valid.length >= limit) return false;
+  if (valid.length >= limit) {
+    const retryAfterMs = windowMs - (now - valid[0]);
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.max(1, Math.ceil(retryAfterMs / 1000)),
+    };
+  }
   valid.push(now);
   rateLimitMap.set(key, valid);
-  return true;
+  return { allowed: true, retryAfterSeconds: 0 };
 }
 
 const VALID_STYLES = ["professional", "casual", "modern"];
@@ -193,10 +203,20 @@ Deno.serve(async (req: Request) => {
     }
 
     // Rate limit by user: 3/min
-    if (!checkRate(`generate-headshots:${user.id}`, 3, 60000)) {
-      return new Response(JSON.stringify({ error: "Too many requests. Please wait and try again." }), {
+    const rateResult = checkRate(`generate-headshots:${user.id}`, 3, 60000);
+    if (!rateResult.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: "Too many requests. Please wait and try again.",
+          retry_after_seconds: rateResult.retryAfterSeconds,
+        }),
+        {
         status: 429,
-        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+        headers: {
+          ...getCorsHeaders(req),
+          "Content-Type": "application/json",
+          "Retry-After": String(rateResult.retryAfterSeconds),
+        },
       });
     }
 
@@ -367,7 +387,7 @@ Deno.serve(async (req: Request) => {
           tool_id: "headshots",
           inputs: { image_paths, style, background },
           result: toolResult,
-          tokens_spent: COST,
+          tokens_spent: 0,
         })
         .select("id")
         .single();
@@ -388,6 +408,12 @@ Deno.serve(async (req: Request) => {
         throw new Error("Failed to deduct tokens");
       }
 
+      // Mark as paid only after successful token deduction.
+      await supabaseClient
+        .from("tool_results")
+        .update({ tokens_spent: COST })
+        .eq("id", insertedResult.id);
+
       return new Response(
         JSON.stringify({
           result: toolResult,
@@ -403,8 +429,10 @@ Deno.serve(async (req: Request) => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Headshot generation failed";
+    const lower = message.toLowerCase();
+    const status = lower.includes("too many requests") || lower.includes("429") ? 429 : 500;
     return new Response(JSON.stringify({ error: message }), {
-      status: 500,
+      status,
       headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   }

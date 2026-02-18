@@ -162,6 +162,10 @@ export function ResumeUploadOrPaste({
       setParsing(true);
       try {
         const result = await parseFile(file);
+        if (result.quality === "failed") {
+          setError("Extraction failed — too little text was detected. Please paste your full resume text directly.");
+          return;
+        }
         onChange(result.text);
         setMode("prefilled");
 

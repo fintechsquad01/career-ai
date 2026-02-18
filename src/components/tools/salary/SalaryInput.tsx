@@ -8,6 +8,8 @@ interface SalaryInputProps {
   onSubmit: (inputs: Record<string, unknown>) => void;
 }
 
+const CURRENCIES = ["USD", "EUR", "GBP", "TRY", "CAD", "AUD"] as const;
+
 export function SalaryInput({ onSubmit }: SalaryInputProps) {
   const careerProfile = useAppStore((s) => s.careerProfile);
   const activeJobTarget = useAppStore((s) => s.activeJobTarget);
@@ -21,6 +23,11 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
   const [currentSalary, setCurrentSalary] = useState("");
   const [targetRole, setTargetRole] = useState(prefillTargetRole);
   const [location, setLocation] = useState(prefillLocation);
+  const [currency, setCurrency] = useState<string>(
+    prefillLocation.toLowerCase().includes("turkey") || prefillLocation.toLowerCase().includes("istanbul")
+      ? "TRY"
+      : "USD"
+  );
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -38,14 +45,30 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
         <label htmlFor="salary-current" className="block text-sm font-medium text-gray-700 mb-1">
           Current Salary <span className="text-gray-400">(optional)</span>
         </label>
-        <input
-          id="salary-current"
-          type="text"
-          value={currentSalary}
-          onChange={(e) => setCurrentSalary(e.target.value)}
-          placeholder="e.g. 120000"
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
-        />
+        <div className="flex gap-2">
+          <input
+            id="salary-current"
+            type="text"
+            value={currentSalary}
+            onChange={(e) => setCurrentSalary(e.target.value)}
+            placeholder="e.g. 120000"
+            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+          />
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="px-3 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[44px]"
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </div>
+        {activeJobTarget?.salary_range && (
+          <p className="text-xs text-blue-600 mt-1">
+            Job posting salary detected: {activeJobTarget.salary_range}
+          </p>
+        )}
       </div>
 
       <div>
@@ -88,7 +111,13 @@ export function SalaryInput({ onSubmit }: SalaryInputProps) {
       </div>
 
       <button
-        onClick={() => onSubmit({ current_salary: currentSalary || undefined, target_role: targetRole, location })}
+        onClick={() => onSubmit({
+          current_salary: currentSalary || undefined,
+          currency,
+          target_role: targetRole,
+          location,
+          jd_salary_range: activeJobTarget?.salary_range || undefined,
+        })}
         disabled={!targetRole.trim() || !location.trim()}
         className="btn-primary"
       >

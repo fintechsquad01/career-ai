@@ -52,7 +52,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
     getActionState,
   } = useMission();
 
-  const { toolResults } = useMissionResults(activeJobTarget?.id);
+  const { toolResults, refetchResults } = useMissionResults(activeJobTarget?.id);
 
   const missionToolIds = MISSION_ACTIONS.map((a) => a.toolId);
   const { deltas: scoreDeltas } = useBatchScoreDeltas(missionToolIds, activeJobTarget?.id);
@@ -65,6 +65,18 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
       setView("detail");
     }
   }, [allJobTargets.length, activeJobTarget]);
+
+  useEffect(() => {
+    const refreshMissionData = () => {
+      void refetchResults();
+    };
+    window.addEventListener("focus", refreshMissionData);
+    document.addEventListener("visibilitychange", refreshMissionData);
+    return () => {
+      window.removeEventListener("focus", refreshMissionData);
+      document.removeEventListener("visibilitychange", refreshMissionData);
+    };
+  }, [refetchResults]);
 
   useEffect(() => {
     const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");

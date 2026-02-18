@@ -7,10 +7,10 @@ interface SalaryResultsProps {
   result: ToolResult | null;
 }
 
-function formatCurrency(n: number) {
+function formatCurrency(n: number, currencyCode = "USD") {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: currencyCode,
     maximumFractionDigits: 0,
   }).format(n);
 }
@@ -30,6 +30,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
   const { market_range, candidate_position } = data;
   const range = market_range ?? { p25: 0, p50: 0, p75: 0, p90: 0 };
   const pos = candidate_position ?? 50;
+  const currency = data.currency || "USD";
 
   const leverageColors: Record<string, string> = {
     strong: "bg-green-50 text-green-700 border-green-200",
@@ -43,6 +44,11 @@ export function SalaryResults({ result }: SalaryResultsProps) {
       {market_range && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">Market Range</h3>
+          {data.posted_salary_range && (
+            <div className="mb-3 p-2.5 rounded-lg bg-blue-50 border border-blue-100 text-sm text-blue-800">
+              Job posting range: <strong>{data.posted_salary_range}</strong>
+            </div>
+          )}
           <div className="space-y-3">
             <div className="flex justify-between text-sm text-gray-500">
               <span>25th</span>
@@ -63,10 +69,10 @@ export function SalaryResults({ result }: SalaryResultsProps) {
               />
             </div>
             <div className="flex justify-between text-sm font-medium text-gray-900">
-              <span>{formatCurrency(range.p25)}</span>
-              <span>{formatCurrency(range.p50)}</span>
-              <span>{formatCurrency(range.p75)}</span>
-              <span>{formatCurrency(range.p90)}</span>
+              <span>{formatCurrency(range.p25, currency)}</span>
+              <span>{formatCurrency(range.p50, currency)}</span>
+              <span>{formatCurrency(range.p75, currency)}</span>
+              <span>{formatCurrency(range.p90, currency)}</span>
             </div>
           </div>
           {market_range.data_caveat && (

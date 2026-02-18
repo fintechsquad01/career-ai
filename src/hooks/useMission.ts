@@ -17,15 +17,24 @@ export function useMission() {
   const progress = Math.round((completed / total) * 100);
 
   const completeAction = useCallback(
-    async (actionId: string) => {
-      if (!activeJobTarget) return;
-
-      const updated = { ...missionActions, [actionId]: true };
+    async (actionId: string, jobTargetId?: string) => {
+      const targetId = jobTargetId || activeJobTarget?.id;
+      if (!targetId) return;
+      let baseActions = missionActions;
+      if (!activeJobTarget || activeJobTarget.id !== targetId) {
+        const { data: targetData } = await supabase
+          .from("job_targets")
+          .select("mission_actions")
+          .eq("id", targetId)
+          .single();
+        baseActions = (targetData?.mission_actions as Record<string, boolean>) || {};
+      }
+      const updated = { ...baseActions, [actionId]: true };
 
       const { data, error } = await supabase
         .from("job_targets")
         .update({ mission_actions: updated as unknown as Json })
-        .eq("id", activeJobTarget.id)
+        .eq("id", targetId)
         .select()
         .single();
 

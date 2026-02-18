@@ -8,8 +8,10 @@ import {
 } from "lucide-react";
 import { useJobTargets } from "@/hooks/useJobTargets";
 import { useTokens } from "@/hooks/useTokens";
+import { useMission } from "@/hooks/useMission";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
+import { MISSION_ACTIONS } from "@/lib/constants";
 
 const QUICK_TOOLS = [
   { id: "jd_match", title: "JD Match Score", tokens: 5, icon: Target, color: "blue" },
@@ -18,6 +20,9 @@ const QUICK_TOOLS = [
 ] as const;
 
 const TOTAL_TOKENS = QUICK_TOOLS.reduce((sum, t) => sum + t.tokens, 0);
+const MISSION_ACTION_BY_TOOL = Object.fromEntries(
+  MISSION_ACTIONS.map((a) => [a.toolId, a.id])
+) as Record<string, string>;
 
 const COLOR_CLASSES: Record<string, { bg: string; text: string }> = {
   blue: { bg: "bg-blue-50", text: "text-blue-600" },
@@ -47,6 +52,7 @@ export function QuickApplyFlow({ hasResume }: QuickApplyFlowProps) {
 
   const { addTarget } = useJobTargets();
   const { balance, refreshBalance } = useTokens();
+  const { completeAction } = useMission();
   const careerProfile = useAppStore((s) => s.careerProfile);
   const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
@@ -165,12 +171,16 @@ export function QuickApplyFlow({ hasResume }: QuickApplyFlowProps) {
       );
 
       if (success) {
+        const missionActionId = MISSION_ACTION_BY_TOOL[QUICK_TOOLS[i].id];
+        if (missionActionId) {
+          await completeAction(missionActionId, target.id);
+        }
         await refreshBalance();
       }
     }
 
     setPhase("done");
-  }, [jdText, canAfford, addTarget, careerProfile, runTool, refreshBalance]);
+  }, [jdText, canAfford, addTarget, careerProfile, runTool, refreshBalance, completeAction]);
 
   const handleRetryStep = useCallback(
     async (stepIdx: number) => {
@@ -192,10 +202,14 @@ export function QuickApplyFlow({ hasResume }: QuickApplyFlowProps) {
       );
 
       if (success) {
+        const missionActionId = MISSION_ACTION_BY_TOOL[QUICK_TOOLS[stepIdx].id];
+        if (missionActionId) {
+          await completeAction(missionActionId, activeJobTarget.id);
+        }
         await refreshBalance();
       }
     },
-    [activeJobTarget, careerProfile, jdText, runTool, refreshBalance]
+    [activeJobTarget, careerProfile, jdText, runTool, refreshBalance, completeAction]
   );
 
   const completedCount = steps.filter((s) => s.status === "completed").length;

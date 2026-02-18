@@ -203,11 +203,15 @@ function getResultAwareNarrative(
   return null; // Fall back to default static narrative
 }
 
-function getDynamicRecommendation(currentToolId: string, result: ToolResult | null) {
+function getDynamicRecommendation(
+  currentToolId: string,
+  result: ToolResult | null,
+  completedToolIds: Set<string>
+) {
   const transitions = NARRATIVE_TRANSITIONS[currentToolId];
   if (!transitions) return null;
 
-  const entries = Object.entries(transitions);
+  const entries = Object.entries(transitions).filter(([nextToolId]) => !completedToolIds.has(nextToolId));
   if (entries.length === 0) return null;
 
   // Return the first (highest priority) recommendation
@@ -221,11 +225,12 @@ function getDynamicRecommendation(currentToolId: string, result: ToolResult | nu
   return { tool: nextTool, narrative };
 }
 
-function getSecondaryRecommendations(currentToolId: string) {
+function getSecondaryRecommendations(currentToolId: string, completedToolIds: Set<string>) {
   const transitions = NARRATIVE_TRANSITIONS[currentToolId];
   if (!transitions) return [];
 
   return Object.keys(transitions)
+    .filter((id) => !completedToolIds.has(id))
     .slice(1) // skip the primary recommendation
     .map((id) => TOOLS_MAP[id])
     .filter(Boolean);
@@ -652,7 +657,10 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               } else if (raw.includes("content") || raw.includes("policy") || raw.includes("safety")) {
                 errorMsg = "Image couldn't be generated due to content guidelines. Try a different photo.";
               } else if (raw.includes("rate") || raw.includes("limit")) {
-                errorMsg = "Too many requests. Please wait a minute and try again.";
+                const retryAfter = typeof err.retry_after_seconds === "number" ? err.retry_after_seconds : null;
+                errorMsg = retryAfter
+                  ? `Too many requests. Please wait ${retryAfter} seconds and try again.`
+                  : "Too many requests. Please wait a minute and try again.";
               } else if (raw) {
                 errorMsg = raw;
               }
@@ -679,6 +687,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           };
 
           setResult(headshotsResult as ToolResult);
+          setCompletedToolIds((prev) => new Set(prev).add(toolId));
           // Tokens already deducted server-side in generate-headshots; just refresh
           await refreshBalance();
           track("tool_completed", { tool_id: toolId });
@@ -695,7 +704,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             body: JSON.stringify({
               tool_id: toolId,
               inputs,
-              job_target_id: activeJobTarget?.id || null,
+              job_target_id: toolId === "displacement" ? null : (activeJobTarget?.id || null),
             }),
           });
 
@@ -831,6 +840,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               }
             }
             track("tool_completed", { tool_id: toolId });
+            setCompletedToolIds((prev) => new Set(prev).add(toolId));
             setState("result");
           }
         }
@@ -1028,7 +1038,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         </div>
       )}
       {/* Job Target Selector — switch between multiple targets */}
-      <JobTargetSelector />
+      {toolId !== "displacement" && <JobTargetSelector />}
 
       {/* JD nudge — shown when no active job target on tools that benefit from one */}
       {state === "input" && !activeJobTarget && ["jd_match", "resume", "cover_letter", "interview", "salary"].includes(toolId) && (
@@ -1091,7 +1101,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             )}
 
             {/* Job target context */}
-            {activeJobTarget ? (
+            {toolId === "displacement" ? (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-green-500">&#10003;</span>
+                <span className="text-gray-600">
+                  Scope: <strong className="text-gray-900">Current role risk analysis</strong> (target job not used)
+                </span>
+              </div>
+            ) : activeJobTarget ? (
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-green-500">&#10003;</span>
                 <span className="text-gray-600">
@@ -1353,13 +1370,29 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Guided next step — narrative-driven */}
       {state === "result" && tool && (() => {
-        const primary = getDynamicRecommendation(toolId, result);
-        const secondary = getSecondaryRecommendations(toolId);
+        const primary = getDynamicRecommendation(toolId, result, completedToolIds);
+        const secondary = getSecondaryRecommendations(toolId, completedToolIds);
+        const missionComplete = MISSION_ACTIONS.every((a) => completedToolIds.has(a.toolId));
 
         return (
           <div className="space-y-3">
+            {missionComplete && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+                <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">Mission complete</p>
+                <p className="text-sm text-emerald-900 mb-2">
+                  You have finished all core mission tools for this target. Continue with refinement tools or start a new mission.
+                </p>
+                <Link
+                  href="/mission"
+                  className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1"
+                >
+                  Go to Mission Control
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
             {/* Primary recommendation — narrative */}
-            {primary && (
+            {!missionComplete && primary && (
               <Link
                 href={`/tools/${primary.tool.id}`}
                 className="block bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 hover:shadow-md transition-shadow group celebrate"
@@ -1383,7 +1416,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             )}
 
             {/* Secondary recommendations — compact */}
-            {secondary.length > 0 && (
+            {!missionComplete && secondary.length > 0 && (
               <div className="flex flex-wrap gap-2 stagger-children">
                 <span className="text-xs text-gray-400 self-center mr-1">Also try:</span>
                 {secondary.map((rec) => (

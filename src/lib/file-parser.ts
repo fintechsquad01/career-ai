@@ -20,7 +20,7 @@ async function getPdfJs() {
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const MIN_RESUME_WORDS = 30; // A real resume should have at least 30 words
+const MIN_RESUME_WORDS = 50; // Below this, extraction is too weak for reliable tool output
 
 export type ParseQuality = "good" | "partial" | "failed";
 
@@ -36,8 +36,25 @@ function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function getWordBucket(wordCount: number): string {
+  if (wordCount < MIN_RESUME_WORDS) return "<50";
+  if (wordCount < 150) return "50-149";
+  if (wordCount < 300) return "150-299";
+  return "300+";
+}
+
+function logParseDiagnostics(fileName: string, fileType: string, wordCount: number, quality: ParseQuality): void {
+  // Keep logs privacy-safe: no raw extracted text.
+  console.info("[ResumeParser]", {
+    file_name: fileName,
+    file_type: fileType,
+    word_bucket: getWordBucket(wordCount),
+    quality,
+  });
+}
+
 export function getParseQuality(wordCount: number): ParseQuality {
-  if (wordCount >= 100) return "good";
+  if (wordCount >= 200) return "good";
   if (wordCount >= MIN_RESUME_WORDS) return "partial";
   return "failed";
 }
@@ -54,7 +71,9 @@ export async function parseFile(file: File): Promise<FileParseResult> {
   if (fileType === "text/plain" || fileName.endsWith(".txt")) {
     const text = await file.text();
     const wc = countWords(text);
-    return { text, fileName, fileType, wordCount: wc, quality: getParseQuality(wc) };
+    const quality = getParseQuality(wc);
+    logParseDiagnostics(fileName, fileType || "text/plain", wc, quality);
+    return { text, fileName, fileType, wordCount: wc, quality };
   }
 
   // PDF files
@@ -62,6 +81,7 @@ export async function parseFile(file: File): Promise<FileParseResult> {
     const text = await extractPdfText(file);
     const wc = countWords(text);
     const quality = getParseQuality(wc);
+    logParseDiagnostics(fileName, "application/pdf", wc, quality);
     return { text, fileName, fileType: "application/pdf", wordCount: wc, quality };
   }
 
@@ -73,6 +93,12 @@ export async function parseFile(file: File): Promise<FileParseResult> {
     const text = await extractDocxText(file);
     const wc = countWords(text);
     const quality = getParseQuality(wc);
+    logParseDiagnostics(
+      fileName,
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      wc,
+      quality
+    );
     return { text, fileName, fileType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", wordCount: wc, quality };
   }
 
@@ -134,7 +160,7 @@ async function extractPdfText(file: File): Promise<string> {
 
     if (wordCount < MIN_RESUME_WORDS) {
       throw new Error(
-        `Only ${wordCount} words extracted from the PDF. The file may have complex formatting or be image-based. Please paste your resume text directly for best results.`
+        `Only ${wordCount} words extracted from the PDF. This is too little for reliable analysis. Please paste your full resume text directly.`
       );
     }
 
@@ -181,7 +207,14 @@ async function extractDocxText(file: File): Promise<string> {
       throw new Error("No text content found in DOCX.");
     }
 
-    return textParts.join("\n");
+    const fullText = textParts.join("\n");
+    const wordCount = countWords(fullText);
+    if (wordCount < MIN_RESUME_WORDS) {
+      throw new Error(
+        `Only ${wordCount} words extracted from the DOCX. This is too little for reliable analysis. Please paste your full resume text directly.`
+      );
+    }
+    return fullText;
   } catch (err) {
     if (err instanceof Error && (err.message.includes("No text content") || err.message.includes("Invalid DOCX"))) {
       throw err;

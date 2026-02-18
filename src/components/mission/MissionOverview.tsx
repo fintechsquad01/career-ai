@@ -33,6 +33,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [showAddForm, setShowAddForm] = useState(false);
   const [newJdText, setNewJdText] = useState("");
+  const [newCompany, setNewCompany] = useState("");
   const [saving, setSaving] = useState(false);
 
   const { switchTarget, addTarget, refreshTargets } = useJobTargets();
@@ -58,9 +59,10 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
     if (!newJdText.trim()) return;
     setSaving(true);
     try {
-      const result = await addTarget(newJdText);
+      const result = await addTarget(newJdText, undefined, newCompany.trim() || undefined);
       if (result) {
         setNewJdText("");
+        setNewCompany("");
         setShowAddForm(false);
         await refreshTargets();
       }
@@ -138,9 +140,15 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
             placeholder="Paste a job description here..."
             className="w-full h-24 px-3 py-2 border border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
+          <input
+            value={newCompany}
+            onChange={(e) => setNewCompany(e.target.value)}
+            placeholder="Company (optional override)"
+            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
           <div className="flex items-center gap-2 justify-end">
             <button
-              onClick={() => { setShowAddForm(false); setNewJdText(""); }}
+              onClick={() => { setShowAddForm(false); setNewJdText(""); setNewCompany(""); }}
               className="px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
             >
               Cancel

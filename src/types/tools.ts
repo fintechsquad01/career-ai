@@ -389,6 +389,8 @@ export interface TRoadmapResult {
 }
 
 export interface TSalaryResult {
+  currency?: string;
+  posted_salary_range?: string;
   market_range: {
     p25: number;
     p50: number;

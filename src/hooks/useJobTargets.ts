@@ -5,6 +5,26 @@ import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 import type { JobTarget, JobTargetStatus } from "@/types";
 
+function extractCompanyFromJd(jdText: string): string {
+  const lines = jdText
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const header = lines.slice(0, 8).join(" ");
+  const patterns = [
+    /\bat\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/,
+    /\babout\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/i,
+    /\bjoin\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/i,
+  ];
+  for (const pattern of patterns) {
+    const match = header.match(pattern);
+    if (match?.[1]) {
+      return match[1].replace(/[.,;:!?]$/, "").trim();
+    }
+  }
+  return "";
+}
+
 /** Hook to manage all job targets for the current user */
 export function useJobTargets() {
   const jobTargets = useAppStore((s) => s.jobTargets);
@@ -108,13 +128,14 @@ export function useJobTargets() {
         const lines = jdText.trim().split("\n").filter((l: string) => l.trim());
         const derivedTitle = title || lines[0]?.trim().slice(0, 100) || "Untitled Position";
 
+        const inferredCompany = company?.trim() || extractCompanyFromJd(jdText);
         const { data, error } = await supabase
           .from("job_targets")
           .insert({
             user_id: session.user.id,
             jd_text: jdText.trim(),
             title: derivedTitle,
-            company: company || "",
+            company: inferredCompany,
             is_active: setActive,
             source: "paste",
           })

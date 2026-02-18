@@ -40,6 +40,25 @@ function checkRate(key: string, limit: number, windowMs: number): boolean {
 // --- Validation ---
 const VALID_DETECTED_TYPES = ["resume", "jd", "url", "unknown"];
 
+function extractCompanyFallback(text: string): string {
+  const header = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(0, 10)
+    .join(" ");
+  const patterns = [
+    /\bat\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/,
+    /\babout\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/i,
+    /\bjoin\s+([A-Z][A-Za-z0-9&.\- ]{1,60})\b/i,
+  ];
+  for (const pattern of patterns) {
+    const match = header.match(pattern);
+    if (match?.[1]) return match[1].replace(/[.,;:!?]$/, "").trim();
+  }
+  return "";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: getCorsHeaders(req) });
@@ -193,6 +212,17 @@ ${input_text}`;
         status: 500,
         headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
+    }
+
+    if (result?.type === "jd" && result?.data && typeof result.data === "object") {
+      const parsed = result.data as Record<string, unknown>;
+      const company = typeof parsed.company === "string" ? parsed.company.trim() : "";
+      if (!company) {
+        const fallback = extractCompanyFallback(input_text);
+        if (fallback) {
+          parsed.company = fallback;
+        }
+      }
     }
 
     return new Response(JSON.stringify(result), {

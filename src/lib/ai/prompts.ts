@@ -204,13 +204,18 @@ Respond in this exact JSON format:
 }`;
 
     case "salary":
+      const currency = (inputs.currency as string) || "USD";
+      const jdSalaryRange = (inputs.jd_salary_range as string) || (ctx.jobTarget?.salary_range as string) || "";
       return `${shared}
-Research salary data for the target position. ${inputs.current_salary ? `The candidate's current salary is ${inputs.current_salary}.` : ""} Location: ${inputs.location || "unspecified"}.
+Research salary data for the target position. ${inputs.current_salary ? `The candidate's current salary is ${inputs.current_salary}.` : ""} Location: ${inputs.location || "unspecified"}. Currency: ${currency}.
+${jdSalaryRange ? `Job posting salary range detected: ${jdSalaryRange}. Use this as the primary anchor and compare against market estimates.` : "If salary appears in the JD text, extract and prioritize it before generic market ranges."}
 
 Provide market data ranges, counter-offer scripts, and negotiation tactics.
 
 Respond in this exact JSON format:
 {
+  "currency": "${currency}",
+  "posted_salary_range": "${jdSalaryRange || "<none found>"}",
   "market_range": {"p25": <number>, "p50": <number>, "p75": <number>, "p90": <number>},
   "candidate_position": <estimated percentile>,
   "counter_offer_scripts": [{"scenario": "<scenario>", "script": "<what to say>"}],

@@ -27,6 +27,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newJdText, setNewJdText] = useState("");
+  const [newCompany, setNewCompany] = useState("");
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -64,14 +65,15 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
   const handleAdd = useCallback(async () => {
     if (!newJdText.trim() || newJdText.trim().length < 20) return;
     setSaving(true);
-    const result = await addTarget(newJdText);
+    const result = await addTarget(newJdText, undefined, newCompany.trim() || undefined);
     setSaving(false);
     if (result) {
       setNewJdText("");
+      setNewCompany("");
       setShowAddForm(false);
       setOpen(false);
     }
-  }, [newJdText, addTarget]);
+  }, [newJdText, newCompany, addTarget]);
 
   const handleRename = useCallback(
     async (targetId: string) => {
@@ -121,7 +123,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
               <span className="text-sm font-medium text-gray-700">Add Target Job</span>
               <button
                 type="button"
-                onClick={() => { setShowAddForm(false); setNewJdText(""); }}
+            onClick={() => { setShowAddForm(false); setNewJdText(""); setNewCompany(""); }}
                 className="text-gray-400 hover:text-gray-600 min-h-[44px] flex items-center"
               >
                 <X className="w-4 h-4" />
@@ -134,6 +136,12 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
               rows={4}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-y"
               autoFocus
+            />
+            <input
+              value={newCompany}
+              onChange={(e) => setNewCompany(e.target.value)}
+              placeholder="Company (optional override)"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             <button
               type="button"
@@ -166,11 +174,13 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
           <Briefcase className={`flex-shrink-0 text-blue-500 ${compact ? "w-3.5 h-3.5" : "w-4 h-4"}`} />
           <div className="min-w-0 flex-1">
             <span className={`font-semibold text-blue-700 truncate block ${compact ? "text-xs" : "text-sm"}`}>
-              {activeJobTarget?.title || "Select target"}
+              {activeJobTarget
+                ? `${activeJobTarget.title}${activeJobTarget.company ? ` at ${activeJobTarget.company}` : ""}`
+                : "Select target"}
             </span>
             {!compact && activeJobTarget?.company && (
               <span className="text-xs text-blue-500 truncate block">
-                {activeJobTarget.company}
+                Company: {activeJobTarget.company}
               </span>
             )}
           </div>
@@ -253,7 +263,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className={`text-sm truncate ${isActive ? "font-semibold text-gray-900" : "text-gray-700"}`}>
-                        {target.title}
+                        {target.title}{target.company ? ` at ${target.company}` : ""}
                       </p>
                       {target.company && (
                         <p className="text-xs text-gray-500 truncate">{target.company}</p>

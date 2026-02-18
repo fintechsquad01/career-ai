@@ -1026,6 +1026,8 @@ const salary: ToolPromptConfig = {
     const ctx = buildContext(careerProfile, jobTarget, inputs, { includeResume: true, includeJdText: true });
     const priorCtx = buildPriorResultsContext("salary", recentResults || []);
     const currentSalary = inputs.current_salary ? `Current salary: ${inputs.current_salary}.` : "";
+    const currency = (inputs.currency as string) || "USD";
+    const jdSalary = (inputs.jd_salary_range as string) || (jobTarget?.salary_range as string) || "";
     const location = (inputs.location as string) || (careerProfile?.location as string) || "US";
 
     // Extract role from multiple sources — never default to generic
@@ -1037,12 +1039,14 @@ const salary: ToolPromptConfig = {
       ? `Target role for salary analysis: ${role}.`
       : "IMPORTANT: Extract the target role from the resume or job description provided above. Do not default to 'Software Engineer' or any generic role.";
 
-    return `${ctx}${priorCtx}Create a salary negotiation strategy. ${currentSalary} ${roleContext} Location: ${location}.
+    return `${ctx}${priorCtx}Create a salary negotiation strategy. ${currentSalary} ${roleContext} Location: ${location}. Currency: ${currency}.
 ${ANTI_HALLUCINATION_RULES}
 ROLE DETECTION (CRITICAL):
 - If no explicit target role is provided, you MUST extract the role from the resume (most recent title) or job description (job title).
 - NEVER default to "Software Engineer" or any generic role. If truly no role information is available, state this limitation explicitly in your analysis.
 - The salary range MUST be for the specific detected role, not a generic range.
+- If JD salary is present, anchor analysis to that posted range first, then compare against market estimates.
+- Keep all numeric compensation outputs in ${currency} unless explicitly noted otherwise.
 
 IMPORTANT: Tailor the leverage assessment to the candidate's ACTUAL experience, skills, and career history from their resume. Assess their scarcity value based on real skills, not assumptions.
 
@@ -1080,6 +1084,8 @@ Respond ONLY in valid JSON:
     "p90": <90th percentile estimate>,
     "data_caveat": "These are estimates based on general market patterns. Verify with Levels.fyi, Glassdoor, or Payscale before negotiating. Actual compensation varies significantly by company, team, and negotiation."
   },
+  "currency": "${currency}",
+  "posted_salary_range": "${jdSalary || "<none found>"}",
   "candidate_position": <estimated percentile based on their experience>,
   "leverage_assessment": {
     "overall_leverage": "strong|moderate|limited",

@@ -23,6 +23,13 @@ interface NotificationPreferences {
   product_updates: boolean;
 }
 
+function parseSkills(skills: unknown): string[] {
+  if (!Array.isArray(skills)) return [];
+  return skills
+    .map((s) => (typeof s === "string" ? s.trim() : ""))
+    .filter(Boolean);
+}
+
 const TABS = [
   { id: "profile", label: "Profile", icon: User },
   { id: "account", label: "Account", icon: CreditCard },
@@ -63,6 +70,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [deleting, setDeleting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadWarning, setUploadWarning] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
   const [parsing, setParsing] = useState(false);
@@ -76,6 +84,8 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [yearsExperience, setYearsExperience] = useState(yearsToExperienceLevel(careerProfile?.years_experience ?? null));
   const [location, setLocation] = useState(careerProfile?.location || "");
   const [linkedinUrl, setLinkedinUrl] = useState(careerProfile?.linkedin_url || "");
+  const [skillsInput, setSkillsInput] = useState("");
+  const [skills, setSkills] = useState<string[]>(parseSkills(careerProfile?.skills));
   const [savingCareer, setSavingCareer] = useState(false);
 
   // Password change state
@@ -100,6 +110,8 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
     setYearsExperience(yearsToExperienceLevel(careerProfile?.years_experience ?? null));
     setLocation(careerProfile?.location || "");
     setLinkedinUrl(careerProfile?.linkedin_url || "");
+    setSkills(parseSkills(careerProfile?.skills));
+    setSkillsInput("");
   }, [careerProfile]);
 
   const handleSave = async () => {
@@ -123,6 +135,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
         years_experience: yearsExperience ? parseInt(yearsExperience, 10) : null,
         location: location.trim() || null,
         linkedin_url: linkedinUrl.trim() || null,
+        skills,
         updated_at: new Date().toISOString(),
       };
 
@@ -143,6 +156,21 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
     } finally {
       setSavingCareer(false);
     }
+  };
+
+  const handleAddSkill = () => {
+    const value = skillsInput.trim();
+    if (!value) return;
+    if (skills.some((s) => s.toLowerCase() === value.toLowerCase())) {
+      setSkillsInput("");
+      return;
+    }
+    setSkills((prev) => [...prev, value].slice(0, 30));
+    setSkillsInput("");
+  };
+
+  const handleRemoveSkill = (skill: string) => {
+    setSkills((prev) => prev.filter((s) => s !== skill));
   };
 
   // --- Avatar Upload ---
@@ -220,6 +248,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
 
     setUploading(true);
     setUploadSuccess(false);
+    setUploadWarning(null);
     setParsing(false);
     try {
       const supabase = createClient();
@@ -232,13 +261,22 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
 
       // Parse text from all file types using file-parser
       let resumeText: string;
+      let parsedWithWarning = false;
       setParsing(true);
       try {
         const parsed = await parseFile(file);
+        if (parsed.quality === "failed") {
+          throw new Error("Resume extraction failed: fewer than 50 words were detected.");
+        }
         resumeText = parsed.text;
+        if (parsed.quality === "partial") {
+          parsedWithWarning = true;
+          setUploadWarning("Resume uploaded with partial extraction. Paste full text for best results.");
+        }
       } catch (parseErr) {
         console.warn("File parsing failed, storing path only:", parseErr);
-        resumeText = file.type === "text/plain" ? await file.text() : "[Uploaded - parsing failed. Please paste text manually.]";
+        setUploadWarning(parseErr instanceof Error ? parseErr.message : "Resume extraction failed. Please paste text manually.");
+        resumeText = "";
       }
       setParsing(false);
 
@@ -261,7 +299,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
       }
 
       setUploadSuccess(true);
-      toast(resumeText.startsWith("[") ? "Resume uploaded (text extraction incomplete)" : "Resume uploaded and parsed!");
+      toast(parsedWithWarning || !resumeText ? "Resume uploaded with extraction warning" : "Resume uploaded and parsed!");
       setTimeout(() => setUploadSuccess(false), 3000);
       router.refresh();
     } catch (err) {
@@ -474,17 +512,21 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
               <span className="block text-sm font-medium text-gray-700 mb-1">Resume</span>
               {careerProfile?.resume_text || careerProfile?.resume_file_path ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
+                  <div className={`flex items-center justify-between p-3 rounded-xl ${
+                    uploadWarning || !careerProfile.resume_text
+                      ? "bg-amber-50 border border-amber-200"
+                      : "bg-green-50 border border-green-200"
+                  }`}>
                     <div>
-                      <span className="text-sm text-green-800">
+                      <span className={`text-sm ${uploadWarning || !careerProfile.resume_text ? "text-amber-800" : "text-green-800"}`}>
                         {uploadSuccess
                           ? "Resume uploaded!"
-                          : careerProfile.resume_text && !careerProfile.resume_text.startsWith("[")
+                          : careerProfile.resume_text
                             ? "Resume uploaded & parsed"
-                            : "Resume uploaded"}
+                            : "Resume uploaded (paste text needed)"}
                       </span>
                       {careerProfile.parsed_at && (
-                        <p className="text-[10px] text-green-600 mt-0.5">
+                        <p className={`text-[10px] mt-0.5 ${uploadWarning || !careerProfile.resume_text ? "text-amber-700" : "text-green-600"}`}>
                           Parsed {new Date(careerProfile.parsed_at).toLocaleDateString()}
                         </p>
                       )}
@@ -508,9 +550,9 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                       />
                     </label>
                   </div>
-                  {careerProfile.resume_text?.startsWith("[") && (
-                    <p className="text-xs text-amber-600">
-                      Text extraction was incomplete. For best results, paste your resume text directly in a tool input.
+                  {(uploadWarning || !careerProfile.resume_text) && (
+                    <p className="text-xs text-amber-700">
+                      {uploadWarning || "Text extraction was incomplete. Paste your full resume text directly for reliable analysis."}
                     </p>
                   )}
                 </div>
@@ -622,6 +664,51 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                 placeholder="https://linkedin.com/in/yourprofile"
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
               />
+            </div>
+
+            <div>
+              <label htmlFor="settings-skills" className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
+              <div className="flex gap-2">
+                <input
+                  id="settings-skills"
+                  type="text"
+                  value={skillsInput}
+                  onChange={(e) => setSkillsInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddSkill();
+                    }
+                  }}
+                  placeholder="e.g. Python, SQL, Leadership"
+                  className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm min-h-[44px]"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddSkill}
+                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[44px]"
+                >
+                  Add
+                </button>
+              </div>
+              {skills.length > 0 ? (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {skills.map((skill) => (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => handleRemoveSkill(skill)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs border border-blue-100 hover:bg-blue-100"
+                      title="Remove skill"
+                    >
+                      {skill}
+                      <span aria-hidden>×</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-500 mt-2">Add your top skills to improve Skills Gap and Resume analysis.</p>
+              )}
             </div>
 
             <button
