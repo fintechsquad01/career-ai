@@ -327,7 +327,23 @@ a:active {
 }
 
 /* Unified primary CTA button — single brand style for all tools */
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
 .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
@@ -377,7 +393,39 @@ a:active {
   background-color: #e5e7eb;
 }
 
-/* Shared surface system (elevation hierarchy) */
+/* Shared surface system (elevation hierarchy, canonical names) */
+.surface-base {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.surface-hover:hover {
+  border-color: #dbeafe;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 8px 20px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+.surface-soft {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+}
+
+.surface-hero {
+  background: linear-gradient(120deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 1rem;
+}
+
+/* Backward-compatible aliases to remove naming drift gradually */
 .surface-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -532,6 +580,22 @@ a:active {
   margin: 0.75rem 0;
 }
 
+.report-section-title {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.report-section-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.report-section-footer {
+  margin-top: 0.75rem;
+}
+
 /* Loading skeleton primitives */
 .skeleton-base {
   border-radius: 0.5rem;
@@ -546,4 +610,20 @@ a:active {
 
 .skeleton-block {
   height: 4.5rem;
+}
+
+.skeleton-title {
+  height: 0.875rem;
+  width: 45%;
+}
+
+.skeleton-circle {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+}
+
+.skeleton-button {
+  height: 2.75rem;
+  border-radius: 0.75rem;
 }
