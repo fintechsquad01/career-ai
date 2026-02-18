@@ -20,11 +20,11 @@ function TokenCalculator() {
   const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : tokensNeeded <= 500 ? "Power" : "Lifetime";
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-16">
-      <h2 className="text-lg font-bold text-gray-900 mb-4 text-center">How many tokens do you need?</h2>
+    <div className="surface-card p-6 mb-16">
+      <h2 className="text-h3 text-center mb-4">How many tokens do you need?</h2>
       <div className="max-w-md mx-auto space-y-4">
         <div>
-          <label className="text-sm font-medium text-gray-700 block mb-2">
+          <label className="text-sm font-medium text-gray-700 block mb-2.5">
             Job applications you&apos;re targeting: <span className="text-blue-600 font-bold">{jobApps}</span>
           </label>
           <input
@@ -40,7 +40,7 @@ function TokenCalculator() {
             <span>30 apps</span>
           </div>
         </div>
-        <div className="bg-blue-50 rounded-xl p-4 text-center">
+        <div className="surface-card-hero p-4 text-center space-y-1">
           <p className="text-sm text-gray-600">
             You&apos;ll need approximately <span className="font-bold text-blue-600">{tokensNeeded} tokens</span>
           </p>
@@ -137,13 +137,13 @@ export default function PricingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productsJsonLd).replace(/</g, "\\u003c") }}
       />
-      <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
+      <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20 space-y-16">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center space-y-3">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
             Pay per use. No subscriptions.
           </h1>
-          <p className="text-lg text-gray-500 mb-4">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Jobscan costs $599/year. A full job prep on AISkillScore? Under $8.
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
@@ -153,40 +153,42 @@ export default function PricingPage() {
         </div>
 
         {/* Packs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {PACKS.map((pack) => (
             <div
               key={pack.id}
-              className={`rounded-2xl border p-6 ${
+              className={`surface-card p-6 ${
                 pack.highlighted
-                  ? "border-blue-600 bg-white shadow-lg shadow-blue-600/10 ring-1 ring-blue-600"
-                  : "border-gray-200 bg-white"
+                  ? "border-blue-600 shadow-lg shadow-blue-600/10 ring-1 ring-blue-600"
+                  : "surface-card-hover"
               }`}
             >
               {pack.highlighted && (
-                <span className="inline-block px-2.5 py-0.5 mb-3 text-[10px] font-bold text-blue-600 bg-blue-50 rounded-full uppercase">
+                <span className="ui-badge ui-badge-blue mb-3">
                   Most Popular · Save {pack.save}
                 </span>
               )}
               {pack.save && !pack.highlighted && (
-                <span className="inline-block px-2.5 py-0.5 mb-3 text-[10px] font-bold text-green-600 bg-green-50 rounded-full uppercase">
+                <span className="ui-badge ui-badge-green mb-3">
                   Save {pack.save}
                 </span>
               )}
-              <h3 className="text-lg font-bold text-gray-900">{pack.name}</h3>
-              <p className="text-4xl font-bold text-gray-900 mt-2">${pack.price}</p>
+              <h3 className="text-h3">{pack.name}</h3>
+              <p className="text-4xl font-bold text-gray-900 mt-2 leading-none">${pack.price}</p>
               <p className="text-xs sm:text-sm text-gray-500 mt-1">{pack.tokens} tokens · {pack.rate}/tok</p>
               <p className="text-xs text-gray-400 mt-2 mb-4">{pack.description}</p>
               {pack.vsNote && (
-                <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg mb-4">{pack.vsNote}</p>
+                <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg mb-4 leading-relaxed">
+                  {pack.vsNote}
+                </p>
               )}
               <button
                 onClick={() => handlePurchase(pack.id)}
                 disabled={purchasing === pack.id}
-                className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60 ${
+                className={`w-full flex items-center justify-center gap-2 disabled:opacity-60 ${
                   pack.highlighted
-                    ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20"
-                    : "border border-gray-200 text-gray-700 hover:bg-gray-50"
+                    ? "btn-primary"
+                    : "btn-secondary"
                 }`}
               >
                 {purchasing === pack.id ? (
@@ -212,13 +214,13 @@ export default function PricingPage() {
         <TokenCalculator />
 
         {/* What can you do */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+        <div>
+          <h2 className="text-h2 text-center mb-8">
             What can you do with tokens?
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {TOOLS.map((tool) => (
-              <div key={tool.id} className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3 text-center min-w-0">
+            <div key={tool.id} className="surface-card p-2 sm:p-3 text-center min-w-0">
                 <p className="text-[11px] sm:text-sm font-medium text-gray-900 line-clamp-2 break-words leading-tight">{tool.title}</p>
                 <p className={`text-[10px] sm:text-xs font-bold mt-1 whitespace-nowrap ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
                   {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
@@ -229,11 +231,11 @@ export default function PricingPage() {
         </div>
 
         {/* Competitor comparison */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+        <div>
+          <h2 className="text-h2 text-center mb-8">
             How we compare
           </h2>
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-x-auto -mx-4 sm:mx-0">
+          <div className="surface-card overflow-x-auto -mx-4 sm:mx-0">
             <table className="w-full text-xs sm:text-sm min-w-[600px]">
               <thead>
                 <tr className="border-b border-gray-200">
@@ -279,7 +281,9 @@ export default function PricingPage() {
                   <td className="px-4 py-3 text-gray-700 font-medium">What they miss</td>
                   {COMPETITORS.map((c) => (
                     <td key={c.name} className={`text-center px-4 py-3 text-xs ${c.name === "AISkillScore" ? "text-blue-600 font-medium" : "text-gray-500"}`}>
-                      {c.name === "AISkillScore" ? "Nothing — 11 tools in one" : c.gap}
+                      <span className="inline-block max-w-[180px] leading-relaxed">
+                        {c.name === "AISkillScore" ? "Nothing — 11 tools in one" : c.gap}
+                      </span>
                     </td>
                   ))}
                 </tr>
@@ -289,21 +293,21 @@ export default function PricingPage() {
         </div>
 
         {/* Track B ROI */}
-        <div className="mb-16 bg-violet-50 border border-violet-200 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Not just job hunting</h2>
-          <p className="text-gray-600 mb-4">
+        <div className="surface-card-hero p-8 text-center">
+          <h2 className="text-h2 mb-2">Not just job hunting</h2>
+          <p className="text-gray-600 mb-4 max-w-2xl mx-auto leading-relaxed">
             Our tools help you build income while you search. Every analysis surfaces freelance, consulting, and entrepreneurship opportunities based on your skills.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mt-6">
-            <div className="bg-white rounded-xl p-3 sm:p-4">
+            <div className="surface-card p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Entrepreneurship Assessment</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Business ideas from your skills + 90-day launch plan</p>
             </div>
-            <div className="bg-white rounded-xl p-3 sm:p-4">
+            <div className="surface-card p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Career Roadmap</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Dual-track: job hunt + income building with monthly targets</p>
             </div>
-            <div className="bg-white rounded-xl p-3 sm:p-4">
+            <div className="surface-card p-3 sm:p-4">
               <p className="text-sm font-semibold text-violet-700">Every Tool</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Freelance and consulting opportunities surfaced in every result</p>
             </div>
@@ -311,19 +315,25 @@ export default function PricingPage() {
         </div>
 
         {/* Email Capture */}
-        <div className="mb-16 bg-gray-50 border border-gray-200 rounded-2xl p-8 text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Not ready to buy? Stay in the loop.</h2>
-          <p className="text-sm text-gray-500 mb-4">Get career tips, product updates, and occasional deals. No spam.</p>
+        <div className="surface-card-soft p-8 text-center">
+          <h2 className="text-h3 mb-2">Not ready to buy? Stay in the loop.</h2>
+          <p className="text-sm text-gray-500 mb-4 max-w-xl mx-auto">
+            Get career tips, product updates, and occasional deals. No spam.
+          </p>
           <div className="max-w-md mx-auto">
             <EmailCapture context="pricing" />
           </div>
         </div>
 
         {/* Lifetime Deal CTA */}
-        <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center mb-16">
-          <h2 className="text-2xl font-bold mb-2">Want unlimited value?</h2>
-          <p className="text-blue-100 mb-4">Get the Lifetime Deal — from $119 for 120 tokens/month forever.</p>
-          <p className="text-xs text-blue-200 mb-6">Less than the cost of one TopResume review ($149). Already a lifetime subscriber? Top up with any pack above for extra tokens.</p>
+        <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
+          <h2 className="text-2xl font-bold mb-2 tracking-tight">Want unlimited value?</h2>
+          <p className="text-blue-100 mb-4 max-w-2xl mx-auto">
+            Get the Lifetime Deal — from $119 for 120 tokens/month forever.
+          </p>
+          <p className="text-xs text-blue-200 mb-6 max-w-2xl mx-auto leading-relaxed">
+            Less than the cost of one TopResume review ($149). Already a lifetime subscriber? Top up with any pack above for extra tokens.
+          </p>
           <Link
             href="/lifetime"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
@@ -334,7 +344,7 @@ export default function PricingPage() {
 
         {/* FAQ */}
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">FAQ</h2>
+          <h2 className="text-h2 text-center mb-8">FAQ</h2>
           <FAQ items={FAQ_ITEMS} />
         </div>
       </div>

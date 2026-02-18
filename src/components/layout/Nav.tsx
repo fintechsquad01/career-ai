@@ -86,6 +86,8 @@ export function Nav({ isLoggedIn }: NavProps) {
         .slice(0, 2)
     : "?";
 
+  const isActivePath = (href: string) => pathname === href || pathname.startsWith(href + "/");
+
   return (
     <>
       <nav className="sticky top-0 z-40 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/50">
@@ -145,11 +147,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                 </button>
                 {avatarMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-50">
-                    <Link
-                      href="/settings"
-                      onClick={() => setAvatarMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
+                    <Link href="/settings" onClick={() => setAvatarMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                       <Settings className="w-4 h-4 text-gray-400" />
                       Settings
                     </Link>
@@ -201,12 +199,12 @@ export function Nav({ isLoggedIn }: NavProps) {
           <div className="px-4 py-6 space-y-1">
             {isLoggedIn ? (
               <>
-                <MobileLink href="/dashboard" label="Dashboard" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/mission" label="App HQ" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/tools" label="Tools" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/pricing" label="Tokens" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/history" label="History" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/settings" label="Settings" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/dashboard" label="Dashboard" active={isActivePath("/dashboard")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/mission" label="App HQ" active={isActivePath("/mission")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/tools" label="Tools" active={isActivePath("/tools")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/pricing" label="Tokens" active={isActivePath("/pricing")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/history" label="History" active={isActivePath("/history")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/settings" label="Settings" active={isActivePath("/settings")} onClick={() => setMobileMenuOpen(false)} />
                 <div className="border-t border-gray-200 my-2" />
                 <button
                   onClick={handleSignOut}
@@ -218,8 +216,8 @@ export function Nav({ isLoggedIn }: NavProps) {
               </>
             ) : (
               <>
-                <MobileLink href="/pricing" label="Pricing" onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/auth" label="Sign In" onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/pricing" label="Pricing" active={isActivePath("/pricing")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/auth" label="Sign In" active={isActivePath("/auth")} onClick={() => setMobileMenuOpen(false)} />
                 <div className="pt-4">
                   <Link
                     href="/auth"
@@ -238,12 +236,12 @@ export function Nav({ isLoggedIn }: NavProps) {
   );
 }
 
-function MobileLink({ href, label, onClick }: { href: string; label: string; onClick: () => void }) {
+function MobileLink({ href, label, active, onClick }: { href: string; label: string; active: boolean; onClick: () => void }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="block px-3 py-3 rounded-xl text-base font-medium text-gray-700 hover:bg-gray-50 min-h-[44px]"
+      className={`nav-item block px-3 py-3 text-base font-medium min-h-[44px] ${active ? "nav-item-active text-blue-700" : "text-gray-700 hover:bg-gray-50"}`}
     >
       {label}
     </Link>

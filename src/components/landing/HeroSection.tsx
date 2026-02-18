@@ -34,7 +34,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-gradient-to-r from-blue-400/20 via-violet-400/20 to-purple-400/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100/50 rounded-full">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100/70 rounded-full">
         <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
         <span className="text-sm font-medium text-blue-700">12,400+ career analyses this week</span>
       </div>
@@ -65,23 +65,27 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
 
       {/* Primary CTA */}
       <div className="space-y-4">
-        <button
-          onClick={onCtaClick}
-          className="btn-shine inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-lg font-semibold rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/25 min-h-[48px]"
-        >
-          Get Your Free AI Risk Score
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={onCtaClick} className="btn-primary btn-shine sm:w-auto px-8 text-base">
+            Get Your Free AI Risk Score
+            <ArrowRight className="w-5 h-5" />
+          </button>
+          <button onClick={onCtaClick} className="btn-secondary sm:w-auto px-6">
+            Paste Resume or JD
+          </button>
+        </div>
 
         <p className="text-sm text-gray-400">
           No signup required · 30 second analysis · 100% free
         </p>
 
         {/* Trust bar */}
-        <div className="flex items-center justify-center gap-6 sm:gap-8 pt-4">
-          <div className="flex items-center gap-1.5 text-xs text-gray-400"><Lock className="w-3.5 h-3.5" /> Your data stays yours</div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-400"><Clock className="w-3.5 h-3.5" /> 30 second analysis</div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-400"><Sparkles className="w-3.5 h-3.5" /> AI that preserves your voice</div>
+        <div className="surface-card-soft px-4 py-3 max-w-2xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Lock className="w-3.5 h-3.5" /> Encrypted · Never sold</div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Clock className="w-3.5 h-3.5" /> 30 second analysis</div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Sparkles className="w-3.5 h-3.5" /> Evidence-backed insights</div>
+          </div>
         </div>
       </div>
     </div>

@@ -28,16 +28,16 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Score hero */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center celebrate">
+      <div className="report-section text-center celebrate">
         <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.fit_score} size="lg" label="Fit Score" />
       </div>
 
       {/* Requirements Match */}
       {data.requirements && data.requirements.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Requirements Match</h3>
           <div className="space-y-3">
             {data.requirements.map((req, i) => (
@@ -71,7 +71,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Advantages */}
       {data.advantages && data.advantages.length > 0 && (
-        <div className="bg-green-50 rounded-2xl border border-green-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-green-900 mb-3">Your Advantages</h3>
           <ul className="space-y-2">
             {data.advantages.map((adv, i) => (
@@ -86,7 +86,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Critical Gaps */}
       {data.critical_gaps && data.critical_gaps.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Critical Gaps</h3>
           <div className="space-y-4">
             {data.critical_gaps.map((gap, i) => {
@@ -125,7 +125,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Bridge CTA — Resume Optimizer */}
       {data.critical_gaps && data.critical_gaps.length > 0 && (
-        <div className="bg-violet-50 border border-violet-100 rounded-xl p-4 flex items-center justify-between">
+        <div className="surface-card-hero p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-gray-900">Want to fix these gaps before applying?</p>
             <p className="text-xs text-gray-500">Resume Optimizer will address each gap specifically.</p>
@@ -136,7 +136,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Hidden Requirements */}
       {data.hidden_requirements && data.hidden_requirements.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Eye className="w-4 h-4 text-purple-500" />
             Hidden Requirements
@@ -161,7 +161,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Application Strategy */}
       {data.application_strategy && (
-        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-blue-600" />
             Application Strategy
@@ -203,7 +203,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
       {/* Applicant Pool */}
       {data.applicant_pool_estimate && (
-        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 text-center">
+        <div className="surface-card-soft p-5 text-center">
           <p className="text-xs text-gray-500">
             Estimated applicants: <strong className="text-gray-900">~{data.applicant_pool_estimate.likely_applicants}</strong>
           </p>

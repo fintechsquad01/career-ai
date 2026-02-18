@@ -51,15 +51,13 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                     <Link
                       key={tool.id}
                       href={`/tools/${tool.id}`}
-                      className="glass-card p-4 hover:shadow-md hover:scale-[1.01] transition-all duration-150 min-h-[44px]"
+                      className="surface-card surface-card-hover p-4 min-h-[44px]"
                     >
                       <div className="flex items-start justify-between mb-2.5">
                         <div className={`w-9 h-9 rounded-xl ${styles.bg} flex items-center justify-center`}>
                           <Icon className={`w-4 h-4 ${styles.text}`} strokeWidth={1.5} />
                         </div>
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                          tool.tokens === 0 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
-                        }`}>
+                        <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-gray"}`}>
                           {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
                         </span>
                       </div>
@@ -81,7 +79,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
       {/* Quick Apply banner */}
       <Link
         href="/quick-apply"
-        className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl hover:shadow-md transition-shadow group"
+        className="surface-card-hero flex items-center gap-4 p-4 hover:shadow-md transition-shadow group"
       >
         <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shrink-0">
           <Zap className="w-5 h-5 text-white" />
@@ -113,7 +111,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                   <Link
                     key={tool.id}
                     href={`/tools/${tool.id}`}
-                    className="glass-card p-4 hover:shadow-lg hover:scale-[1.01] transition-all duration-200 group flex items-center gap-4"
+                    className="surface-card surface-card-hover p-4 group flex items-center gap-4"
                   >
                     <div className={`w-11 h-11 rounded-xl ${styles.bg} flex items-center justify-center shrink-0`}>
                       <Icon className={`w-5 h-5 ${styles.text}`} strokeWidth={1.5} />
@@ -122,22 +120,20 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                       <div className="flex items-center gap-2">
                         <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">{tool.title}</h4>
                         {isPopular && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full uppercase shrink-0">
+                          <span className="ui-badge ui-badge-amber shrink-0">
                             <Star className="w-2.5 h-2.5" fill="currentColor" />
                             Popular
                           </span>
                         )}
                         {tool.beta && (
-                          <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full uppercase shrink-0 border border-amber-200">
+                          <span className="ui-badge ui-badge-amber shrink-0">
                             Beta
                           </span>
                         )}
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
                     </div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full shrink-0 ${
-                      tool.tokens === 0 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
-                    }`}>
+                    <span className={`ui-badge shrink-0 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-gray"}`}>
                       {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
                     </span>
                   </Link>

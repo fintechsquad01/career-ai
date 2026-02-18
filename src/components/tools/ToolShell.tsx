@@ -968,31 +968,29 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-5 sm:py-8 space-y-4">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-5">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="text-h1">{tool.title}</h1>
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-            tool.tokens === 0 ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"
-          }`}>
+          <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
             {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
           </span>
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+          <span className="ui-badge ui-badge-gray">
             {tool.category}
           </span>
           {tool.beta && (
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <span className="ui-badge ui-badge-amber">
               Beta
             </span>
           )}
         </div>
-        <p className="text-body-sm">{tool.description}</p>
+        <p className="text-body-sm max-w-2xl">{tool.description}</p>
       </div>
 
       {/* Consolidated insight banner — dismissible, once per session */}
       {!insightsDismissed && state === "input" && (
-        <div className="relative bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+        <div className="relative surface-card-soft px-4 py-3.5">
           <button
             type="button"
             onClick={() => {
@@ -1004,9 +1002,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           >
             <X className="w-3.5 h-3.5" />
           </button>
-          <p className="text-sm text-gray-600 pr-6">{tool.painPoint}</p>
+          <p className="text-sm text-gray-600 pr-6 leading-relaxed">{tool.painPoint}</p>
           {tool.vsCompetitor && (
-            <p className="text-sm text-blue-700 font-medium mt-1.5">{tool.vsCompetitor}</p>
+            <p className="text-sm text-blue-700 font-medium mt-2">{tool.vsCompetitor}</p>
           )}
         </div>
       )}
@@ -1018,10 +1016,10 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         if (completedToolIds.has(dep.prereqToolId)) return null;
 
         return (
-          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
             <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-amber-800">
+              <p className="text-xs text-amber-800 leading-relaxed">
                 <span className="font-semibold">Tip:</span> {dep.hint}
               </p>
               <Link
@@ -1038,7 +1036,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Context */}
       {careerProfile?.title && (
-        <div className="text-sm text-gray-500 bg-white/60 backdrop-blur-sm border border-gray-100 px-4 py-2.5 rounded-xl">
+        <div className="text-sm text-gray-500 bg-white/60 backdrop-blur-sm border border-gray-100 px-4 py-3 rounded-xl">
           Pre-loaded from your resume: <strong className="text-gray-700">{careerProfile.title}</strong>
           {careerProfile.company && ` at ${careerProfile.company}`}
         </div>
@@ -1048,7 +1046,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* JD nudge — shown when no active job target on tools that benefit from one */}
       {state === "input" && !activeJobTarget && ["jd_match", "resume", "cover_letter", "interview", "salary"].includes(toolId) && (
-        <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3">
+        <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
           <Target className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-xs text-blue-800">
@@ -1080,15 +1078,15 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {/* Context verification — show what the AI will use */}
       {state === "input" && (
         <details open={!careerProfile?.resume_text} className="group border border-gray-200 rounded-xl overflow-hidden">
-          <summary className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
-            <span className="text-xs font-medium text-gray-500">
+          <summary className="flex items-center justify-between px-4 py-3.5 cursor-pointer hover:bg-gray-50 transition-colors">
+            <span className="text-sm font-medium text-gray-600">
               Context the AI will use for this analysis
             </span>
             <svg className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </summary>
-          <div className="px-4 pb-3 space-y-1.5 border-t border-gray-100 pt-2">
+          <div className="px-4 pb-3.5 space-y-2 border-t border-gray-100 pt-2.5">
             {/* Resume context */}
             {careerProfile?.resume_text ? (
               <div className="flex items-center gap-2 text-xs">
@@ -1150,7 +1148,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Loading state — Rich experience with rotating insights */}
       {state === "loading" && (
-        <div className="py-8 space-y-6 stagger-children" role="status" aria-live="polite">
+        <div className="py-8 space-y-7 stagger-children" role="status" aria-live="polite">
           {/* Progress section */}
           <div className="text-center space-y-3">
             <div className="relative w-14 h-14 mx-auto">
@@ -1163,7 +1161,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                 Step {progress.step || 1} of {progress.total} · {elapsedSec}s
               </p>
             </div>
-            <div className="w-56 bg-gray-200 rounded-full h-1.5 mx-auto overflow-hidden">
+            <div className="w-56 bg-gray-200 rounded-full h-1.5 mx-auto overflow-hidden mt-1">
               <div
                 className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-700 ease-out progress-glow"
                 style={{ width: `${Math.max(5, (progress.step / progress.total) * 100)}%` }}
@@ -1206,6 +1204,19 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               />
             </div>
           )}
+
+          {/* Report skeleton preview */}
+          <div className="surface-card-soft p-4 sm:p-5 space-y-3 max-w-2xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div className="skeleton-base skeleton-line w-32" />
+              <div className="skeleton-base skeleton-line w-16" />
+            </div>
+            <div className="skeleton-base skeleton-block w-full" />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="skeleton-base skeleton-block" />
+              <div className="skeleton-base skeleton-block" />
+            </div>
+          </div>
 
           {/* Insight dots indicator */}
           {loadingInsights.length > 1 && (
@@ -1303,17 +1314,17 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Result actions */}
       {state === "result" && (
-        <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100 stagger-children">
+        <div className="flex flex-wrap gap-3 pt-5 border-t border-gray-100 stagger-children">
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[44px]"
+            className="btn-secondary"
           >
             <RotateCcw className="w-4 h-4" />
             Run Again
           </button>
           <button
             onClick={handleShare}
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[44px]"
+            className="btn-secondary"
           >
             <Share2 className="w-4 h-4" />
             Share Results
@@ -1322,10 +1333,10 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             <button
               onClick={handleSaveResumeVariant}
               disabled={savingVariant || variantSaved}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 border text-sm font-medium rounded-xl transition-colors min-h-[44px] ${
+              className={`btn-secondary ${
                 variantSaved
                   ? "border-green-200 bg-green-50 text-green-700"
-                  : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                  : ""
               }`}
             >
               <Save className="w-4 h-4" />
@@ -1335,7 +1346,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           {activeJobTarget && (
             <Link
               href="/mission"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[44px]"
+              className="btn-primary w-auto px-4"
             >
               Mission Control
               <ArrowRight className="w-4 h-4" />

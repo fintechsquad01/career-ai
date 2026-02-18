@@ -51,7 +51,7 @@ function StickyCtaBar() {
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs sm:text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px] w-full sm:w-auto whitespace-nowrap"
+          className="btn-primary w-full sm:w-auto whitespace-nowrap text-xs sm:text-sm px-5"
         >
           Get Started — Free
           <ArrowRight className="w-4 h-4" />
@@ -187,7 +187,7 @@ function QuickDisplacementForm({
       <button
         type="submit"
         disabled={!jobTitle.trim()}
-        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary w-full sm:w-auto px-8"
       >
         <ShieldAlert className="w-5 h-5" />
         Analyze My AI Risk — Free
@@ -291,7 +291,7 @@ export function LandingContent() {
             <>
               {/* Quick Displacement Form */}
               <div ref={quickFormRef} className="max-w-2xl mx-auto">
-                <div className="glass-card p-6 sm:p-8 space-y-5">
+                <div className="surface-card p-6 sm:p-8 space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                       <ShieldAlert className="w-5 h-5 text-blue-600" />
@@ -338,16 +338,13 @@ export function LandingContent() {
                   Our servers are temporarily busy. Sign up for 15 free tokens and try from your dashboard, or retry now.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                  <button
-                    onClick={handleRetry}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[44px]"
-                  >
+                  <button onClick={handleRetry} className="btn-secondary px-5">
                     <RotateCcw className="w-4 h-4" />
                     Try Again
                   </button>
                   <Link
                     href="/auth"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[44px]"
+                    className="btn-primary px-5"
                   >
                     Create Account — 15 Free Tokens
                     <ArrowRight className="w-4 h-4" />
@@ -425,7 +422,7 @@ export function LandingContent() {
                     </p>
                     <button
                       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                      className="btn-shine inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[44px]"
+                    className="btn-primary btn-shine inline-flex px-6 sm:w-auto"
                     >
                       Try It Free
                       <ArrowRight className="w-4 h-4" />
@@ -468,18 +465,12 @@ export function LandingContent() {
                   const tool = TOOLS.find((t) => t.id === ht.id);
                   if (!tool) return null;
                   return (
-                    <div key={tool.id} className="glass-card p-5 flex flex-col">
+                    <div key={tool.id} className="surface-card surface-card-hover p-5 flex flex-col">
                       <div className="flex items-start justify-between mb-3">
                         <div className={`w-10 h-10 rounded-xl ${ht.iconBg} flex items-center justify-center`}>
                           <ht.icon className={`w-5 h-5 ${ht.iconColor}`} />
                         </div>
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            tool.tokens === 0
-                              ? "bg-green-50 text-green-700"
-                              : "bg-blue-50 text-blue-700"
-                          }`}
-                        >
+                        <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
                           {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
                         </span>
                       </div>
@@ -617,16 +608,9 @@ export function LandingContent() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto stagger-children">
                 {PACKS.map((pack) => (
-                  <div
-                    key={pack.id}
-                    className={`rounded-2xl border p-6 ${
-                      pack.highlighted
-                        ? "border-blue-600 bg-white shadow-lg shadow-blue-600/10 ring-1 ring-blue-600"
-                        : "border-gray-200 bg-white"
-                    }`}
-                  >
+                  <div key={pack.id} className={`surface-card p-6 ${pack.highlighted ? "ring-1 ring-blue-600 border-blue-600 shadow-lg shadow-blue-600/10" : ""}`}>
                     {pack.highlighted && (
-                      <span className="inline-block px-2 py-0.5 mb-3 text-[10px] font-bold text-blue-600 bg-blue-50 rounded-full uppercase">
+                      <span className="ui-badge ui-badge-blue mb-3">
                         Most Popular · Save {pack.save}
                       </span>
                     )}
@@ -642,11 +626,7 @@ export function LandingContent() {
                     </p>
                     <Link
                       href="/auth"
-                      className={`mt-4 block text-center py-2.5 rounded-xl text-sm font-semibold transition-colors min-h-[44px] ${
-                        pack.highlighted
-                          ? "bg-blue-600 text-white hover:bg-blue-700"
-                          : "border border-gray-200 text-gray-700 hover:bg-gray-50"
-                      }`}
+                      className={`mt-4 flex items-center justify-center text-center ${pack.highlighted ? "btn-primary" : "btn-secondary"}`}
                     >
                       Get {pack.name}
                     </Link>

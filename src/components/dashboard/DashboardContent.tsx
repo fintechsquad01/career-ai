@@ -305,7 +305,7 @@ export function DashboardContent({
       )}
 
       {/* Career Health Score Card */}
-      <div className="glass-card p-6">
+      <div className="surface-card p-6">
         {careerHealth.score !== null ? (
           <div className="flex items-center gap-6">
             <div className="celebrate">
@@ -371,10 +371,7 @@ export function DashboardContent({
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Link
-                href="/tools/displacement"
-                className="flex items-center gap-3 p-3.5 bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-xl hover:shadow-md transition-shadow group"
-              >
+              <Link href="/tools/displacement" className="surface-card-hero flex items-center gap-3 p-3.5 hover:shadow-md transition-shadow group">
                 <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                   <ShieldAlert className="w-5 h-5 text-blue-600" />
                 </div>
@@ -382,11 +379,11 @@ export function DashboardContent({
                   <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-700">AI Risk Score</p>
                   <p className="text-xs text-gray-500">How safe is your role?</p>
                 </div>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full flex-shrink-0">Free</span>
+                <span className="ui-badge ui-badge-green flex-shrink-0">Free</span>
               </Link>
               <Link
                 href="/tools/jd_match"
-                className="flex items-center gap-3 p-3.5 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow group"
+                className="surface-card surface-card-hover flex items-center gap-3 p-3.5 group"
               >
                 <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center flex-shrink-0">
                   <Target className="w-5 h-5 text-violet-600" />
@@ -395,7 +392,7 @@ export function DashboardContent({
                   <p className="text-sm font-semibold text-gray-900 group-hover:text-violet-700">JD Match</p>
                   <p className="text-xs text-gray-500">Match against a job posting</p>
                 </div>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full flex-shrink-0">5 tok</span>
+                <span className="ui-badge ui-badge-blue flex-shrink-0">5 tok</span>
               </Link>
             </div>
           </div>
@@ -422,7 +419,7 @@ export function DashboardContent({
 
       {/* Profile Completeness — show until fully complete */}
       {completeness.score < 100 && (
-        <div className="glass-card p-4 flex items-center gap-4">
+        <div className="surface-card p-4 flex items-center gap-4">
           <div className="flex-shrink-0">
             <Ring score={completeness.score} size="sm" label="" showLabel={false} />
           </div>
@@ -451,12 +448,12 @@ export function DashboardContent({
 
       {/* Smart Recommendations — single next step */}
       {recommendations.length > 0 && (
-        <Link href={recommendations[0].href} className="block glass-card p-5 hover:shadow-lg transition-all group">
+        <Link href={recommendations[0].href} className="block surface-card surface-card-hover p-5 group">
           <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">Your next move</p>
           <p className="text-base font-bold text-gray-900 group-hover:text-blue-700 mb-1">{recommendations[0].title}</p>
           <p className="text-sm text-gray-500 mb-3">{recommendations[0].description}</p>
           <div className="flex items-center justify-between">
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${recommendations[0].tokens === "Free" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"}`}>
+            <span className={`ui-badge ${recommendations[0].tokens === "Free" ? "ui-badge-green" : "ui-badge-blue"}`}>
               {recommendations[0].tokens === "Free" ? "Free" : `${recommendations[0].tokens} tokens`}
             </span>
             <span className="text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center gap-1">
@@ -472,7 +469,7 @@ export function DashboardContent({
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Your Numbers</h2>
           <div className="grid grid-cols-2 gap-3 stagger-children">
             {careerProfile.displacement_score != null && (
-              <Link href="/tools/displacement" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
+              <Link href="/tools/displacement" className="surface-card p-4 hover:border-blue-200 transition-colors">
                 <p className="text-xs text-gray-500 mb-1">AI Displacement Risk</p>
                 <p className={`text-2xl font-bold celebrate ${
                   careerProfile.displacement_score >= 70 ? "text-red-600" : careerProfile.displacement_score >= 40 ? "text-amber-600" : "text-green-600"
@@ -480,7 +477,7 @@ export function DashboardContent({
               </Link>
             )}
             {careerProfile.resume_score != null && (
-              <Link href="/tools/resume" className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 transition-colors">
+              <Link href="/tools/resume" className="surface-card p-4 hover:border-blue-200 transition-colors">
                 <p className="text-xs text-gray-500 mb-1">Resume ATS Score</p>
                 <p className={`text-2xl font-bold celebrate ${
                   careerProfile.resume_score >= 70 ? "text-green-600" : careerProfile.resume_score >= 40 ? "text-amber-600" : "text-red-600"
@@ -527,21 +524,21 @@ export function DashboardContent({
       <div className="grid grid-cols-3 gap-3 stagger-children">
         <Link
           href="/tools/displacement"
-          className="glass-card p-4 text-center hover:shadow-md transition-shadow"
+          className="surface-card surface-card-hover p-4 text-center"
         >
           <Zap className="w-5 h-5 text-blue-600 mx-auto mb-1.5" />
           <p className="text-xs font-medium text-gray-700">Free Analysis</p>
         </Link>
         <Link
           href="/tools"
-          className="glass-card p-4 text-center hover:shadow-md transition-shadow"
+          className="surface-card surface-card-hover p-4 text-center"
         >
           <Sparkles className="w-5 h-5 text-violet-600 mx-auto mb-1.5" />
           <p className="text-xs font-medium text-gray-700">All Tools</p>
         </Link>
         <Link
           href="/pricing"
-          className="glass-card p-4 text-center hover:shadow-md transition-shadow"
+          className="surface-card surface-card-hover p-4 text-center"
         >
           <Target className="w-5 h-5 text-emerald-600 mx-auto mb-1.5" />
           <p className="text-xs font-medium text-gray-700">Get Tokens</p>
@@ -551,7 +548,7 @@ export function DashboardContent({
       {/* Value comparison — only for new users */}
       {recentResults.length === 0 && (
         <AnimateOnScroll>
-          <div className="glass-card p-4">
+          <div className="surface-card p-4">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">What this costs elsewhere</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -622,7 +619,7 @@ export function DashboardContent({
                 View all
               </Link>
             </div>
-            <div className="glass-card divide-y divide-gray-100">
+            <div className="surface-card divide-y divide-gray-100">
               {recentResults.slice(0, 3).map((r) => (
                 <Link
                   key={r.id}
@@ -649,7 +646,7 @@ export function DashboardContent({
       {/* Referral + Lifetime nudge cards */}
       <AnimateOnScroll>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">
-        <Link href="/referral" className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow group">
+        <Link href="/referral" className="surface-card surface-card-hover p-4 group">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
               <Gift className="w-4 h-4 text-emerald-600" />

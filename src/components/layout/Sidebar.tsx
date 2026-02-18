@@ -91,7 +91,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex flex-col border-r border-gray-200/60 bg-white/80 backdrop-blur-xl h-[calc(100vh-4rem)] sticky top-16 z-10 overflow-y-auto overflow-x-hidden transition-all duration-200 ${
+      className={`hidden md:flex flex-col border-r border-gray-200/60 bg-white/90 backdrop-blur-xl h-[calc(100vh-4rem)] sticky top-16 z-10 overflow-y-auto overflow-x-hidden transition-all duration-200 ${
         sidebarCollapsed ? "w-[60px]" : "w-48"
       }`}
     >
@@ -119,11 +119,11 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               title={sidebarCollapsed ? item.label : undefined}
-              className={`flex items-center gap-2.5 rounded-xl transition-all duration-150 ${
+              className={`nav-item flex items-center gap-2.5 transition-all duration-150 ${
                 sidebarCollapsed ? "justify-center px-1 py-2.5" : "px-3 py-2.5"
               } ${
                 active || isToolsActive
-                  ? "bg-blue-50 text-blue-600"
+                  ? "nav-item-active text-blue-600"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               } ${
                 isToolsActive && pathname.startsWith("/tools/")
@@ -171,7 +171,7 @@ export function Sidebar() {
       {activeJobTarget && !sidebarCollapsed && (
         <Link
           href="/mission"
-          className="mx-2 mb-1.5 px-3 py-2 rounded-xl bg-blue-50/80 border border-blue-100 hover:bg-blue-50 transition-colors group"
+          className="mx-2 mb-1.5 px-3 py-2 rounded-xl surface-card-hero hover:bg-blue-50 transition-colors group"
         >
           <div className="flex items-center gap-2">
             <Briefcase className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />

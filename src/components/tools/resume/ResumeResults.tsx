@@ -56,9 +56,9 @@ export function ResumeResults({ result }: ResumeResultsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Before/After scores */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="report-section">
         <h3 className="font-semibold text-gray-900 mb-4 text-center">ATS Score Improvement</h3>
         <div className="flex items-center justify-center gap-8">
           <div className="text-center">
@@ -79,7 +79,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Voice note */}
       {data.voice_note && (
-        <div className="bg-purple-50 rounded-2xl border border-purple-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1">Voice Preservation</p>
           <p className="text-sm text-purple-900">{data.voice_note}</p>
         </div>
@@ -87,7 +87,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Keywords added — grouped by section */}
       {data.keywords_added && data.keywords_added.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-1">Keywords Woven In</h3>
           <p className="text-xs text-gray-500 mb-3">{data.keywords_added.length} JD keywords added to your resume</p>
           <div className="flex flex-wrap gap-2">
@@ -117,11 +117,11 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Section rewrites */}
       {data.sections_rewritten && data.sections_rewritten.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Section Rewrites</h3>
           <div className="space-y-3">
             {data.sections_rewritten.map((section, i) => (
-              <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
+              <div key={i} className="surface-card overflow-hidden">
                 <button
                   onClick={() => toggleSection(i)}
                   className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 min-h-[44px]"
@@ -161,7 +161,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Formatting fixes */}
       {data.formatting_fixes && data.formatting_fixes.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-500" />
             Formatting Fixes
@@ -195,7 +195,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* ATS Warnings */}
       {data.ats_warnings && data.ats_warnings.length > 0 && (
-        <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-[10px] font-semibold text-amber-700 uppercase mb-2">Remaining ATS Warnings</p>
           <ul className="space-y-1">
             {data.ats_warnings.map((w, i) => (
@@ -207,7 +207,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Recruiter Perspective */}
       {data.recruiter_perspective && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-2">Recruiter Perspective</h3>
           <p className="text-sm text-gray-700">{data.recruiter_perspective}</p>
         </div>
@@ -228,7 +228,7 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
       {/* Next Steps */}
       {data.next_steps && data.next_steps.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Next Steps</h3>
           <div className="space-y-2">
             {data.next_steps.map((ns, i) => (
@@ -247,14 +247,14 @@ export function ResumeResults({ result }: ResumeResultsProps) {
       <div className="space-y-3">
         <button
           onClick={handleCopy}
-          className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
+          className="btn-primary"
         >
           {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           {copied ? "Copied!" : "Copy Optimized Resume"}
         </button>
         <button
           onClick={handleDownloadPdf}
-          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
+          className="btn-secondary w-full"
         >
           <Download className="w-4 h-4" />
           Download TXT

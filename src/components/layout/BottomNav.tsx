@@ -22,7 +22,7 @@ export function BottomNav() {
   const showToolsDot = profile !== null && !hasExploredTools;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-200 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-[0_-6px_24px_rgba(15,23,42,0.08)] md:hidden">
       <div className="flex items-center justify-around">
         {ITEMS.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -35,13 +35,13 @@ export function BottomNav() {
                 active ? "text-blue-600" : "text-gray-400"
               }`}
             >
-              <div className="relative">
+              <div className={`relative ${active ? "bg-blue-50 rounded-lg px-2 py-1" : ""}`}>
                 <item.icon className="w-5 h-5" strokeWidth={active ? 2 : 1.75} />
                 {showDot && (
                   <span className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] rounded-full bg-blue-500" />
                 )}
               </div>
-              <span className="text-[11px] font-medium mt-0.5">{item.label}</span>
+              <span className={`text-[11px] font-medium mt-0.5 ${active ? "text-blue-700" : ""}`}>{item.label}</span>
             </Link>
           );
         })}
