@@ -331,6 +331,23 @@ Deno.serve(async (req: Request) => {
       if (!apiRes.ok) {
         const errBody = await apiRes.text();
         console.error("OpenRouter API error:", apiRes.status, errBody);
+        if (apiRes.status === 429) {
+          const retryAfter = Number(apiRes.headers.get("retry-after") || "60");
+          return new Response(
+            JSON.stringify({
+              error: "Headshots are temporarily unavailable due to provider limits. Please try again shortly. Your tokens were not charged.",
+              retry_after_seconds: Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 60,
+            }),
+            {
+              status: 429,
+              headers: {
+                ...getCorsHeaders(req),
+                "Content-Type": "application/json",
+                "Retry-After": String(Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 60),
+              },
+            }
+          );
+        }
         throw new Error(`Image generation failed (${apiRes.status})`);
       }
 

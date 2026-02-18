@@ -14,9 +14,9 @@ import { createClient } from "@/lib/supabase/client";
 import { MISSION_ACTIONS } from "@/lib/constants";
 
 const QUICK_TOOLS = [
-  { id: "jd_match", title: "JD Match Score", tokens: 5, icon: Target, color: "blue" },
   { id: "resume", title: "Resume Optimizer", tokens: 15, icon: FileText, color: "violet" },
   { id: "cover_letter", title: "Cover Letter", tokens: 8, icon: Mail, color: "emerald" },
+  { id: "interview", title: "Interview Prep", tokens: 8, icon: Target, color: "blue" },
 ] as const;
 
 const TOTAL_TOKENS = QUICK_TOOLS.reduce((sum, t) => sum + t.tokens, 0);
@@ -233,7 +233,7 @@ export function QuickApplyFlow({ hasResume }: QuickApplyFlowProps) {
         </div>
         <h1 className="text-xl font-bold text-gray-900">Run 3 Tools in One Go</h1>
         <p className="text-sm text-gray-500">
-          Paste a job description and we&apos;ll run JD Match, Resume Optimizer, and Cover Letter sequentially.
+          Paste a job description and we&apos;ll run Resume Optimizer, Cover Letter, and Interview Prep sequentially.
         </p>
       </div>
 

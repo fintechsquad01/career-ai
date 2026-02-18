@@ -27,6 +27,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newJdText, setNewJdText] = useState("");
+  const [newTitle, setNewTitle] = useState("");
   const [newCompany, setNewCompany] = useState("");
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -63,17 +64,18 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
   );
 
   const handleAdd = useCallback(async () => {
-    if (!newJdText.trim() || newJdText.trim().length < 20) return;
+    if (!newJdText.trim() || newJdText.trim().length < 20 || !newTitle.trim()) return;
     setSaving(true);
-    const result = await addTarget(newJdText, undefined, newCompany.trim() || undefined);
+    const result = await addTarget(newJdText, newTitle.trim(), newCompany.trim() || undefined);
     setSaving(false);
     if (result) {
       setNewJdText("");
+      setNewTitle("");
       setNewCompany("");
       setShowAddForm(false);
       setOpen(false);
     }
-  }, [newJdText, newCompany, addTarget]);
+  }, [newJdText, newTitle, newCompany, addTarget]);
 
   const handleRename = useCallback(
     async (targetId: string) => {
@@ -123,12 +125,18 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
               <span className="text-sm font-medium text-gray-700">Add Target Job</span>
               <button
                 type="button"
-            onClick={() => { setShowAddForm(false); setNewJdText(""); setNewCompany(""); }}
+            onClick={() => { setShowAddForm(false); setNewJdText(""); setNewTitle(""); setNewCompany(""); }}
                 className="text-gray-400 hover:text-gray-600 min-h-[44px] flex items-center"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
+            <input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="Job title (required)"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
             <textarea
               value={newJdText}
               onChange={(e) => setNewJdText(e.target.value)}
@@ -146,7 +154,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
             <button
               type="button"
               onClick={handleAdd}
-              disabled={saving || newJdText.trim().length < 20}
+              disabled={saving || newJdText.trim().length < 20 || newTitle.trim().length < 2}
               className="btn-primary flex items-center justify-center gap-1.5"
             >
               <Save className="w-3.5 h-3.5" />
@@ -316,11 +324,23 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-y"
                 autoFocus
               />
+              <input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Job title (required)"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <input
+                value={newCompany}
+                onChange={(e) => setNewCompany(e.target.value)}
+                placeholder="Company (optional override)"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={handleAdd}
-                  disabled={saving || newJdText.trim().length < 20}
+                  disabled={saving || newJdText.trim().length < 20 || newTitle.trim().length < 2}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors min-h-[36px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save className="w-3 h-3" />
@@ -328,7 +348,7 @@ export function JobTargetSelector({ compact = false }: { compact?: boolean }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowAddForm(false); setNewJdText(""); }}
+                  onClick={() => { setShowAddForm(false); setNewJdText(""); setNewTitle(""); setNewCompany(""); }}
                   className="text-xs text-gray-500 hover:text-gray-700 min-h-[36px] px-2"
                 >
                   Cancel

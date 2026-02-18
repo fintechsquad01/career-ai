@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Ring } from "@/components/shared/Ring";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MissionCard } from "./MissionCard";
 import { WelcomeModal } from "@/components/modals/WelcomeModal";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
@@ -27,13 +27,14 @@ import {
 } from "lucide-react";
 import { useTokens } from "@/hooks/useTokens";
 import { useCareerHealth } from "@/hooks/useCareerHealth";
-import { calculateProfileCompleteness } from "@/lib/constants";
+import { calculateProfileCompleteness, MISSION_ACTIONS, TOOLS_MAP } from "@/lib/constants";
 import type { Profile, CareerProfile, JobTarget, ToolResultRow } from "@/types";
 
 interface DashboardContentProps {
   profile: Profile | null;
   careerProfile: CareerProfile | null;
   activeJobTarget: JobTarget | null;
+  allJobTargets?: JobTarget[];
   recentResults: ToolResultRow[];
 }
 
@@ -56,7 +57,12 @@ function getSmartRecommendations(
   activeJobTarget: JobTarget | null,
   recentResults: ToolResultRow[],
 ): SmartRec[] {
-  const completedTools = new Set(recentResults.map((r) => r.tool_id));
+  const activeTargetId = activeJobTarget?.id || null;
+  const completedGlobalTools = new Set(recentResults.map((r) => r.tool_id));
+  const targetScopedResults = activeTargetId
+    ? recentResults.filter((r) => r.job_target_id === activeTargetId)
+    : [];
+  const completedTargetTools = new Set(targetScopedResults.map((r) => r.tool_id));
   const hasSavedDisplacementScore = careerProfile?.displacement_score != null;
   const recs: SmartRec[] = [];
 
@@ -77,7 +83,7 @@ function getSmartRecommendations(
   }
 
   // Priority 2: Free displacement score
-  if (!completedTools.has("displacement") && !hasSavedDisplacementScore) {
+  if (!completedGlobalTools.has("displacement") && !hasSavedDisplacementScore) {
     recs.push({
       id: "displacement",
       title: "Check your AI displacement risk",
@@ -95,15 +101,15 @@ function getSmartRecommendations(
   }
 
   // Priority 3: JD Match if they have a job target
-  if (activeJobTarget && !completedTools.has("jd_match")) {
+  if (activeJobTarget && !completedTargetTools.has("jd_match")) {
     recs.push({
       id: "jd_match",
       title: `Check your fit for ${activeJobTarget.title || "target role"}`,
       description: activeJobTarget.company
-        ? `At ${activeJobTarget.company}`
-        : "Evidence-based match analysis",
+        ? `For ${activeJobTarget.title || "target role"} at ${activeJobTarget.company}`
+        : `For ${activeJobTarget.title || "your target role"}`,
       href: "/tools/jd_match",
-      tokens: 5,
+      tokens: TOOLS_MAP.jd_match?.tokens ?? 5,
       priority: 2,
       icon: Target,
       iconBg: "bg-blue-50",
@@ -113,19 +119,19 @@ function getSmartRecommendations(
   }
 
   // Priority 4: Resume optimizer if JD match was run and score < 80
-  const jdMatchResult = recentResults.find((r) => r.tool_id === "jd_match");
+  const jdMatchResult = targetScopedResults.find((r) => r.tool_id === "jd_match");
   const jdMatchScore = jdMatchResult?.result
     ? ((jdMatchResult.result as Record<string, unknown>)?.overall_score as number | undefined)
     : undefined;
-  if (jdMatchResult && (!jdMatchScore || jdMatchScore < 80) && !completedTools.has("resume")) {
+  if (jdMatchResult && (!jdMatchScore || jdMatchScore < 80) && !completedTargetTools.has("resume")) {
     recs.push({
       id: "resume",
       title: "Optimize your resume",
       description: jdMatchScore
         ? `Your match score is ${jdMatchScore}% — let's improve it`
-        : "Enhance your resume for your target role",
+        : `Enhance your resume for ${activeJobTarget?.title || "your target role"}${activeJobTarget?.company ? ` at ${activeJobTarget.company}` : ""}`,
       href: "/tools/resume",
-      tokens: 15,
+      tokens: TOOLS_MAP.resume?.tokens ?? 15,
       priority: 3,
       icon: FileText,
       iconBg: "bg-violet-50",
@@ -135,13 +141,13 @@ function getSmartRecommendations(
   }
 
   // Priority 5: Interview prep if JD match done
-  if (jdMatchResult && !completedTools.has("interview")) {
+  if (jdMatchResult && !completedTargetTools.has("interview")) {
     recs.push({
       id: "interview",
       title: `Prep for ${activeJobTarget?.title || "your"} interview`,
       description: "AI-generated questions and winning answers",
       href: "/tools/interview",
-      tokens: 8,
+      tokens: TOOLS_MAP.interview?.tokens ?? 8,
       priority: 4,
       icon: MessageSquare,
       iconBg: "bg-amber-50",
@@ -151,13 +157,13 @@ function getSmartRecommendations(
   }
 
   // Priority 6: Cover letter if resume + JD exist
-  if (careerProfile?.resume_text && activeJobTarget && !completedTools.has("cover_letter")) {
+  if (careerProfile?.resume_text && activeJobTarget && !completedTargetTools.has("cover_letter")) {
     recs.push({
       id: "cover_letter",
       title: "Generate a cover letter",
-      description: `Tailored for ${activeJobTarget.title || "your target role"}`,
+      description: `Tailored for ${activeJobTarget.title || "your target role"}${activeJobTarget.company ? ` at ${activeJobTarget.company}` : ""}`,
       href: "/tools/cover_letter",
-      tokens: 8,
+      tokens: TOOLS_MAP.cover_letter?.tokens ?? 8,
       priority: 5,
       icon: Mail,
       iconBg: "bg-violet-50",
@@ -167,13 +173,13 @@ function getSmartRecommendations(
   }
 
   // Priority 7: Skills gap
-  if (!completedTools.has("skills_gap") && (activeJobTarget || careerProfile?.title)) {
+  if (!completedTargetTools.has("skills_gap") && (activeJobTarget || careerProfile?.title)) {
     recs.push({
       id: "skills_gap",
       title: "Identify your skill gaps",
       description: "Know exactly what to learn next",
       href: "/tools/skills_gap",
-      tokens: 8,
+      tokens: TOOLS_MAP.skills_gap?.tokens ?? 8,
       priority: 6,
       icon: TrendingUp,
       iconBg: "bg-violet-50",
@@ -189,6 +195,7 @@ export function DashboardContent({
   profile,
   careerProfile,
   activeJobTarget,
+  allJobTargets = [],
   recentResults,
 }: DashboardContentProps) {
   const [showWelcome, setShowWelcome] = useState(profile?.onboarding_completed !== true);
@@ -214,7 +221,32 @@ export function DashboardContent({
 
   const completeness = calculateProfileCompleteness(careerProfile, activeJobTarget);
 
-  const recommendations = getSmartRecommendations(careerProfile, activeJobTarget, recentResults);
+  const getMissionProgress = useCallback((target: JobTarget): number => {
+    const actions = (target.mission_actions as Record<string, boolean>) || {};
+    const done = MISSION_ACTIONS.reduce((count, action) => (actions[action.id] ? count + 1 : count), 0);
+    return Math.round((done / Math.max(1, MISSION_ACTIONS.length)) * 100);
+  }, []);
+
+  const missionCardTarget = useMemo(() => {
+    if (!allJobTargets.length) return activeJobTarget;
+    const incomplete = allJobTargets.filter((t) => getMissionProgress(t) < 100);
+    if (incomplete.length === 0) return activeJobTarget || allJobTargets[0];
+    const activeIncomplete = incomplete.find((t) => t.is_active);
+    if (activeIncomplete) return activeIncomplete;
+    return incomplete.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
+  }, [allJobTargets, activeJobTarget, getMissionProgress]);
+
+  const recommendationTarget = useMemo(() => {
+    if (activeJobTarget) return activeJobTarget;
+    if (!allJobTargets.length) return null;
+    return [...allJobTargets].sort((a, b) => {
+      const progressDiff = getMissionProgress(b) - getMissionProgress(a);
+      if (progressDiff !== 0) return progressDiff;
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    })[0];
+  }, [activeJobTarget, allJobTargets, getMissionProgress]);
+
+  const recommendations = getSmartRecommendations(careerProfile, recommendationTarget, recentResults);
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -460,7 +492,7 @@ export function DashboardContent({
       )}
 
       {/* Active Mission — only show if exists */}
-      {activeJobTarget && <MissionCard activeJobTarget={activeJobTarget} />}
+      {missionCardTarget && <MissionCard activeJobTarget={missionCardTarget} />}
 
       {/* Re-check nudge — show if last result is 30+ days old */}
       {recentResults.length > 0 && (() => {

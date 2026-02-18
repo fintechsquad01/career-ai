@@ -25,6 +25,31 @@ function extractCompanyFromJd(jdText: string): string {
   return "";
 }
 
+function extractTitleFromJd(jdText: string): string {
+  const lines = jdText
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .slice(0, 10);
+
+  const titleLine = lines.find((line) => {
+    if (line.length < 3 || line.length > 80) return false;
+    if (line.split(" ").length > 8) return false;
+    if (/^(about|company|overview|responsibilities|requirements|what you'll do)/i.test(line)) return false;
+    return /[A-Za-z]/.test(line);
+  });
+
+  if (titleLine) return titleLine.replace(/[|•·]+/g, " ").trim();
+  return "";
+}
+
+function normalizeLabel(text: string, fallback: string): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return fallback;
+  if (clean.length > 60) return `${clean.slice(0, 57).trimEnd()}...`;
+  return clean;
+}
+
 /** Hook to manage all job targets for the current user */
 export function useJobTargets() {
   const jobTargets = useAppStore((s) => s.jobTargets);
@@ -95,6 +120,8 @@ export function useJobTargets() {
           return false;
         }
 
+        // Canonical refresh prevents stale state/race issues across tabs/views
+        await refreshTargets();
         return true;
       } catch (err) {
         console.error("Error switching job target:", err);
@@ -124,11 +151,10 @@ export function useJobTargets() {
             .eq("is_active", true);
         }
 
-        // Extract title from first line if not provided
-        const lines = jdText.trim().split("\n").filter((l: string) => l.trim());
-        const derivedTitle = title || lines[0]?.trim().slice(0, 100) || "Untitled Position";
+        const extractedTitle = extractTitleFromJd(jdText);
+        const derivedTitle = normalizeLabel(title?.trim() || extractedTitle, "Untitled Position");
 
-        const inferredCompany = company?.trim() || extractCompanyFromJd(jdText);
+        const inferredCompany = normalizeLabel(company?.trim() || extractCompanyFromJd(jdText), "");
         const { data, error } = await supabase
           .from("job_targets")
           .insert({

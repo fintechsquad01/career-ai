@@ -50,6 +50,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
     progress,
     isComplete,
     getActionState,
+    reconcileActionsFromResults,
   } = useMission();
 
   const { toolResults, refetchResults } = useMissionResults(activeJobTarget?.id);
@@ -67,8 +68,9 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
   }, [allJobTargets.length, activeJobTarget]);
 
   useEffect(() => {
-    const refreshMissionData = () => {
-      void refetchResults();
+    const refreshMissionData = async () => {
+      await reconcileActionsFromResults(activeJobTarget?.id);
+      await refetchResults();
     };
     window.addEventListener("focus", refreshMissionData);
     document.addEventListener("visibilitychange", refreshMissionData);
@@ -76,7 +78,11 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
       window.removeEventListener("focus", refreshMissionData);
       document.removeEventListener("visibilitychange", refreshMissionData);
     };
-  }, [refetchResults]);
+  }, [activeJobTarget?.id, refetchResults, reconcileActionsFromResults]);
+
+  useEffect(() => {
+    void reconcileActionsFromResults(activeJobTarget?.id);
+  }, [activeJobTarget?.id, reconcileActionsFromResults]);
 
   useEffect(() => {
     const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
@@ -107,10 +113,13 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
             } catch { /* use defaults */ }
           }
 
+          const safeTitle = title.replace(/\s+/g, " ").trim().slice(0, 60) || "Target Position";
+          const safeCompany = company.replace(/\s+/g, " ").trim().slice(0, 60);
+
           await supabase.from("job_targets").insert({
             user_id: session.user.id,
-            title,
-            company,
+            title: safeTitle,
+            company: safeCompany,
             jd_text: preAuthJd,
             source: "paste",
             is_active: true,

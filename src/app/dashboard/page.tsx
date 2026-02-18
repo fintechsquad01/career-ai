@@ -42,7 +42,7 @@ export default async function DashboardPage() {
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(50);
 
   return (
     <AppShell
@@ -56,6 +56,7 @@ export default async function DashboardPage() {
         profile={profile}
         careerProfile={careerProfile}
         activeJobTarget={activeJobTarget}
+        allJobTargets={allJobTargets || []}
         recentResults={recentResults || []}
       />
     </AppShell>

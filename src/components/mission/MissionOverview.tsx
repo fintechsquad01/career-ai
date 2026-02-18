@@ -33,6 +33,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [showAddForm, setShowAddForm] = useState(false);
   const [newJdText, setNewJdText] = useState("");
+  const [newTitle, setNewTitle] = useState("");
   const [newCompany, setNewCompany] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -56,12 +57,13 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
   };
 
   const handleAddTarget = async () => {
-    if (!newJdText.trim()) return;
+    if (!newJdText.trim() || !newTitle.trim()) return;
     setSaving(true);
     try {
-      const result = await addTarget(newJdText, undefined, newCompany.trim() || undefined);
+      const result = await addTarget(newJdText, newTitle.trim(), newCompany.trim() || undefined);
       if (result) {
         setNewJdText("");
+        setNewTitle("");
         setNewCompany("");
         setShowAddForm(false);
         await refreshTargets();
@@ -134,6 +136,12 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
       {/* Add job form */}
       {showAddForm && (
         <div className="glass-card p-4 space-y-3">
+          <input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Job title (required)"
+            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
           <textarea
             value={newJdText}
             onChange={(e) => setNewJdText(e.target.value)}
@@ -148,14 +156,14 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
           />
           <div className="flex items-center gap-2 justify-end">
             <button
-              onClick={() => { setShowAddForm(false); setNewJdText(""); setNewCompany(""); }}
+              onClick={() => { setShowAddForm(false); setNewJdText(""); setNewTitle(""); setNewCompany(""); }}
               className="px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
             >
               Cancel
             </button>
             <button
               onClick={handleAddTarget}
-              disabled={!newJdText.trim() || saving}
+              disabled={!newJdText.trim() || !newTitle.trim() || saving}
               className="px-4 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors min-h-[36px]"
             >
               {saving ? "Creating..." : "Create Mission"}

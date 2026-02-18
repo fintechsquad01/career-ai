@@ -538,20 +538,25 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
         const { data } = await supabase
           .from("tool_results")
-          .select("tool_id")
+          .select("tool_id, job_target_id")
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false })
-          .limit(20);
+          .limit(100);
 
         if (data) {
-          setCompletedToolIds(new Set(data.map((r: { tool_id: string }) => r.tool_id)));
+          const scoped = data.filter((r: { tool_id: string; job_target_id: string | null }) => {
+            if (r.tool_id === "displacement") return true;
+            if (!activeJobTarget?.id) return r.job_target_id == null;
+            return r.job_target_id === activeJobTarget.id;
+          });
+          setCompletedToolIds(new Set(scoped.map((r: { tool_id: string }) => r.tool_id)));
         }
       } catch {
         // Silently fail — hint just won't show
       }
     };
     fetchCompletedTools();
-  }, []);
+  }, [activeJobTarget?.id]);
 
   const handleRun = useCallback(
     async (inputs: Record<string, unknown>) => {
@@ -752,6 +757,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                   setProgress({ step: data.step, total: data.total, message: data.message });
                 } else if (event === "complete") {
                   setResult(data.result as ToolResult);
+                  setCompletedToolIds((prev) => new Set(prev).add(toolId));
                   // Score delta from backend comparison
                   if (data.score_delta != null && data.previous_score != null) {
                     const metricVal = data.metric_value ?? data.score_delta + data.previous_score;

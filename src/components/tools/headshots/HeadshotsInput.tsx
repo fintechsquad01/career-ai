@@ -99,6 +99,12 @@ export function HeadshotsInput({ onSubmit }: HeadshotsInputProps) {
         </div>
       </div>
 
+      <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
+        <p className="text-xs text-amber-800">
+          If headshots are temporarily unavailable due to provider limits, you will see a retry message and your tokens will not be charged.
+        </p>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
         <input
