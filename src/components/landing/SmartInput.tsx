@@ -7,15 +7,15 @@ import { parseFile, isResumeFile } from "@/lib/file-parser";
 import type { InputType } from "@/lib/detect-input";
 
 const BADGE_CONFIG: Record<string, { color: string; icon: typeof LinkIcon; label: string }> = {
-  url: { color: "bg-blue-100 text-blue-700", icon: LinkIcon, label: "Job URL detected" },
-  jd: { color: "bg-blue-100 text-blue-700", icon: Crosshair, label: "Job description detected" },
-  resume: { color: "bg-violet-100 text-violet-700", icon: FileText, label: "Resume detected" },
+  url: { color: "ui-badge ui-badge-blue", icon: LinkIcon, label: "Job URL detected" },
+  jd: { color: "ui-badge ui-badge-blue", icon: Crosshair, label: "Job description detected" },
+  resume: { color: "ui-badge ui-badge-amber", icon: FileText, label: "Resume detected" },
 };
 
-const CTA_CONFIG: Record<string, { text: string; color: string }> = {
-  url: { text: "Analyze This Job", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
-  jd: { text: "See How You Match", color: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20" },
-  resume: { text: "X-Ray My Resume", color: "bg-violet-600 hover:bg-violet-700 shadow-violet-600/20" },
+const CTA_CONFIG: Record<string, { text: string }> = {
+  url: { text: "Analyze This Job" },
+  jd: { text: "See How You Match" },
+  resume: { text: "X-Ray My Resume" },
 };
 
 interface SmartInputProps {
@@ -62,7 +62,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={"Paste anything here...\n\n• A job description you\u2019re considering\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"}
+            placeholder={"Paste anything here...\n\n• A job description you want to apply for\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"}
             rows={text ? 6 : 3}
             aria-label="Paste a job description, job URL, or resume text"
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none min-h-[80px]"
@@ -74,7 +74,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           <div className="flex items-center gap-2">
             {/* Detection badge */}
             {badge && (
-              <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${badge.color} animate-in fade-in duration-200`}>
+              <div className={`inline-flex items-center gap-1.5 ${badge.color} animate-in fade-in duration-200`}>
                 <badge.icon className="w-3 h-3" />
                 {badge.label}
               </div>
@@ -119,9 +119,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
             <button
               onClick={() => onAnalyze?.(text, detectedType)}
               disabled={!detectedType}
-              className={`w-full py-3 px-4 rounded-xl text-sm font-semibold text-white shadow-lg transition-all min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed ${
-                cta?.color || "bg-gray-400"
-              }`}
+              className="btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {cta?.text || "Analyzing..."}
               <ArrowRight className="w-4 h-4" />
@@ -129,6 +127,10 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           </div>
         )}
       </div>
+
+      <p className="mt-3 text-center text-xs text-gray-500 max-w-lg mx-auto leading-relaxed">
+        Best results: paste the full job requirements, responsibilities, and qualifications section, or your complete resume text with bullet points.
+      </p>
 
       {/* Privacy line */}
       <p className="mt-4 text-center text-xs text-gray-400">

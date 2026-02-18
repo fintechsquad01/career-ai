@@ -156,7 +156,7 @@ function AuthContent() {
           </h1>
           {mode === "signup" && (
             <p className="text-sm text-gray-500 text-center mb-6">
-              No credit card required. Set up in 30 seconds.
+              Create your account and start with 15 free tokens. No credit card required.
             </p>
           )}
           {mode === "signin" && <div className="mb-6" />}
@@ -165,7 +165,7 @@ function AuthContent() {
           <button
             onClick={handleGoogleAuth}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors min-h-[48px]"
+            className="btn-secondary w-full gap-3 min-h-[48px]"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -242,13 +242,13 @@ function AuthContent() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
+              className="btn-primary w-full disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {mode === "signup"
                 ? hasPreAuthAnalysis
                   ? "Unlock Results — Free"
-                  : "Create Account — 15 Free Tokens + 2 Daily"
+                  : "Create Account — 15 Free Tokens"
                 : "Sign In"
               }
             </button>
@@ -256,7 +256,7 @@ function AuthContent() {
 
           {mode === "signup" && (
             <p className="text-xs text-gray-400 text-center mt-2">
-              Join 500+ professionals. No credit card required.
+              Plus 2 daily free tokens after signup.
             </p>
           )}
 
@@ -288,7 +288,7 @@ function AuthContent() {
           <span>·</span>
           <span>Never sold</span>
           <span>·</span>
-          <span>30 second setup</span>
+          <span>30 second analysis</span>
         </div>
       </div>
     </div>

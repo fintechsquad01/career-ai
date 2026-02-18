@@ -53,7 +53,7 @@ function StickyCtaBar() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="btn-primary w-full sm:w-auto whitespace-nowrap text-xs sm:text-sm px-5"
         >
-          Get Started — Free
+          Analyze Free
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -307,8 +307,8 @@ export function LandingContent() {
 
               {/* Divider pointing to SmartInput */}
               <div className="text-center space-y-2">
-                <p className="text-sm text-gray-400">
-                  Or paste your full resume or a job description for deeper analysis
+                <p className="text-sm text-gray-500 max-w-xl mx-auto leading-relaxed">
+                  Need full-fit evidence? Paste your full resume or the full job description to get match explanations, missing-skill gaps, and next actions.
                 </p>
                 <ArrowRight className="w-4 h-4 text-gray-300 mx-auto rotate-90" />
               </div>
@@ -316,7 +316,7 @@ export function LandingContent() {
               {/* Full SmartInput */}
               <div className="space-y-2">
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider text-center">
-                  Power users: paste anything for full analysis
+                  Input-first analysis
                 </p>
                 <SmartInput onAnalyze={handleAnalyze} />
               </div>
@@ -374,16 +374,15 @@ export function LandingContent() {
         <>
           {/* Trust line — honest value props */}
           <AnimateOnScroll as="section" className="py-8 bg-white">
-            <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-8 sm:gap-16">
-              <p className="text-sm text-gray-400 font-medium">
-                <span className="text-2xl font-bold text-gray-900 mr-1.5">11</span> AI career tools
-              </p>
-              <p className="text-sm text-gray-400 font-medium">
-                <span className="text-2xl font-bold text-gray-900 mr-1.5">30 sec</span> analysis time
-              </p>
-              <p className="text-sm text-gray-400 font-medium">
-                <span className="text-2xl font-bold text-gray-900 mr-1.5">$0</span> to start
-              </p>
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="surface-card-soft p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                  <span className="ui-badge ui-badge-blue">11 AI career tools</span>
+                  <span className="ui-badge ui-badge-gray">30 second analysis</span>
+                  <span className="ui-badge ui-badge-green">$0 to start</span>
+                  <span className="ui-badge ui-badge-gray">Pay only for what you run</span>
+                </div>
+              </div>
             </div>
           </AnimateOnScroll>
 
@@ -434,13 +433,13 @@ export function LandingContent() {
               {/* Stat pills */}
               <div className="flex items-center justify-center gap-3 sm:gap-4 stagger-children">
                 {[
-                  { label: "ATS Score", color: "bg-blue-50 text-blue-700 border-blue-100" },
-                  { label: "Skill Gaps", color: "bg-violet-50 text-violet-700 border-violet-100" },
-                  { label: "Action Plan", color: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+                  { label: "ATS Score", color: "ui-badge ui-badge-blue" },
+                  { label: "Skill Gaps", color: "ui-badge ui-badge-amber" },
+                  { label: "Action Plan", color: "ui-badge ui-badge-green" },
                 ].map((pill) => (
                   <span
                     key={pill.label}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold border ${pill.color}`}
+                    className={pill.color}
                   >
                     {pill.label}
                   </span>
@@ -457,8 +456,8 @@ export function LandingContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 11 AI tools. No subscriptions. Start free.
               </h2>
-              <p className="text-gray-500 text-center mb-12">
-                Land your dream job AND build income resilience. Pay per use, starting at free.
+              <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
+                Premium-quality outputs with recruiter-style evidence, priced as rational pay-per-use tokens.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
                 {HERO_TOOLS.map((ht) => {
@@ -509,7 +508,7 @@ export function LandingContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 Why job seekers switch to AISkillScore
               </h2>
-              <p className="text-gray-500 text-center mb-12">
+              <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
                 One platform replaces 5 subscriptions. Pay only for what you use.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
@@ -532,7 +531,7 @@ export function LandingContent() {
                 ].map((item) => (
                   <div
                     key={item.heading}
-                    className={`rounded-2xl border p-6 ${item.color}`}
+                    className={`surface-card p-6 ${item.color}`}
                   >
                     <h3 className="font-semibold text-gray-900 mb-2">{item.heading}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
@@ -603,8 +602,8 @@ export function LandingContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
                 Pay per use. No subscriptions.
               </h2>
-              <p className="text-gray-500 text-center mb-10">
-                Jobscan costs $599/year. A full job prep on AISkillScore? Under $8.
+              <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto leading-relaxed">
+                Get premium-quality career outputs at fair, rational pricing. Jobscan costs $599/year. A full job prep on AISkillScore is typically under $8.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto stagger-children">
                 {PACKS.map((pack) => (

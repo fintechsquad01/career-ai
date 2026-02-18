@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, ArrowRight, Lock, Clock } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 
 interface HeroSectionProps {
   onCtaClick?: () => void;
@@ -40,7 +40,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       </div>
 
       {/* Headline */}
-      <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight">
+      <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight max-w-4xl mx-auto">
         Stop guessing.
         <br />
         <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
@@ -49,7 +49,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       </h1>
 
       {/* Subheadline */}
-      <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-medium">
+      <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
         Paste a job posting or your resume. Get an honest, evidence-based assessment in 30 seconds — not a generic keyword score.
       </p>
 
@@ -63,8 +63,18 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
         </span>
       </p>
 
-      {/* Primary CTA */}
+      {/* Evidence + trust */}
       <div className="space-y-4">
+        <div className="surface-card-soft px-4 py-3 max-w-2xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+            <span className="ui-badge ui-badge-blue">Evidence-backed insights</span>
+            <span className="ui-badge ui-badge-gray">Encrypted</span>
+            <span className="ui-badge ui-badge-gray">Never sold</span>
+            <span className="ui-badge ui-badge-gray">30 second analysis</span>
+          </div>
+        </div>
+
+        {/* Primary CTA */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button onClick={onCtaClick} className="btn-primary btn-shine sm:w-auto px-8 text-base">
             Get Your Free AI Risk Score
@@ -75,18 +85,9 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
           </button>
         </div>
 
-        <p className="text-sm text-gray-400">
-          No signup required · 30 second analysis · 100% free
+        <p className="text-sm text-gray-500">
+          No signup required for your first analysis.
         </p>
-
-        {/* Trust bar */}
-        <div className="surface-card-soft px-4 py-3 max-w-2xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Lock className="w-3.5 h-3.5" /> Encrypted · Never sold</div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Clock className="w-3.5 h-3.5" /> 30 second analysis</div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500"><Sparkles className="w-3.5 h-3.5" /> Evidence-backed insights</div>
-          </div>
-        </div>
       </div>
     </div>
   );

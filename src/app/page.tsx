@@ -6,14 +6,14 @@ import { FAQ_ITEMS } from "@/lib/constants";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
 export const metadata: Metadata = {
-  title: "AISkillScore — Free AI Career Analysis in 30 Seconds",
+  title: "AISkillScore — Evidence-First AI Career Analysis in 30 Seconds",
   description:
-    "Paste a job posting or resume. Get an honest AI assessment with evidence — not generic keyword scores. 11 AI tools, pay per use, no subscriptions.",
+    "Paste a job posting or resume. Get an honest AI assessment with evidence in 30 seconds — not generic keyword scores. Premium-quality output at fair, pay-per-use pricing.",
   alternates: {
     canonical: APP_URL,
   },
   openGraph: {
-    title: "AISkillScore — Free AI Career Analysis in 30 Seconds",
+    title: "AISkillScore — Evidence-First AI Career Analysis in 30 Seconds",
     description:
       "Paste a job posting or resume. Get AI-powered career intelligence with evidence. 11 tools from free to $0.195/token. No subscriptions.",
     url: APP_URL,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AISkillScore — Free AI Career Analysis in 30 Seconds",
+    title: "AISkillScore — Evidence-First AI Career Analysis in 30 Seconds",
     description:
       "Paste a job posting or resume. Get AI-powered career intelligence with evidence. 11 tools, pay per use.",
     images: [`${APP_URL}/api/og`],

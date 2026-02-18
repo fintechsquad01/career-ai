@@ -20,7 +20,7 @@ function TokenCalculator() {
   const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : tokensNeeded <= 500 ? "Power" : "Lifetime";
 
   return (
-    <div className="surface-card p-6 mb-16">
+    <div className="surface-card p-6">
       <h2 className="text-h3 text-center mb-4">How many tokens do you need?</h2>
       <div className="max-w-md mx-auto space-y-4">
         <div>
@@ -139,21 +139,30 @@ export default function PricingPage() {
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20 space-y-16">
         {/* Header */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            Pay per use. No subscriptions.
+            Premium output. Fair pricing.
           </h1>
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            Jobscan costs $599/year. A full job prep on AISkillScore? Under $8.
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            Get recruiter-style, evidence-first career analysis without expensive annual contracts. Pay only for the tools you run.
           </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-full text-sm font-medium text-green-700 mb-6">
+          <div className="inline-flex items-center gap-2 ui-badge ui-badge-green text-sm">
             Log in daily for 2 free tokens. Save up and run tools for free.
           </div>
-          <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $14." />
+          <div className="max-w-2xl mx-auto">
+            <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $14." />
+          </div>
         </div>
 
         {/* Packs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-h2 mb-2">Choose your pack</h2>
+            <p className="text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Each pack gives you access to the same premium outputs. Bigger packs lower your per-token cost.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {PACKS.map((pack) => (
             <div
               key={pack.id}
@@ -185,7 +194,7 @@ export default function PricingPage() {
               <button
                 onClick={() => handlePurchase(pack.id)}
                 disabled={purchasing === pack.id}
-                className={`w-full flex items-center justify-center gap-2 disabled:opacity-60 ${
+                className={`w-full disabled:opacity-60 ${
                   pack.highlighted
                     ? "btn-primary"
                     : "btn-secondary"
@@ -202,6 +211,7 @@ export default function PricingPage() {
               </button>
             </div>
           ))}
+          </div>
         </div>
 
         {purchaseError && (
@@ -214,8 +224,8 @@ export default function PricingPage() {
         <TokenCalculator />
 
         {/* What can you do */}
-        <div>
-          <h2 className="text-h2 text-center mb-8">
+        <div className="space-y-8">
+          <h2 className="text-h2 text-center">
             What can you do with tokens?
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
@@ -231,10 +241,13 @@ export default function PricingPage() {
         </div>
 
         {/* Competitor comparison */}
-        <div>
-          <h2 className="text-h2 text-center mb-8">
+        <div className="space-y-4">
+          <h2 className="text-h2 text-center">
             How we compare
           </h2>
+          <p className="text-sm text-gray-500 text-center max-w-2xl mx-auto leading-relaxed">
+            Comparison is based on publicly listed pricing and core workflow coverage. We optimize for evidence quality and practical outcomes, not just cheaper pricing.
+          </p>
           <div className="surface-card overflow-x-auto -mx-4 sm:mx-0">
             <table className="w-full text-xs sm:text-sm min-w-[600px]">
               <thead>
@@ -293,7 +306,7 @@ export default function PricingPage() {
         </div>
 
         {/* Track B ROI */}
-        <div className="surface-card-hero p-8 text-center">
+        <div className="surface-card-hero p-8 text-center space-y-4">
           <h2 className="text-h2 mb-2">Not just job hunting</h2>
           <p className="text-gray-600 mb-4 max-w-2xl mx-auto leading-relaxed">
             Our tools help you build income while you search. Every analysis surfaces freelance, consulting, and entrepreneurship opportunities based on your skills.
@@ -336,7 +349,7 @@ export default function PricingPage() {
           </p>
           <Link
             href="/lifetime"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
+            className="btn-secondary inline-flex sm:w-auto px-6 bg-white text-blue-700 border-white hover:bg-blue-50"
           >
             Learn More <ArrowRight className="w-4 h-4" />
           </Link>
