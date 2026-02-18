@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, AlertTriangle, AlertCircle, DollarSign, Clock, Briefcase } from "lucide-react";
+import { Shield, AlertTriangle, AlertCircle, Clock } from "lucide-react";
 import type { TSalaryResult, ToolResult } from "@/types";
 
 interface SalaryResultsProps {
@@ -31,6 +31,13 @@ export function SalaryResults({ result }: SalaryResultsProps) {
   const range = market_range ?? { p25: 0, p50: 0, p75: 0, p90: 0 };
   const pos = candidate_position ?? 50;
   const currency = data.currency || "USD";
+  const leverage = data.leverage_assessment?.overall_leverage || "moderate";
+  const summaryText =
+    leverage === "strong"
+      ? "You have strong leverage for this negotiation. Lead with evidence and anchor confidently."
+      : leverage === "limited"
+        ? "Your leverage is currently limited. Prioritize timing and total compensation components."
+        : "You have moderate leverage. Use structured scripts and market evidence to improve outcomes.";
 
   const leverageColors: Record<string, string> = {
     strong: "bg-green-50 text-green-700 border-green-200",
@@ -39,10 +46,14 @@ export function SalaryResults({ result }: SalaryResultsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
+      <div className="surface-card-hero p-4">
+        <p className="text-sm font-medium text-gray-900">{summaryText}</p>
+      </div>
+
       {/* Market Range */}
       {market_range && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Market Range</h3>
           {data.posted_salary_range && (
             <div className="mb-3 p-2.5 rounded-lg bg-blue-50 border border-blue-100 text-sm text-blue-800">
@@ -83,7 +94,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
       {/* Leverage Assessment */}
       {data.leverage_assessment && (
-        <div className={`rounded-2xl border p-6 ${leverageColors[data.leverage_assessment.overall_leverage || "moderate"] || leverageColors.moderate}`}>
+        <div className={`rounded-2xl border p-4 sm:p-5 ${leverageColors[data.leverage_assessment.overall_leverage || "moderate"] || leverageColors.moderate}`}>
           <h3 className="font-semibold mb-3 flex items-center gap-2">
             <Shield className="w-4 h-4" />
             Leverage Assessment: <span className="capitalize">{data.leverage_assessment.overall_leverage}</span>
@@ -112,7 +123,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
       {/* Counter-Offer Scripts */}
       {data.counter_offer_scripts && data.counter_offer_scripts.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Counter-Offer Scripts</h3>
           <div className="space-y-4">
             {data.counter_offer_scripts.map((s, i) => (
@@ -142,7 +153,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
       {/* Negotiation Tactics */}
       {data.negotiation_tactics && data.negotiation_tactics.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Negotiation Tactics</h3>
           <div className="space-y-4">
             {data.negotiation_tactics.map((t, i) => (
@@ -170,7 +181,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
       {/* Beyond Base Salary */}
       {data.beyond_base_salary && data.beyond_base_salary.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Beyond Base Salary</h3>
           <div className="space-y-4">
             {data.beyond_base_salary.map((item, i) => (
@@ -193,7 +204,7 @@ export function SalaryResults({ result }: SalaryResultsProps) {
 
       {/* Timing Strategy */}
       {data.timing_strategy && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <Clock className="w-4 h-4 text-blue-500" />
             Timing Strategy

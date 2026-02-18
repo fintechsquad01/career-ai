@@ -1,7 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
-import { Lightbulb, Calendar, AlertTriangle, AlertCircle, ArrowRight, Briefcase, DollarSign } from "lucide-react";
+import { Lightbulb, Calendar, AlertTriangle, AlertCircle, Briefcase, DollarSign } from "lucide-react";
 import { ToolCard } from "@/components/shared/CourseCard";
 import type { TEntrepreneurshipResult, ToolResult } from "@/types";
 
@@ -22,9 +22,9 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
   }
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Score hero */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+      <div className="report-section text-center">
         <Ring score={data.founder_market_fit} size="lg" label="Founder-Market Fit" />
         {data.headline && (
           <p className="text-sm text-gray-700 mt-3 max-w-md mx-auto">{data.headline}</p>
@@ -33,7 +33,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* Unfair Advantages */}
       {data.unfair_advantages && data.unfair_advantages.length > 0 && (
-        <div className="bg-purple-50 rounded-2xl border border-purple-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-purple-900 mb-4 flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-purple-600" />
             Your Unfair Advantages
@@ -57,7 +57,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* Psychological Fit */}
       {data.psychological_fit && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Psychological Fit</h3>
           <div className="space-y-3">
             {data.psychological_fit.risk_profile && (
@@ -94,7 +94,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* Business Models */}
       {data.business_models && data.business_models.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Business Model Cards</h3>
           <div className="space-y-4">
             {data.business_models.map((bm, i) => (
@@ -189,7 +189,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* 90-Day Launch Plan */}
       {data.ninety_day_launch_plan && (
-        <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl border border-orange-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-orange-900 mb-4 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-orange-600" />
             90-Day Launch Plan
@@ -249,7 +249,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* Risk Assessment */}
       {data.risk_assessment && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-500" />
             Risk Assessment
@@ -303,25 +303,25 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
 
       {/* Job Hunt Synergy */}
       {data.job_hunt_synergy && (
-        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-5">
-          <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+        <div className="surface-card-hero p-5">
+          <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
             <Briefcase className="w-4 h-4 text-blue-600" />
             How This Helps Your Job Hunt
-          </h4>
+          </h3>
           <p className="text-sm text-gray-700">{data.job_hunt_synergy}</p>
         </div>
       )}
 
       {/* Legacy: competitive landscape & first steps */}
       {data.competitive_landscape && !data.unfair_advantages && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Competitive Landscape</h3>
           <p className="text-sm text-gray-700">{data.competitive_landscape}</p>
         </div>
       )}
 
       {data.recommended_first_steps && data.recommended_first_steps.length > 0 && !data.ninety_day_launch_plan && (
-        <div className="bg-orange-50 rounded-2xl border border-orange-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-orange-900 mb-3">Recommended First Steps</h3>
           <ul className="space-y-2">
             {data.recommended_first_steps.map((step, i) => (

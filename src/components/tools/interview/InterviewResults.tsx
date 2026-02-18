@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Lightbulb, AlertTriangle, AlertCircle, Zap, MessageSquare, CheckCircle, Briefcase } from "lucide-react";
+import { ChevronDown, ChevronUp, Lightbulb, AlertTriangle, AlertCircle, Zap, MessageSquare, CheckCircle } from "lucide-react";
 import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TInterviewResult, ToolResult } from "@/types";
 
@@ -37,10 +37,10 @@ export function InterviewResults({ result }: InterviewResultsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Interview Strategy */}
       {data.interview_strategy && (
-        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6 space-y-4">
+        <div className="surface-card-hero p-6 space-y-4">
           <h3 className="font-semibold text-blue-900">Interview Strategy</h3>
 
           {data.interview_strategy.opening_impression && (
@@ -74,19 +74,22 @@ export function InterviewResults({ result }: InterviewResultsProps) {
       )}
 
       {data.company_culture_notes && (
-        <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
-          <h4 className="font-semibold text-amber-900 mb-1">Company Culture Notes</h4>
+        <div className="surface-card-hero p-4">
+          <h3 className="font-semibold text-amber-900 mb-1">Company Culture Notes</h3>
           <p className="text-sm text-amber-800">{data.company_culture_notes}</p>
         </div>
       )}
 
       {data.interview_format_prediction && (
-        <p className="text-sm text-gray-600">{data.interview_format_prediction}</p>
+        <div className="report-section">
+          <h3 className="font-semibold text-gray-900 mb-2">Interview Format Prediction</h3>
+          <p className="text-sm text-gray-600">{data.interview_format_prediction}</p>
+        </div>
       )}
 
       {/* Practice Questions */}
-      <div className="space-y-3">
-        <h3 className="font-semibold text-gray-900">Practice Questions</h3>
+      <div className="report-section space-y-3">
+        <h3 className="font-semibold text-gray-900 mb-1">Practice Questions</h3>
         {data.questions?.map((q, i) => (
           <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             <button
@@ -142,7 +145,7 @@ export function InterviewResults({ result }: InterviewResultsProps) {
                 {/* Follow-up questions */}
                 {q.follow_ups && q.follow_ups.length > 0 && (
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase mb-2">The Follow-Up Questions That Decide Who Gets Hired</p>
+                    <p className="text-[10px] font-semibold text-gray-500 uppercase mb-2">High-signal follow-up questions</p>
                     <div className="space-y-2">
                       {q.follow_ups.map((fu, j) => (
                         <div key={j} className="p-3 bg-gray-50 rounded-xl">
@@ -190,7 +193,7 @@ export function InterviewResults({ result }: InterviewResultsProps) {
 
       {/* Questions to Ask Them */}
       {data.interview_strategy?.questions_to_ask_them && data.interview_strategy.questions_to_ask_them.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-500" />
             Questions to Ask Them
@@ -210,7 +213,7 @@ export function InterviewResults({ result }: InterviewResultsProps) {
 
       {/* Preparation Checklist */}
       {data.preparation_checklist && data.preparation_checklist.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
             Preparation Checklist
@@ -240,8 +243,8 @@ export function InterviewResults({ result }: InterviewResultsProps) {
         />
       )}
 
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center text-sm text-blue-700">
-        Want to practice these questions out loud? <span className="font-semibold">Coming soon.</span>
+      <div className="surface-card-hero p-4 text-center text-sm text-blue-700">
+        Voice practice mode for this interview set is in development.
       </div>
 
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, CheckCircle, DollarSign, Lightbulb, BookOpen, AlertCircle } from "lucide-react";
+import { CheckCircle, Lightbulb, AlertCircle } from "lucide-react";
 import { CourseCard } from "@/components/shared/CourseCard";
 import type { TSkillsGapResult, ToolResult } from "@/types";
 
@@ -41,10 +41,10 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
   const learningRoadmap = data.learning_roadmap || data.learning_path;
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Headline */}
       {data.headline && (
-        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-sm text-blue-900 font-medium">{data.headline}</p>
         </div>
       )}
@@ -55,7 +55,7 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
 
       {/* Transferable Skills (strengths first) */}
       {data.transferable_skills && data.transferable_skills.length > 0 && (
-        <div className="bg-green-50 rounded-2xl border border-green-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-green-900 mb-4 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-600" />
             Your Transferable Strengths
@@ -88,7 +88,7 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
 
       {/* Gaps */}
       {data.gaps && data.gaps.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Skills Ranked by Gap</h3>
           <div className="space-y-5">
             {data.gaps.map((gap, i) => (
@@ -174,8 +174,8 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
 
       {/* Total Investment */}
       {data.total_investment && (
-        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
-          <h4 className="font-semibold text-gray-900 mb-3">Total Investment</h4>
+        <div className="surface-card-soft p-5">
+          <h3 className="font-semibold text-gray-900 mb-3">Total Investment</h3>
           <div className="grid grid-cols-3 gap-4 text-center">
             {data.total_investment.time && (
               <div>
@@ -201,7 +201,7 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
 
       {/* Learning Roadmap */}
       {learningRoadmap && learningRoadmap.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Learning Roadmap</h3>
           <div className="space-y-4">
             {learningRoadmap.map((step, i) => (

@@ -2,8 +2,7 @@
 
 import { Ring } from "@/components/shared/Ring";
 import { SourceVerification } from "@/components/shared/SourceVerification";
-import { Hash, Users, DollarSign, Sparkles, ArrowRight, AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { Hash, Users, Sparkles, AlertCircle } from "lucide-react";
 import type { TLinkedInResult, ToolResult } from "@/types";
 
 interface LinkedInResultsProps {
@@ -23,16 +22,16 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {data.profile_strength_score != null && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+        <div className="report-section text-center">
           <Ring score={data.profile_strength_score} size="md" label="Profile Strength" />
         </div>
       )}
 
       {/* AI Value Prop */}
       {data.ai_value_prop && (
-        <div className="bg-purple-50 rounded-2xl border border-purple-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
             <Sparkles className="w-3 h-3" />
             LinkedIn AI Will Summarize You As
@@ -43,7 +42,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* Headlines */}
       {data.headlines && data.headlines.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Headline Options</h3>
           <div className="space-y-4">
             {data.headlines.map((h, i) => (
@@ -73,7 +72,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* About Section */}
       {data.about_section && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">About Section</h3>
           <p className="text-sm text-gray-800 whitespace-pre-wrap">{data.about_section}</p>
           {data.about_strategy && (
@@ -84,7 +83,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* Keywords */}
       {data.keywords && data.keywords.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Keywords to Include</h3>
           <div className="flex flex-wrap gap-2">
             {data.keywords.map((kw, i) => {
@@ -110,7 +109,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* Experience Improvements */}
       {data.experience_improvements && data.experience_improvements.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Experience Improvements</h3>
           <div className="space-y-4">
             {data.experience_improvements.map((exp, i) => (
@@ -141,7 +140,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* Content Strategy */}
       {data.content_strategy && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Hash className="w-4 h-4 text-sky-500" />
             Content Strategy
@@ -201,7 +200,7 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
 
       {/* Network Building */}
       {data.network_building && data.network_building.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-sky-500" />
             Network Building

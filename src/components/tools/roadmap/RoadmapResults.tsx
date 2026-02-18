@@ -1,7 +1,6 @@
 "use client";
 
-import { Calendar, Target, Users, BookOpen, DollarSign, AlertTriangle, AlertCircle, ArrowRight, ExternalLink } from "lucide-react";
-import { trackAffiliateClick, getAffiliateUrl } from "@/lib/affiliates";
+import { Calendar, Target, Users, BookOpen, AlertTriangle, AlertCircle } from "lucide-react";
 import type { TRoadmapResult, ToolResult } from "@/types";
 
 interface RoadmapResultsProps {
@@ -49,17 +48,17 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
   const skills = data.skill_development ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Headline */}
       {data.headline && (
-        <div className="bg-teal-50 rounded-2xl border border-teal-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-sm text-teal-900 font-medium">{data.headline}</p>
         </div>
       )}
 
       {/* Timeline */}
       {data.milestones && data.milestones.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Timeline</h3>
           <div className="space-y-5">
             {data.milestones.map((m, i) => (
@@ -117,7 +116,7 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Networking Plan */}
       {networkingList.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <Users className="w-4 h-4 text-teal-600" />
             Networking Plan
@@ -146,7 +145,7 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Application Strategy */}
       {data.application_strategy && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-teal-600" />
             Application Strategy
@@ -173,7 +172,7 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Application Targets (legacy) */}
       {!data.application_strategy && data.application_targets && data.application_targets.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-teal-600" />
             Application Targets
@@ -188,7 +187,7 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Skill Development */}
       {skills.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-teal-600" />
             Skill Development
@@ -217,7 +216,7 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Risk Mitigation */}
       {data.risk_mitigation && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Risk Mitigation</h3>
           <div className="space-y-2">
             {data.risk_mitigation.biggest_risk && (
@@ -235,8 +234,8 @@ export function RoadmapResults({ result }: RoadmapResultsProps) {
 
       {/* Total Investment */}
       {data.total_investment && (
-        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
-          <h4 className="font-semibold text-gray-900 mb-3">Total Investment</h4>
+        <div className="surface-card-soft p-5">
+          <h3 className="font-semibold text-gray-900 mb-3">Total Investment</h3>
           <div className="grid grid-cols-3 gap-4 text-center">
             {data.total_investment.time_per_week && (
               <div>

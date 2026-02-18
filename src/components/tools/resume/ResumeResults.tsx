@@ -208,15 +208,18 @@ export function ResumeResults({ result }: ResumeResultsProps) {
       {/* Recruiter Perspective */}
       {data.recruiter_perspective && (
         <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-2">Recruiter Perspective</h3>
+          <h3 className="font-semibold text-gray-900 mb-4">Recruiter Perspective</h3>
           <p className="text-sm text-gray-700">{data.recruiter_perspective}</p>
         </div>
       )}
 
       {/* Monetizable Skills — Track B */}
       {data.monetizable_skills && Array.isArray(data.monetizable_skills) && data.monetizable_skills.length > 0 && (
-        <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">💰 Monetizable Skills</h3>
+        <div className="report-section">
+          <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-green-600" />
+            Monetizable Skills
+          </h3>
           <p className="text-xs text-gray-500 mb-2">Skills in your resume that could generate freelance or consulting income:</p>
           <div className="flex flex-wrap gap-2">
             {data.monetizable_skills.map((skill, i) => (
@@ -244,21 +247,24 @@ export function ResumeResults({ result }: ResumeResultsProps) {
 
 
       {/* Action buttons */}
-      <div className="space-y-3">
-        <button
-          onClick={handleCopy}
-          className="btn-primary"
-        >
-          {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copied!" : "Copy Optimized Resume"}
-        </button>
-        <button
-          onClick={handleDownloadPdf}
-          className="btn-secondary w-full"
-        >
-          <Download className="w-4 h-4" />
-          Download TXT
-        </button>
+      <div className="report-section">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Output actions</p>
+        <div className="space-y-3">
+          <button
+            onClick={handleCopy}
+            className="btn-primary"
+          >
+            {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? "Copied!" : "Copy Optimized Resume"}
+          </button>
+          <button
+            onClick={handleDownloadPdf}
+            className="btn-secondary w-full"
+          >
+            <Download className="w-4 h-4" />
+            Download TXT
+          </button>
+        </div>
       </div>
     </div>
   );

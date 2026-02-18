@@ -47,26 +47,27 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
     | undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Primary action buttons — top of results */}
       <div className="flex gap-3">
         <button
           onClick={handleCopy}
-          className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
+          className="btn-primary flex-1"
         >
           {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           {copied ? "Copied!" : "Copy Letter"}
         </button>
         <button
           onClick={handleDownload}
-          className="px-4 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px] flex items-center justify-center gap-2"
+          className="btn-secondary w-auto px-4"
         >
           <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Download TXT</span>
         </button>
       </div>
 
       {/* Letter */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="report-section">
         <h3 className="font-semibold text-gray-900 mb-4">Your Cover Letter</h3>
         <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
           <span>{data.word_count} words</span>
@@ -105,7 +106,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* Opening hook strategy */}
       {data.opening_hook && (
-        <div className="bg-purple-50 rounded-2xl border border-purple-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
             <Sparkles className="w-3 h-3" />
             Opening Hook Strategy
@@ -116,7 +117,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* What makes this different */}
       {data.what_makes_this_different && (
-        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-4">
+        <div className="surface-card-hero p-4">
           <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">Why This Stands Out</p>
           <p className="text-sm text-blue-900">{data.what_makes_this_different}</p>
         </div>
@@ -124,7 +125,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* Company specifics referenced */}
       {data.company_specifics_referenced && data.company_specifics_referenced.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Company-Specific References</h3>
           <ul className="space-y-1.5">
             {data.company_specifics_referenced.map((ref, i) => (
@@ -139,7 +140,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* Highlighted sections */}
       {data.highlighted_sections && data.highlighted_sections.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Key Phrases</h3>
           <div className="space-y-2">
             {data.highlighted_sections.map((hl, i) => {
@@ -165,7 +166,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* Potential Objections — recruiter coaching from Batch B */}
       {objections && objections.length > 0 && (
-        <div className="bg-orange-50 rounded-2xl border border-orange-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-orange-900 mb-1 flex items-center gap-2">
             <ShieldAlert className="w-4 h-4 text-orange-600" />
             Prepare for These Objections
@@ -184,7 +185,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
 
       {/* Interview Talking Points + CTA to Interview Prep tool */}
       {data.interview_talking_points && data.interview_talking_points.length > 0 && (
-        <div className="bg-amber-50 rounded-2xl border border-amber-200 p-6">
+        <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-amber-600" />
             Interview Prep — Topics They&apos;ll Ask About

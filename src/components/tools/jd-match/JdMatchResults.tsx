@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Ring } from "@/components/shared/Ring";
-import { CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Target, Briefcase } from "lucide-react";
+import { CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Target } from "lucide-react";
 import type { TJdMatchResult, ToolResult } from "@/types";
 
 interface JdMatchResultsProps {
@@ -127,10 +127,10 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
       {data.critical_gaps && data.critical_gaps.length > 0 && (
         <div className="surface-card-hero p-4 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-gray-900">Want to fix these gaps before applying?</p>
-            <p className="text-xs text-gray-500">Resume Optimizer will address each gap specifically.</p>
+            <p className="text-sm font-semibold text-gray-900">Address these gaps before you apply</p>
+            <p className="text-xs text-gray-500">Resume Optimizer maps each gap to targeted resume updates.</p>
           </div>
-          <Link href="/tools/resume" className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap">Fix Resume →</Link>
+          <Link href="/tools/resume" className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap">Optimize Resume →</Link>
         </div>
       )}
 

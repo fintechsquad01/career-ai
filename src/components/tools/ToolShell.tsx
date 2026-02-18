@@ -146,7 +146,7 @@ function getResultAwareNarrative(
   if (fromToolId === "jd_match" && toToolId === "cover_letter") {
     const score = r.fit_score as number | undefined;
     if (score != null && score >= 60) {
-      return `Strong ${score}/100 match! A tailored cover letter will seal the deal.`;
+      return `Strong ${score}/100 match. A tailored cover letter can strengthen your application narrative.`;
     } else if (score != null) {
       return `At ${score}/100, a compelling cover letter can bridge the gap. Let's write one that highlights your strengths.`;
     }
@@ -583,7 +583,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       // Create abort controller with 120s timeout
       const controller = new AbortController();
       abortControllerRef.current = controller;
-      let timeoutId: ReturnType<typeof setTimeout> | undefined = setTimeout(() => controller.abort(), 120000);
+      const timeoutId: ReturnType<typeof setTimeout> = setTimeout(() => controller.abort(), 120000);
 
       // Fallback simulation (runs in parallel; SSE progress overrides when available)
       const toolStepMap: Record<string, string[]> = {
@@ -968,9 +968,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-5">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-6">
       {/* Header */}
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="text-h1">{tool.title}</h1>
           <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
@@ -1148,7 +1148,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Loading state — Rich experience with rotating insights */}
       {state === "loading" && (
-        <div className="py-8 space-y-7 stagger-children" role="status" aria-live="polite">
+        <div className="py-8 space-y-6 stagger-children" role="status" aria-live="polite">
           {/* Progress section */}
           <div className="text-center space-y-3">
             <div className="relative w-14 h-14 mx-auto">
@@ -1171,12 +1171,12 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
           {/* Reassurance message */}
           <div className="text-center space-y-2">
-            <p className="text-xs text-gray-500 max-w-sm mx-auto">
+              <p className="text-xs text-gray-500 max-w-sm mx-auto">
               {elapsedSec < 10
-                ? "Our AI is using advanced reasoning to deeply analyze your specific situation..."
+                  ? "We are analyzing the inputs and context you provided..."
                 : elapsedSec < 25
-                  ? "Building a premium, personalized analysis — this takes a moment for the best results..."
-                  : "Almost there — our AI is putting the finishing touches on your comprehensive analysis..."}
+                  ? "Building your report sections with evidence-first recommendations..."
+                  : "Finalizing your report and next-step recommendations..."}
             </p>
             {/* Timeout warning at 20 seconds */}
             {elapsedSec >= 20 && (
@@ -1186,7 +1186,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse [animation-delay:0.2s]" />
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse [animation-delay:0.4s]" />
                 </span>
-                Still working on your analysis...
+                Still assembling your report...
               </p>
             )}
           </div>
@@ -1240,7 +1240,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Analysis didn&apos;t complete</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Analysis did not complete</h3>
           <p className="text-sm text-gray-600 max-w-md mx-auto">{error}</p>
           <button
             onClick={() => { setError(null); setState("input"); }}
@@ -1273,7 +1273,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {state === "result" && result && !error && (
         <div className="flex items-center gap-2 text-xs text-gray-400 celebrate">
           <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-          <span>Premium AI Analysis</span>
+          <span>Evidence-first AI report</span>
           <span className="text-gray-300">·</span>
           <span>{careerProfile?.resume_text ? "Personalized from your resume" : "Add resume for deeper personalization"}</span>
         </div>
@@ -1314,44 +1314,47 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Result actions */}
       {state === "result" && (
-        <div className="flex flex-wrap gap-3 pt-5 border-t border-gray-100 stagger-children">
-          <button
-            onClick={handleReset}
-            className="btn-secondary"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Run Again
-          </button>
-          <button
-            onClick={handleShare}
-            className="btn-secondary"
-          >
-            <Share2 className="w-4 h-4" />
-            Share Results
-          </button>
-          {toolId === "resume" && result && (result as unknown as { optimized_resume_text?: string }).optimized_resume_text && (
+        <div className="report-section stagger-children">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Report actions</p>
+          <div className="flex flex-wrap gap-2.5">
             <button
-              onClick={handleSaveResumeVariant}
-              disabled={savingVariant || variantSaved}
-              className={`btn-secondary ${
-                variantSaved
-                  ? "border-green-200 bg-green-50 text-green-700"
-                  : ""
-              }`}
+              onClick={handleReset}
+              className="btn-secondary"
             >
-              <Save className="w-4 h-4" />
-              {variantSaved ? "Variant Saved" : savingVariant ? "Saving..." : "Save Resume Variant"}
+              <RotateCcw className="w-4 h-4" />
+              Run Again
             </button>
-          )}
-          {activeJobTarget && (
-            <Link
-              href="/mission"
-              className="btn-primary w-auto px-4"
+            <button
+              onClick={handleShare}
+              className="btn-secondary"
             >
-              Mission Control
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          )}
+              <Share2 className="w-4 h-4" />
+              Share Results
+            </button>
+            {toolId === "resume" && result && (result as unknown as { optimized_resume_text?: string }).optimized_resume_text && (
+              <button
+                onClick={handleSaveResumeVariant}
+                disabled={savingVariant || variantSaved}
+                className={`btn-secondary ${
+                  variantSaved
+                    ? "border-green-200 bg-green-50 text-green-700"
+                    : ""
+                }`}
+              >
+                <Save className="w-4 h-4" />
+                {variantSaved ? "Variant Saved" : savingVariant ? "Saving..." : "Save Resume Variant"}
+              </button>
+            )}
+            {activeJobTarget && (
+              <Link
+                href="/mission"
+                className="btn-primary w-auto px-4"
+              >
+                Mission Control
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </div>
       )}
 
@@ -1414,7 +1417,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                 href={`/tools/${primary.tool.id}`}
                 className="block bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 hover:shadow-md transition-shadow group celebrate"
               >
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Your next step</p>
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Recommended next step</p>
                 <p className="text-sm text-gray-700 mb-3">{primary.narrative}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
@@ -1435,7 +1438,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             {/* Secondary recommendations — compact */}
             {!missionComplete && secondary.length > 0 && (
               <div className="flex flex-wrap gap-2 stagger-children">
-                <span className="text-xs text-gray-400 self-center mr-1">Also try:</span>
+                <span className="text-xs text-gray-400 self-center mr-1">Other relevant tools:</span>
                 {secondary.map((rec) => (
                   <Link
                     key={rec.id}

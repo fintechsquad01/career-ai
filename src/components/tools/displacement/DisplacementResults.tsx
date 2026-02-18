@@ -1,7 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
-import { AlertTriangle, Shield, ArrowRight, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
+import { AlertTriangle, Shield, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
 import type { TDisplacementResult, ToolResult } from "@/types";
 
 interface DisplacementResultsProps {
@@ -30,9 +30,9 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="report-shell">
       {/* Score hero */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center celebrate">
+      <div className="report-section text-center celebrate">
         <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.score} size="lg" label="AI Risk" />
         <div className="mt-4 flex items-center justify-center gap-2">
@@ -43,40 +43,9 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
         </div>
       </div>
 
-      {/* Share CTA */}
-      <div className="bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 text-center">
-        <p className="text-sm font-semibold text-gray-900 mb-1">Share your score and compare with friends</p>
-        <p className="text-xs text-gray-500 mb-4">
-          {data.score >= 60 
-            ? "Your score is high — challenge your network to check theirs."
-            : "Share your results and see how colleagues compare."}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My AI displacement risk score is ${data.score}/100. How safe is YOUR job? Find out free:`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors min-h-[44px]"
-          >
-            <Twitter className="w-4 h-4" />
-            Share on X
-          </a>
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0077B5] text-white text-sm font-semibold rounded-xl hover:bg-[#006699] transition-colors min-h-[44px]"
-          >
-            <Linkedin className="w-4 h-4" />
-            Share on LinkedIn
-          </a>
-        </div>
-        <p className="text-[11px] text-gray-400 mt-3">#AISkillScore · What&apos;s your score?</p>
-      </div>
-
       {/* Tasks at risk — lead with augmentation tips (empowering, not scary) */}
       {data.tasks_at_risk && data.tasks_at_risk.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-blue-500" />
             How to Use AI to Your Advantage
@@ -122,7 +91,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
 
       {/* Safe tasks */}
       {data.safe_tasks && data.safe_tasks.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Shield className="w-4 h-4 text-green-500" />
             Tasks That Are Safe
@@ -151,8 +120,8 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
 
       {/* Recommendations */}
       {data.recommendations && data.recommendations.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Recommendations</h3>
+        <div className="report-section">
+          <h3 className="font-semibold text-gray-900 mb-4">Priority Actions</h3>
           <div className="space-y-3">
             {data.recommendations.map((rec, i) => {
               const isObj = typeof rec === "object";
@@ -194,7 +163,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
 
       {/* Industry benchmark */}
       {data.industry_benchmark && (
-        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 text-center">
+        <div className="surface-card-soft p-5 text-center">
           <p className="text-xs text-gray-500">
             Industry average: <strong className="text-gray-900">{data.industry_benchmark.average_score}</strong>
           </p>
@@ -214,9 +183,10 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
 
       {/* Income Opportunities — Track B */}
       {data.entrepreneurship_opportunities && Array.isArray(data.entrepreneurship_opportunities) && data.entrepreneurship_opportunities.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-            <span className="text-green-600">💡</span> Income Opportunities
+        <div className="report-section space-y-3">
+          <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-green-600" />
+            Income Opportunities
           </h3>
           <div className="grid gap-3">
             {data.entrepreneurship_opportunities.map((opp, i) => (
@@ -237,11 +207,32 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
         </div>
       )}
 
-      {/* Challenge friends share CTA */}
-      <div className="bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl p-5 text-center">
-        <p className="text-sm font-semibold text-gray-900 mb-1">Think your friends are safe from AI?</p>
-        <p className="text-xs text-gray-500 mb-3">Challenge them to check their score — it&apos;s free.</p>
-        <button onClick={() => {}} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]">Share Your Score</button>
+      {/* Next steps: share and benchmark */}
+      <div className="surface-card-hero p-5 text-center">
+        <p className="text-sm font-semibold text-gray-900 mb-1">Share your benchmark</p>
+        <p className="text-xs text-gray-500 mb-4">
+          Share your score with peers to compare market exposure and discuss mitigation strategies.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My AI displacement risk score is ${data.score}/100. Benchmark your role risk:`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors min-h-[44px]"
+          >
+            <Twitter className="w-4 h-4" />
+            Share on X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0077B5] text-white text-sm font-semibold rounded-xl hover:bg-[#006699] transition-colors min-h-[44px]"
+          >
+            <Linkedin className="w-4 h-4" />
+            Share on LinkedIn
+          </a>
+        </div>
       </div>
 
     </div>

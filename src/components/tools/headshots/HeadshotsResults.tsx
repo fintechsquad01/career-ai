@@ -22,8 +22,16 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
   const images = data.images ?? [];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+    <div className="report-shell">
+      <div className="surface-card-hero p-4">
+        <p className="text-sm font-medium text-gray-900">
+          Generated headshots optimized for professional profile use.
+        </p>
+      </div>
+
+      <div className="report-section">
+        <h3 className="font-semibold text-gray-900 mb-4">Your AI Headshots</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {images.length > 0 ? (
           images.map((img, i) => (
             <div key={img.id ?? i} className="space-y-2">
@@ -39,7 +47,7 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
                 <a
                   href={img.url}
                   download={`headshot-${i + 1}.jpg`}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-600 hover:text-pink-700 min-h-[44px]"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-600 hover:text-violet-700 min-h-[44px]"
                 >
                   <Download className="w-4 h-4" />
                   Download
@@ -63,6 +71,7 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
             </div>
           ))
         )}
+        </div>
       </div>
     </div>
   );
