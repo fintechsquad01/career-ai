@@ -20,8 +20,8 @@ import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-  { href: "/mission", icon: Crosshair, label: "App HQ" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/mission", icon: Crosshair, label: "Mission" },
   { href: "/quick-apply", icon: Zap, label: "Quick Apply" },
   { href: "/tools", icon: Wrench, label: "Tools" },
   { href: "/history", icon: Clock, label: "History" },
@@ -125,10 +125,6 @@ export function Sidebar() {
                 active || isToolsActive
                   ? "nav-item-active text-blue-600"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-              } ${
-                isToolsActive && pathname.startsWith("/tools/")
-                  ? "border-l-2 border-l-violet-500"
-                  : ""
               }`}
             >
               <item.icon
@@ -154,8 +150,8 @@ export function Sidebar() {
                 <Link
                   key={t.href}
                   href={t.href}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    active ? "bg-blue-50 text-blue-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  className={`nav-item flex items-center gap-2 px-3 py-1.5 text-xs font-medium transition-colors ${
+                    active ? "nav-item-active text-blue-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   }`}
                 >
                   <t.icon className={`w-3.5 h-3.5 ${active ? "text-blue-600" : t.color}`} strokeWidth={1.5} />

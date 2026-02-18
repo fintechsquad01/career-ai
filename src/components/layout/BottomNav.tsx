@@ -6,10 +6,10 @@ import { LayoutDashboard, Crosshair, Wrench, User } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 
 const ITEMS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Home", key: "home" },
-  { href: "/mission", icon: Crosshair, label: "App HQ", key: "mission" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", key: "dashboard" },
+  { href: "/mission", icon: Crosshair, label: "Mission", key: "mission" },
   { href: "/tools", icon: Wrench, label: "Tools", key: "tools" },
-  { href: "/settings", icon: User, label: "Profile", key: "profile" },
+  { href: "/settings", icon: User, label: "Settings", key: "settings" },
 ] as const;
 
 export function BottomNav() {
@@ -31,11 +31,11 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-col items-center justify-center py-2 px-4 min-h-[48px] min-w-[48px] transition-colors ${
-                active ? "text-blue-600" : "text-gray-400"
+              className={`nav-item relative flex flex-col items-center justify-center py-2 px-4 min-h-[48px] min-w-[48px] transition-colors ${
+                active ? "nav-item-active text-blue-600" : "text-gray-400"
               }`}
             >
-              <div className={`relative ${active ? "bg-blue-50 rounded-lg px-2 py-1" : ""}`}>
+              <div className="relative">
                 <item.icon className="w-5 h-5" strokeWidth={active ? 2 : 1.75} />
                 {showDot && (
                   <span className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] rounded-full bg-blue-500" />

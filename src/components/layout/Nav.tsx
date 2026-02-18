@@ -21,9 +21,9 @@ function useBreadcrumb(pathname: string) {
   if (segments[0] === "dashboard") {
     crumbs.push({ label: "Dashboard" });
   } else if (segments[0] === "mission") {
-    crumbs.push({ label: "App HQ" });
+    crumbs.push({ label: "Mission" });
   } else if (segments[0] === "tools") {
-    crumbs.push({ label: "Tools", href: "/dashboard" });
+    crumbs.push({ label: "Tools", href: "/tools" });
     if (segments[1]) {
       const tool = TOOLS_MAP[segments[1]];
       crumbs.push({ label: tool?.title || segments[1].replace(/_/g, " ") });
@@ -127,8 +127,7 @@ export function Nav({ isLoggedIn }: NavProps) {
               <div className="relative inline-flex items-center">
                 <TokBadge />
                 {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
-                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm animate-bounce"
-                    style={{ animationDuration: "2s", animationIterationCount: 3 }}
+                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm"
                   >
                     <Plus className="w-2.5 h-2.5" strokeWidth={3} />
                   </span>
@@ -200,7 +199,7 @@ export function Nav({ isLoggedIn }: NavProps) {
             {isLoggedIn ? (
               <>
                 <MobileLink href="/dashboard" label="Dashboard" active={isActivePath("/dashboard")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/mission" label="App HQ" active={isActivePath("/mission")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/mission" label="Mission" active={isActivePath("/mission")} onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/tools" label="Tools" active={isActivePath("/tools")} onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/pricing" label="Tokens" active={isActivePath("/pricing")} onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/history" label="History" active={isActivePath("/history")} onClick={() => setMobileMenuOpen(false)} />

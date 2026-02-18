@@ -199,6 +199,7 @@ export function DashboardContent({
   recentResults,
 }: DashboardContentProps) {
   const [showWelcome, setShowWelcome] = useState(profile?.onboarding_completed !== true);
+  const [renderedAtMs] = useState(() => Date.now());
   const { dailyCreditsAwarded, dailyBalance } = useTokens();
   const careerHealth = useCareerHealth(careerProfile, recentResults);
 
@@ -304,6 +305,10 @@ export function DashboardContent({
         </div>
       )}
 
+      {/* Status & evidence */}
+      <div className="space-y-3">
+        <p className="text-overline">Current Status</p>
+
       {/* Career Health Score Card */}
       <div className="surface-card p-6">
         {careerHealth.score !== null ? (
@@ -392,63 +397,78 @@ export function DashboardContent({
                   <p className="text-sm font-semibold text-gray-900 group-hover:text-violet-700">JD Match</p>
                   <p className="text-xs text-gray-500">Match against a job posting</p>
                 </div>
-                <span className="ui-badge ui-badge-blue flex-shrink-0">5 tok</span>
+                <span className="ui-badge ui-badge-blue flex-shrink-0">5 tokens</span>
               </Link>
             </div>
           </div>
         )}
       </div>
+      </div>
 
-      {/* Milestones — show achieved ones */}
-      {careerHealth.milestones.some((m) => m.achieved) && (
-        <div className="flex flex-wrap items-center gap-2">
-          <Trophy className="w-4 h-4 text-amber-500" />
-          {careerHealth.milestones
-            .filter((m) => m.achieved)
-            .map((m) => (
-              <span
-                key={m.id}
-                className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-xs font-medium text-amber-700"
-              >
-                <Check className="w-3 h-3" />
-                {m.label}
-              </span>
-            ))}
-        </div>
-      )}
-
-      {/* Profile Completeness — show until fully complete */}
-      {completeness.score < 100 && (
-        <div className="surface-card p-4 flex items-center gap-4">
-          <div className="flex-shrink-0">
-            <Ring score={completeness.score} size="sm" label="" showLabel={false} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900">Profile {completeness.score}% complete</p>
-            <p className="text-xs text-gray-500 mt-0.5">
-              More context = more accurate AI results.
-            </p>
-            {completeness.score < 100 && (
-              <div className="mt-3 space-y-1.5">
-                {completeness.items.filter((i) => !i.done).slice(0, 3).map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+      {/* Career Metrics */}
+      {(careerProfile?.displacement_score != null || careerProfile?.resume_score != null) && (
+        <div className="space-y-3">
+          <h2 className="text-overline">Current Evidence</h2>
+          <div className="grid grid-cols-2 gap-3 stagger-children">
+            {careerProfile.displacement_score != null && (
+              <Link href="/tools/displacement" className="surface-card surface-card-hover p-4">
+                <p className="text-xs text-gray-500 mb-1">AI Displacement Risk</p>
+                <p className={`text-2xl font-bold celebrate ${
+                  careerProfile.displacement_score >= 70 ? "text-red-600" : careerProfile.displacement_score >= 40 ? "text-amber-600" : "text-green-600"
+                }`}>{careerProfile.displacement_score}%</p>
+              </Link>
+            )}
+            {careerProfile.resume_score != null && (
+              <Link href="/tools/resume" className="surface-card surface-card-hover p-4">
+                <p className="text-xs text-gray-500 mb-1">Resume ATS Score</p>
+                <p className={`text-2xl font-bold celebrate ${
+                  careerProfile.resume_score >= 70 ? "text-green-600" : careerProfile.resume_score >= 40 ? "text-amber-600" : "text-red-600"
+                }`}>{careerProfile.resume_score}%</p>
+              </Link>
             )}
           </div>
         </div>
       )}
 
+      {/* Recent Activity — compact */}
+      {recentResults.length > 0 && (
+        <AnimateOnScroll>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-gray-900">Recent Activity</h2>
+              <Link href="/history" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                View all
+              </Link>
+            </div>
+            <div className="surface-card divide-y divide-gray-100">
+              {recentResults.slice(0, 3).map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/history?expand=${r.id}`}
+                  className="px-4 py-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors block"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 capitalize truncate">{r.tool_id.replace(/_/g, " ")}</p>
+                    <p className="text-xs text-gray-400 truncate">{r.summary || "Complete"}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                    {r.metric_value && <Ring score={r.metric_value} size="sm" showLabel={false} />}
+                    <span className="text-[10px] text-gray-400">
+                      {new Date(r.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </AnimateOnScroll>
+      )}
+
       {/* Smart Recommendations — single next step */}
       {recommendations.length > 0 && (
-        <Link href={recommendations[0].href} className="block surface-card surface-card-hover p-5 group">
+        <div className="space-y-3">
+          <p className="text-overline">Recommended Next Action</p>
+          <Link href={recommendations[0].href} className="block surface-card surface-card-hover p-5 group">
           <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">Your next move</p>
           <p className="text-base font-bold text-gray-900 group-hover:text-blue-700 mb-1">{recommendations[0].title}</p>
           <p className="text-sm text-gray-500 mb-3">{recommendations[0].description}</p>
@@ -460,31 +480,7 @@ export function DashboardContent({
               Start <ArrowRight className="w-4 h-4" />
             </span>
           </div>
-        </Link>
-      )}
-
-      {/* Career Metrics */}
-      {(careerProfile?.displacement_score != null || careerProfile?.resume_score != null) && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Your Numbers</h2>
-          <div className="grid grid-cols-2 gap-3 stagger-children">
-            {careerProfile.displacement_score != null && (
-              <Link href="/tools/displacement" className="surface-card p-4 hover:border-blue-200 transition-colors">
-                <p className="text-xs text-gray-500 mb-1">AI Displacement Risk</p>
-                <p className={`text-2xl font-bold celebrate ${
-                  careerProfile.displacement_score >= 70 ? "text-red-600" : careerProfile.displacement_score >= 40 ? "text-amber-600" : "text-green-600"
-                }`}>{careerProfile.displacement_score}%</p>
-              </Link>
-            )}
-            {careerProfile.resume_score != null && (
-              <Link href="/tools/resume" className="surface-card p-4 hover:border-blue-200 transition-colors">
-                <p className="text-xs text-gray-500 mb-1">Resume ATS Score</p>
-                <p className={`text-2xl font-bold celebrate ${
-                  careerProfile.resume_score >= 70 ? "text-green-600" : careerProfile.resume_score >= 40 ? "text-amber-600" : "text-red-600"
-                }`}>{careerProfile.resume_score}%</p>
-              </Link>
-            )}
-          </div>
+          </Link>
         </div>
       )}
 
@@ -494,10 +490,10 @@ export function DashboardContent({
       {/* Re-check nudge — show if last result is 30+ days old */}
       {recentResults.length > 0 && (() => {
         const latestDate = new Date(recentResults[0].created_at);
-        const daysSince = Math.floor((Date.now() - latestDate.getTime()) / (1000 * 60 * 60 * 24));
+        const daysSince = Math.floor((renderedAtMs - latestDate.getTime()) / (1000 * 60 * 60 * 24));
         if (daysSince < 14) return null;
         return (
-          <div className="flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200/60 rounded-xl">
+          <div className="surface-card-hero flex items-center gap-3 px-4 py-3">
             <Sparkles className="w-5 h-5 text-blue-600 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-blue-900">
@@ -521,29 +517,83 @@ export function DashboardContent({
       })()}
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-3 gap-3 stagger-children">
-        <Link
-          href="/tools/displacement"
-          className="surface-card surface-card-hover p-4 text-center"
-        >
-          <Zap className="w-5 h-5 text-blue-600 mx-auto mb-1.5" />
-          <p className="text-xs font-medium text-gray-700">Free Analysis</p>
-        </Link>
-        <Link
-          href="/tools"
-          className="surface-card surface-card-hover p-4 text-center"
-        >
-          <Sparkles className="w-5 h-5 text-violet-600 mx-auto mb-1.5" />
-          <p className="text-xs font-medium text-gray-700">All Tools</p>
-        </Link>
-        <Link
-          href="/pricing"
-          className="surface-card surface-card-hover p-4 text-center"
-        >
-          <Target className="w-5 h-5 text-emerald-600 mx-auto mb-1.5" />
-          <p className="text-xs font-medium text-gray-700">Get Tokens</p>
-        </Link>
+      <div className="space-y-3">
+        <p className="text-overline">Tool Access</p>
+        <div className="grid grid-cols-3 gap-3 stagger-children">
+          <Link
+            href="/tools/displacement"
+            className="surface-card surface-card-hover p-4 text-center"
+          >
+            <Zap className="w-5 h-5 text-blue-600 mx-auto mb-1.5" />
+            <p className="text-xs font-medium text-gray-700">Free Analysis</p>
+          </Link>
+          <Link
+            href="/tools"
+            className="surface-card surface-card-hover p-4 text-center"
+          >
+            <Sparkles className="w-5 h-5 text-violet-600 mx-auto mb-1.5" />
+            <p className="text-xs font-medium text-gray-700">All Tools</p>
+          </Link>
+          <Link
+            href="/pricing"
+            className="surface-card surface-card-hover p-4 text-center"
+          >
+            <Target className="w-5 h-5 text-emerald-600 mx-auto mb-1.5" />
+            <p className="text-xs font-medium text-gray-700">Get Tokens</p>
+          </Link>
+        </div>
       </div>
+
+      {/* Progress context */}
+      {(completeness.score < 100 || careerHealth.milestones.some((m) => m.achieved)) && (
+        <div className="space-y-3">
+          <p className="text-overline">Progress Context</p>
+          {/* Milestones — show achieved ones */}
+          {careerHealth.milestones.some((m) => m.achieved) && (
+            <div className="flex flex-wrap items-center gap-2">
+              <Trophy className="w-4 h-4 text-amber-500" />
+              {careerHealth.milestones
+                .filter((m) => m.achieved)
+                .map((m) => (
+                  <span
+                    key={m.id}
+                    className="ui-badge ui-badge-amber"
+                  >
+                    <Check className="w-3 h-3" />
+                    {m.label}
+                  </span>
+                ))}
+            </div>
+          )}
+
+          {/* Profile Completeness — show until fully complete */}
+          {completeness.score < 100 && (
+            <div className="surface-card p-4 flex items-center gap-4">
+              <div className="flex-shrink-0">
+                <Ring score={completeness.score} size="sm" label="" showLabel={false} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900">Profile {completeness.score}% complete</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  More context = more accurate AI results.
+                </p>
+                <div className="mt-3 space-y-1.5">
+                  {completeness.items.filter((i) => !i.done).slice(0, 3).map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className="flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Value comparison — only for new users */}
       {recentResults.length === 0 && (
@@ -609,40 +659,6 @@ export function DashboardContent({
         </AnimateOnScroll>
       )}
 
-      {/* Recent Activity — compact */}
-      {recentResults.length > 0 && (
-        <AnimateOnScroll>
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-semibold text-gray-900">Recent Activity</h2>
-              <Link href="/history" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
-                View all
-              </Link>
-            </div>
-            <div className="surface-card divide-y divide-gray-100">
-              {recentResults.slice(0, 3).map((r) => (
-                <Link
-                  key={r.id}
-                  href={`/history?expand=${r.id}`}
-                  className="px-4 py-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors block"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-900 capitalize truncate">{r.tool_id.replace(/_/g, " ")}</p>
-                    <p className="text-xs text-gray-400 truncate">{r.summary || "Complete"}</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                    {r.metric_value && <Ring score={r.metric_value} size="sm" showLabel={false} />}
-                    <span className="text-[10px] text-gray-400">
-                      {new Date(r.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </AnimateOnScroll>
-      )}
-
       {/* Referral + Lifetime nudge cards */}
       <AnimateOnScroll>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">
@@ -658,7 +674,7 @@ export function DashboardContent({
           </div>
         </Link>
         {!profile?.lifetime_deal && (
-          <Link href="/lifetime" className="bg-gradient-to-r from-amber-50 to-amber-100/50 rounded-xl border border-amber-200 p-4 hover:shadow-md transition-shadow group">
+          <Link href="/lifetime" className="surface-card-hero p-4 group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center">
                 <Crown className="w-4 h-4 text-amber-600" />

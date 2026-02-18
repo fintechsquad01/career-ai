@@ -12,21 +12,21 @@ interface MissionCardProps {
 export function MissionCard({ activeJobTarget }: MissionCardProps) {
   if (!activeJobTarget) {
     return (
-      <div className="glass-card p-6 sm:p-8">
+      <div className="surface-card-hero p-6 sm:p-8">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
             <Search className="w-5 h-5 text-gray-400" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900">Start a job mission</h3>
+            <h3 className="font-semibold text-gray-900">Start Job Mission Control</h3>
             <p className="text-sm text-gray-500 mt-1">
-              Paste a job description to get a step-by-step application plan.
+              Add a target role to activate a step-by-step command center plan.
             </p>
             <Link
               href="/tools/jd_match"
               className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-blue-600 hover:text-blue-700"
             >
-              Analyze a job posting <ArrowRight className="w-4 h-4" />
+              Analyze a job posting to begin <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -39,6 +39,7 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
   const total = MISSION_ACTIONS.length;
   const progress = Math.round((completed / total) * 100);
   const isCompleted = completed >= total;
+  const nextAction = MISSION_ACTIONS.find((action) => !missionActions[action.id]);
   const normalizedTitle = (activeJobTarget.title || "").replace(/\s+/g, " ").trim();
   const safeTitle =
     !normalizedTitle || normalizedTitle.length > 70
@@ -64,7 +65,7 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
                   isCompleted ? "text-emerald-100" : "text-blue-100"
                 }`}
               >
-                {isCompleted ? "Mission Completed" : "Active Mission"}
+                {isCompleted ? "Mission Completed" : "Job Mission Control"}
               </span>
             </div>
             <h3 className="font-bold text-lg">
@@ -74,6 +75,11 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
             {activeJobTarget.fit_score && (
               <p className={`text-sm mt-1 ${isCompleted ? "text-emerald-100" : "text-blue-100"}`}>
                 {activeJobTarget.fit_score}% fit score
+              </p>
+            )}
+            {!isCompleted && nextAction && (
+              <p className={`text-xs mt-1.5 ${isCompleted ? "text-emerald-100" : "text-blue-100"}`}>
+                Next step: {nextAction.title}
               </p>
             )}
           </div>

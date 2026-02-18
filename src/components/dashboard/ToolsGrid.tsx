@@ -33,6 +33,8 @@ interface ToolsGridProps {
 }
 
 export function ToolsGrid({ compact = false }: ToolsGridProps) {
+  const formatTokenLabel = (tokens: number) => (tokens === 0 ? "Free" : `${tokens} tokens`);
+
   if (compact) {
     return (
       <div className="space-y-6">
@@ -43,7 +45,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
 
           return (
             <div key={cat}>
-              <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-3">{cat}</h3>
+              <h3 className="text-overline mb-3">{cat}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 stagger-children">
                 {categoryTools.map((tool) => {
                   const Icon = ICON_MAP[tool.icon] || Zap;
@@ -57,8 +59,8 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                         <div className={`w-9 h-9 rounded-xl ${styles.bg} flex items-center justify-center`}>
                           <Icon className={`w-4 h-4 ${styles.text}`} strokeWidth={1.5} />
                         </div>
-                        <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-gray"}`}>
-                          {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
+                        <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
+                          {formatTokenLabel(tool.tokens)}
                         </span>
                       </div>
                       <h4 className="text-[13px] font-semibold text-gray-900">{tool.title}</h4>
@@ -133,8 +135,8 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
                     </div>
-                    <span className={`ui-badge shrink-0 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-gray"}`}>
-                      {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
+                    <span className={`ui-badge shrink-0 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
+                      {formatTokenLabel(tool.tokens)}
                     </span>
                   </Link>
                 );
