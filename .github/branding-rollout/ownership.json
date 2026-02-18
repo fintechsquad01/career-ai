@@ -1,0 +1,57 @@
+{
+  "sharedAllowlist": [
+    ".github/branding-rollout/merge-state.json",
+    "docs/BRANDING_ROLLOUT_COORDINATION.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/branding-rollout-gate.yml",
+    "scripts/branding/validate-rollout.mjs"
+  ],
+  "batches": {
+    "A": {
+      "name": "Foundation primitives and copy anchors",
+      "allowedPaths": [
+        "src/app/globals.css",
+        "src/lib/constants.ts",
+        "docs/MAGIC_UI_WORKFLOW.md"
+      ],
+      "requiresMerged": []
+    },
+    "B": {
+      "name": "Landing experience branding",
+      "allowedPaths": [
+        "src/components/landing/HeroSection.tsx",
+        "src/components/landing/LandingContent.tsx",
+        "src/components/landing/SmartInput.tsx"
+      ],
+      "requiresMerged": [
+        "A"
+      ]
+    },
+    "C": {
+      "name": "Auth and pricing branding surfaces",
+      "allowedPaths": [
+        "src/app/auth/page.tsx",
+        "src/app/pricing/page.tsx"
+      ],
+      "requiresMerged": [
+        "A"
+      ]
+    },
+    "D": {
+      "name": "Cross-surface harmonization and final polish",
+      "allowedPaths": [
+        "src/components/landing/HeroSection.tsx",
+        "src/components/landing/LandingContent.tsx",
+        "src/components/landing/SmartInput.tsx",
+        "src/app/auth/page.tsx",
+        "src/app/pricing/page.tsx",
+        "src/components/layout",
+        "src/app/dashboard"
+      ],
+      "requiresMerged": [
+        "B",
+        "C"
+      ]
+    }
+  }
+}

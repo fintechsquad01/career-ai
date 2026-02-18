@@ -1,6 +1,29 @@
 ## Summary
 <!-- 1-3 sentences: what changed and why -->
 
+## Branding Rollout Metadata (Required for branded PRs)
+- [ ] `branding-rollout` label applied
+- [ ] One batch label applied: `branding-batch:A` / `branding-batch:B` / `branding-batch:C` / `branding-batch:D`
+- [ ] `.github/branding-rollout/merge-state.json` updates only current batch from `false` -> `true`
+
+## Branding Batch Report (Required for branded PRs)
+### Changed files
+<!-- Exact file list + why each file is in scope -->
+
+### What/why
+<!-- Intent and rationale tied to batch scope -->
+
+### Verification status
+<!-- Pass/fail checklist and evidence notes -->
+- [ ] landing
+- [ ] pricing
+- [ ] dashboard/nav
+- [ ] tool run input/loading/result
+- [ ] mobile nav and spacing
+
+### Risks
+<!-- Known residual risks + mitigation/rollback notes -->
+
 ## Type of Change
 - [ ] Bug fix (non-breaking)
 - [ ] New feature (non-breaking)
