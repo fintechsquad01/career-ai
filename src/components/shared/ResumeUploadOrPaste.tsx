@@ -17,6 +17,8 @@ interface ResumeUploadOrPasteProps {
   compact?: boolean;
   label?: string;
   autoSave?: boolean;
+  preferredEntry?: "auto" | "dropzone" | "textarea";
+  openVariantsOnMount?: boolean;
 }
 
 /**
@@ -105,16 +107,20 @@ export function ResumeUploadOrPaste({
   compact = false,
   label = "Your Resume",
   autoSave = true,
+  preferredEntry = "auto",
+  openVariantsOnMount = false,
 }: ResumeUploadOrPasteProps) {
-  const [mode, setMode] = useState<"prefilled" | "dropzone" | "textarea">(
-    value || profileResumeText ? "prefilled" : "dropzone"
-  );
+  const [mode, setMode] = useState<"prefilled" | "dropzone" | "textarea">(() => {
+    if (preferredEntry === "textarea") return "textarea";
+    if (preferredEntry === "dropzone") return "dropzone";
+    return value || profileResumeText ? "prefilled" : "dropzone";
+  });
   const [isDragOver, setIsDragOver] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState<ResumeVariant[]>([]);
-  const [showVariants, setShowVariants] = useState(false);
+  const [showVariants, setShowVariants] = useState(openVariantsOnMount);
 
   // Fetch saved resume variants
   useEffect(() => {
@@ -136,6 +142,11 @@ export function ResumeUploadOrPaste({
     };
     fetchVariants();
   }, []);
+
+  useEffect(() => {
+    if (preferredEntry === "textarea") setMode("textarea");
+    if (preferredEntry === "dropzone") setMode("dropzone");
+  }, [preferredEntry]);
 
   // Determine the effective text
   const effectiveText = value || profileResumeText || "";

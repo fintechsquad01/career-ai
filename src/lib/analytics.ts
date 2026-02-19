@@ -75,6 +75,18 @@ export const EVENTS = {
   EMAIL_SEQUENCE_SENT: "email_sequence_sent",
   AB_EXPERIMENT_VIEWED: "ab_experiment_viewed",
   LANDING_VARIANT_VIEW: "landing_variant_view",
+  RESUME_INPUT_SOURCE_SELECTED: "resume_input_source_selected",
+  RESUME_INPUT_TARGET_SWITCHED: "resume_input_target_switched",
+  RESUME_OPTIMIZE_SUBMITTED: "resume_optimize_submitted",
+  DASHBOARD_NEXT_ACTION_VIEWED: "dashboard_next_action_viewed",
+  DASHBOARD_NEXT_ACTION_CLICKED: "dashboard_next_action_clicked",
+  DASHBOARD_RESUME_MISSION_CLICKED: "dashboard_resume_mission_clicked",
+  TOOL_PRIMARY_ACTION_VIEWED: "tool_primary_action_viewed",
+  TOOL_PRIMARY_ACTION_CLICKED: "tool_primary_action_clicked",
+  TOOL_DETAIL_EXPANDED: "tool_detail_expanded",
+  NAV_ITEM_CLICKED: "nav_item_clicked",
+  NAV_HISTORY_QUICK_OPENED: "nav_history_quick_opened",
+  NAV_TARGET_SWITCH_OPENED: "nav_target_switch_opened",
 } as const;
 
 /**
