@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { CANONICAL_COPY } from "@/lib/constants";
 
 export function InlineSignup() {
   const [email, setEmail] = useState("");
@@ -118,10 +119,10 @@ export function InlineSignup() {
           className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          Create Account — 15 Free Tokens
+          {CANONICAL_COPY.signup.cta}
         </button>
       </form>
-      <p className="text-xs text-gray-400 mt-2 text-center">That&apos;s enough for a full resume optimization + job match</p>
+      <p className="text-xs text-gray-400 mt-2 text-center">15 tokens typically covers one resume optimization or multiple JD Match runs</p>
       <p className="text-xs text-center mt-1"><a href="/auth" className="text-blue-600 hover:text-blue-700 font-medium">Already have an account? Sign in</a></p>
     </div>
   );

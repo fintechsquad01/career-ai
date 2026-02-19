@@ -9,7 +9,7 @@ import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
 import { EmailCapture } from "./EmailCapture";
-import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES } from "@/lib/constants";
+import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES, CANONICAL_COPY } from "@/lib/constants";
 import { track } from "@/lib/analytics";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import {
@@ -53,7 +53,7 @@ function StickyCtaBar() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="btn-primary w-full sm:w-auto whitespace-nowrap text-xs sm:text-sm px-5"
         >
-          Analyze Free
+          {CANONICAL_COPY.cta.freeAnalysisPrimary}
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -190,7 +190,7 @@ function QuickDisplacementForm({
         className="btn-primary w-full sm:w-auto px-8"
       >
         <ShieldAlert className="w-5 h-5" />
-        Analyze My AI Risk — Free
+        {CANONICAL_COPY.cta.freeAnalysisPrimary}
       </button>
     </form>
   );
@@ -298,7 +298,7 @@ export function LandingContent() {
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-gray-900">AI Displacement Score</h2>
-                      <p className="text-sm text-gray-500">How vulnerable is your role to AI automation?</p>
+                      <p className="text-sm text-gray-500">See which tasks in your role are automatable vs human-essential.</p>
                     </div>
                   </div>
                   <QuickDisplacementForm onSubmit={handleQuickDisplacement} />
@@ -308,7 +308,9 @@ export function LandingContent() {
               {/* Divider pointing to SmartInput */}
               <div className="text-center space-y-2">
                 <p className="text-sm text-gray-500 max-w-xl mx-auto leading-relaxed">
-                  Need full-fit evidence? Paste your full resume or the full job description to get match explanations, missing-skill gaps, and next actions.
+                  Need a full fit analysis? Paste your full resume or full job description.
+                  <br className="sm:hidden" />
+                  Get requirement matches, missing-skill gaps, and next actions with evidence.
                 </p>
                 <ArrowRight className="w-4 h-4 text-gray-300 mx-auto rotate-90" />
               </div>
@@ -335,7 +337,7 @@ export function LandingContent() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Analysis unavailable right now</h3>
                 <p className="text-sm text-gray-500 max-w-md mx-auto">
-                  Our servers are temporarily busy. Sign up for 15 free tokens and try from your dashboard, or retry now.
+                  Our servers are temporarily busy. Sign up for 15 Free Tokens and try from your dashboard, or retry now.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   <button onClick={handleRetry} className="btn-secondary px-5">
@@ -346,7 +348,7 @@ export function LandingContent() {
                     href="/auth"
                     className="btn-primary px-5"
                   >
-                    Create Account — 15 Free Tokens
+                    {CANONICAL_COPY.signup.cta}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -378,7 +380,7 @@ export function LandingContent() {
               <div className="surface-card-soft p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                   <span className="ui-badge ui-badge-blue">11 AI career tools</span>
-                  <span className="ui-badge ui-badge-gray">30 second analysis</span>
+                  <span className="ui-badge ui-badge-gray">Typical analysis: 15-30 seconds</span>
                   <span className="ui-badge ui-badge-green">$0 to start</span>
                   <span className="ui-badge ui-badge-gray">Pay only for what you run</span>
                 </div>
@@ -392,7 +394,7 @@ export function LandingContent() {
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-warm-gradient">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
-                See what you&apos;ll get in 30 seconds
+                See what one analysis gives you
               </h2>
 
               {/* Blurred preview card */}
@@ -417,13 +419,13 @@ export function LandingContent() {
                   {/* Overlay */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px] rounded-2xl">
                     <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4 text-center px-4">
-                      This could be yours in 30 seconds
+                      This is the output format you get after one run
                     </p>
                     <button
                       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                     className="btn-primary btn-shine inline-flex px-6 sm:w-auto"
                     >
-                      Try It Free
+                      {CANONICAL_COPY.cta.freeAnalysisPrimary}
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -457,7 +459,7 @@ export function LandingContent() {
                 11 AI tools. No subscriptions. Start free.
               </h2>
               <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-                Premium-quality outputs with recruiter-style evidence, priced as rational pay-per-use tokens.
+                Gemini 2.5 Pro outputs with recruiter-style evidence. Pay per use with transparent token pricing.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
                 {HERO_TOOLS.map((ht) => {
@@ -509,23 +511,26 @@ export function LandingContent() {
                 Why job seekers switch to AISkillScore
               </h2>
               <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-                One platform replaces 5 subscriptions. Pay only for what you use.
+                One platform replaces multiple subscriptions. Pay only for the tools you run.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
                 {[
                   {
                     heading: "We show evidence, not just scores",
-                    body: "Jobscan gives you a number. We quote your resume back to you and explain why each skill matches or doesn\u2019t. Like having a recruiter review your application.",
+                    body: "Keyword tools return a score. We quote resume and JD text, then explain each match, gap, and priority.",
+                    mobileTail: "You can trace each result to source text.",
                     color: "border-blue-100 bg-blue-50/30",
                   },
                   {
                     heading: "Your voice stays yours",
-                    body: "Other tools rewrite your resume into \u2018spearheaded\u2019 and \u2018leveraged.\u2019 We enhance what\u2019s already there. Recruiters can tell the difference.",
+                    body: "Other tools often rewrite your tone. We keep your voice and explain each change for ATS and recruiter readability.",
+                    mobileTail: "You get edits with rationale, not generic rewrites.",
                     color: "border-violet-100 bg-violet-50/30",
                   },
                   {
                     heading: "We help you earn while you search",
-                    body: "Every tool surfaces freelance and consulting opportunities from your existing skills. Because job hunting shouldn\u2019t mean zero income.",
+                    body: "Most analyses include freelance and consulting angles based on your strongest skills and market demand.",
+                    mobileTail: "You can test income options while running your job search.",
                     color: "border-emerald-100 bg-emerald-50/30",
                   },
                 ].map((item) => (
@@ -534,7 +539,11 @@ export function LandingContent() {
                     className={`surface-card p-6 ${item.color}`}
                   >
                     <h3 className="font-semibold text-gray-900 mb-2">{item.heading}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {item.body}
+                      <br className="sm:hidden" />
+                      {item.mobileTail}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -557,7 +566,7 @@ export function LandingContent() {
                   <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Day 1</p>
                   <h3 className="font-semibold text-gray-900 mb-2">Paste &amp; discover</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">
-                    Paste your resume, get a free AI risk score. See exactly where you stand in 30 seconds.
+                    Paste your resume and get a free AI risk score with task-level breakdown and next steps.
                   </p>
                 </div>
                 <div className="glass-card p-6 sm:p-8 text-center">
@@ -567,7 +576,7 @@ export function LandingContent() {
                   <p className="text-xs font-bold text-violet-600 uppercase tracking-wider mb-2">Week 1</p>
                   <h3 className="font-semibold text-gray-900 mb-2">Match &amp; optimize</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">
-                    Match against jobs, optimize your resume, prep for interviews. All in one place.
+                    Match against jobs, optimize your resume, and prep for interviews in one workflow.
                   </p>
                 </div>
                 <div className="glass-card p-6 sm:p-8 text-center">
@@ -577,7 +586,7 @@ export function LandingContent() {
                   <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Ongoing</p>
                   <h3 className="font-semibold text-gray-900 mb-2">Track &amp; grow</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">
-                    Track your progress, build new skills, and grow your income with freelance opportunities.
+                    Track progress, close skill gaps, and explore freelance opportunities with clear action steps.
                   </p>
                 </div>
                 <div className="glass-card p-6 sm:p-8 text-center">
@@ -603,7 +612,9 @@ export function LandingContent() {
                 Pay per use. No subscriptions.
               </h2>
               <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto leading-relaxed">
-                Get premium-quality career outputs at fair, rational pricing. Jobscan costs $599/year. A full job prep on AISkillScore is typically under $8.
+                Get Gemini 2.5 Pro career analysis with cited evidence at transparent token pricing.
+                <br className="sm:hidden" />
+                Jobscan costs $599/year. A full job prep on AISkillScore is typically under $8.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto stagger-children">
                 {PACKS.map((pack) => (

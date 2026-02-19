@@ -4,27 +4,28 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, Shield, Gem, Sparkles, Loader2 } from "lucide-react";
 import { FAQ } from "@/components/shared/FAQ";
-import { TOOLS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
+function getTimeLeftToEndOfMonth() {
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  const diff = endOfMonth.getTime() - now.getTime();
+
+  return {
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((diff / (1000 * 60)) % 60),
+  };
+}
 
 function CountdownTimer() {
   // Countdown to end of month for urgency
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  const [timeLeft, setTimeLeft] = useState(getTimeLeftToEndOfMonth);
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-      const diff = endOfMonth.getTime() - now.getTime();
-      return {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-      };
-    };
-
-    setTimeLeft(calculateTimeLeft());
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
+    const timer = setInterval(() => setTimeLeft(getTimeLeftToEndOfMonth()), 60000);
     return () => clearInterval(timer);
   }, []);
 
@@ -68,6 +69,33 @@ export default function LifetimePage() {
   const TOTAL_SPOTS = 500;
 
   const activeTier = LIFETIME_TIERS.find((t) => t.id === selectedTier) ?? LIFETIME_TIERS[0];
+  const lifetimeFaqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: LIFETIME_FAQ.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+  const lifetimeWebPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${APP_URL}/lifetime#webpage`,
+    url: `${APP_URL}/lifetime`,
+    name: "AISkillScore Lifetime Deal",
+    description:
+      "AISkillScore is an AI-powered career intelligence platform. The Lifetime Deal gives 120 tokens every month with one payment and no subscription lock-in.",
+    isPartOf: { "@id": `${APP_URL}/#website` },
+    about: {
+      "@type": "Thing",
+      name: "AI-powered career intelligence platform",
+    },
+    publisher: { "@id": `${APP_URL}/#organization` },
+  };
 
   useEffect(() => {
     async function fetchSpotsClaimed() {
@@ -109,6 +137,14 @@ export default function LifetimePage() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(lifetimeWebPageJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(lifetimeFaqJsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-8">
           <ArrowLeft className="w-4 h-4" /> Pricing
@@ -123,7 +159,7 @@ export default function LifetimePage() {
             120 tokens/month. Forever.
           </h1>
           <p className="text-lg text-gray-500">
-            One payment. Unlimited career growth.
+            AISkillScore Lifetime gives you recurring tokens with a one-time payment, so you can run evidence-first career analysis every month without subscription lock-in.
           </p>
 
           {/* Spots counter */}

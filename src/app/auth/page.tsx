@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Brain, Loader2, Lock, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
 export default function AuthPage() {
   return (
     <Suspense fallback={
@@ -30,6 +32,21 @@ function AuthContent() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref");
   const supabase = createClient();
+  const authWebPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${APP_URL}/auth#webpage`,
+    url: `${APP_URL}/auth`,
+    name: "Create Your AISkillScore Account",
+    description:
+      "Create your AISkillScore account to unlock evidence-first AI career analysis in about 30 seconds. Start with 15 free tokens and continue with daily free tokens.",
+    isPartOf: { "@id": `${APP_URL}/#website` },
+    about: {
+      "@type": "Thing",
+      name: "AI-powered career intelligence platform",
+    },
+    publisher: { "@id": `${APP_URL}/#organization` },
+  };
 
   // Check for pre-auth analysis and errors
   useEffect(() => {
@@ -119,11 +136,15 @@ function AuthContent() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(authWebPageJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* Background gradient blobs */}
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-md relative">
+      <div className="w-full max-w-lg relative">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
@@ -134,7 +155,7 @@ function AuthContent() {
 
         {/* Pre-auth analysis preview card */}
         {hasPreAuthAnalysis && mode === "signup" && (
-          <div className="glass-card p-4 mb-4 flex items-center gap-3 border-blue-200 bg-blue-50/50">
+          <div className="glass-card p-4 mb-6 flex items-center gap-3 border-blue-200 bg-blue-50/50">
             <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
               <Lock className="w-4 h-4 text-blue-600" />
             </div>
@@ -146,7 +167,7 @@ function AuthContent() {
         )}
 
         <div className="glass-card p-8">
-          <h1 className="text-2xl font-bold text-gray-900 text-center mb-2 tracking-tight">
+          <h1 className="text-h1 text-center mb-2 tracking-tight">
             {mode === "signup"
               ? hasPreAuthAnalysis
                 ? "Unlock your results"
@@ -155,11 +176,23 @@ function AuthContent() {
             }
           </h1>
           {mode === "signup" && (
-            <p className="text-sm text-gray-500 text-center mb-6">
-              Create your account and start with 15 free tokens. No credit card required.
+            <p className="text-body-sm text-center mb-6">
+              Create your AISkillScore account to unlock evidence-first AI career analysis in about 30 seconds. Start with 15 free tokens, then keep momentum with daily free tokens.
             </p>
           )}
           {mode === "signin" && <div className="mb-6" />}
+
+          {/* Trust signals */}
+          <div className="mb-6 flex items-center justify-center gap-4 text-caption">
+            <span className="inline-flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              Encrypted
+            </span>
+            <span>·</span>
+            <span>Never sold</span>
+            <span>·</span>
+            <span>30 second analysis</span>
+          </div>
 
           {/* Google OAuth — primary CTA */}
           <button
@@ -187,10 +220,10 @@ function AuthContent() {
           </div>
 
           {/* Email + Password Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {mode === "signup" && (
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="fullName" className="block text-body-sm font-semibold text-gray-700 mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -205,7 +238,7 @@ function AuthContent() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-body-sm font-semibold text-gray-700 mb-1.5">
                 Email
               </label>
               <input
@@ -220,7 +253,7 @@ function AuthContent() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-body-sm font-semibold text-gray-700 mb-1.5">
                 Password
               </label>
               <input
@@ -255,7 +288,7 @@ function AuthContent() {
           </form>
 
           {mode === "signup" && (
-            <p className="text-xs text-gray-400 text-center mt-2">
+            <p className="text-caption text-center mt-2">
               Plus 2 daily free tokens after signup.
             </p>
           )}
@@ -279,17 +312,6 @@ function AuthContent() {
           </p>
         </div>
 
-        {/* Trust signals */}
-        <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-400">
-          <span className="inline-flex items-center gap-1">
-            <Shield className="w-3 h-3" />
-            Encrypted
-          </span>
-          <span>·</span>
-          <span>Never sold</span>
-          <span>·</span>
-          <span>30 second analysis</span>
-        </div>
       </div>
     </div>
   );

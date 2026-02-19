@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { Link as LinkIcon, Crosshair, FileText, ArrowRight } from "lucide-react";
 import { useSmartInput } from "@/hooks/useSmartInput";
 import { parseFile, isResumeFile } from "@/lib/file-parser";
+import { CANONICAL_COPY } from "@/lib/constants";
 import type { InputType } from "@/lib/detect-input";
 
 const BADGE_CONFIG: Record<string, { color: string; icon: typeof LinkIcon; label: string }> = {
@@ -74,7 +75,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           <div className="flex items-center gap-2">
             {/* Detection badge */}
             {badge && (
-              <div className={`inline-flex items-center gap-1.5 ${badge.color} animate-in fade-in duration-200`}>
+              <div className={`inline-flex items-center gap-2 ${badge.color} animate-in fade-in duration-200`}>
                 <badge.icon className="w-3 h-3" />
                 {badge.label}
               </div>
@@ -129,12 +130,14 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
       </div>
 
       <p className="mt-3 text-center text-xs text-gray-500 max-w-lg mx-auto leading-relaxed">
-        Best results: paste the full job requirements, responsibilities, and qualifications section, or your complete resume text with bullet points.
+        For the most accurate analysis, paste the full requirements, responsibilities, and qualifications section,
+        <br className="sm:hidden" />
+        or your complete resume text with bullet points.
       </p>
 
       {/* Privacy line */}
       <p className="mt-4 text-center text-xs text-gray-400">
-        Encrypted · Never sold · 30 second analysis
+        {CANONICAL_COPY.privacy.trustLine}
       </p>
     </div>
   );

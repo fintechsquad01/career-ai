@@ -23,15 +23,67 @@ export const metadata: Metadata = {
 };
 
 export default function BlogIndex() {
+  const blogCollectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${APP_URL}/blog#collection`,
+    url: `${APP_URL}/blog`,
+    name: "AISkillScore Blog",
+    description:
+      "AISkillScore is an AI-powered career intelligence platform. This blog publishes answer-first guides and research on resume optimization, job matching, interview prep, and salary negotiation.",
+    isPartOf: { "@id": `${APP_URL}/#website` },
+    about: {
+      "@type": "Thing",
+      name: "AI-powered career intelligence platform",
+    },
+  };
+
+  const blogItemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "AISkillScore Blog Articles",
+    numberOfItems: ARTICLES.length,
+    itemListElement: ARTICLES.map((article, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "BlogPosting",
+        headline: article.title,
+        description: article.description,
+        url: `${APP_URL}/blog/${article.slug}`,
+        datePublished: article.publishedAt,
+        dateModified: article.updatedAt,
+        author: {
+          "@type": "Organization",
+          name: article.author,
+          url: APP_URL,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "AISkillScore",
+          url: APP_URL,
+        },
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogCollectionJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogItemListJsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
             AI Career Intelligence Blog
           </h1>
           <p className="text-lg text-gray-500">
-            Data-backed guides for navigating your career in the age of AI.
+            Get direct, data-backed answers for navigating your career in the age of AI.
           </p>
         </div>
 

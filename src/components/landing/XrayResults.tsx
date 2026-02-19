@@ -6,6 +6,7 @@ import { Lock, ArrowRight } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
 import { InlineSignup } from "./InlineSignup";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { CANONICAL_COPY } from "@/lib/constants";
 import type { ResumeAnalysisData } from "@/types/landing";
 
 interface XrayResultsProps {
@@ -80,7 +81,7 @@ export function XrayResults({ data }: XrayResultsProps) {
             {/* Salary benchmark */}
             <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 text-center">
               <p className="text-sm text-gray-700 font-medium">
-                Sign up to see salary data for your role
+                Sign up to see salary range estimates for your role
               </p>
             </div>
 
@@ -118,10 +119,10 @@ export function XrayResults({ data }: XrayResultsProps) {
               <Lock className="w-5 h-5 text-blue-600" />
             </div>
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              See exactly what&apos;s holding you back — and how to fix it
+              See the specific gaps slowing down your applications - and how to fix them
             </h3>
             <p className="text-xs text-gray-500 mb-4">
-              ATS fixes, keyword gaps, salary data, and your personalized action plan — free.
+              Get ATS fixes, keyword gaps, salary range estimates, and a personalized action plan - free.
             </p>
 
             {showSignup ? (
@@ -132,7 +133,7 @@ export function XrayResults({ data }: XrayResultsProps) {
                   onClick={() => setShowSignup(true)}
                   className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
                 >
-                  Create Account — 15 Free Tokens
+                  {CANONICAL_COPY.signup.cta}
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <p className="text-xs text-gray-400">No credit card required</p>

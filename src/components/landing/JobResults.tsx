@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check, X, Minus, Lock, ArrowRight } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
 import { InlineSignup } from "./InlineSignup";
+import { CANONICAL_COPY } from "@/lib/constants";
 import type { JobAnalysisData } from "@/types/landing";
 
 interface JobResultsProps {
@@ -131,10 +132,10 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
               <Lock className="w-5 h-5 text-blue-600" />
             </div>
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              See exactly what this recruiter wants — and if you have it
+              See what recruiters prioritize for this role — and where you match
             </h3>
             <p className="text-xs text-gray-500 mb-4">
-              Full requirements match, salary data, and a step-by-step application strategy.
+              Get requirement-by-requirement matching, salary context, and a step-by-step application strategy.
             </p>
 
             {showSignup ? (
@@ -145,7 +146,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
                   onClick={() => setShowSignup(true)}
                   className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
                 >
-                  Create Account — 15 Free Tokens
+                  {CANONICAL_COPY.signup.cta}
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <p className="text-xs text-gray-400">No credit card required</p>

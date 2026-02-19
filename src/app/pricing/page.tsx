@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X, Loader2 } from "lucide-react";
-import { PACKS, TOOLS, FAQ_ITEMS } from "@/lib/constants";
+import { PACKS, TOOLS, FAQ_ITEMS, CANONICAL_COPY, formatTokenAmountLabel } from "@/lib/constants";
 import { FAQ } from "@/components/shared/FAQ";
 import { Insight } from "@/components/shared/Insight";
 import { EmailCapture } from "@/components/landing/EmailCapture";
@@ -141,16 +141,19 @@ export default function PricingPage() {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            Premium output. Fair pricing.
+            Gemini 2.5 Pro analysis. Pay per use.
           </h1>
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Get recruiter-style, evidence-first career analysis without expensive annual contracts. Pay only for the tools you run.
+          <p className="text-body max-w-2xl mx-auto leading-relaxed">
+            AISkillScore is an AI-powered career intelligence platform with 11 evidence-first tools. This pricing page shows how token packs map to real workflows so you can pay per use, avoid annual lock-in, and choose the right plan fast.
           </p>
-          <div className="inline-flex items-center gap-2 ui-badge ui-badge-green text-sm">
-            Log in daily for 2 free tokens. Save up and run tools for free.
-          </div>
           <div className="max-w-2xl mx-auto">
-            <Insight type="competitive" text="Jobscan = $599/year for keyword matching. Teal = $348/year. FinalRound = $1,788/year. AISkillScore = pay per use, from $14." />
+            <Insight
+              type="competitive"
+              text="Claim: Jobscan is $599/year, Teal is $348/year, and FinalRound is $1,788/year. Mechanism: AISkillScore runs premium, evidence-first analysis with pay-per-use tokens. Evidence: most users can start from $14 without annual lock-in."
+            />
+          </div>
+          <div className="inline-flex items-center gap-2 ui-badge ui-badge-green">
+            {CANONICAL_COPY.tokens.dailyFreeMessage}
           </div>
         </div>
 
@@ -158,8 +161,8 @@ export default function PricingPage() {
         <div className="space-y-6">
           <div className="text-center">
             <h2 className="text-h2 mb-2">Choose your pack</h2>
-            <p className="text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              Each pack gives you access to the same premium outputs. Bigger packs lower your per-token cost.
+            <p className="text-body-sm max-w-2xl mx-auto leading-relaxed">
+              Each pack uses the same analysis model and evidence format. Bigger packs lower your per-token cost.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -173,21 +176,21 @@ export default function PricingPage() {
               }`}
             >
               {pack.highlighted && (
-                <span className="ui-badge ui-badge-blue mb-3">
+                <span className="ui-badge ui-badge-blue mb-4">
                   Most Popular · Save {pack.save}
                 </span>
               )}
               {pack.save && !pack.highlighted && (
-                <span className="ui-badge ui-badge-green mb-3">
+                <span className="ui-badge ui-badge-green mb-4">
                   Save {pack.save}
                 </span>
               )}
               <h3 className="text-h3">{pack.name}</h3>
               <p className="text-4xl font-bold text-gray-900 mt-2 leading-none">${pack.price}</p>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">{pack.tokens} tokens · {pack.rate}/tok</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">{pack.tokens} {CANONICAL_COPY.tokens.unit} · {pack.rate}{CANONICAL_COPY.tokens.rateSuffix}</p>
               <p className="text-xs text-gray-400 mt-2 mb-4">{pack.description}</p>
               {pack.vsNote && (
-                <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg mb-4 leading-relaxed">
+                <p className="text-caption text-blue-600 bg-blue-50 p-2 rounded-lg mb-4 leading-relaxed">
                   {pack.vsNote}
                 </p>
               )}
@@ -231,9 +234,9 @@ export default function PricingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {TOOLS.map((tool) => (
             <div key={tool.id} className="surface-card p-2 sm:p-3 text-center min-w-0">
-                <p className="text-[11px] sm:text-sm font-medium text-gray-900 line-clamp-2 break-words leading-tight">{tool.title}</p>
-                <p className={`text-[10px] sm:text-xs font-bold mt-1 whitespace-nowrap ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
-                  {tool.tokens === 0 ? "Free" : `${tool.tokens} tok`}
+                <p className="text-body-sm font-medium text-gray-900 line-clamp-2 break-words leading-tight">{tool.title}</p>
+                <p className={`text-caption font-bold mt-1 whitespace-nowrap ${tool.tokens === 0 ? "text-green-600" : "text-blue-600"}`}>
+                  {formatTokenAmountLabel(tool.tokens)}
                 </p>
               </div>
             ))}
@@ -245,8 +248,8 @@ export default function PricingPage() {
           <h2 className="text-h2 text-center">
             How we compare
           </h2>
-          <p className="text-sm text-gray-500 text-center max-w-2xl mx-auto leading-relaxed">
-            Comparison is based on publicly listed pricing and core workflow coverage. We optimize for evidence quality and practical outcomes, not just cheaper pricing.
+          <p className="text-body-sm text-center max-w-2xl mx-auto leading-relaxed">
+            Comparison is based on publicly listed pricing and core workflow coverage. We optimize for cited evidence and practical outputs.
           </p>
           <div className="surface-card overflow-x-auto -mx-4 sm:mx-0">
             <table className="w-full text-xs sm:text-sm min-w-[600px]">
@@ -308,7 +311,7 @@ export default function PricingPage() {
         {/* Track B ROI */}
         <div className="surface-card-hero p-8 text-center space-y-4">
           <h2 className="text-h2 mb-2">Not just job hunting</h2>
-          <p className="text-gray-600 mb-4 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-body mb-4 max-w-2xl mx-auto leading-relaxed">
             Our tools help you build income while you search. Every analysis surfaces freelance, consulting, and entrepreneurship opportunities based on your skills.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mt-6">
