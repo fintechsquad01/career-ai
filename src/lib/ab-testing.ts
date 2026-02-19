@@ -67,6 +67,8 @@ export const EXPERIMENTS = {
   SIGNUP_CTA: "signup-cta",
   /** Paywall layout: "control" = all packs, "recommended" = recommended only + see more */
   PAYWALL_LAYOUT: "paywall-layout",
+  /** Wave 2 journey flow rollout flag */
+  WAVE2_JOURNEY_FLOW: "wave2_journey_flow",
 } as const;
 
 // ─── Typed variant helpers ───

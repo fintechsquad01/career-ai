@@ -21,8 +21,10 @@ import {
   Minus,
 } from "lucide-react";
 import { useCareerHealth } from "@/hooks/useCareerHealth";
+import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { calculateProfileCompleteness, MISSION_ACTIONS, TOOLS_MAP } from "@/lib/constants";
 import type { Profile, CareerProfile, JobTarget, ToolResultRow } from "@/types";
+import { EVENTS, track } from "@/lib/analytics";
 
 interface DashboardContentProps {
   profile: Profile | null;
@@ -192,6 +194,7 @@ export function DashboardContent({
   allJobTargets = [],
   recentResults,
 }: DashboardContentProps) {
+  const wave2JourneyFlowEnabled = useWave2JourneyFlow();
   const [showWelcome, setShowWelcome] = useState(profile?.onboarding_completed !== true);
   const careerHealth = useCareerHealth(careerProfile, recentResults);
 
@@ -242,6 +245,7 @@ export function DashboardContent({
   const recommendations = getSmartRecommendations(careerProfile, recommendationTarget, recentResults);
   const primaryRecommendation = recommendations[0] ?? null;
   const missionProgress = missionCardTarget ? getMissionProgress(missionCardTarget) : null;
+  const latestResult = recentResults[0] || null;
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -257,8 +261,19 @@ export function DashboardContent({
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const firstName = profile?.full_name?.split(" ")[0];
 
+  useEffect(() => {
+    if (!wave2JourneyFlowEnabled || !primaryRecommendation) return;
+    track(EVENTS.DASHBOARD_NEXT_ACTION_VIEWED, {
+      route: "/dashboard",
+      tool_id: primaryRecommendation.id,
+    });
+  }, [wave2JourneyFlowEnabled, primaryRecommendation]);
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-5 sm:py-8 space-y-5 pb-24 sm:pb-8">
+    <div
+      data-wave2-journey={wave2JourneyFlowEnabled ? "enabled" : "disabled"}
+      className="max-w-2xl mx-auto px-4 py-5 sm:py-8 space-y-5 pb-24 sm:pb-8"
+    >
       {showWelcome && profile && (
         <WelcomeModal userId={profile.id} onClose={() => setShowWelcome(false)} />
       )}
@@ -289,10 +304,39 @@ export function DashboardContent({
       </div>
 
       {/* Command Center focus */}
+      {primaryRecommendation && wave2JourneyFlowEnabled && (
+        <div className="space-y-2">
+          <p className="text-overline">Today</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="surface-card-soft p-3">
+              <p className="text-xs text-gray-500">Today</p>
+              <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.title}</p>
+            </div>
+            <div className="surface-card-soft p-3">
+              <p className="text-xs text-gray-500">Next best action</p>
+              <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.reason}</p>
+            </div>
+            <div className="surface-card-soft p-3">
+              <p className="text-xs text-gray-500">Progress this week</p>
+              <p className="text-sm font-semibold text-gray-900 mt-1">{missionProgress ?? 0}% mission progress</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {primaryRecommendation && (
         <div className="space-y-2">
           <p className="text-overline">Job Mission Control</p>
-          <Link href={primaryRecommendation.href} className="block surface-card-hero p-4 group">
+          <Link
+            href={primaryRecommendation.href}
+            onClick={() =>
+              track(EVENTS.DASHBOARD_NEXT_ACTION_CLICKED, {
+                route: "/dashboard",
+                tool_id: primaryRecommendation.id,
+              })
+            }
+            className="block surface-card-hero p-4 group"
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-blue-700 uppercase tracking-wider">Next mission action</p>
@@ -316,6 +360,28 @@ export function DashboardContent({
             </div>
           </Link>
         </div>
+      )}
+
+      {wave2JourneyFlowEnabled && latestResult && (
+        <Link
+          href={`/history?expand=${latestResult.id}`}
+          onClick={() =>
+            track(EVENTS.DASHBOARD_RESUME_MISSION_CLICKED, {
+              route: "/dashboard",
+              result_id: latestResult.id,
+              tool_id: latestResult.tool_id,
+            })
+          }
+          className="surface-card p-4 block hover:shadow-sm transition-shadow"
+        >
+          <p className="text-overline mb-1">Continue where you left off</p>
+          <p className="text-sm font-semibold text-gray-900">
+            {TOOLS_MAP[latestResult.tool_id]?.title || latestResult.tool_id.replace(/_/g, " ")}
+          </p>
+          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+            {latestResult.summary || "Open your latest result and continue your mission."}
+          </p>
+        </Link>
       )}
 
       {/* Status & evidence */}
