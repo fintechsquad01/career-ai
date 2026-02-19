@@ -199,11 +199,11 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
   }, [editingTitle]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-5 sm:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Result History</h1>
-          <p className="text-gray-500 text-sm">{totalCount} total results</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Result History</h1>
+          <p className="text-gray-500 text-xs sm:text-sm">{totalCount} total results</p>
         </div>
 
         <select
@@ -248,12 +248,12 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                       handleToggleExpand(r.id);
                     }
                   }}
-                  className="w-full px-4 sm:px-5 py-4 flex items-start justify-between text-left hover:bg-gray-50 transition-colors cursor-pointer gap-3"
+                  className="w-full px-4 sm:px-5 py-3.5 sm:py-4 flex items-start justify-between text-left hover:bg-gray-50 transition-colors cursor-pointer gap-3"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{tool?.icon || "🔧"}</span>
-                      <p className="text-sm font-medium text-gray-900 truncate">{tool?.title || r.tool_id}</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{tool?.title || r.tool_id}</p>
                     </div>
                     {editingId === r.id ? (
                       <input
@@ -274,9 +274,9 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                         className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
-                      <p className="text-xs text-gray-500 truncate mt-0.5">{r.summary || "Analysis complete"}</p>
+                      <p className="text-[11px] sm:text-xs text-gray-500 truncate mt-0.5">{r.summary || "Analysis complete"}</p>
                     )}
-                    {r.detail && <p className="text-xs text-gray-400 mt-0.5">{r.detail}</p>}
+                    {r.detail && <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">{r.detail}</p>}
                   </div>
                   <div className="flex items-center sm:items-start gap-2 sm:gap-3 ml-1 sm:ml-3 shrink-0">
                     {r.metric_value != null && (

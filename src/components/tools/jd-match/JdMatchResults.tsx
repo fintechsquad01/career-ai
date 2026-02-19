@@ -79,10 +79,10 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
       summary={
         <div className="report-section celebrate space-y-4">
           <div className="text-center">
-            <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ""}</p>
-            <Ring score={data.fit_score} size="lg" label="Fit Score" />
+            <p className="text-base sm:text-lg font-semibold text-gray-900 mb-3">{data.headline || ""}</p>
+            <Ring score={data.fit_score} size="md" label="Fit Score" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] sm:text-xs">
             <div className="surface-card-soft p-3">
               <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Verdict</p>
               <p className="font-semibold text-gray-900 capitalize">{verdictBand.replace("_", " ")}</p>
@@ -284,14 +284,14 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
       }
       nextStep={
         data.critical_gaps && data.critical_gaps.length > 0 ? (
-          <div className="surface-card-hero p-4 flex items-center justify-between">
-            <div>
+          <div className="surface-card-hero p-4">
+            <div className="mb-3">
               <p className="text-sm font-semibold text-gray-900">Address these gaps before you apply</p>
               <p className="text-xs text-gray-500">Resume Optimizer maps each gap to targeted resume updates.</p>
             </div>
             <Link
               href="/tools/resume"
-              className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap"
+              className="inline-flex items-center justify-center w-full sm:w-auto text-sm font-semibold text-violet-700 hover:text-violet-900"
               onClick={() =>
                 track("jd_primary_next_action_clicked", {
                   tool_id: "jd_match",
