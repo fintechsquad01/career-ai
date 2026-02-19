@@ -34,6 +34,11 @@ interface ToolsGridProps {
 
 export function ToolsGrid({ compact = false }: ToolsGridProps) {
   const formatTokenLabel = (tokens: number) => (tokens === 0 ? "Free" : `${tokens} tokens`);
+  const getStatusLabel = (tool: (typeof TOOLS)[number]) => {
+    if (tool.beta) return "Beta";
+    if (POPULAR_TOOLS.has(tool.id)) return "Popular";
+    return null;
+  };
 
   if (compact) {
     return (
@@ -49,6 +54,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 stagger-children">
                 {categoryTools.map((tool) => {
                   const Icon = ICON_MAP[tool.icon] || Zap;
+                  const statusLabel = getStatusLabel(tool);
                   return (
                     <Link
                       key={tool.id}
@@ -65,6 +71,9 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                       </div>
                       <h4 className="text-[13px] font-semibold text-gray-900">{tool.title}</h4>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{tool.description}</p>
+                      {statusLabel && (
+                        <p className="text-[11px] font-medium text-gray-400 mt-1">{statusLabel}</p>
+                      )}
                     </Link>
                   );
                 })}
@@ -107,7 +116,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">
               {categoryTools.map((tool) => {
                 const Icon = ICON_MAP[tool.icon] || Zap;
-                const isPopular = POPULAR_TOOLS.has(tool.id);
+                const statusLabel = getStatusLabel(tool);
 
                 return (
                   <Link
@@ -119,25 +128,20 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                       <Icon className={`w-5 h-5 ${styles.text}`} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between gap-2">
                         <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">{tool.title}</h4>
-                        {isPopular && (
-                          <span className="ui-badge ui-badge-amber shrink-0">
-                            <Star className="w-2.5 h-2.5" fill="currentColor" />
-                            Popular
-                          </span>
-                        )}
-                        {tool.beta && (
-                          <span className="ui-badge ui-badge-amber shrink-0">
-                            Beta
-                          </span>
-                        )}
+                        <span className={`ui-badge shrink-0 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
+                          {formatTokenLabel(tool.tokens)}
+                        </span>
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
+                      {statusLabel && (
+                        <div className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
+                          {statusLabel === "Popular" && <Star className="w-3 h-3 text-amber-500" fill="currentColor" />}
+                          <span>{statusLabel}</span>
+                        </div>
+                      )}
                     </div>
-                    <span className={`ui-badge shrink-0 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
-                      {formatTokenLabel(tool.tokens)}
-                    </span>
                   </Link>
                 );
               })}

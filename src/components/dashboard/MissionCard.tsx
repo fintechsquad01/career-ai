@@ -50,14 +50,14 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
   return (
     <Link href="/mission" className="block">
       <div
-        className={`rounded-2xl p-6 text-white hover:opacity-95 transition-opacity celebrate ${
+        className={`rounded-2xl p-5 sm:p-6 text-white hover:opacity-95 transition-opacity celebrate ${
           isCompleted
             ? "bg-gradient-to-r from-emerald-600 to-green-600"
             : "bg-gradient-to-r from-blue-600 to-violet-600"
         }`}
       >
-        <div className="flex items-start justify-between">
-          <div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-2">
               {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <Crosshair className="w-4 h-4" />}
               <span
@@ -67,8 +67,11 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
               >
                 {isCompleted ? "Mission Completed" : "Job Mission Control"}
               </span>
+              <span className="ui-badge bg-white/15 text-white border border-white/20">
+                {completed}/{total}
+              </span>
             </div>
-            <h3 className="font-bold text-lg">
+            <h3 className="font-bold text-base sm:text-lg">
               {safeTitle}
               {safeCompany ? ` at ${safeCompany}` : ""}
             </h3>
@@ -78,12 +81,18 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
               </p>
             )}
             {!isCompleted && nextAction && (
-              <p className={`text-xs mt-1.5 ${isCompleted ? "text-emerald-100" : "text-blue-100"}`}>
-                Next step: {nextAction.title}
-              </p>
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2 py-1">
+                <span className={`text-[11px] font-semibold uppercase tracking-wide ${isCompleted ? "text-emerald-100" : "text-blue-100"}`}>
+                  Next
+                </span>
+                <span className="text-xs text-white">{nextAction.title}</span>
+              </div>
             )}
           </div>
-          <ArrowRight className={`w-5 h-5 ${isCompleted ? "text-emerald-200" : "text-blue-200"}`} />
+          <span className={`inline-flex items-center gap-1 text-xs font-semibold whitespace-nowrap ${isCompleted ? "text-emerald-100" : "text-blue-100"}`}>
+            Open
+            <ArrowRight className={`w-4 h-4 ${isCompleted ? "text-emerald-200" : "text-blue-200"}`} />
+          </span>
         </div>
 
         {/* Progress bar */}
