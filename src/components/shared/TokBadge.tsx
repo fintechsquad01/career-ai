@@ -33,7 +33,7 @@ export function TokBadge() {
         <span>
           <span style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>
           <span className="text-[11px] sm:text-[10px] opacity-70 mx-0.5">+</span>
-          <span className="text-[11px] sm:text-[10px] opacity-80">{dailyCreditsBalance}d</span>
+          <span className="text-[11px] sm:text-[10px] opacity-80">{dailyCreditsBalance} daily</span>
         </span>
       )}
       {showDailyOnly && <span className="text-[12px] sm:text-[11px]">{dailyCreditsBalance} daily</span>}

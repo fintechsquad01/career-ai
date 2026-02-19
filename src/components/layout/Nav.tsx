@@ -8,7 +8,7 @@ import type { LucideIcon } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
-import { TOOLS_MAP } from "@/lib/constants";
+import { TOOLS_MAP, CANONICAL_COPY } from "@/lib/constants";
 import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { EVENTS, track } from "@/lib/analytics";
@@ -203,7 +203,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                 href="/auth"
                 className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity min-h-[44px] flex items-center"
               >
-                Get Started — Free
+                {CANONICAL_COPY.cta.getStarted}
               </Link>
             </div>
           )}
@@ -290,7 +290,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 min-h-[48px]"
                   >
-                    Get Started — Free
+                    {CANONICAL_COPY.cta.getStarted}
                   </Link>
                 </div>
               </>

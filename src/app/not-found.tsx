@@ -17,13 +17,13 @@ export default function NotFound() {
         <div className="space-y-4">
           <h1 className="text-2xl font-bold text-gray-900">Page not found</h1>
           <p className="text-sm text-gray-500">
-            The page you&apos;re looking for doesn&apos;t exist or has been moved.
+            The page you&apos;re looking for doesn&apos;t exist or has moved. Go back home and continue from Mission Control.
           </p>
           <Link
             href="/"
             className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[48px]"
           >
-            Go Home
+            Go to Home
           </Link>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Ring } from "@/components/shared/Ring";
-import { TOOLS_MAP } from "@/lib/constants";
+import { TOOLS_MAP, CANONICAL_COPY } from "@/lib/constants";
 import Link from "next/link";
 import { Brain, ArrowRight, Users, Star, TrendingUp, Twitter, Linkedin, Eye } from "lucide-react";
 
@@ -270,7 +270,7 @@ export default async function SharePage({ params }: SharePageProps) {
             href="/auth"
             className="block w-full py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl text-center hover:opacity-90 transition-opacity min-h-[48px]"
           >
-            Create Free Account — 15 Tokens
+            {CANONICAL_COPY.signup.cta}
           </Link>
         </div>
 

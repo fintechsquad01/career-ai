@@ -191,7 +191,7 @@ export default function LifetimePage() {
             <p className="text-xs font-bold text-violet-600 uppercase mb-2 mt-1">Early Bird</p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">$119</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-violet-600 font-medium mt-2 break-words">120 tokens/mo · $0.083/tok</p>
+            <p className="text-xs text-violet-600 font-medium mt-2 break-words">120 tokens/mo · $0.083/token</p>
           </button>
           <button
             type="button"
@@ -205,7 +205,7 @@ export default function LifetimePage() {
             <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>Standard</p>
             <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$179</p>
             <p className={`text-sm mt-1 ${selectedTier === "lifetime_standard" ? "text-gray-500" : "text-gray-400"}`}>one-time</p>
-            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>120 tokens/mo · $0.124/tok</p>
+            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>120 tokens/mo · $0.124/token</p>
           </button>
           <button
             type="button"
@@ -219,7 +219,7 @@ export default function LifetimePage() {
             <p className="text-xs font-bold text-amber-600 uppercase mb-2">VIP</p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">$279</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-amber-600 font-medium mt-2">180 tokens/mo · $0.129/tok</p>
+            <p className="text-xs text-amber-600 font-medium mt-2">180 tokens/mo · $0.129/token</p>
             <p className="text-[10px] text-amber-700 mt-1">+ priority processing</p>
           </button>
         </div>
@@ -233,7 +233,7 @@ export default function LifetimePage() {
               <span className="font-medium text-gray-900">120 tokens (180 VIP)</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Value at Pro rate ($0.195/tok)</span>
+              <span className="text-gray-500">Value at Pro rate ($0.195/token)</span>
               <span className="font-medium text-gray-900">$23.40/month</span>
             </div>
             <div className="flex justify-between border-t border-gray-100 pt-3">
@@ -259,13 +259,13 @@ export default function LifetimePage() {
           <h3 className="font-semibold text-gray-900 mb-4">What 120 tokens covers monthly</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              "1 Resume Optimization (15 tok)",
-              "2 JD Match Analyses (10 tok)",
-              "1 Cover Letter (8 tok)",
-              "1 Interview Prep (8 tok)",
-              "1 Skills Gap Analysis (8 tok)",
-              "1 Career Roadmap (15 tok)",
-              "1 Salary Negotiation (8 tok)",
+              "1 Resume Optimization (15 tokens)",
+              "2 JD Match Analyses (10 tokens)",
+              "1 Cover Letter (8 tokens)",
+              "1 Interview Prep (8 tokens)",
+              "1 Skills Gap Analysis (8 tokens)",
+              "1 Career Roadmap (15 tokens)",
+              "1 Salary Negotiation (8 tokens)",
               "Unlimited AI Displacement (Free)",
             ].map((item) => (
               <div key={item} className="flex items-start gap-2 text-sm">

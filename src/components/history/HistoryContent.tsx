@@ -229,7 +229,7 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
         <div className="text-center py-16">
           <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h2 className="text-lg font-semibold text-gray-900 mb-2">No results yet</h2>
-          <p className="text-gray-500 text-sm">Run your first tool to see history here.</p>
+          <p className="text-gray-500 text-sm">Run your first Mission Control tool to see results here.</p>
         </div>
       ) : (
         <div className="space-y-3">

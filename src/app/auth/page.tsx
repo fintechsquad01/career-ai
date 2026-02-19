@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Brain, Loader2, Lock, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { CANONICAL_COPY } from "@/lib/constants";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -171,7 +172,7 @@ function AuthContent() {
             {mode === "signup"
               ? hasPreAuthAnalysis
                 ? "Unlock your results"
-                : "Get started free"
+                : "Get started with 15 free tokens"
               : "Welcome back"
             }
           </h1>
@@ -186,12 +187,8 @@ function AuthContent() {
           <div className="mb-6 flex items-center justify-center gap-4 text-caption">
             <span className="inline-flex items-center gap-1">
               <Shield className="w-3 h-3" />
-              Encrypted
+              {CANONICAL_COPY.privacy.trustLine}
             </span>
-            <span>·</span>
-            <span>Never sold</span>
-            <span>·</span>
-            <span>30 second analysis</span>
           </div>
 
           {/* Google OAuth — primary CTA */}
@@ -280,8 +277,8 @@ function AuthContent() {
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {mode === "signup"
                 ? hasPreAuthAnalysis
-                  ? "Unlock Results — Free"
-                  : "Create Account — 15 Free Tokens"
+                  ? CANONICAL_COPY.cta.unlockResults
+                  : CANONICAL_COPY.signup.cta
                 : "Sign In"
               }
             </button>

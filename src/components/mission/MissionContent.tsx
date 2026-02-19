@@ -157,9 +157,9 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
               <Crosshair className="w-5 h-5 text-blue-200" />
-              <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Application HQ</span>
+              <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Mission Control</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold mb-2">Your AI-Powered Application Command Center</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">Your AI-Powered Job Mission Control</h2>
             <p className="text-sm sm:text-base text-blue-100 leading-relaxed max-w-lg">
               Analyze any job posting, then let AI build your entire application — resume, cover letter, interview prep, and salary strategy — all tailored to that specific role.
             </p>
@@ -413,7 +413,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
                     href={`/tools/${action.toolId}`}
                     className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors min-h-[44px] flex items-center gap-1.5 flex-shrink-0"
                   >
-                    Run — {action.tokens} tok
+                    Run — {action.tokens} tokens
                   </Link>
                 )}
 
@@ -458,19 +458,19 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               href="/tools/entrepreneurship"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              Entrepreneurship Assessment · 12 tok
+              Entrepreneurship Assessment · 12 tokens
             </Link>
             <Link
               href="/tools/roadmap"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              Career Roadmap · 15 tok
+              Career Roadmap · 15 tokens
             </Link>
             <Link
               href="/tools/linkedin"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors min-h-[36px]"
             >
-              LinkedIn Optimizer · 15 tok
+              LinkedIn Optimizer · 15 tokens
             </Link>
           </div>
         </div>

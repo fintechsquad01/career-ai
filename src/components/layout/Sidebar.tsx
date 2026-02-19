@@ -17,6 +17,7 @@ import { createClient } from "@/lib/supabase/client";
 import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute, type AppNavItem } from "@/lib/navigation";
 import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { EVENTS, track } from "@/lib/analytics";
+import { CANONICAL_COPY } from "@/lib/constants";
 
 const navByKey = new Map<string, AppNavItem>(
   [...CORE_NAV_ITEMS, ...EXTENDED_NAV_ITEMS].map((item) => [item.key, item])
@@ -209,11 +210,11 @@ export function Sidebar() {
             {dailyCreditsBalance > 0 && (
               <div className="mb-1.5 flex flex-wrap gap-1">
                 {tokenBalance > 0 && <span className="ui-badge ui-badge-gray">{tokenBalance} purchased</span>}
-                <span className="ui-badge ui-badge-blue">{dailyCreditsBalance} daily</span>
+                <span className="ui-badge ui-badge-blue">{dailyCreditsBalance} daily {CANONICAL_COPY.tokens.unit}</span>
               </div>
             )}
             <Link href="/pricing" className="text-[11px] font-medium text-blue-600 hover:text-blue-700 transition-colors">
-              Add tokens →
+              {CANONICAL_COPY.cta.addTokens} →
             </Link>
           </>
         )}

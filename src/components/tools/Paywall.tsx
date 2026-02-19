@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, Coins, ArrowRight, Users } from "lucide-react";
-import { PACKS } from "@/lib/constants";
+import { PACKS, CANONICAL_COPY } from "@/lib/constants";
 
 const TOOL_UNLOCK_BULLETS: Record<string, string[]> = {
   resume: ["ATS-optimized rewrite preserving your voice", "Before/after score comparison", "Section-by-section recommendations"],
@@ -103,18 +103,18 @@ export function Paywall({
           <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
             <Coins className="w-6 h-6 text-amber-600" />
           </div>
-          <h2 className="text-lg font-bold text-gray-900">
-            {deficit > 0
-              ? `You need ${deficit} more token${deficit !== 1 ? "s" : ""}`
-              : `This tool costs ${requiredTokens} tokens`}
-          </h2>
+          <h2 className="text-lg font-bold text-gray-900">Continue your mission</h2>
           {toolName && (
             <p className="text-xs text-gray-400 mt-0.5">for {toolName}</p>
           )}
-          <p className="text-sm text-gray-500 mt-1">
-            {currentBalance > 0
-              ? `You have ${currentBalance} token${currentBalance !== 1 ? "s" : ""}. ${deficit > 0 ? `Need ${deficit} more.` : ""}`
-              : "Come back tomorrow for free daily tokens, or grab a pack to continue now."}
+          <p className="text-sm text-gray-600 mt-2">
+            Have <strong>{currentBalance}</strong> · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong>
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {CANONICAL_COPY.paywall.noSubscription}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            {CANONICAL_COPY.paywall.tokenSafety}
           </p>
         </div>
 
@@ -157,8 +157,8 @@ export function Paywall({
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-gray-900">{pack.name}</span>
                     {isRecommended && (
-                      <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
-                        COVERS THIS TOOL
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
+                        BEST FOR THIS SHORTFALL
                       </span>
                     )}
                   </div>

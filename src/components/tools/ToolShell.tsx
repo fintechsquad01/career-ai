@@ -1351,7 +1351,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               className="btn-secondary"
             >
               <Share2 className="w-4 h-4" />
-              Share Results
+              Share Report
             </button>
             <Link
               href="/history"
@@ -1513,6 +1513,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           currentBalance={balance}
           toolName={tool.title}
           toolId={toolId}
+          toolDescription={tool.description}
           onClose={() => setShowPaywall(false)}
           onPurchaseComplete={() => {
             setShowPaywall(false);

@@ -141,7 +141,7 @@ export default function PricingPage() {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            Gemini 2.5 Pro analysis. Pay per use.
+            Continue your mission. Pay per use.
           </h1>
           <p className="text-body max-w-2xl mx-auto leading-relaxed">
             AISkillScore is an AI-powered career intelligence platform with 11 evidence-first tools. This pricing page shows how token packs map to real workflows so you can pay per use, avoid annual lock-in, and choose the right plan fast.
@@ -162,7 +162,7 @@ export default function PricingPage() {
           <div className="text-center">
             <h2 className="text-h2 mb-2">Choose your pack</h2>
             <p className="text-body-sm max-w-2xl mx-auto leading-relaxed">
-              Each pack uses the same analysis model and evidence format. Bigger packs lower your per-token cost.
+              Every pack uses the same Gemini 2.5 Pro workflow. Bigger packs reduce cost per token and prevent mission interruptions.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -209,7 +209,7 @@ export default function PricingPage() {
                     Processing…
                   </>
                 ) : (
-                  `Get ${pack.name}`
+                  `Continue with ${pack.name}`
                 )}
               </button>
             </div>

@@ -20,6 +20,7 @@ export const FEATURE_FLAGS = {
 export const CANONICAL_COPY = {
   signup: {
     cta: "Create Account — 15 Free Tokens",
+    ctaShort: "Create Account — Free",
   },
   tokens: {
     unit: "tokens",
@@ -31,6 +32,14 @@ export const CANONICAL_COPY = {
   },
   cta: {
     freeAnalysisPrimary: "Get Your Free AI Risk Score",
+    getStarted: "Get Started — 15 Free Tokens",
+    unlockResults: "Unlock Results — 15 Free Tokens",
+    addTokens: "Add Tokens",
+    continueMission: "Continue Mission",
+  },
+  paywall: {
+    noSubscription: "No subscription required. Pay only for what you use.",
+    tokenSafety: "If analysis fails, your tokens stay safe.",
   },
 } as const;
 

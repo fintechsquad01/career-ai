@@ -29,7 +29,7 @@ const DEFAULT_ITEMS: QuickAccessItem[] = [
   {
     id: "mission",
     href: "/mission",
-    label: "Mission",
+    label: "Mission Control",
     icon: Target,
     iconColor: "text-emerald-600",
   },

@@ -17,6 +17,10 @@ All critical phrases below are sourced from `src/lib/constants.ts` via `CANONICA
 | Token rate suffix | `/token` | `CANONICAL_COPY.tokens.rateSuffix` | `src/app/pricing/page.tsx` | `/tok`, `/token` | Canonicalize rate suffix to `/token` | normalized |
 | Privacy trust line | `Encrypted · Never sold · 30 second analysis` | `CANONICAL_COPY.privacy.trustLine` | `src/components/landing/SmartInput.tsx`, `src/components/landing/HeroSection.tsx` | Split-badge form and single-line form | Keep one canonical phrase and render it consistently | normalized |
 | Free analysis primary CTA | `Get Your Free AI Risk Score` | `CANONICAL_COPY.cta.freeAnalysisPrimary` | `src/components/landing/HeroSection.tsx`, `src/components/landing/LandingContent.tsx` | `Analyze Free`, `Analyze My AI Risk — Free`, `Try It Free`, `Get Your Free AI Risk Score` | Select one approved primary CTA and replace competing variants in scoped landing surfaces | normalized |
+| App top-nav/signup CTA | `Get Started — 15 Free Tokens` | `CANONICAL_COPY.cta.getStarted` | `src/components/layout/Nav.tsx`, auth/marketing re-entry surfaces | `Get Started — Free`, `Create Free Account — 15 Tokens`, `Create Account — 15 Free Tokens` | Standardize growth-entry CTA to one high-context canonical variant in navigation and share-entry points | pending |
+| Auth unlock CTA | `Unlock Results — 15 Free Tokens` | `CANONICAL_COPY.cta.unlockResults` | `src/app/auth/page.tsx` | `Unlock Results — Free`, `Create Account — 15 Free Tokens` | Keep unlock context explicit while preserving token value visibility | pending |
+| Add tokens CTA | `Add Tokens` | `CANONICAL_COPY.cta.addTokens` | `src/components/layout/Nav.tsx`, `src/components/layout/Sidebar.tsx`, token management surfaces | `Add tokens`, `Add Tokens` | Enforce one canonical casing across app shell | pending |
+| Paywall trust reassurance | `No subscription required. Pay only for what you use.` + `If analysis fails, your tokens stay safe.` | `CANONICAL_COPY.paywall.*` | `src/components/tools/Paywall.tsx`, `src/components/tools/ToolShell.tsx` | Multiple reassurance variants | Centralize trust reassurance so shortfall/paywall language stays consistent | pending |
 
 ## Notes on Conflicts and Scope
 
@@ -26,6 +30,7 @@ All critical phrases below are sourced from `src/lib/constants.ts` via `CANONICA
   - `src/app/pricing/page.tsx`
   - `src/components/tools/ToolShell.tsx`
 - Adjacent non-scoped surfaces still contain message drift (for example `daily credits` phrasing in metadata/legal text). Those are follow-up items and not part of this scoped normalization.
+- Wave 4 extends this matrix scope to navigation/auth/share/paywall/lifetime continuity wording.
 
 ## Acceptance Check
 

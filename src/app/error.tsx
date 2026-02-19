@@ -23,7 +23,7 @@ export default function GlobalError({
         </div>
         <h2 className="text-lg font-semibold text-gray-900">Something went wrong</h2>
         <p className="text-sm text-gray-500">
-          We hit an unexpected error. Please try again.
+          We hit an unexpected error. Please try again to continue your mission.
         </p>
         <button
           onClick={reset}

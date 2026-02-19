@@ -76,7 +76,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <p className="text-sm text-gray-600 mb-2">
-        Get career tips and early access — enter your email
+        Get career tips and product updates. Enter your email.
       </p>
       <div className="flex gap-2">
         <input
@@ -95,7 +95,7 @@ export function EmailCapture({ context }: EmailCaptureProps) {
           disabled={isSubmitDisabled}
           className="min-h-[44px] px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {status === "loading" ? "Saving..." : "Save Results"}
+          {status === "loading" ? "Saving..." : "Get Updates"}
         </button>
       </div>
       {(validationError || status === "error") && (

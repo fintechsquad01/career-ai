@@ -88,7 +88,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
 
         <p className="text-sm text-gray-500 leading-relaxed">
           No signup required for your first analysis.
-          <span className="text-gray-400"> Create an account for 15 free tokens.</span>
+          <span className="text-gray-400"> Create your account and get 15 free tokens.</span>
         </p>
       </div>
     </div>
