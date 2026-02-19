@@ -1,6 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { SourceVerification } from "@/components/shared/SourceVerification";
 import { Hash, Users, Sparkles, AlertCircle } from "lucide-react";
 import type { TLinkedInResult, ToolResult } from "@/types";
@@ -22,27 +23,33 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
   }
 
   return (
-    <div className="report-shell">
-      {data.profile_strength_score != null && (
-        <div className="report-section text-center">
-          <Ring score={data.profile_strength_score} size="md" label="Profile Strength" />
-        </div>
-      )}
+    <ReportFlow
+      summary={
+        <>
+          {data.profile_strength_score != null && (
+            <div className="report-section text-center">
+              <Ring score={data.profile_strength_score} size="md" label="Profile Strength" />
+            </div>
+          )}
 
-      {/* AI Value Prop */}
-      {data.ai_value_prop && (
-        <div className="surface-card-hero p-4">
-          <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3" />
-            LinkedIn AI Will Summarize You As
-          </p>
-          <p className="text-sm text-purple-900 italic">&ldquo;{data.ai_value_prop}&rdquo;</p>
-        </div>
-      )}
+          {/* AI Value Prop */}
+          {data.ai_value_prop && (
+            <div className="surface-card-hero p-4">
+              <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3" />
+                LinkedIn AI Will Summarize You As
+              </p>
+              <p className="text-sm text-purple-900 italic">&ldquo;{data.ai_value_prop}&rdquo;</p>
+            </div>
+          )}
+        </>
+      }
+      evidence={
+        <>
 
       {/* Headlines */}
-      {data.headlines && data.headlines.length > 0 && (
-        <div className="report-section">
+          {data.headlines && data.headlines.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Headline Options</h3>
           <div className="space-y-4">
             {data.headlines.map((h, i) => (
@@ -67,23 +74,23 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* About Section */}
-      {data.about_section && (
-        <div className="report-section">
+          {data.about_section && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">About Section</h3>
           <p className="text-sm text-gray-800 whitespace-pre-wrap">{data.about_section}</p>
           {data.about_strategy && (
             <p className="text-xs text-gray-500 mt-3 italic">{data.about_strategy}</p>
           )}
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Keywords */}
-      {data.keywords && data.keywords.length > 0 && (
-        <div className="report-section">
+          {data.keywords && data.keywords.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Keywords to Include</h3>
           <div className="flex flex-wrap gap-2">
             {data.keywords.map((kw, i) => {
@@ -104,12 +111,12 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
               );
             })}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Experience Improvements */}
-      {data.experience_improvements && data.experience_improvements.length > 0 && (
-        <div className="report-section">
+          {data.experience_improvements && data.experience_improvements.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Experience Improvements</h3>
           <div className="space-y-4">
             {data.experience_improvements.map((exp, i) => (
@@ -124,23 +131,23 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Source Verification — Experience Improvements */}
-      {data.experience_improvements && data.experience_improvements.length > 0 && (
-        <SourceVerification
-          items={data.experience_improvements.map((exp) => ({
-            text: exp.improved.slice(0, 80) + (exp.improved.length > 80 ? "..." : ""),
-            verified: true,
-            source: exp.what_changed ? `Rewritten: ${exp.what_changed}` : "From resume experience",
-          }))}
-        />
-      )}
+          {data.experience_improvements && data.experience_improvements.length > 0 && (
+            <SourceVerification
+              items={data.experience_improvements.map((exp) => ({
+                text: exp.improved.slice(0, 80) + (exp.improved.length > 80 ? "..." : ""),
+                verified: true,
+                source: exp.what_changed ? `Rewritten: ${exp.what_changed}` : "From resume experience",
+              }))}
+            />
+          )}
 
       {/* Content Strategy */}
-      {data.content_strategy && (
-        <div className="report-section">
+          {data.content_strategy && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Hash className="w-4 h-4 text-sky-500" />
             Content Strategy
@@ -194,13 +201,13 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
               </div>
             )}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
 
       {/* Network Building */}
-      {data.network_building && data.network_building.length > 0 && (
-        <div className="report-section">
+          {data.network_building && data.network_building.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-sky-500" />
             Network Building
@@ -221,8 +228,27 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-    </div>
+            </div>
+          )}
+        </>
+      }
+      nextStep={
+        data.personal_brand_monetization ? (
+          <div className="surface-card-soft p-4 space-y-2">
+            <p className="text-sm font-semibold text-gray-900">Next Step: turn profile quality into opportunities</p>
+            {data.personal_brand_monetization.positioning && (
+              <p className="text-sm text-gray-700">{data.personal_brand_monetization.positioning}</p>
+            )}
+            {data.personal_brand_monetization.first_steps && data.personal_brand_monetization.first_steps.length > 0 && (
+              <ul className="space-y-1">
+                {data.personal_brand_monetization.first_steps.map((step, i) => (
+                  <li key={i} className="text-sm text-gray-600">• {step}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null
+      }
+    />
   );
 }

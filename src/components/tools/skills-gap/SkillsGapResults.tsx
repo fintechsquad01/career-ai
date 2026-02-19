@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle, Lightbulb, AlertCircle } from "lucide-react";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { CourseCard } from "@/components/shared/CourseCard";
 import type { TSkillsGapResult, ToolResult } from "@/types";
 
@@ -41,21 +42,17 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
   const learningRoadmap = data.learning_roadmap || data.learning_path;
 
   return (
-    <div className="report-shell">
-      {/* Headline */}
-      {data.headline && (
-        <div className="surface-card-hero p-4">
-          <p className="text-sm text-blue-900 font-medium">{data.headline}</p>
-        </div>
-      )}
-
-      {data.dataset_note && (
-        <p className="text-xs text-gray-500 italic">{data.dataset_note}</p>
-      )}
-
-      {/* Transferable Skills (strengths first) */}
-      {data.transferable_skills && data.transferable_skills.length > 0 && (
-        <div className="surface-card-hero p-6">
+    <ReportFlow
+      summary={
+        <>
+          {data.headline && (
+            <div className="surface-card-hero p-4">
+              <p className="text-sm text-blue-900 font-medium">{data.headline}</p>
+            </div>
+          )}
+          {/* Transferable Skills (strengths first) */}
+          {data.transferable_skills && data.transferable_skills.length > 0 && (
+            <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-green-900 mb-4 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-600" />
             Your Transferable Strengths
@@ -83,12 +80,15 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Gaps */}
-      {data.gaps && data.gaps.length > 0 && (
-        <div className="report-section">
+            </div>
+          )}
+        </>
+      }
+      evidence={
+        <>
+          {/* Gaps */}
+          {data.gaps && data.gaps.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Skills Ranked by Gap</h3>
           <div className="space-y-5">
             {data.gaps.map((gap, i) => (
@@ -169,39 +169,12 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Total Investment */}
-      {data.total_investment && (
-        <div className="surface-card-soft p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Total Investment</h3>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {data.total_investment.time && (
-              <div>
-                <p className="text-xs text-gray-500">Time</p>
-                <p className="text-sm font-semibold text-gray-900">{data.total_investment.time}</p>
-              </div>
-            )}
-            {data.total_investment.cost && (
-              <div>
-                <p className="text-xs text-gray-500">Paid Courses</p>
-                <p className="text-sm font-semibold text-gray-900">{data.total_investment.cost}</p>
-              </div>
-            )}
-            {data.total_investment.free_alternative_cost && (
-              <div>
-                <p className="text-xs text-gray-500">Free Alternative</p>
-                <p className="text-sm font-semibold text-green-700">{data.total_investment.free_alternative_cost}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Learning Roadmap */}
-      {learningRoadmap && learningRoadmap.length > 0 && (
-        <div className="report-section">
+          {/* Learning Roadmap */}
+          {learningRoadmap && learningRoadmap.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Learning Roadmap</h3>
           <div className="space-y-4">
             {learningRoadmap.map((step, i) => (
@@ -227,9 +200,44 @@ export function SkillsGapResults({ result }: SkillsGapResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-    </div>
+            </div>
+          )}
+        </>
+      }
+      nextStep={
+        <>
+          {data.total_investment && (
+            <div className="surface-card-soft p-5">
+              <h3 className="font-semibold text-gray-900 mb-3">Total Investment</h3>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                {data.total_investment.time && (
+                  <div>
+                    <p className="text-xs text-gray-500">Time</p>
+                    <p className="text-sm font-semibold text-gray-900">{data.total_investment.time}</p>
+                  </div>
+                )}
+                {data.total_investment.cost && (
+                  <div>
+                    <p className="text-xs text-gray-500">Paid Courses</p>
+                    <p className="text-sm font-semibold text-gray-900">{data.total_investment.cost}</p>
+                  </div>
+                )}
+                {data.total_investment.free_alternative_cost && (
+                  <div>
+                    <p className="text-xs text-gray-500">Free Alternative</p>
+                    <p className="text-sm font-semibold text-green-700">{data.total_investment.free_alternative_cost}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {data.dataset_note && (
+            <div className="report-section">
+              <p className="text-xs text-gray-500 italic">{data.dataset_note}</p>
+            </div>
+          )}
+        </>
+      }
+    />
   );
 }

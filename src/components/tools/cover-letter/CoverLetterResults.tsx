@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { Copy, Download, CheckCircle, Lightbulb, MessageSquare, Sparkles, AlertCircle, ShieldAlert, ArrowRight } from "lucide-react";
 import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TCoverLetterResult, ToolResult } from "@/types";
@@ -47,27 +48,9 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
     | undefined;
 
   return (
-    <div className="report-shell">
-      {/* Primary action buttons — top of results */}
-      <div className="flex gap-3">
-        <button
-          onClick={handleCopy}
-          className="btn-primary flex-1"
-        >
-          {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copied!" : "Copy Letter"}
-        </button>
-        <button
-          onClick={handleDownload}
-          className="btn-secondary w-auto px-4"
-        >
-          <Download className="w-4 h-4" />
-          <span className="hidden sm:inline">Download TXT</span>
-        </button>
-      </div>
-
-      {/* Letter */}
-      <div className="report-section">
+    <ReportFlow
+      summary={
+        <div className="report-section">
         <h3 className="font-semibold text-gray-900 mb-4">Your Cover Letter</h3>
         <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
           <span>{data.word_count} words</span>
@@ -84,25 +67,28 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
           const readTime = Math.ceil(wordCount / 200);
           return <p className="text-xs text-gray-400 mt-2">{wordCount} words · {readTime} min read</p>;
         })()}
-      </div>
+        </div>
+      }
+      evidence={
+        <>
 
-      {/* Source Verification */}
-      {data.highlighted_sections && data.highlighted_sections.length > 0 && (
-        <SourceVerification
-          items={data.highlighted_sections.map((s) => ({
-            text: s.text.slice(0, 80) + (s.text.length > 80 ? "..." : ""),
-            verified: s.type === "achievement" || s.type === "job_specific",
-            source:
-              s.type === "achievement"
-                ? "From resume"
-                : s.type === "company_specific"
-                  ? "Company research"
-                  : s.type === "storytelling"
-                    ? "Narrative framing"
-                    : "Keyword match",
-          }))}
-        />
-      )}
+          {/* Source Verification */}
+          {data.highlighted_sections && data.highlighted_sections.length > 0 && (
+            <SourceVerification
+              items={data.highlighted_sections.map((s) => ({
+                text: s.text.slice(0, 80) + (s.text.length > 80 ? "..." : ""),
+                verified: s.type === "achievement" || s.type === "job_specific",
+                source:
+                  s.type === "achievement"
+                    ? "From resume"
+                    : s.type === "company_specific"
+                      ? "Company research"
+                      : s.type === "storytelling"
+                        ? "Narrative framing"
+                        : "Keyword match",
+              }))}
+            />
+          )}
 
       {/* Opening hook strategy */}
       {data.opening_hook && (
@@ -183,32 +169,56 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
         </div>
       )}
 
-      {/* Interview Talking Points + CTA to Interview Prep tool */}
-      {data.interview_talking_points && data.interview_talking_points.length > 0 && (
-        <div className="surface-card-hero p-6">
-          <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-amber-600" />
-            Interview Prep — Topics They&apos;ll Ask About
-          </h3>
-          <p className="text-xs text-amber-700 mb-3">Based on your cover letter, prepare for questions about these topics:</p>
-          <ul className="space-y-2">
-            {data.interview_talking_points.map((point, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-amber-800">
-                <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                {point}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href="/tools/interview"
-            className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-amber-100 text-amber-900 text-sm font-semibold rounded-xl hover:bg-amber-200 transition-colors min-h-[44px]"
-          >
-            Prepare for These Questions
-            <ArrowRight className="w-4 h-4" />
-            <span className="text-xs font-normal text-amber-700 ml-1">8 tokens</span>
-          </Link>
+        </>
+      }
+      actions={
+        <div className="report-section">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Output Actions</p>
+          <div className="report-cta-row">
+            <button
+              onClick={handleCopy}
+              className="btn-primary sm:w-auto"
+            >
+              {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copied!" : "Copy Letter"}
+            </button>
+            <button
+              onClick={handleDownload}
+              className="btn-secondary w-full sm:w-auto"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Download TXT</span>
+            </button>
+          </div>
         </div>
-      )}
-    </div>
+      }
+      nextStep={
+        data.interview_talking_points && data.interview_talking_points.length > 0 ? (
+          <div className="surface-card-hero p-6">
+            <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-amber-600" />
+              Interview Prep — Topics They&apos;ll Ask About
+            </h3>
+            <p className="text-xs text-amber-700 mb-3">Based on your cover letter, prepare for questions about these topics:</p>
+            <ul className="space-y-2">
+              {data.interview_talking_points.map((point, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-amber-800">
+                  <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/tools/interview"
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-amber-100 text-amber-900 text-sm font-semibold rounded-xl hover:bg-amber-200 transition-colors min-h-[44px]"
+            >
+              Prepare for These Questions
+              <ArrowRight className="w-4 h-4" />
+              <span className="text-xs font-normal text-amber-700 ml-1">8 tokens</span>
+            </Link>
+          </div>
+        ) : null
+      }
+    />
   );
 }

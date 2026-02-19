@@ -1,6 +1,7 @@
 "use client";
 
 import { Shield, AlertTriangle, AlertCircle, Clock } from "lucide-react";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import type { TSalaryResult, ToolResult } from "@/types";
 
 interface SalaryResultsProps {
@@ -46,14 +47,18 @@ export function SalaryResults({ result }: SalaryResultsProps) {
   };
 
   return (
-    <div className="report-shell">
-      <div className="surface-card-hero p-4">
-        <p className="text-sm font-medium text-gray-900">{summaryText}</p>
-      </div>
+    <ReportFlow
+      summary={
+        <div className="surface-card-hero p-4">
+          <p className="text-sm font-medium text-gray-900">{summaryText}</p>
+        </div>
+      }
+      evidence={
+        <>
 
-      {/* Market Range */}
-      {market_range && (
-        <div className="report-section">
+          {/* Market Range */}
+          {market_range && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Market Range</h3>
           {data.posted_salary_range && (
             <div className="mb-3 p-2.5 rounded-lg bg-blue-50 border border-blue-100 text-sm text-blue-800">
@@ -89,12 +94,12 @@ export function SalaryResults({ result }: SalaryResultsProps) {
           {market_range.data_caveat && (
             <p className="text-xs text-gray-400 mt-3 italic">{market_range.data_caveat}</p>
           )}
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Leverage Assessment */}
-      {data.leverage_assessment && (
-        <div className={`rounded-2xl border p-4 sm:p-5 ${leverageColors[data.leverage_assessment.overall_leverage || "moderate"] || leverageColors.moderate}`}>
+          {data.leverage_assessment && (
+            <div className={`rounded-2xl border p-4 sm:p-5 ${leverageColors[data.leverage_assessment.overall_leverage || "moderate"] || leverageColors.moderate}`}>
           <h3 className="font-semibold mb-3 flex items-center gap-2">
             <Shield className="w-4 h-4" />
             Leverage Assessment: <span className="capitalize">{data.leverage_assessment.overall_leverage}</span>
@@ -118,12 +123,12 @@ export function SalaryResults({ result }: SalaryResultsProps) {
           {data.leverage_assessment.recommendation && (
             <p className="text-sm font-medium">{data.leverage_assessment.recommendation}</p>
           )}
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Counter-Offer Scripts */}
-      {data.counter_offer_scripts && data.counter_offer_scripts.length > 0 && (
-        <div className="report-section">
+          {data.counter_offer_scripts && data.counter_offer_scripts.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Counter-Offer Scripts</h3>
           <div className="space-y-4">
             {data.counter_offer_scripts.map((s, i) => (
@@ -148,12 +153,12 @@ export function SalaryResults({ result }: SalaryResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Negotiation Tactics */}
-      {data.negotiation_tactics && data.negotiation_tactics.length > 0 && (
-        <div className="report-section">
+          {data.negotiation_tactics && data.negotiation_tactics.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Negotiation Tactics</h3>
           <div className="space-y-4">
             {data.negotiation_tactics.map((t, i) => (
@@ -176,12 +181,12 @@ export function SalaryResults({ result }: SalaryResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Beyond Base Salary */}
-      {data.beyond_base_salary && data.beyond_base_salary.length > 0 && (
-        <div className="report-section">
+          {data.beyond_base_salary && data.beyond_base_salary.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Beyond Base Salary</h3>
           <div className="space-y-4">
             {data.beyond_base_salary.map((item, i) => (
@@ -199,30 +204,31 @@ export function SalaryResults({ result }: SalaryResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Timing Strategy */}
-      {data.timing_strategy && (
-        <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-blue-500" />
-            Timing Strategy
-          </h3>
-          <div className="space-y-2">
-            {data.timing_strategy.when_to_discuss_salary && (
-              <p className="text-sm text-gray-700">When: {data.timing_strategy.when_to_discuss_salary}</p>
-            )}
-            {data.timing_strategy.who_brings_it_up_first && (
-              <p className="text-sm text-gray-700">Who goes first: {data.timing_strategy.who_brings_it_up_first}</p>
-            )}
-            {data.timing_strategy.anchoring_strategy && (
-              <p className="text-sm text-gray-700">Anchoring: {data.timing_strategy.anchoring_strategy}</p>
-            )}
+            </div>
+          )}
+        </>
+      }
+      nextStep={
+        data.timing_strategy ? (
+          <div className="report-section">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-blue-500" />
+              Timing Strategy
+            </h3>
+            <div className="space-y-2">
+              {data.timing_strategy.when_to_discuss_salary && (
+                <p className="text-sm text-gray-700">When: {data.timing_strategy.when_to_discuss_salary}</p>
+              )}
+              {data.timing_strategy.who_brings_it_up_first && (
+                <p className="text-sm text-gray-700">Who goes first: {data.timing_strategy.who_brings_it_up_first}</p>
+              )}
+              {data.timing_strategy.anchoring_strategy && (
+                <p className="text-sm text-gray-700">Anchoring: {data.timing_strategy.anchoring_strategy}</p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-
-    </div>
+        ) : null
+      }
+    />
   );
 }

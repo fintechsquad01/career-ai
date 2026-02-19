@@ -1,6 +1,7 @@
 "use client";
 
 import { Ring } from "@/components/shared/Ring";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { AlertTriangle, Shield, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
 import type { TDisplacementResult, ToolResult } from "@/types";
 
@@ -30,9 +31,9 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
   };
 
   return (
-    <div className="report-shell">
-      {/* Score hero */}
-      <div className="report-section text-center celebrate">
+    <ReportFlow
+      summary={
+        <div className="report-section text-center celebrate">
         <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.score} size="lg" label="AI Risk" />
         <div className="mt-4 flex items-center justify-center gap-2">
@@ -41,11 +42,14 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
           </span>
           <span className="text-xs text-gray-400">Timeline: {data.timeline}</span>
         </div>
-      </div>
+        </div>
+      }
+      evidence={
+        <>
 
-      {/* Tasks at risk — lead with augmentation tips (empowering, not scary) */}
-      {data.tasks_at_risk && data.tasks_at_risk.length > 0 && (
-        <div className="report-section">
+          {/* Tasks at risk — lead with augmentation tips (empowering, not scary) */}
+          {data.tasks_at_risk && data.tasks_at_risk.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-blue-500" />
             How to Use AI to Your Advantage
@@ -86,12 +90,12 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Safe tasks */}
-      {data.safe_tasks && data.safe_tasks.length > 0 && (
-        <div className="report-section">
+          {data.safe_tasks && data.safe_tasks.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Shield className="w-4 h-4 text-green-500" />
             Tasks That Are Safe
@@ -115,12 +119,12 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Recommendations */}
-      {data.recommendations && data.recommendations.length > 0 && (
-        <div className="report-section">
+          {data.recommendations && data.recommendations.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Priority Actions</h3>
           <div className="space-y-3">
             {data.recommendations.map((rec, i) => {
@@ -158,12 +162,12 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               );
             })}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Industry benchmark */}
-      {data.industry_benchmark && (
-        <div className="surface-card-soft p-5 text-center">
+          {data.industry_benchmark && (
+            <div className="surface-card-soft p-5 text-center">
           <p className="text-xs text-gray-500">
             Industry average: <strong className="text-gray-900">{data.industry_benchmark.average_score}</strong>
           </p>
@@ -178,12 +182,12 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               }>{data.industry_benchmark.trend}</span>
             </p>
           )}
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Income Opportunities — Track B */}
-      {data.entrepreneurship_opportunities && Array.isArray(data.entrepreneurship_opportunities) && data.entrepreneurship_opportunities.length > 0 && (
-        <div className="report-section space-y-3">
+          {data.entrepreneurship_opportunities && Array.isArray(data.entrepreneurship_opportunities) && data.entrepreneurship_opportunities.length > 0 && (
+            <div className="report-section space-y-3">
           <h3 className="font-semibold text-gray-900 flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-green-600" />
             Income Opportunities
@@ -204,12 +208,13 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Next steps: share and benchmark */}
-      <div className="surface-card-hero p-5 text-center">
-        <p className="text-sm font-semibold text-gray-900 mb-1">Share your benchmark</p>
+            </div>
+          )}
+        </>
+      }
+      nextStep={
+        <div className="surface-card-hero p-5 text-center">
+        <p className="text-sm font-semibold text-gray-900 mb-1">Next Step: Share Your Benchmark</p>
         <p className="text-xs text-gray-500 mb-4">
           Share your score with peers to compare market exposure and discuss mitigation strategies.
         </p>
@@ -233,8 +238,8 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
             Share on LinkedIn
           </a>
         </div>
-      </div>
-
-    </div>
+        </div>
+      }
+    />
   );
 }

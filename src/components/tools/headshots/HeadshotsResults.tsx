@@ -1,6 +1,7 @@
 "use client";
 
 import { Download, AlertCircle } from "lucide-react";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import type { THeadshotsResult, ToolResult } from "@/types";
 
 interface HeadshotsResultsProps {
@@ -22,14 +23,16 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
   const images = data.images ?? [];
 
   return (
-    <div className="report-shell">
-      <div className="surface-card-hero p-4">
-        <p className="text-sm font-medium text-gray-900">
-          Generated headshots optimized for professional profile use.
-        </p>
-      </div>
-
-      <div className="report-section">
+    <ReportFlow
+      summary={
+        <div className="surface-card-hero p-4">
+          <p className="text-sm font-medium text-gray-900">
+            Generated headshots optimized for professional profile use.
+          </p>
+        </div>
+      }
+      evidence={
+        <div className="report-section">
         <h3 className="font-semibold text-gray-900 mb-4">Your AI Headshots</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {images.length > 0 ? (
@@ -72,7 +75,13 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
           ))
         )}
         </div>
-      </div>
-    </div>
+        </div>
+      }
+      nextStep={
+        <div className="surface-card-soft p-4 text-sm text-gray-700">
+          Next Step: update your LinkedIn profile and resume with one consistent photo.
+        </div>
+      }
+    />
   );
 }

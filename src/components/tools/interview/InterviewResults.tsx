@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { ChevronDown, ChevronUp, Lightbulb, AlertTriangle, AlertCircle, Zap, MessageSquare, CheckCircle } from "lucide-react";
 import { SourceVerification } from "@/components/shared/SourceVerification";
 import type { TInterviewResult, ToolResult } from "@/types";
@@ -37,10 +38,12 @@ export function InterviewResults({ result }: InterviewResultsProps) {
   };
 
   return (
-    <div className="report-shell">
-      {/* Interview Strategy */}
-      {data.interview_strategy && (
-        <div className="surface-card-hero p-6 space-y-4">
+    <ReportFlow
+      summary={
+        <>
+          {/* Interview Strategy */}
+          {data.interview_strategy && (
+            <div className="surface-card-hero p-6 space-y-4">
           <h3 className="font-semibold text-blue-900">Interview Strategy</h3>
 
           {data.interview_strategy.opening_impression && (
@@ -70,25 +73,29 @@ export function InterviewResults({ result }: InterviewResultsProps) {
               </ul>
             </div>
           )}
-        </div>
-      )}
+            </div>
+          )}
 
-      {data.company_culture_notes && (
-        <div className="surface-card-hero p-4">
-          <h3 className="font-semibold text-amber-900 mb-1">Company Culture Notes</h3>
-          <p className="text-sm text-amber-800">{data.company_culture_notes}</p>
-        </div>
-      )}
+          {data.company_culture_notes && (
+            <div className="surface-card-hero p-4">
+              <h3 className="font-semibold text-amber-900 mb-1">Company Culture Notes</h3>
+              <p className="text-sm text-amber-800">{data.company_culture_notes}</p>
+            </div>
+          )}
 
-      {data.interview_format_prediction && (
-        <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-2">Interview Format Prediction</h3>
-          <p className="text-sm text-gray-600">{data.interview_format_prediction}</p>
-        </div>
-      )}
+          {data.interview_format_prediction && (
+            <div className="report-section">
+              <h3 className="font-semibold text-gray-900 mb-2">Interview Format Prediction</h3>
+              <p className="text-sm text-gray-600">{data.interview_format_prediction}</p>
+            </div>
+          )}
+        </>
+      }
+      evidence={
+        <>
 
       {/* Practice Questions */}
-      <div className="report-section space-y-3">
+          <div className="report-section space-y-3">
         <h3 className="font-semibold text-gray-900 mb-1">Practice Questions</h3>
         {data.questions?.map((q, i) => (
           <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -189,11 +196,11 @@ export function InterviewResults({ result }: InterviewResultsProps) {
             )}
           </div>
         ))}
-      </div>
+          </div>
 
       {/* Questions to Ask Them */}
-      {data.interview_strategy?.questions_to_ask_them && data.interview_strategy.questions_to_ask_them.length > 0 && (
-        <div className="report-section">
+          {data.interview_strategy?.questions_to_ask_them && data.interview_strategy.questions_to_ask_them.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-500" />
             Questions to Ask Them
@@ -208,12 +215,12 @@ export function InterviewResults({ result }: InterviewResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Preparation Checklist */}
-      {data.preparation_checklist && data.preparation_checklist.length > 0 && (
-        <div className="report-section">
+          {data.preparation_checklist && data.preparation_checklist.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
             Preparation Checklist
@@ -226,27 +233,29 @@ export function InterviewResults({ result }: InterviewResultsProps) {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Source Verification — Coaching answers reference experience */}
-      {data.questions && data.questions.length > 0 && (
-        <SourceVerification
-          items={data.questions
-            .filter((q) => q.suggested_answer)
-            .slice(0, 5)
-            .map((q) => ({
-              text: q.suggested_answer.slice(0, 80) + (q.suggested_answer.length > 80 ? "..." : ""),
-              verified: true,
-              source: `Based on your experience (${q.type.replace(/_/g, " ")} question)`,
-            }))}
-        />
-      )}
-
-      <div className="surface-card-hero p-4 text-center text-sm text-blue-700">
-        Voice practice mode for this interview set is in development.
-      </div>
-
-    </div>
+          {data.questions && data.questions.length > 0 && (
+            <SourceVerification
+              items={data.questions
+                .filter((q) => q.suggested_answer)
+                .slice(0, 5)
+                .map((q) => ({
+                  text: q.suggested_answer.slice(0, 80) + (q.suggested_answer.length > 80 ? "..." : ""),
+                  verified: true,
+                  source: `Based on your experience (${q.type.replace(/_/g, " ")} question)`,
+                }))}
+            />
+          )}
+        </>
+      }
+      nextStep={
+        <div className="surface-card-hero p-4 text-center text-sm text-blue-700">
+          Voice practice mode for this interview set is in development.
+        </div>
+      }
+    />
   );
 }

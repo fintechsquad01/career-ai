@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Ring } from "@/components/shared/Ring";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Target } from "lucide-react";
 import type { TJdMatchResult, ToolResult } from "@/types";
 
@@ -28,16 +29,19 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   };
 
   return (
-    <div className="report-shell">
-      {/* Score hero */}
-      <div className="report-section text-center celebrate">
+    <ReportFlow
+      summary={
+        <div className="report-section text-center celebrate">
         <p className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{data.headline || ''}</p>
         <Ring score={data.fit_score} size="lg" label="Fit Score" />
-      </div>
+        </div>
+      }
+      evidence={
+        <>
 
-      {/* Requirements Match */}
-      {data.requirements && data.requirements.length > 0 && (
-        <div className="report-section">
+          {/* Requirements Match */}
+          {data.requirements && data.requirements.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Requirements Match</h3>
           <div className="space-y-3">
             {data.requirements.map((req, i) => (
@@ -66,12 +70,12 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Advantages */}
-      {data.advantages && data.advantages.length > 0 && (
-        <div className="surface-card-hero p-6">
+          {data.advantages && data.advantages.length > 0 && (
+            <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-green-900 mb-3">Your Advantages</h3>
           <ul className="space-y-2">
             {data.advantages.map((adv, i) => (
@@ -81,12 +85,12 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Critical Gaps */}
-      {data.critical_gaps && data.critical_gaps.length > 0 && (
-        <div className="report-section">
+          {data.critical_gaps && data.critical_gaps.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Critical Gaps</h3>
           <div className="space-y-4">
             {data.critical_gaps.map((gap, i) => {
@@ -120,23 +124,12 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               );
             })}
           </div>
-        </div>
-      )}
-
-      {/* Bridge CTA — Resume Optimizer */}
-      {data.critical_gaps && data.critical_gaps.length > 0 && (
-        <div className="surface-card-hero p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-gray-900">Address these gaps before you apply</p>
-            <p className="text-xs text-gray-500">Resume Optimizer maps each gap to targeted resume updates.</p>
-          </div>
-          <Link href="/tools/resume" className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap">Optimize Resume →</Link>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Hidden Requirements */}
-      {data.hidden_requirements && data.hidden_requirements.length > 0 && (
-        <div className="report-section">
+          {data.hidden_requirements && data.hidden_requirements.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Eye className="w-4 h-4 text-purple-500" />
             Hidden Requirements
@@ -156,12 +149,12 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Application Strategy */}
-      {data.application_strategy && (
-        <div className="surface-card-hero p-6">
+          {data.application_strategy && (
+            <div className="surface-card-hero p-6">
           <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-blue-600" />
             Application Strategy
@@ -197,13 +190,13 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               <p className="text-xs text-gray-600">{data.application_strategy.referral_advice}</p>
             )}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
 
       {/* Applicant Pool */}
-      {data.applicant_pool_estimate && (
-        <div className="surface-card-soft p-5 text-center">
+          {data.applicant_pool_estimate && (
+            <div className="surface-card-soft p-5 text-center">
           <p className="text-xs text-gray-500">
             Estimated applicants: <strong className="text-gray-900">~{data.applicant_pool_estimate.likely_applicants}</strong>
           </p>
@@ -213,8 +206,21 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
           {data.applicant_pool_estimate.reasoning && (
             <p className="text-xs text-gray-400 mt-1">{data.applicant_pool_estimate.reasoning}</p>
           )}
-        </div>
-      )}
-    </div>
+            </div>
+          )}
+        </>
+      }
+      nextStep={
+        data.critical_gaps && data.critical_gaps.length > 0 ? (
+          <div className="surface-card-hero p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Address these gaps before you apply</p>
+              <p className="text-xs text-gray-500">Resume Optimizer maps each gap to targeted resume updates.</p>
+            </div>
+            <Link href="/tools/resume" className="text-sm font-semibold text-violet-700 hover:text-violet-900 whitespace-nowrap">Optimize Resume →</Link>
+          </div>
+        ) : null
+      }
+    />
   );
 }

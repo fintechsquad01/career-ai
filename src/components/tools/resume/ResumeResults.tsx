@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Ring } from "@/components/shared/Ring";
+import { ReportFlow } from "@/components/shared/ReportStructure";
 import { Copy, Download, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, AlertCircle, ArrowRight, DollarSign } from "lucide-react";
 import type { TResumeResult, ToolResult } from "@/types";
 
@@ -56,9 +57,11 @@ export function ResumeResults({ result }: ResumeResultsProps) {
   };
 
   return (
-    <div className="report-shell">
-      {/* Before/After scores */}
-      <div className="report-section">
+    <ReportFlow
+      summary={
+        <>
+          {/* Before/After scores */}
+          <div className="report-section">
         <h3 className="font-semibold text-gray-900 mb-4 text-center">ATS Score Improvement</h3>
         <div className="flex items-center justify-center gap-8">
           <div className="text-center">
@@ -75,19 +78,22 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         {data.headline && (
           <p className="text-sm text-gray-600 text-center mt-2">{data.headline}</p>
         )}
-      </div>
+          </div>
 
-      {/* Voice note */}
-      {data.voice_note && (
-        <div className="surface-card-hero p-4">
-          <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1">Voice Preservation</p>
-          <p className="text-sm text-purple-900">{data.voice_note}</p>
-        </div>
-      )}
-
-      {/* Keywords added — grouped by section */}
-      {data.keywords_added && data.keywords_added.length > 0 && (
-        <div className="report-section">
+          {/* Voice note */}
+          {data.voice_note && (
+            <div className="surface-card-hero p-4">
+              <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1">Voice Preservation</p>
+              <p className="text-sm text-purple-900">{data.voice_note}</p>
+            </div>
+          )}
+        </>
+      }
+      evidence={
+        <>
+          {/* Keywords added — grouped by section */}
+          {data.keywords_added && data.keywords_added.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-1">Keywords Woven In</h3>
           <p className="text-xs text-gray-500 mb-3">{data.keywords_added.length} JD keywords added to your resume</p>
           <div className="flex flex-wrap gap-2">
@@ -112,12 +118,12 @@ export function ResumeResults({ result }: ResumeResultsProps) {
               );
             })}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Section rewrites */}
-      {data.sections_rewritten && data.sections_rewritten.length > 0 && (
-        <div className="report-section">
+          {/* Section rewrites */}
+          {data.sections_rewritten && data.sections_rewritten.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-4">Section Rewrites</h3>
           <div className="space-y-3">
             {data.sections_rewritten.map((section, i) => (
@@ -156,12 +162,12 @@ export function ResumeResults({ result }: ResumeResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Formatting fixes */}
-      {data.formatting_fixes && data.formatting_fixes.length > 0 && (
-        <div className="report-section">
+          {/* Formatting fixes */}
+          {data.formatting_fixes && data.formatting_fixes.length > 0 && (
+            <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-500" />
             Formatting Fixes
@@ -190,49 +196,71 @@ export function ResumeResults({ result }: ResumeResultsProps) {
               );
             })}
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* ATS Warnings */}
-      {data.ats_warnings && data.ats_warnings.length > 0 && (
-        <div className="surface-card-hero p-4">
-          <p className="text-[10px] font-semibold text-amber-700 uppercase mb-2">Remaining ATS Warnings</p>
-          <ul className="space-y-1">
-            {data.ats_warnings.map((w, i) => (
-              <li key={i} className="text-sm text-amber-800">• {w}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+          {/* ATS Warnings */}
+          {data.ats_warnings && data.ats_warnings.length > 0 && (
+            <div className="surface-card-hero p-4">
+              <p className="text-[10px] font-semibold text-amber-700 uppercase mb-2">Remaining ATS Warnings</p>
+              <ul className="space-y-1">
+                {data.ats_warnings.map((w, i) => (
+                  <li key={i} className="text-sm text-amber-800">• {w}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-      {/* Recruiter Perspective */}
-      {data.recruiter_perspective && (
+          {/* Recruiter Perspective */}
+          {data.recruiter_perspective && (
+            <div className="report-section">
+              <h3 className="font-semibold text-gray-900 mb-4">Recruiter Perspective</h3>
+              <p className="text-sm text-gray-700">{data.recruiter_perspective}</p>
+            </div>
+          )}
+
+          {/* Monetizable Skills — Track B */}
+          {data.monetizable_skills && Array.isArray(data.monetizable_skills) && data.monetizable_skills.length > 0 && (
+            <div className="report-section">
+              <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-green-600" />
+                Monetizable Skills
+              </h3>
+              <p className="text-xs text-gray-500 mb-2">Skills in your resume that could generate freelance or consulting income:</p>
+              <div className="flex flex-wrap gap-2">
+                {data.monetizable_skills.map((skill, i) => (
+                  <span key={i} className="px-2.5 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">{skill}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      }
+      actions={
         <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-4">Recruiter Perspective</h3>
-          <p className="text-sm text-gray-700">{data.recruiter_perspective}</p>
-        </div>
-      )}
-
-      {/* Monetizable Skills — Track B */}
-      {data.monetizable_skills && Array.isArray(data.monetizable_skills) && data.monetizable_skills.length > 0 && (
-        <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-green-600" />
-            Monetizable Skills
-          </h3>
-          <p className="text-xs text-gray-500 mb-2">Skills in your resume that could generate freelance or consulting income:</p>
-          <div className="flex flex-wrap gap-2">
-            {data.monetizable_skills.map((skill, i) => (
-              <span key={i} className="px-2.5 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">{skill}</span>
-            ))}
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Output Actions</p>
+          <div className="report-cta-row">
+            <button
+              onClick={handleCopy}
+              className="btn-primary sm:w-auto"
+            >
+              {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copied!" : "Copy Optimized Resume"}
+            </button>
+            <button
+              onClick={handleDownloadPdf}
+              className="btn-secondary w-full sm:w-auto"
+            >
+              <Download className="w-4 h-4" />
+              Download TXT
+            </button>
           </div>
         </div>
-      )}
-
-      {/* Next Steps */}
-      {data.next_steps && data.next_steps.length > 0 && (
-        <div className="report-section">
-          <h3 className="font-semibold text-gray-900 mb-3">Next Steps</h3>
+      }
+      nextStep={
+        data.next_steps && data.next_steps.length > 0 ? (
+          <div className="report-section">
+          <h3 className="font-semibold text-gray-900 mb-3">Next Step Plan</h3>
           <div className="space-y-2">
             {data.next_steps.map((ns, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
@@ -242,30 +270,9 @@ export function ResumeResults({ result }: ResumeResultsProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-
-      {/* Action buttons */}
-      <div className="report-section">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Output actions</p>
-        <div className="space-y-3">
-          <button
-            onClick={handleCopy}
-            className="btn-primary"
-          >
-            {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            {copied ? "Copied!" : "Copy Optimized Resume"}
-          </button>
-          <button
-            onClick={handleDownloadPdf}
-            className="btn-secondary w-full"
-          >
-            <Download className="w-4 h-4" />
-            Download TXT
-          </button>
-        </div>
-      </div>
-    </div>
+          </div>
+        ) : null
+      }
+    />
   );
 }
