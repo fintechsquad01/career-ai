@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, X, Save, Target } from "lucide-react";
+import { Loader2, RotateCcw, Share2, ArrowRight, AlertCircle, Lightbulb, BarChart3, Quote, Zap, Sparkles, X, Save, Target, Clock } from "lucide-react";
 import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
 import { InlineProfileForm } from "@/components/shared/InlineProfileForm";
 import { JobTargetSelector } from "@/components/shared/JobTargetSelector";
@@ -459,6 +459,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [showInputSupport, setShowInputSupport] = useState(false);
   const [showNps, setShowNps] = useState(false);
   const [showReferralPrompt, setShowReferralPrompt] = useState(false);
+  const [resultActionTaken, setResultActionTaken] = useState(false);
 
   const primaryRecommendation = useMemo(() => {
     if (!result) return null;
@@ -535,20 +536,25 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
     };
   }, []);
 
-  // Show NPS widget 3 seconds after results are displayed
+  // Show NPS widget only after action or a 20s idle period.
   useEffect(() => {
     if (state === "result" && result && !error) {
-      const timer = setTimeout(() => setShowNps(true), 3000);
+      if (resultActionTaken) {
+        setShowNps(true);
+        return;
+      }
+      const timer = setTimeout(() => setShowNps(true), 20000);
       return () => clearTimeout(timer);
     } else {
       setShowNps(false);
+      setResultActionTaken(false);
     }
-  }, [state, result, error]);
+  }, [state, result, error, resultActionTaken]);
 
-  // Show referral prompt after NPS dismissal or after 15 seconds
+  // Show referral prompt after NPS dismissal or 20 seconds with no interaction.
   useEffect(() => {
     if (state === "result" && result && !error && !showNps && !showReferralPrompt) {
-      const timer = setTimeout(() => setShowReferralPrompt(true), 12000);
+      const timer = setTimeout(() => setShowReferralPrompt(true), 20000);
       return () => clearTimeout(timer);
     }
   }, [state, result, error, showNps, showReferralPrompt]);
@@ -1302,22 +1308,20 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         );
       })()}
 
-      {/* Children render prop for result state */}
-      {state === "result" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
-
       {state === "result" && wave2JourneyFlowEnabled && !missionComplete && primaryRecommendation && (
         <div className="report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600 mb-1">Primary action</p>
           <p className="text-sm text-gray-700 mb-3">{primaryRecommendation.narrative}</p>
           <Link
             href={`/tools/${primaryRecommendation.tool.id}`}
-            onClick={() =>
+            onClick={() => {
+              setResultActionTaken(true);
               track(EVENTS.TOOL_PRIMARY_ACTION_CLICKED, {
                 route: `/tools/${toolId}`,
                 tool_id: toolId,
                 next_tool_id: primaryRecommendation.tool.id,
-              })
-            }
+              });
+            }}
             className="btn-primary sm:w-auto sm:px-5"
           >
             {primaryRecommendation.tool.title}
@@ -1325,6 +1329,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           </Link>
         </div>
       )}
+
+      {/* Children render prop for result state */}
+      {state === "result" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
 
       {/* Result actions */}
       {state === "result" && (
@@ -1346,6 +1353,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               <Share2 className="w-4 h-4" />
               Share Results
             </button>
+            <Link
+              href="/history"
+              onClick={() => track(EVENTS.NAV_HISTORY_QUICK_OPENED, { from_route: `/tools/${toolId}`, to_route: "/history" })}
+              className="btn-secondary"
+            >
+              <Clock className="w-4 h-4" />
+              Open History
+            </Link>
             {toolId === "resume" && result && (result as unknown as { optimized_resume_text?: string }).optimized_resume_text && (
               <button
                 onClick={handleSaveResumeVariant}
@@ -1429,6 +1444,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             {!missionComplete && primary && !wave2JourneyFlowEnabled && (
               <Link
                 href={`/tools/${primary.tool.id}`}
+                onClick={() => setResultActionTaken(true)}
                 className="block report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100 hover:shadow-md transition-shadow group celebrate"
               >
                 <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Next Step</p>
@@ -1467,6 +1483,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                     <Link
                       key={rec.id}
                       href={`/tools/${rec.id}`}
+                      onClick={() => setResultActionTaken(true)}
                       className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors min-h-[36px]"
                     >
                       {rec.title}
