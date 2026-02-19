@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Clock, ChevronDown, ChevronUp, Share2, Trash2, Loader2 } from "lucide-react";
+import { Clock, ChevronDown, ChevronUp, Share2, Trash2, Loader2, Pencil, Check, X } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
 import { ShareModal } from "@/components/shared/ShareModal";
 import { TOOLS } from "@/lib/constants";
@@ -37,6 +37,9 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
   const [sharingId, setSharingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [renamingId, setRenamingId] = useState<string | null>(null);
 
   const filtered = filter === "all" ? results : results.filter((r) => r.tool_id === filter);
   const hasMore = results.length < totalCount;
@@ -159,6 +162,42 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
     }
   }, [confirmDeleteId, expandedId]);
 
+  const handleRenameStart = useCallback((id: string, currentTitle: string | null) => {
+    setEditingId(id);
+    setEditingTitle((currentTitle || "").trim());
+  }, []);
+
+  const handleRenameCancel = useCallback(() => {
+    setEditingId(null);
+    setEditingTitle("");
+  }, []);
+
+  const handleRenameSave = useCallback(async (id: string, toolId: string, previousTitle: string | null) => {
+    const nextTitle = editingTitle.trim();
+    if (!nextTitle) {
+      toast("Please enter a title");
+      return;
+    }
+
+    setRenamingId(id);
+    setResults((prev) => prev.map((r) => (r.id === id ? { ...r, summary: nextTitle } : r)));
+    setEditingId(null);
+    setEditingTitle("");
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("tool_results").update({ summary: nextTitle }).eq("id", id);
+      if (error) throw error;
+      track("history_row_renamed", { tool_id: toolId, result_id: id, title_length: nextTitle.length });
+      toast("Result renamed");
+    } catch {
+      setResults((prev) => prev.map((r) => (r.id === id ? { ...r, summary: previousTitle } : r)));
+      toast("Failed to rename result");
+    } finally {
+      setRenamingId(null);
+    }
+  }, [editingTitle]);
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
       <div className="flex items-center justify-between">
@@ -199,23 +238,53 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                 className="bg-white rounded-2xl border border-gray-200 overflow-hidden transition-shadow hover:shadow-sm"
               >
                 {/* Row header — clickable */}
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => handleToggleExpand(r.id)}
-                  className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleToggleExpand(r.id);
+                    }
+                  }}
+                  className="w-full px-4 sm:px-5 py-4 flex items-start justify-between text-left hover:bg-gray-50 transition-colors cursor-pointer gap-3"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{tool?.icon || "🔧"}</span>
-                      <p className="text-sm font-medium text-gray-900">{tool?.title || r.tool_id}</p>
+                      <p className="text-sm font-medium text-gray-900 truncate">{tool?.title || r.tool_id}</p>
                     </div>
-                    <p className="text-xs text-gray-500 truncate mt-0.5">{r.summary || "Analysis complete"}</p>
+                    {editingId === r.id ? (
+                      <input
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            void handleRenameSave(r.id, r.tool_id, r.summary);
+                          }
+                          if (e.key === "Escape") {
+                            e.preventDefault();
+                            handleRenameCancel();
+                          }
+                        }}
+                        placeholder="Rename this result"
+                        className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    ) : (
+                      <p className="text-xs text-gray-500 truncate mt-0.5">{r.summary || "Analysis complete"}</p>
+                    )}
                     {r.detail && <p className="text-xs text-gray-400 mt-0.5">{r.detail}</p>}
                   </div>
-                  <div className="flex items-center gap-4 ml-4">
+                  <div className="flex items-center sm:items-start gap-2 sm:gap-3 ml-1 sm:ml-3 shrink-0">
                     {r.metric_value != null && (
-                      <Ring score={r.metric_value} size="sm" showLabel={false} />
+                      <div className="hidden sm:block">
+                        <Ring score={r.metric_value} size="sm" showLabel={false} />
+                      </div>
                     )}
-                    <div className="text-right">
+                    <div className="text-right min-w-[68px]">
                       <p className="text-xs text-gray-400">
                         {new Date(r.created_at).toLocaleDateString()}
                       </p>
@@ -223,13 +292,49 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                         {r.tokens_spent > 0 ? `${r.tokens_spent} tokens` : "Free"}
                       </p>
                     </div>
+                    {editingId === r.id ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void handleRenameSave(r.id, r.tool_id, r.summary);
+                          }}
+                          disabled={renamingId === r.id}
+                          className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-gray-200 text-green-600 hover:bg-green-50 disabled:opacity-50"
+                          aria-label="Save renamed result title"
+                        >
+                          {renamingId === r.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRenameCancel();
+                          }}
+                          className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50"
+                          aria-label="Cancel renaming result title"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRenameStart(r.id, r.summary);
+                        }}
+                        className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50"
+                        aria-label="Rename result title"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                     {isExpanded ? (
                       <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
                     ) : (
                       <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
                     )}
                   </div>
-                </button>
+                </div>
 
                 {/* Expanded detail */}
                 {isExpanded && (

@@ -82,6 +82,12 @@ export interface TDisplacementResult {
 
 export interface TJdMatchResult {
   fit_score: number;
+  verdict_band?: "low" | "mid" | "high" | "top_match";
+  confidence_level?: "low" | "medium" | "high";
+  evidence_coverage?: {
+    matched_required: number;
+    total_required: number;
+  };
   headline?: string;
   requirements: Array<{
     skill: string;

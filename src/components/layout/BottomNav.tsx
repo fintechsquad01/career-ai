@@ -27,17 +27,17 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`nav-item relative flex flex-col items-center justify-center py-2 px-4 min-h-[48px] min-w-[48px] transition-colors ${
+              className={`nav-item relative flex flex-col items-center justify-center py-2.5 px-4 min-h-[52px] min-w-[52px] transition-colors ${
                 active ? "nav-item-active text-blue-700" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <div className="relative">
-                <item.icon className="w-5 h-5" strokeWidth={active ? 2 : 1.75} />
+                <item.icon className="w-[21px] h-[21px]" strokeWidth={active ? 2 : 1.75} />
                 {showDot && (
-                  <span className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] rounded-full bg-violet-500" />
+                  <span className="absolute -top-0.5 -right-0.5 w-[7px] h-[7px] rounded-full bg-violet-500" />
                 )}
               </div>
-              <span className={`text-[11px] font-medium mt-0.5 ${active ? "text-blue-700" : ""}`}>{item.label}</span>
+              <span className={`text-xs font-medium mt-1 leading-none ${active ? "text-blue-700" : ""}`}>{item.label}</span>
             </Link>
           );
         })}

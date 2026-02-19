@@ -12,32 +12,33 @@ export function TokBadge() {
   const totalBalance = tokenBalance + dailyCreditsBalance;
   const color =
     totalBalance > 10
-      ? "text-green-600 bg-green-50"
+      ? "text-green-700 bg-green-50 border border-green-200"
       : totalBalance > 4
-        ? "text-amber-600 bg-amber-50"
-        : "text-red-600 bg-red-50";
+        ? "text-amber-700 bg-amber-50 border border-amber-200"
+        : "text-red-700 bg-red-50 border border-red-200";
+
+  const showSplit = tokensLoaded && dailyCreditsBalance > 0 && tokenBalance > 0;
+  const showDailyOnly = tokensLoaded && dailyCreditsBalance > 0 && tokenBalance === 0;
+  const showTokenOnly = tokensLoaded && (dailyCreditsBalance === 0 || tokenBalance > 0);
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium transition-transform duration-600 ${color} ${
+      className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-full text-[13px] sm:text-sm font-semibold tabular-nums leading-none transition-transform duration-600 ${color} ${
         tokenAnimating ? "scale-110" : "scale-100"
       }`}
     >
-      <Coins className="w-4 h-4" />
-      {!tokensLoaded ? (
-        <span className="inline-block w-8 h-4 bg-current opacity-10 rounded animate-pulse" />
-      ) : dailyCreditsBalance > 0 && tokenBalance > 0 ? (
-        <span className="tabular-nums">
+      <Coins className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+      {!tokensLoaded && <span>0 tokens</span>}
+      {showSplit && (
+        <span>
           <span style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>
-          <span className="text-xs opacity-60 mx-0.5">+</span>
-          <span className="text-xs opacity-70">{dailyCreditsBalance}</span>
+          <span className="text-[11px] sm:text-[10px] opacity-70 mx-0.5">+</span>
+          <span className="text-[11px] sm:text-[10px] opacity-80">{dailyCreditsBalance}d</span>
         </span>
-      ) : dailyCreditsBalance > 0 ? (
-        <span className="tabular-nums">
-          <span className="text-xs opacity-70">{dailyCreditsBalance} daily</span>
-        </span>
-      ) : (
-        <span className="tabular-nums" style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>
+      )}
+      {showDailyOnly && <span className="text-[12px] sm:text-[11px]">{dailyCreditsBalance} daily</span>}
+      {showTokenOnly && !showSplit && !showDailyOnly && (
+        <span style={{ transition: "all 300ms ease" }}>{tokenBalance} tokens</span>
       )}
     </div>
   );

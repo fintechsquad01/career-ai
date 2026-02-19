@@ -447,6 +447,11 @@ Deno.serve(async (req: Request) => {
           console.warn(`[${tool_id}] Result is missing detected_profile — client-side auto-profile save may fail`);
         }
 
+        // Backfill trust framing fields for JD Match if model omitted them.
+        if (tool_id === "jd_match") {
+          result = enrichJdMatchTrustMeta(result);
+        }
+
         // Step 5: Storing results
         send("progress", { step: 5, total: 5, message: "Saving results..." });
 
@@ -669,7 +674,22 @@ function buildPromptLegacy(
 function generateSummary(toolId: string, result: Record<string, unknown>): string {
   switch (toolId) {
     case "displacement": return `${result.score}% AI displacement risk`;
-    case "jd_match": return `${result.fit_score}% fit score`;
+    case "jd_match": {
+      const fitScore = typeof result.fit_score === "number" ? Math.round(result.fit_score) : null;
+      const band = typeof result.verdict_band === "string"
+        ? normalizeVerdictBand(result.verdict_band)
+        : (fitScore != null ? verdictBandFromScore(fitScore) : null);
+      const confidence = typeof result.confidence_level === "string"
+        ? normalizeConfidenceLevel(result.confidence_level)
+        : null;
+      const coverage = parseEvidenceCoverage(result.evidence_coverage);
+      const parts: string[] = [];
+      if (fitScore != null) parts.push(`${fitScore}% fit`);
+      if (band) parts.push(`${formatVerdictBand(band)} match`);
+      if (confidence) parts.push(`${confidence} confidence`);
+      if (coverage) parts.push(`${coverage.matched_required}/${coverage.total_required} required`);
+      return parts.length > 0 ? parts.join(" · ") : "JD match analysis complete";
+    }
     case "resume": return `${result.score_before} → ${result.score_after} ATS Score`;
     case "cover_letter": return `${result.word_count} word cover letter`;
     case "interview": return `${(result.questions as unknown[])?.length || 0} interview questions`;
@@ -691,4 +711,97 @@ function extractMetric(toolId: string, result: Record<string, unknown>): number 
     case "linkedin": return result.profile_strength_score as number;
     default: return null;
   }
+}
+
+type VerdictBand = "low" | "mid" | "high" | "top_match";
+type ConfidenceLevel = "low" | "medium" | "high";
+
+function enrichJdMatchTrustMeta(result: Record<string, unknown>): Record<string, unknown> {
+  const fitScore = typeof result.fit_score === "number" ? Math.max(0, Math.min(100, result.fit_score)) : null;
+  const requirements = Array.isArray(result.requirements)
+    ? result.requirements.filter((r): r is Record<string, unknown> => !!r && typeof r === "object")
+    : [];
+
+  const requiredOnly = requirements.filter((req) => {
+    const priority = String(req.priority ?? "").toLowerCase();
+    return priority === "req" || priority === "required";
+  });
+  const requiredSet = requiredOnly.length > 0 ? requiredOnly : requirements;
+  const totalRequired = requiredSet.length;
+
+  const matchedRequired = requiredSet.reduce((acc, req) => {
+    const match = req.match;
+    return match === true || match === "partial" ? acc + 1 : acc;
+  }, 0);
+
+  const band = typeof result.verdict_band === "string"
+    ? normalizeVerdictBand(result.verdict_band)
+    : (fitScore != null ? verdictBandFromScore(fitScore) : null);
+
+  const coverageRatio = totalRequired > 0 ? matchedRequired / totalRequired : 0;
+  const confidence = typeof result.confidence_level === "string"
+    ? normalizeConfidenceLevel(result.confidence_level)
+    : deriveConfidenceLevel(coverageRatio, totalRequired);
+
+  const existingCoverage = parseEvidenceCoverage(result.evidence_coverage);
+  const evidenceCoverage = existingCoverage ?? {
+    matched_required: matchedRequired,
+    total_required: totalRequired,
+  };
+
+  return {
+    ...result,
+    ...(band ? { verdict_band: band } : {}),
+    ...(confidence ? { confidence_level: confidence } : {}),
+    ...(evidenceCoverage ? { evidence_coverage: evidenceCoverage } : {}),
+  };
+}
+
+function verdictBandFromScore(score: number): VerdictBand {
+  if (score <= 30) return "low";
+  if (score <= 55) return "mid";
+  if (score <= 80) return "high";
+  return "top_match";
+}
+
+function formatVerdictBand(band: VerdictBand): string {
+  switch (band) {
+    case "low": return "low";
+    case "mid": return "mid";
+    case "high": return "high";
+    case "top_match": return "top match";
+  }
+}
+
+function deriveConfidenceLevel(coverageRatio: number, totalRequired: number): ConfidenceLevel {
+  if (totalRequired < 2) return "low";
+  if (coverageRatio >= 0.75) return "high";
+  if (coverageRatio >= 0.4) return "medium";
+  return "low";
+}
+
+function normalizeVerdictBand(value: string): VerdictBand | null {
+  const v = value.trim().toLowerCase().replace(/\s+/g, "_");
+  if (v === "low" || v === "mid" || v === "high" || v === "top_match") return v;
+  if (v === "top") return "top_match";
+  return null;
+}
+
+function normalizeConfidenceLevel(value: string): ConfidenceLevel | null {
+  const v = value.trim().toLowerCase();
+  if (v === "low" || v === "medium" || v === "high") return v;
+  return null;
+}
+
+function parseEvidenceCoverage(
+  value: unknown,
+): { matched_required: number; total_required: number } | null {
+  if (!value || typeof value !== "object") return null;
+  const matched = Number((value as Record<string, unknown>).matched_required);
+  const total = Number((value as Record<string, unknown>).total_required);
+  if (!Number.isFinite(matched) || !Number.isFinite(total) || total <= 0) return null;
+  return {
+    matched_required: Math.max(0, Math.round(matched)),
+    total_required: Math.max(1, Math.round(total)),
+  };
 }

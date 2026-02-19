@@ -469,6 +469,24 @@ a:active {
   line-height: 1.1;
   white-space: nowrap;
 }
+
+@media (max-width: 640px) {
+  .ui-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    font-size: 0.9375rem;
+  }
+
+  .report-section-title {
+    font-size: 1.0625rem;
+    line-height: 1.5rem;
+  }
+}
 .ui-badge-blue {
   background: #eff6ff;
   color: #1d4ed8;

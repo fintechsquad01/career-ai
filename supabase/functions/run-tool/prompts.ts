@@ -343,6 +343,7 @@ ANALYSIS RULES:
 - For each gap, assess from a RECRUITER's perspective: is this truly a dealbreaker, or something commonly learned on the job?
 - Identify "hidden requirements" implied but not stated (e.g., "fast-paced startup" implies comfort with ambiguity; "cross-functional" implies communication skills)
 - Be HONEST about the score. A 45% match is valuable feedback. Do not inflate.
+- Avoid contradictory recommendations across sections. If a gap is a dealbreaker, align strategy and next actions accordingly.
 
 SCORE CALIBRATION:
 - 0-30: Significant mismatch. Major qualification gaps in required skills. Not recommended to apply without substantial resume changes or upskilling
@@ -367,6 +368,12 @@ Respond ONLY in valid JSON:
     "confidence": "<high|medium|low — high = clear resume with name/title/company; medium = partial info, some inference; low = mostly inferred from sparse input>"
   },
   "fit_score": <0-100>,
+  "verdict_band": "<low|mid|high|top_match>",
+  "confidence_level": "<low|medium|high>",
+  "evidence_coverage": {
+    "matched_required": <integer>,
+    "total_required": <integer>
+  },
   "headline": "<one-line recruiter verdict, e.g., 'Strong technical match but missing the leadership experience they will probe in the interview'>",
   "requirements": [
     {

@@ -94,13 +94,13 @@ export function Nav({ isLoggedIn }: NavProps) {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
+      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/60">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 sm:h-16">
           {/* Logo + breadcrumb */}
           <div className="flex items-center gap-3 min-w-0">
             <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
-                <Brain className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                <Brain className="w-[18px] h-[18px] text-white" />
               </div>
               <span className="font-bold text-gray-900 text-lg hidden sm:inline">AISkillScore</span>
             </Link>
@@ -186,14 +186,14 @@ export function Nav({ isLoggedIn }: NavProps) {
           )}
 
           {/* Mobile */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex md:hidden items-center gap-2.5">
             {isLoggedIn && (
               <div className="relative inline-flex items-center">
                 <Link href="/pricing" aria-label="Manage tokens" className="inline-flex items-center">
                   <TokBadge />
                 </Link>
                 {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
-                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm">
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4.5 h-4.5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[8px] font-bold shadow-sm">
                     <Plus className="w-2.5 h-2.5" strokeWidth={3} />
                   </span>
                 )}
