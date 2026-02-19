@@ -168,6 +168,7 @@ export function Sidebar() {
       {activeJobTarget && sidebarCollapsed && (
         <Link
           href="/mission"
+          onClick={() => track(EVENTS.NAV_TARGET_SWITCH_OPENED, { from_route: pathname, to_route: "/mission" })}
           title={`Target: ${activeJobTarget.title}`}
           className="flex justify-center mx-2 mb-1.5 py-1.5 rounded-lg bg-blue-50/80 border border-blue-100 hover:bg-blue-50 transition-colors"
         >

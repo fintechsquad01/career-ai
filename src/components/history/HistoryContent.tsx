@@ -56,6 +56,7 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
     updateUrlParams(newFilter, expandedId);
+    track("history_filter_changed", { filter: newFilter });
   };
 
   const handleLoadMore = useCallback(async () => {
@@ -91,6 +92,11 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
     const newExpanded = expandedId === id ? null : id;
     setExpandedId(newExpanded);
     updateUrlParams(filter, newExpanded);
+    track("history_row_expand_toggled", { result_id: id, expanded: !!newExpanded });
+    if (newExpanded) {
+      const row = results.find((r) => r.id === id);
+      track("history_result_reopened", { result_id: id, tool_id: row?.tool_id });
+    }
   };
 
   const handleShare = useCallback(async (r: ToolResultRow) => {
@@ -231,6 +237,8 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
             const tool = TOOLS.find((t) => t.id === r.tool_id);
             const isExpanded = expandedId === r.id;
             const isConfirmingDelete = confirmDeleteId === r.id;
+            const scoreBand = getScoreBand(r.metric_value);
+            const displayTitle = r.summary || `${tool?.title || "Analysis"} result`;
 
             return (
               <div
@@ -251,10 +259,6 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                   className="w-full px-4 sm:px-5 py-3.5 sm:py-4 flex items-start justify-between text-left hover:bg-gray-50 transition-colors cursor-pointer gap-3"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm">{tool?.icon || "🔧"}</span>
-                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{tool?.title || r.tool_id}</p>
-                    </div>
                     {editingId === r.id ? (
                       <input
                         value={editingTitle}
@@ -274,9 +278,12 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                         className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
-                      <p className="text-[11px] sm:text-xs text-gray-500 truncate mt-0.5">{r.summary || "Analysis complete"}</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{displayTitle}</p>
                     )}
-                    {r.detail && <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">{r.detail}</p>}
+                    <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5 truncate">
+                      {(tool?.title || r.tool_id)} · {new Date(r.created_at).toLocaleDateString()} · {scoreBand}
+                    </p>
+                    {r.detail && <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">{r.detail}</p>}
                   </div>
                   <div className="flex items-center sm:items-start gap-2 sm:gap-3 ml-1 sm:ml-3 shrink-0">
                     {r.metric_value != null && (
@@ -450,4 +457,11 @@ function getScoreFromResult(toolId: string, result: Record<string, unknown>): nu
     default:
       return 50;
   }
+}
+
+function getScoreBand(metric: number | null): string {
+  if (metric == null) return "No score";
+  if (metric < 40) return "Low";
+  if (metric < 70) return "Moderate";
+  return "Strong";
 }

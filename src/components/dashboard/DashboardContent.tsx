@@ -319,6 +319,9 @@ export function DashboardContent({
             <div className="surface-card-soft p-3">
               <p className="text-xs text-gray-500">Progress this week</p>
               <p className="text-sm font-semibold text-gray-900 mt-1">{missionProgress ?? 0}% mission progress</p>
+              {recommendationTarget?.title && (
+                <p className="text-[11px] text-gray-500 mt-1 truncate">Target: {recommendationTarget.title}</p>
+              )}
             </div>
           </div>
         </div>
@@ -378,7 +381,10 @@ export function DashboardContent({
           <p className="text-sm font-semibold text-gray-900">
             {TOOLS_MAP[latestResult.tool_id]?.title || latestResult.tool_id.replace(/_/g, " ")}
           </p>
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+          <p className="text-[11px] text-gray-500 mt-1">
+            {new Date(latestResult.created_at).toLocaleDateString()} · {latestResult.metric_value != null ? `${latestResult.metric_value}/100` : "No score"}
+          </p>
+          <p className="text-xs text-gray-500 mt-1 line-clamp-1">
             {latestResult.summary || "Open your latest result and continue your mission."}
           </p>
         </Link>

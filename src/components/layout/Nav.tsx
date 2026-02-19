@@ -27,7 +27,7 @@ function useBreadcrumb(pathname: string) {
   if (segments[0] === "dashboard") {
     crumbs.push({ label: "Dashboard" });
   } else if (segments[0] === "mission") {
-    crumbs.push({ label: "Mission" });
+    crumbs.push({ label: "Mission Control" });
   } else if (segments[0] === "tools") {
     crumbs.push({ label: "Tools", href: "/tools" });
     if (segments[1]) {
@@ -136,6 +136,15 @@ export function Nav({ isLoggedIn }: NavProps) {
                   </span>
                 ))}
               </div>
+            )}
+            {isLoggedIn && activeJobTarget?.title && (
+              <Link
+                href="/mission"
+                onClick={() => track(EVENTS.NAV_TARGET_SWITCH_OPENED, { from_route: pathname, to_route: "/mission" })}
+                className="hidden lg:inline-flex items-center max-w-[260px] truncate rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+              >
+                Target: {activeJobTarget.title}
+              </Link>
             )}
           </div>
 

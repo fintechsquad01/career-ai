@@ -17,7 +17,7 @@ export interface AppNavItem {
 
 export const CORE_NAV_ITEMS: AppNavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, key: "dashboard" },
-  { href: "/mission", label: "Mission", icon: Crosshair, key: "mission" },
+  { href: "/mission", label: "Mission Control", icon: Crosshair, key: "mission" },
   { href: "/tools", label: "Tools", icon: Wrench, key: "tools" },
   { href: "/settings", label: "Settings", icon: Settings, key: "settings" },
 ];
