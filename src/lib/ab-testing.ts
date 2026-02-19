@@ -69,6 +69,8 @@ export const EXPERIMENTS = {
   PAYWALL_LAYOUT: "paywall-layout",
   /** Wave 2 journey flow rollout flag */
   WAVE2_JOURNEY_FLOW: "wave2_journey_flow",
+  /** Wave 3 command center rollout flag */
+  WAVE3_COMMAND_CENTER: "wave3_command_center",
 } as const;
 
 // ─── Typed variant helpers ───

@@ -87,6 +87,11 @@ export const EVENTS = {
   NAV_ITEM_CLICKED: "nav_item_clicked",
   NAV_HISTORY_QUICK_OPENED: "nav_history_quick_opened",
   NAV_TARGET_SWITCH_OPENED: "nav_target_switch_opened",
+  W3_FLAG_EXPOSURE: "w3_flag_exposure",
+  W3_VARIANT_ASSIGNED: "w3_variant_assigned",
+  RUN_TOOL_RESULT_META_NORMALIZED: "run_tool_result_meta_normalized",
+  RUN_TOOL_RESULT_META_MISSING_FALLBACK: "run_tool_result_meta_missing_fallback",
+  RUN_TOOL_OUTPUT_COMPLETENESS_CHECKED: "run_tool_output_completeness_checked",
 } as const;
 
 /**

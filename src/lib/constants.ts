@@ -14,6 +14,7 @@ export const TOKEN_LANGUAGE_RULE = {
 
 export const FEATURE_FLAGS = {
   wave2JourneyFlow: "wave2_journey_flow",
+  wave3CommandCenter: "wave3_command_center",
 } as const;
 
 export const CANONICAL_COPY = {
