@@ -11,8 +11,9 @@ import { ShareModal } from "@/components/shared/ShareModal";
 import { Paywall } from "./Paywall";
 import { useTokens } from "@/hooks/useTokens";
 import { useMission } from "@/hooks/useMission";
+import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { useAppStore } from "@/stores/app-store";
-import { track } from "@/lib/analytics";
+import { EVENTS, track } from "@/lib/analytics";
 import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness, formatTokenAmountLabel } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
@@ -430,6 +431,7 @@ interface ToolShellProps {
 }
 
 export function ToolShell({ toolId, children }: ToolShellProps) {
+  const wave2JourneyFlowEnabled = useWave2JourneyFlow();
   const tool = TOOLS_MAP[toolId];
   const [state, setState] = useState<ToolState>("input");
   const [result, setResult] = useState<ToolResult | null>(null);
@@ -457,6 +459,28 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [showInputSupport, setShowInputSupport] = useState(false);
   const [showNps, setShowNps] = useState(false);
   const [showReferralPrompt, setShowReferralPrompt] = useState(false);
+
+  const primaryRecommendation = useMemo(() => {
+    if (!result) return null;
+    return getDynamicRecommendation(toolId, result, completedToolIds);
+  }, [completedToolIds, result, toolId]);
+  const secondaryRecommendations = useMemo(() => {
+    if (!result) return [];
+    return getSecondaryRecommendations(toolId, completedToolIds);
+  }, [completedToolIds, result, toolId]);
+  const missionComplete = useMemo(
+    () => MISSION_ACTIONS.every((a) => completedToolIds.has(a.toolId)),
+    [completedToolIds]
+  );
+
+  useEffect(() => {
+    if (!wave2JourneyFlowEnabled || state !== "result" || !primaryRecommendation || missionComplete) return;
+    track(EVENTS.TOOL_PRIMARY_ACTION_VIEWED, {
+      route: `/tools/${toolId}`,
+      tool_id: toolId,
+      next_tool_id: primaryRecommendation.tool.id,
+    });
+  }, [wave2JourneyFlowEnabled, state, primaryRecommendation, missionComplete, toolId]);
   const [variantSaved, setVariantSaved] = useState(false);
   const [savingVariant, setSavingVariant] = useState(false);
   const [scoreDelta, setScoreDelta] = useState<{ previous: number; current: number; delta: number } | null>(null);
@@ -969,7 +993,10 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+    <div
+      data-wave2-journey={wave2JourneyFlowEnabled ? "enabled" : "disabled"}
+      className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-6"
+    >
       {/* Header */}
       <div className="space-y-2.5">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -1278,6 +1305,27 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {/* Children render prop for result state */}
       {state === "result" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
 
+      {state === "result" && wave2JourneyFlowEnabled && !missionComplete && primaryRecommendation && (
+        <div className="report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600 mb-1">Primary action</p>
+          <p className="text-sm text-gray-700 mb-3">{primaryRecommendation.narrative}</p>
+          <Link
+            href={`/tools/${primaryRecommendation.tool.id}`}
+            onClick={() =>
+              track(EVENTS.TOOL_PRIMARY_ACTION_CLICKED, {
+                route: `/tools/${toolId}`,
+                tool_id: toolId,
+                next_tool_id: primaryRecommendation.tool.id,
+              })
+            }
+            className="btn-primary sm:w-auto sm:px-5"
+          >
+            {primaryRecommendation.tool.title}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      )}
+
       {/* Result actions */}
       {state === "result" && (
         <div className="report-section stagger-children">
@@ -1312,7 +1360,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                 {variantSaved ? "Variant Saved" : savingVariant ? "Saving..." : "Save Resume Variant"}
               </button>
             )}
-            {activeJobTarget && (
+            {activeJobTarget && !wave2JourneyFlowEnabled && (
               <Link
                 href="/mission"
                 className="btn-primary w-auto px-4"
@@ -1357,9 +1405,8 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Guided next step — narrative-driven */}
       {state === "result" && tool && (() => {
-        const primary = getDynamicRecommendation(toolId, result, completedToolIds);
-        const secondary = getSecondaryRecommendations(toolId, completedToolIds);
-        const missionComplete = MISSION_ACTIONS.every((a) => completedToolIds.has(a.toolId));
+        const primary = primaryRecommendation;
+        const secondary = secondaryRecommendations;
 
         return (
           <div className="space-y-3">
@@ -1379,7 +1426,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               </div>
             )}
             {/* Primary recommendation — narrative */}
-            {!missionComplete && primary && (
+            {!missionComplete && primary && !wave2JourneyFlowEnabled && (
               <Link
                 href={`/tools/${primary.tool.id}`}
                 className="block report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100 hover:shadow-md transition-shadow group celebrate"
@@ -1404,19 +1451,30 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
             {/* Secondary recommendations — compact */}
             {!missionComplete && secondary.length > 0 && (
-              <div className="flex flex-wrap gap-2 stagger-children">
-                <span className="text-xs text-gray-400 self-center mr-1">Other relevant tools:</span>
-                {secondary.map((rec) => (
-                  <Link
-                    key={rec.id}
-                    href={`/tools/${rec.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors min-h-[36px]"
-                  >
-                    {rec.title}
-                    <span className="text-gray-400">{formatTokenAmountLabel(rec.tokens)}</span>
-                  </Link>
-                ))}
-              </div>
+              <details
+                onToggle={(e) => {
+                  const isOpen = (e.currentTarget as HTMLDetailsElement).open;
+                  if (!isOpen) return;
+                  track(EVENTS.TOOL_DETAIL_EXPANDED, { route: `/tools/${toolId}`, tool_id: toolId });
+                }}
+                className="report-section"
+              >
+                <summary className="cursor-pointer text-xs text-gray-500 font-medium">
+                  Other relevant tools
+                </summary>
+                <div className="flex flex-wrap gap-2 mt-3 stagger-children">
+                  {secondary.map((rec) => (
+                    <Link
+                      key={rec.id}
+                      href={`/tools/${rec.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors min-h-[36px]"
+                    >
+                      {rec.title}
+                      <span className="text-gray-400">{formatTokenAmountLabel(rec.tokens)}</span>
+                    </Link>
+                  ))}
+                </div>
+              </details>
             )}
           </div>
         );
