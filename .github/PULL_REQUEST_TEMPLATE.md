@@ -2,6 +2,7 @@
 <!-- 1-3 sentences: what changed and why -->
 
 ## Branding Rollout Metadata (Required for branded PRs)
+<!-- These items must be checked before coordinator approval -->
 - [ ] `branding-rollout` label applied
 - [ ] One batch label applied: `branding-batch:A` / `branding-batch:B` / `branding-batch:C` / `branding-batch:D`
 - [ ] `.github/branding-rollout/merge-state.json` updates only current batch from `false` -> `true`
@@ -14,12 +15,12 @@
 <!-- Intent and rationale tied to batch scope -->
 
 ### Verification status
-<!-- Pass/fail checklist and evidence notes -->
-- [ ] landing
-- [ ] pricing
-- [ ] dashboard/nav
-- [ ] tool run input/loading/result
-- [ ] mobile nav and spacing
+<!-- Required format per line: [ ]|[x] <item> - PASS: <evidence> OR FAIL: <issue> -->
+- [ ] landing - PASS: <evidence> / FAIL: <issue>
+- [ ] pricing - PASS: <evidence> / FAIL: <issue>
+- [ ] dashboard/nav - PASS: <evidence> / FAIL: <issue>
+- [ ] tool run input/loading/result - PASS: <evidence> / FAIL: <issue>
+- [ ] mobile nav and spacing - PASS: <evidence> / FAIL: <issue>
 
 ### Risks
 <!-- Known residual risks + mitigation/rollback notes -->

@@ -6,6 +6,19 @@
     ".github/workflows/branding-rollout-gate.yml",
     "scripts/branding/validate-rollout.mjs"
   ],
+  "dependencyMap": {
+    "A": [],
+    "B": [
+      "A"
+    ],
+    "C": [
+      "A"
+    ],
+    "D": [
+      "B",
+      "C"
+    ]
+  },
   "batches": {
     "A": {
       "name": "Foundation primitives and copy anchors",
@@ -38,7 +51,7 @@
       ]
     },
     "D": {
-      "name": "Cross-surface harmonization and final polish",
+      "name": "Cross-surface harmonization only (no net-new primitives)",
       "allowedPaths": [
         "src/components/landing/HeroSection.tsx",
         "src/components/landing/LandingContent.tsx",
