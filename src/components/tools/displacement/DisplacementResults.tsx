@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Ring } from "@/components/shared/Ring";
 import { ReportFlow } from "@/components/shared/ReportStructure";
 import { AlertTriangle, Shield, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
@@ -30,6 +31,38 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
     critical: "bg-red-100 text-red-800",
   };
 
+  const verdictBand = useMemo(() => {
+    if (data.result_meta?.verdict_band) return data.result_meta.verdict_band;
+    if (data.score <= 20) return "low";
+    if (data.score <= 45) return "mid";
+    if (data.score <= 70) return "high";
+    return "top_match";
+  }, [data.result_meta?.verdict_band, data.score]);
+
+  const evidenceCoverage = useMemo(() => {
+    if (data.result_meta?.evidence_coverage) return data.result_meta.evidence_coverage;
+    const checks = [
+      typeof data.score === "number",
+      !!data.risk_level,
+      Array.isArray(data.tasks_at_risk) && data.tasks_at_risk.length > 0,
+      Array.isArray(data.recommendations) && data.recommendations.length > 0,
+    ];
+    return {
+      matched_required: checks.filter(Boolean).length,
+      total_required: checks.length,
+    };
+  }, [data.result_meta?.evidence_coverage, data.recommendations, data.risk_level, data.score, data.tasks_at_risk]);
+
+  const confidenceLevel = useMemo(() => {
+    if (data.result_meta?.confidence_level) return data.result_meta.confidence_level;
+    const ratio = evidenceCoverage.total_required > 0
+      ? evidenceCoverage.matched_required / evidenceCoverage.total_required
+      : 0;
+    if (ratio >= 0.75) return "high";
+    if (ratio >= 0.4) return "medium";
+    return "low";
+  }, [data.result_meta?.confidence_level, evidenceCoverage]);
+
   return (
     <ReportFlow
       summary={
@@ -41,6 +74,22 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
             {data.risk_level.toUpperCase()} RISK
           </span>
           <span className="text-xs text-gray-400">Timeline: {data.timeline}</span>
+        </div>
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] sm:text-xs">
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Verdict</p>
+            <p className="font-semibold text-gray-900 capitalize">{verdictBand.replace("_", " ")}</p>
+          </div>
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Confidence</p>
+            <p className="font-semibold text-gray-900 capitalize">{confidenceLevel}</p>
+          </div>
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Evidence coverage</p>
+            <p className="font-semibold text-gray-900">
+              {evidenceCoverage.matched_required}/{evidenceCoverage.total_required} required
+            </p>
+          </div>
         </div>
         </div>
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Ring } from "@/components/shared/Ring";
 import { ReportFlow } from "@/components/shared/ReportStructure";
 import { Copy, Download, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, AlertCircle, ArrowRight, DollarSign } from "lucide-react";
@@ -56,6 +56,37 @@ export function ResumeResults({ result }: ResumeResultsProps) {
     setExpandedSections((prev) => ({ ...prev, [i]: !prev[i] }));
   };
 
+  const verdictBand = useMemo(() => {
+    if (data.result_meta?.verdict_band) return data.result_meta.verdict_band;
+    if (data.score_after <= 30) return "low";
+    if (data.score_after <= 55) return "mid";
+    if (data.score_after <= 80) return "high";
+    return "top_match";
+  }, [data.result_meta?.verdict_band, data.score_after]);
+
+  const evidenceCoverage = useMemo(() => {
+    if (data.result_meta?.evidence_coverage) return data.result_meta.evidence_coverage;
+    const checks = [
+      typeof data.score_before === "number",
+      typeof data.score_after === "number",
+      !!data.optimized_resume_text,
+    ];
+    return {
+      matched_required: checks.filter(Boolean).length,
+      total_required: checks.length,
+    };
+  }, [data.optimized_resume_text, data.result_meta?.evidence_coverage, data.score_after, data.score_before]);
+
+  const confidenceLevel = useMemo(() => {
+    if (data.result_meta?.confidence_level) return data.result_meta.confidence_level;
+    const ratio = evidenceCoverage.total_required > 0
+      ? evidenceCoverage.matched_required / evidenceCoverage.total_required
+      : 0;
+    if (ratio >= 0.75) return "high";
+    if (ratio >= 0.4) return "medium";
+    return "low";
+  }, [data.result_meta?.confidence_level, evidenceCoverage]);
+
   return (
     <ReportFlow
       summary={
@@ -78,6 +109,22 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         {data.headline && (
           <p className="text-sm text-gray-600 text-center mt-2">{data.headline}</p>
         )}
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] sm:text-xs">
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Verdict</p>
+            <p className="font-semibold text-gray-900 capitalize">{verdictBand.replace("_", " ")}</p>
+          </div>
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Confidence</p>
+            <p className="font-semibold text-gray-900 capitalize">{confidenceLevel}</p>
+          </div>
+          <div className="surface-card-soft p-3">
+            <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Evidence coverage</p>
+            <p className="font-semibold text-gray-900">
+              {evidenceCoverage.matched_required}/{evidenceCoverage.total_required} required
+            </p>
+          </div>
+        </div>
           </div>
 
           {/* Voice note */}

@@ -31,6 +31,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   };
 
   const verdictBand = useMemo(() => {
+    if (data.result_meta?.verdict_band) return data.result_meta.verdict_band;
     if (data.verdict_band) return data.verdict_band;
     if (data.fit_score <= 30) return "low";
     if (data.fit_score <= 55) return "mid";
@@ -39,6 +40,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   }, [data.fit_score, data.verdict_band]);
 
   const evidenceCoverage = useMemo(() => {
+    if (data.result_meta?.evidence_coverage) return data.result_meta.evidence_coverage;
     if (data.evidence_coverage) return data.evidence_coverage;
     const reqs = Array.isArray(data.requirements) ? data.requirements : [];
     const required = reqs.filter((r) => r.priority === "req" || r.priority === "required");
@@ -49,6 +51,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
   }, [data.evidence_coverage, data.requirements]);
 
   const confidenceLevel = useMemo(() => {
+    if (data.result_meta?.confidence_level) return data.result_meta.confidence_level;
     if (data.confidence_level) return data.confidence_level;
     const total = evidenceCoverage.total_required || 0;
     if (total < 2) return "low";
@@ -65,7 +68,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
     const ratio = evidenceCoverage.total_required > 0
       ? evidenceCoverage.matched_required / evidenceCoverage.total_required
       : 0;
-    track("jd_verdict_viewed", {
+    track("result_verdict_viewed", {
       tool_id: "jd_match",
       fit_score: data.fit_score,
       verdict_band: verdictBand,

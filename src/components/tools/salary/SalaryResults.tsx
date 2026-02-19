@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Shield, AlertTriangle, AlertCircle, Clock } from "lucide-react";
 import { ReportFlow } from "@/components/shared/ReportStructure";
 import type { TSalaryResult, ToolResult } from "@/types";
@@ -46,11 +47,57 @@ export function SalaryResults({ result }: SalaryResultsProps) {
     limited: "bg-red-50 text-red-700 border-red-200",
   };
 
+  const verdictBand = useMemo(() => {
+    if (data.result_meta?.verdict_band) return data.result_meta.verdict_band;
+    if (pos <= 30) return "low";
+    if (pos <= 55) return "mid";
+    if (pos <= 80) return "high";
+    return "top_match";
+  }, [data.result_meta?.verdict_band, pos]);
+
+  const evidenceCoverage = useMemo(() => {
+    if (data.result_meta?.evidence_coverage) return data.result_meta.evidence_coverage;
+    const checks = [
+      !!data.market_range,
+      Array.isArray(data.counter_offer_scripts) && data.counter_offer_scripts.length > 0,
+    ];
+    return {
+      matched_required: checks.filter(Boolean).length,
+      total_required: checks.length,
+    };
+  }, [data.counter_offer_scripts, data.market_range, data.result_meta?.evidence_coverage]);
+
+  const confidenceLevel = useMemo(() => {
+    if (data.result_meta?.confidence_level) return data.result_meta.confidence_level;
+    const ratio = evidenceCoverage.total_required > 0
+      ? evidenceCoverage.matched_required / evidenceCoverage.total_required
+      : 0;
+    if (ratio >= 0.75) return "high";
+    if (ratio >= 0.4) return "medium";
+    return "low";
+  }, [data.result_meta?.confidence_level, evidenceCoverage]);
+
   return (
     <ReportFlow
       summary={
         <div className="surface-card-hero p-4">
           <p className="text-sm font-medium text-gray-900">{summaryText}</p>
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] sm:text-xs">
+            <div className="surface-card-soft p-3">
+              <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Verdict</p>
+              <p className="font-semibold text-gray-900 capitalize">{verdictBand.replace("_", " ")}</p>
+            </div>
+            <div className="surface-card-soft p-3">
+              <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Confidence</p>
+              <p className="font-semibold text-gray-900 capitalize">{confidenceLevel}</p>
+            </div>
+            <div className="surface-card-soft p-3">
+              <p className="text-gray-500 uppercase tracking-wide text-[10px] mb-1">Evidence coverage</p>
+              <p className="font-semibold text-gray-900">
+                {evidenceCoverage.matched_required}/{evidenceCoverage.total_required} required
+              </p>
+            </div>
+          </div>
         </div>
       }
       evidence={
