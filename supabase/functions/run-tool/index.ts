@@ -451,6 +451,8 @@ Deno.serve(async (req: Request) => {
         if (tool_id === "jd_match") {
           result = enrichJdMatchTrustMeta(result);
         }
+        // Normalize structured trust metadata for scoring-heavy tools.
+        result = normalizeScoringResultMeta(tool_id, result);
 
         // Step 5: Storing results
         send("progress", { step: 5, total: 5, message: "Saving results..." });
@@ -468,6 +470,24 @@ Deno.serve(async (req: Request) => {
           completion_tokens: aiUsage?.completion_tokens || null,
           latency_ms: latencyMs,
         };
+
+        if (isScoringTool(tool_id)) {
+          logServerEvent("run_tool_result_meta_normalized", {
+            tool_id,
+            latency_bucket: getLatencyBucket(latencyMs),
+            has_result_meta: !!(result as Record<string, unknown>).result_meta,
+          });
+          const meta = (result as Record<string, unknown>).result_meta as Record<string, unknown> | undefined;
+          const coverage = meta?.evidence_coverage as Record<string, unknown> | undefined;
+          logServerEvent("run_tool_output_completeness_checked", {
+            tool_id,
+            has_verdict_band: typeof meta?.verdict_band === "string",
+            has_confidence_level: typeof meta?.confidence_level === "string",
+            has_evidence_coverage:
+              typeof coverage?.matched_required === "number" &&
+              typeof coverage?.total_required === "number",
+          });
+        }
 
         const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/tool_results`, {
           method: "POST",
@@ -715,6 +735,18 @@ function extractMetric(toolId: string, result: Record<string, unknown>): number 
 
 type VerdictBand = "low" | "mid" | "high" | "top_match";
 type ConfidenceLevel = "low" | "medium" | "high";
+type ResultMeta = {
+  verdict_band: VerdictBand;
+  confidence_level: ConfidenceLevel;
+  evidence_coverage: {
+    matched_required: number;
+    total_required: number;
+  };
+};
+
+function isScoringTool(toolId: string): boolean {
+  return ["displacement", "jd_match", "resume", "linkedin", "salary", "entrepreneurship"].includes(toolId);
+}
 
 function enrichJdMatchTrustMeta(result: Record<string, unknown>): Record<string, unknown> {
   const fitScore = typeof result.fit_score === "number" ? Math.max(0, Math.min(100, result.fit_score)) : null;
@@ -755,6 +787,157 @@ function enrichJdMatchTrustMeta(result: Record<string, unknown>): Record<string,
     ...(confidence ? { confidence_level: confidence } : {}),
     ...(evidenceCoverage ? { evidence_coverage: evidenceCoverage } : {}),
   };
+}
+
+function normalizeScoringResultMeta(toolId: string, result: Record<string, unknown>): Record<string, unknown> {
+  if (!isScoringTool(toolId)) return result;
+
+  const existingMeta = result.result_meta as Record<string, unknown> | undefined;
+  const normalizedExistingCoverage = parseEvidenceCoverage(existingMeta?.evidence_coverage);
+  const normalizedTopLevelCoverage = parseEvidenceCoverage(result.evidence_coverage);
+  const evidenceCoverage = normalizedExistingCoverage
+    ?? normalizedTopLevelCoverage
+    ?? deriveEvidenceCoverage(toolId, result);
+
+  const metric = extractMetric(toolId, result);
+  const derivedBand = deriveVerdictBand(toolId, metric);
+  const topLevelBand = typeof result.verdict_band === "string"
+    ? normalizeVerdictBand(result.verdict_band)
+    : null;
+  const metaBand = typeof existingMeta?.verdict_band === "string"
+    ? normalizeVerdictBand(String(existingMeta.verdict_band))
+    : null;
+  const verdictBand = metaBand ?? topLevelBand ?? derivedBand ?? "mid";
+
+  const topLevelConfidence = typeof result.confidence_level === "string"
+    ? normalizeConfidenceLevel(result.confidence_level)
+    : null;
+  const metaConfidence = typeof existingMeta?.confidence_level === "string"
+    ? normalizeConfidenceLevel(String(existingMeta.confidence_level))
+    : null;
+  const coverageRatio = evidenceCoverage.total_required > 0
+    ? evidenceCoverage.matched_required / evidenceCoverage.total_required
+    : 0;
+  const confidence = metaConfidence ?? topLevelConfidence ?? deriveConfidenceLevel(coverageRatio, evidenceCoverage.total_required);
+
+  const normalizedMeta: ResultMeta = {
+    verdict_band: verdictBand,
+    confidence_level: confidence,
+    evidence_coverage: evidenceCoverage,
+  };
+
+  if (!existingMeta) {
+    logServerEvent("run_tool_result_meta_missing_fallback", {
+      tool_id: toolId,
+      reason: "result_meta_missing",
+    });
+  }
+
+  return {
+    ...result,
+    verdict_band: result.verdict_band ?? normalizedMeta.verdict_band,
+    confidence_level: result.confidence_level ?? normalizedMeta.confidence_level,
+    evidence_coverage: result.evidence_coverage ?? normalizedMeta.evidence_coverage,
+    result_meta: normalizedMeta,
+  };
+}
+
+function deriveVerdictBand(toolId: string, metric: number | null): VerdictBand | null {
+  if (metric == null) return null;
+  const score = Math.max(0, Math.min(100, metric));
+
+  if (toolId === "displacement") {
+    if (score <= 20) return "low";
+    if (score <= 45) return "mid";
+    if (score <= 70) return "high";
+    return "top_match";
+  }
+
+  if (score <= 30) return "low";
+  if (score <= 55) return "mid";
+  if (score <= 80) return "high";
+  return "top_match";
+}
+
+function deriveEvidenceCoverage(
+  toolId: string,
+  result: Record<string, unknown>,
+): { matched_required: number; total_required: number } {
+  if (toolId === "jd_match") {
+    const reqs = Array.isArray(result.requirements)
+      ? result.requirements.filter((r): r is Record<string, unknown> => !!r && typeof r === "object")
+      : [];
+    const requiredOnly = reqs.filter((req) => {
+      const p = String(req.priority ?? "").toLowerCase();
+      return p === "req" || p === "required";
+    });
+    const source = requiredOnly.length > 0 ? requiredOnly : reqs;
+    const totalRequired = source.length;
+    const matchedRequired = source.reduce((acc, req) => {
+      const match = req.match;
+      return match === true || match === "partial" ? acc + 1 : acc;
+    }, 0);
+    return {
+      matched_required: Math.max(0, matchedRequired),
+      total_required: Math.max(1, totalRequired),
+    };
+  }
+
+  const requiredChecks = getRequiredChecks(toolId, result);
+  const matchedRequired = requiredChecks.filter(Boolean).length;
+  const totalRequired = requiredChecks.length;
+  return {
+    matched_required: Math.max(0, matchedRequired),
+    total_required: Math.max(1, totalRequired),
+  };
+}
+
+function getRequiredChecks(toolId: string, result: Record<string, unknown>): boolean[] {
+  switch (toolId) {
+    case "displacement":
+      return [
+        typeof result.score === "number",
+        typeof result.risk_level === "string",
+        Array.isArray(result.tasks_at_risk) && result.tasks_at_risk.length > 0,
+        Array.isArray(result.recommendations) && result.recommendations.length > 0,
+      ];
+    case "resume":
+      return [
+        typeof result.score_before === "number",
+        typeof result.score_after === "number",
+        typeof result.optimized_resume_text === "string" && String(result.optimized_resume_text).trim().length > 0,
+      ];
+    case "linkedin":
+      return [
+        Array.isArray(result.headlines) && result.headlines.length > 0,
+        typeof result.about_section === "string" && String(result.about_section).trim().length > 0,
+        typeof result.profile_strength_score === "number",
+      ];
+    case "salary":
+      return [
+        typeof result.market_range === "object" && !!result.market_range,
+        Array.isArray(result.counter_offer_scripts) && result.counter_offer_scripts.length > 0,
+      ];
+    case "entrepreneurship":
+      return [
+        typeof result.founder_market_fit === "number",
+        Array.isArray(result.business_models) && result.business_models.length > 0,
+      ];
+    default:
+      return [true];
+  }
+}
+
+function getLatencyBucket(latencyMs: number): string {
+  if (latencyMs < 5000) return "<5s";
+  if (latencyMs < 15000) return "5-15s";
+  if (latencyMs < 30000) return "15-30s";
+  if (latencyMs < 60000) return "30-60s";
+  return "60s+";
+}
+
+function logServerEvent(event: string, payload: Record<string, unknown>) {
+  console.log(JSON.stringify({ event, ...payload }));
 }
 
 function verdictBandFromScore(score: number): VerdictBand {

@@ -102,6 +102,19 @@ FACTUAL GROUNDING (MANDATORY):
 - It is BETTER to write a shorter, accurate piece than a longer piece with fabricated details.
 `;
 
+/** Structured metadata requirements for scoring-heavy tools */
+const SCORING_METADATA_GUIDANCE = `
+STRUCTURED METADATA REQUIREMENTS (MANDATORY FOR SCORING TOOLS):
+- Include "verdict_band" using one of: "low", "mid", "high", "top_match"
+- Include "confidence_level" using one of: "low", "medium", "high"
+- Include "evidence_coverage" as:
+  {
+    "matched_required": <integer>,
+    "total_required": <integer>
+  }
+- Keep these fields concise and deterministic so frontend trust framing is consistent across tools.
+`;
+
 // ---------------------------------------------------------------------------
 // Prior Results Context Builder
 // ---------------------------------------------------------------------------
@@ -238,6 +251,7 @@ const displacement: ToolPromptConfig = {
 
     return `${ctx}${inlineCtx}Analyze the AI displacement risk for this specific professional based on their actual role, skills, and industry.
 ${ANTI_HALLUCINATION_RULES}
+${SCORING_METADATA_GUIDANCE}
 CRITICAL RULES:
 - Base your analysis on the specific tasks this person performs daily, NOT generic occupation-level statistics
 - Most jobs will be TRANSFORMED, not eliminated. Frame accordingly
@@ -337,6 +351,7 @@ const jd_match: ToolPromptConfig = {
 
     return `${ctx}Compare this candidate's resume/profile against the job description. Evaluate as a real recruiter would.
 ${ANTI_HALLUCINATION_RULES}
+${SCORING_METADATA_GUIDANCE}
 ANALYSIS RULES:
 - Match skills SEMANTICALLY: "React" = "React.js" = "ReactJS"; "project management" partially matches "program management"; "Python" partially matches "data analysis"
 - For each requirement match, QUOTE the exact text from the resume that demonstrates the match. If no evidence, say "No evidence found in resume"
@@ -440,6 +455,7 @@ const resume: ToolPromptConfig = {
     return `${ctx}${priorCtx}Optimize this resume for both ATS parsing and human recruiter appeal.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
+${SCORING_METADATA_GUIDANCE}
 VOICE PRESERVATION RULES (CRITICAL):
 1. MAINTAIN the candidate's writing style, vocabulary level, and personality throughout
 2. If they write conversationally, keep it conversational. If formal, stay formal.
@@ -698,6 +714,7 @@ const linkedin: ToolPromptConfig = {
     return `${ctx}${priorCtx}Optimize this LinkedIn profile for ${targetRole} roles AND create a personal brand strategy.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
+${SCORING_METADATA_GUIDANCE}
 IMPORTANT: Use the candidate's ACTUAL resume content as the source material for all rewritten sections. Reference their real job titles, companies, achievements, and metrics. Never invent experience.
 
 LINKEDIN AI AWARENESS (CRITICAL FOR 2026):
@@ -1048,6 +1065,7 @@ const salary: ToolPromptConfig = {
 
     return `${ctx}${priorCtx}Create a salary negotiation strategy. ${currentSalary} ${roleContext} Location: ${location}. Currency: ${currency}.
 ${ANTI_HALLUCINATION_RULES}
+${SCORING_METADATA_GUIDANCE}
 ROLE DETECTION (CRITICAL):
 - If no explicit target role is provided, you MUST extract the role from the resume (most recent title) or job description (job title).
 - NEVER default to "Software Engineer" or any generic role. If truly no role information is available, state this limitation explicitly in your analysis.
@@ -1175,6 +1193,7 @@ const entrepreneurship: ToolPromptConfig = {
     return `${ctx}${priorCtx}Assess this candidate's entrepreneurship potential and create an actionable plan. ${businessIdea} Risk tolerance: ${riskTolerance}.
 ${ANTI_HALLUCINATION_RULES}
 ${FACTUAL_GROUNDING_RULES}
+${SCORING_METADATA_GUIDANCE}
 IMPORTANT: Base all "unfair advantages" and business model suggestions on the candidate's ACTUAL career experience, skills, and industry knowledge from their resume. Do not suggest business models that require skills they don't have.
 
 ASSESSMENT APPROACH:

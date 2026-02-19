@@ -31,6 +31,18 @@ export type ToolState = "input" | "loading" | "result";
 
 export type ReportSectionKey = "summary" | "evidence" | "actions" | "next_step";
 
+export type VerdictBand = "low" | "mid" | "high" | "top_match";
+export type ConfidenceLevel = "low" | "medium" | "high";
+
+export interface ResultMeta {
+  verdict_band: VerdictBand;
+  confidence_level: ConfidenceLevel;
+  evidence_coverage: {
+    matched_required: number;
+    total_required: number;
+  };
+}
+
 export interface ToolProgress {
   step: number;
   total: number;
@@ -40,6 +52,7 @@ export interface ToolProgress {
 // Result types for each tool — expanded for Sprint A prompt overhaul
 
 export interface TDisplacementResult {
+  result_meta?: ResultMeta;
   score: number;
   risk_level: "minimal" | "low" | "moderate" | "high" | "critical";
   headline?: string;
@@ -81,6 +94,7 @@ export interface TDisplacementResult {
 }
 
 export interface TJdMatchResult {
+  result_meta?: ResultMeta;
   fit_score: number;
   verdict_band?: "low" | "mid" | "high" | "top_match";
   confidence_level?: "low" | "medium" | "high";
@@ -131,6 +145,7 @@ export interface TJdMatchResult {
 }
 
 export interface TResumeResult {
+  result_meta?: ResultMeta;
   score_before: number;
   score_after: number;
   headline?: string;
@@ -185,6 +200,7 @@ export interface TCoverLetterResult {
 }
 
 export interface TLinkedInResult {
+  result_meta?: ResultMeta;
   headlines: Array<{
     text: string;
     search_keywords: string[];
@@ -397,6 +413,7 @@ export interface TRoadmapResult {
 }
 
 export interface TSalaryResult {
+  result_meta?: ResultMeta;
   currency?: string;
   posted_salary_range?: string;
   market_range: {
@@ -450,6 +467,7 @@ export interface TSalaryResult {
 }
 
 export interface TEntrepreneurshipResult {
+  result_meta?: ResultMeta;
   founder_market_fit: number;
   headline?: string;
   unfair_advantages?: Array<{
