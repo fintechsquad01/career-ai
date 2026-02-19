@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Brain, Menu, X, ChevronRight, Settings, LogOut, Plus, Coins } from "lucide-react";
+import { Brain, Menu, X, ChevronRight, Settings, LogOut, Plus, Coins, Clock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 import { TOOLS_MAP } from "@/lib/constants";
 import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
+import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
+import { EVENTS, track } from "@/lib/analytics";
 
 interface NavProps {
   isLoggedIn: boolean;
@@ -50,6 +52,7 @@ function useBreadcrumb(pathname: string) {
 }
 
 export function Nav({ isLoggedIn }: NavProps) {
+  const wave2JourneyFlowEnabled = useWave2JourneyFlow();
   const pathname = usePathname();
   const router = useRouter();
   const mobileMenuOpen = useAppStore((s) => s.mobileMenuOpen);
@@ -57,6 +60,7 @@ export function Nav({ isLoggedIn }: NavProps) {
   const profile = useAppStore((s) => s.profile);
   const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
   const dailyCreditsAwarded = useAppStore((s) => s.dailyCreditsAwarded);
+  const activeJobTarget = useAppStore((s) => s.activeJobTarget);
   const breadcrumbs = useBreadcrumb(pathname);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
@@ -92,9 +96,19 @@ export function Nav({ isLoggedIn }: NavProps) {
         .slice(0, 2)
     : "?";
 
+  const getJourneyBadge = (key: string): "New" | "In progress" | "Ready" | null => {
+    if (!wave2JourneyFlowEnabled) return null;
+    if (key === "mission") return activeJobTarget ? "In progress" : "New";
+    if (key === "history") return (profile?.total_tokens_spent ?? 0) > 0 ? "Ready" : "New";
+    return null;
+  };
+
   return (
     <>
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/60">
+      <nav
+        data-wave2-journey={wave2JourneyFlowEnabled ? "enabled" : "disabled"}
+        className="sticky top-0 z-40 bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/60"
+      >
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 sm:h-16">
           {/* Logo + breadcrumb */}
           <div className="flex items-center gap-3 min-w-0">
@@ -199,6 +213,17 @@ export function Nav({ isLoggedIn }: NavProps) {
                 )}
               </div>
             )}
+            {isLoggedIn && pathname.startsWith("/tools/") && (
+              <Link
+                href="/history"
+                aria-label="Open history quickly"
+                onClick={() => track(EVENTS.NAV_HISTORY_QUICK_OPENED, { from_route: pathname, to_route: "/history" })}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-blue-700 min-h-[36px]"
+              >
+                <Clock className="w-4 h-4" />
+                History
+              </Link>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-gray-600 hover:text-gray-900 min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -223,6 +248,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                     label={item.label}
                     icon={item.icon}
                     active={isActiveRoute(pathname, item.href)}
+                    badge={getJourneyBadge(item.key)}
                     onClick={() => setMobileMenuOpen(false)}
                   />
                 ))}
@@ -273,24 +299,35 @@ function MobileLink({
   active,
   onClick,
   icon: Icon,
+  badge,
 }: {
   href: string;
   label: string;
   active: boolean;
   onClick: () => void;
   icon?: LucideIcon;
+  badge?: "New" | "In progress" | "Ready" | null;
 }) {
+  const pathname = usePathname();
   return (
     <Link
       href={href}
-      onClick={onClick}
+      onClick={() => {
+        track(EVENTS.NAV_ITEM_CLICKED, { from_route: pathname, to_route: href });
+        onClick();
+      }}
       aria-current={active ? "page" : undefined}
       className={`nav-item flex items-center gap-2.5 px-3 py-3 text-base font-medium min-h-[44px] ${
         active ? "nav-item-active text-blue-700" : "text-gray-700 hover:bg-gray-50"
       }`}
     >
       {Icon && <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={active ? 2 : 1.75} />}
-      {label}
+      <span>{label}</span>
+      {badge && (
+        <span className={`ml-auto ui-badge ${badge === "Ready" ? "ui-badge-green" : badge === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
+          {badge}
+        </span>
+      )}
     </Link>
   );
 }

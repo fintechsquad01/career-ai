@@ -15,6 +15,8 @@ import {
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute, type AppNavItem } from "@/lib/navigation";
+import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
+import { EVENTS, track } from "@/lib/analytics";
 
 const navByKey = new Map<string, AppNavItem>(
   [...CORE_NAV_ITEMS, ...EXTENDED_NAV_ITEMS].map((item) => [item.key, item])
@@ -35,10 +37,12 @@ const QUICK_TOOLS = [
 ];
 
 export function Sidebar() {
+  const wave2JourneyFlowEnabled = useWave2JourneyFlow();
   const pathname = usePathname();
   const router = useRouter();
   const tokenBalance = useAppStore((s) => s.tokenBalance);
   const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
+  const profile = useAppStore((s) => s.profile);
   const tokensLoaded = useAppStore((s) => s.tokensLoaded);
   const tokenAnimating = useAppStore((s) => s.tokenAnimating);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
@@ -46,6 +50,13 @@ export function Sidebar() {
   const activeJobTarget = useAppStore((s) => s.activeJobTarget);
 
   const totalBalance = tokenBalance + dailyCreditsBalance;
+
+  const getJourneyBadge = (key: string): "New" | "In progress" | "Ready" | null => {
+    if (!wave2JourneyFlowEnabled) return null;
+    if (key === "mission") return activeJobTarget ? "In progress" : "New";
+    if (key === "history") return (profile?.total_tokens_spent ?? 0) > 0 ? "Ready" : "New";
+    return null;
+  };
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -82,6 +93,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => track(EVENTS.NAV_ITEM_CLICKED, { from_route: pathname, to_route: item.href })}
               title={sidebarCollapsed ? item.label : undefined}
               aria-current={active ? "page" : undefined}
               className={`nav-item flex items-center gap-2.5 transition-all duration-150 ${
@@ -97,9 +109,16 @@ export function Sidebar() {
                 strokeWidth={active ? 2 : 1.5}
               />
               {!sidebarCollapsed && (
-                <span className={`text-sm truncate ${active ? "font-semibold" : "font-medium"}`}>
-                  {item.label}
-                </span>
+                <div className="flex items-center gap-2 min-w-0 w-full">
+                  <span className={`text-sm truncate ${active ? "font-semibold" : "font-medium"}`}>
+                    {item.label}
+                  </span>
+                  {getJourneyBadge(item.key) && (
+                    <span className={`ui-badge ml-auto ${getJourneyBadge(item.key) === "Ready" ? "ui-badge-green" : getJourneyBadge(item.key) === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
+                      {getJourneyBadge(item.key)}
+                    </span>
+                  )}
+                </div>
               )}
             </Link>
           );
@@ -132,6 +151,7 @@ export function Sidebar() {
       {activeJobTarget && !sidebarCollapsed && (
         <Link
           href="/mission"
+          onClick={() => track(EVENTS.NAV_TARGET_SWITCH_OPENED, { from_route: pathname, to_route: "/mission" })}
           className="mx-2 mb-1.5 px-3 py-2 rounded-xl surface-card-hero hover:bg-blue-50 transition-colors group"
         >
           <div className="flex items-center gap-2">
