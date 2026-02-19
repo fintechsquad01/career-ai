@@ -3,11 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
-  Crosshair,
-  Wrench,
-  Clock,
-  Settings,
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
@@ -15,17 +10,22 @@ import {
   Zap,
   FileText,
   ShieldAlert,
+  Coins,
 } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
+import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute, type AppNavItem } from "@/lib/navigation";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/mission", icon: Crosshair, label: "Mission" },
-  { href: "/quick-apply", icon: Zap, label: "Quick Apply" },
-  { href: "/tools", icon: Wrench, label: "Tools" },
-  { href: "/history", icon: Clock, label: "History" },
-  { href: "/settings", icon: Settings, label: "Settings" },
+const navByKey = new Map<string, AppNavItem>(
+  [...CORE_NAV_ITEMS, ...EXTENDED_NAV_ITEMS].map((item) => [item.key, item])
+);
+const NAV_ITEMS: AppNavItem[] = [
+  navByKey.get("dashboard")!,
+  navByKey.get("mission")!,
+  navByKey.get("quick_apply")!,
+  navByKey.get("tools")!,
+  navByKey.get("history")!,
+  navByKey.get("settings")!,
 ];
 
 const QUICK_TOOLS = [
@@ -33,41 +33,6 @@ const QUICK_TOOLS = [
   { href: "/tools/resume", icon: FileText, label: "Resume", color: "text-blue-500" },
   { href: "/tools/interview", icon: Zap, label: "Interview", color: "text-violet-500" },
 ];
-
-/** Mini SVG ring for token progress (sidebar) */
-function TokenRing({ balance, max = 200 }: { balance: number; max?: number }) {
-  const size = 32;
-  const strokeWidth = 3;
-  const radius = (size - strokeWidth * 2) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const pct = Math.min(balance / max, 1);
-  const offset = circumference - pct * circumference;
-  const color = balance <= 5 ? "#EF4444" : balance <= 20 ? "#F59E0B" : "#22C55E";
-
-  return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} stroke="rgba(255,255,255,0.1)" strokeWidth={strokeWidth} fill="none" />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-all duration-500 ease-out"
-          style={{ filter: `drop-shadow(0 0 3px ${color}60)` }}
-        />
-      </svg>
-      <span className="absolute text-[9px] font-bold text-white tabular-nums">
-        {balance}
-      </span>
-    </div>
-  );
-}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -111,28 +76,28 @@ export function Sidebar() {
 
         {/* Navigation items */}
         {NAV_ITEMS.map((item) => {
-          const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
-          const isToolsActive = item.href === "/tools" && pathname.startsWith("/tools");
+          const active = isActiveRoute(pathname, item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
               title={sidebarCollapsed ? item.label : undefined}
+              aria-current={active ? "page" : undefined}
               className={`nav-item flex items-center gap-2.5 transition-all duration-150 ${
                 sidebarCollapsed ? "justify-center px-1 py-2.5" : "px-3 py-2.5"
               } ${
-                active || isToolsActive
+                active
                   ? "nav-item-active text-blue-600"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               }`}
             >
               <item.icon
                 className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-[18px] h-[18px]"}`}
-                strokeWidth={active || isToolsActive ? 2 : 1.5}
+                strokeWidth={active ? 2 : 1.5}
               />
               {!sidebarCollapsed && (
-                <span className={`text-sm truncate ${active || isToolsActive ? "font-semibold" : "font-medium"}`}>
+                <span className={`text-sm truncate ${active ? "font-semibold" : "font-medium"}`}>
                   {item.label}
                 </span>
               )}
@@ -191,41 +156,43 @@ export function Sidebar() {
       )}
 
       {/* Token balance with ring */}
-      <div className={`mx-2 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 text-white ${sidebarCollapsed ? "p-2" : "p-3"}`}>
+      <div className={`mx-2 rounded-xl surface-card ${sidebarCollapsed ? "p-2" : "p-3"}`}>
         {sidebarCollapsed ? (
-          <Link href="/pricing" className="flex flex-col items-center gap-0.5" title={`${totalBalance} tokens`}>
+          <Link href="/pricing" className="flex flex-col items-center gap-0.5 text-gray-700" title={`${totalBalance} tokens`}>
             {tokensLoaded ? (
-              <TokenRing balance={totalBalance} />
+              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 border border-blue-100">
+                <Coins className="w-4 h-4 text-blue-600" />
+              </div>
             ) : (
-              <span className="inline-block w-6 h-3 bg-white/20 rounded animate-pulse" />
+              <span className="inline-block w-6 h-3 bg-gray-200 rounded animate-pulse" />
             )}
+            {tokensLoaded && <span className="text-[10px] font-semibold tabular-nums">{totalBalance}</span>}
           </Link>
         ) : (
           <>
-            <div className="flex items-center gap-2 mb-1">
-              {tokensLoaded && <TokenRing balance={totalBalance} />}
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex-shrink-0">
+                <Coins className="w-4 h-4 text-blue-600" />
+              </div>
               <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">Token Balance</p>
                 {tokensLoaded ? (
-                  dailyCreditsBalance > 0 && tokenBalance > 0 ? (
-                    <span className={`text-sm font-semibold tabular-nums ${tokenAnimating ? "token-spend-animate" : ""}`}>
-                      {tokenBalance}
-                      <span className="text-xs text-gray-500 mx-0.5">+</span>
-                      <span className="text-xs text-gray-400">{dailyCreditsBalance}</span>
-                    </span>
-                  ) : (
-                    <span className={`text-sm font-semibold tabular-nums ${tokenAnimating ? "token-spend-animate" : ""}`}>{totalBalance}</span>
-                  )
+                  <span className={`text-base font-semibold text-gray-900 tabular-nums ${tokenAnimating ? "token-spend-animate" : ""}`}>
+                    {totalBalance}
+                  </span>
                 ) : (
-                  <span className="inline-block w-8 h-4 bg-white/20 rounded animate-pulse" />
+                  <span className="inline-block w-8 h-4 bg-gray-200 rounded animate-pulse" />
                 )}
-                <span className="text-[10px] text-gray-400 ml-1">tokens</span>
               </div>
             </div>
             {dailyCreditsBalance > 0 && (
-              <p className="text-[10px] text-gray-500 mb-1">{tokenBalance} purchased · {dailyCreditsBalance} daily</p>
+              <div className="mb-1.5 flex flex-wrap gap-1">
+                {tokenBalance > 0 && <span className="ui-badge ui-badge-gray">{tokenBalance} purchased</span>}
+                <span className="ui-badge ui-badge-blue">{dailyCreditsBalance} daily</span>
+              </div>
             )}
-            <Link href="/pricing" className="text-[11px] text-gray-400 hover:text-white transition-colors">
-              Get more →
+            <Link href="/pricing" className="text-[11px] font-medium text-blue-600 hover:text-blue-700 transition-colors">
+              Add tokens →
             </Link>
           </>
         )}

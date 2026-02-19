@@ -3,15 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Brain, Menu, X, ChevronRight, Settings, LogOut, Plus } from "lucide-react";
+import { Brain, Menu, X, ChevronRight, Settings, LogOut, Plus, Coins } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { TokBadge } from "@/components/shared/TokBadge";
 import { useAppStore } from "@/stores/app-store";
 import { createClient } from "@/lib/supabase/client";
 import { TOOLS_MAP } from "@/lib/constants";
+import { CORE_NAV_ITEMS, EXTENDED_NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
 interface NavProps {
   isLoggedIn: boolean;
 }
+
+const AUTH_NAV_ITEMS = [...CORE_NAV_ITEMS, ...EXTENDED_NAV_ITEMS];
 
 /** Derive a breadcrumb from the current pathname */
 function useBreadcrumb(pathname: string) {
@@ -28,12 +32,14 @@ function useBreadcrumb(pathname: string) {
       const tool = TOOLS_MAP[segments[1]];
       crumbs.push({ label: tool?.title || segments[1].replace(/_/g, " ") });
     }
-  } else if (segments[0] === "pricing") {
-    crumbs.push({ label: "Tokens" });
   } else if (segments[0] === "settings") {
     crumbs.push({ label: "Settings" });
   } else if (segments[0] === "history") {
     crumbs.push({ label: "History" });
+  } else if (segments[0] === "quick-apply") {
+    crumbs.push({ label: "Quick Apply" });
+  } else if (segments[0] === "pricing") {
+    crumbs.push({ label: "Tokens" });
   } else if (segments[0] === "lifetime") {
     crumbs.push({ label: "Lifetime Deal" });
   } else if (segments[0] === "referral") {
@@ -86,8 +92,6 @@ export function Nav({ isLoggedIn }: NavProps) {
         .slice(0, 2)
     : "?";
 
-  const isActivePath = (href: string) => pathname === href || pathname.startsWith(href + "/");
-
   return (
     <>
       <nav className="sticky top-0 z-40 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/50">
@@ -125,7 +129,9 @@ export function Nav({ isLoggedIn }: NavProps) {
           {isLoggedIn ? (
             <div className="hidden md:flex items-center gap-4">
               <div className="relative inline-flex items-center">
-                <TokBadge />
+                <Link href="/pricing" aria-label="Manage tokens" className="inline-flex items-center">
+                  <TokBadge />
+                </Link>
                 {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
                   <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm"
                   >
@@ -181,7 +187,18 @@ export function Nav({ isLoggedIn }: NavProps) {
 
           {/* Mobile */}
           <div className="flex md:hidden items-center gap-3">
-            {isLoggedIn && <TokBadge />}
+            {isLoggedIn && (
+              <div className="relative inline-flex items-center">
+                <Link href="/pricing" aria-label="Manage tokens" className="inline-flex items-center">
+                  <TokBadge />
+                </Link>
+                {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
+                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm">
+                    <Plus className="w-2.5 h-2.5" strokeWidth={3} />
+                  </span>
+                )}
+              </div>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-gray-600 hover:text-gray-900 min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -198,12 +215,27 @@ export function Nav({ isLoggedIn }: NavProps) {
           <div className="px-4 py-6 space-y-1">
             {isLoggedIn ? (
               <>
-                <MobileLink href="/dashboard" label="Dashboard" active={isActivePath("/dashboard")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/mission" label="Mission" active={isActivePath("/mission")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/tools" label="Tools" active={isActivePath("/tools")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/pricing" label="Tokens" active={isActivePath("/pricing")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/history" label="History" active={isActivePath("/history")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/settings" label="Settings" active={isActivePath("/settings")} onClick={() => setMobileMenuOpen(false)} />
+                <p className="text-overline px-3 pb-1">Job Mission Control</p>
+                {AUTH_NAV_ITEMS.map((item) => (
+                  <MobileLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    icon={item.icon}
+                    active={isActiveRoute(pathname, item.href)}
+                    onClick={() => setMobileMenuOpen(false)}
+                  />
+                ))}
+                <div className="pt-2 px-1">
+                  <Link
+                    href="/pricing"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-800 min-h-[44px]"
+                  >
+                    <Coins className="w-4 h-4" />
+                    Add Tokens
+                  </Link>
+                </div>
                 <div className="border-t border-gray-200 my-2" />
                 <button
                   onClick={handleSignOut}
@@ -215,8 +247,8 @@ export function Nav({ isLoggedIn }: NavProps) {
               </>
             ) : (
               <>
-                <MobileLink href="/pricing" label="Pricing" active={isActivePath("/pricing")} onClick={() => setMobileMenuOpen(false)} />
-                <MobileLink href="/auth" label="Sign In" active={isActivePath("/auth")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/pricing" label="Pricing" active={isActiveRoute(pathname, "/pricing")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/auth" label="Sign In" active={isActiveRoute(pathname, "/auth")} onClick={() => setMobileMenuOpen(false)} />
                 <div className="pt-4">
                   <Link
                     href="/auth"
@@ -235,13 +267,29 @@ export function Nav({ isLoggedIn }: NavProps) {
   );
 }
 
-function MobileLink({ href, label, active, onClick }: { href: string; label: string; active: boolean; onClick: () => void }) {
+function MobileLink({
+  href,
+  label,
+  active,
+  onClick,
+  icon: Icon,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  icon?: LucideIcon;
+}) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`nav-item block px-3 py-3 text-base font-medium min-h-[44px] ${active ? "nav-item-active text-blue-700" : "text-gray-700 hover:bg-gray-50"}`}
+      aria-current={active ? "page" : undefined}
+      className={`nav-item flex items-center gap-2.5 px-3 py-3 text-base font-medium min-h-[44px] ${
+        active ? "nav-item-active text-blue-700" : "text-gray-700 hover:bg-gray-50"
+      }`}
     >
+      {Icon && <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={active ? 2 : 1.75} />}
       {label}
     </Link>
   );

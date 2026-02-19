@@ -2,6 +2,17 @@
 
 > Last updated: Feb 14, 2026
 > Use this checklist before going live at aiskillscore.com
+> Canonical release checklist source: `docs/CODE_HEALTH_CHECKLIST.md`
+
+---
+
+## Closeout Status (2026-02-19)
+
+Release readiness state recorded during merge-state/governance closeout:
+
+- [x] Branding governance terminal state recorded (`.github/branding-rollout/merge-state.json` set to `A/B/C/D=true`)
+- [x] Branding rollout gate final-state behavior documented (`docs/BRANDING_ROLLOUT_COORDINATION.md`)
+- [ ] Pre-deploy production setup tasks in this checklist are still pending explicit execution evidence
 
 ---
 
@@ -89,11 +100,11 @@ Run the automated setup script or create manually in Stripe Dashboard:
 
 | Product | Price | Metadata: `pack_id` | Metadata: `tokens` |
 |---------|-------|---------------------|---------------------|
-| Starter Pack | $5.00 one-time | `starter` | `50` |
-| Pro Pack | $15.00 one-time | `pro` | `200` |
-| Power Pack | $39.00 one-time | `power` | `600` |
-| Lifetime Early Bird | $49.00 one-time | `lifetime_early` | `100` |
-| Lifetime Standard | $79.00 one-time | `lifetime_standard` | `100` |
+| Starter Pack | $14.00 one-time | `starter` | `50` |
+| Pro Pack | $39.00 one-time | `pro` | `200` |
+| Power Pack | $79.00 one-time | `power` | `500` |
+| Lifetime Early Bird | Match active pricing config | `lifetime_early` | Match active pricing config |
+| Lifetime Standard | Match active pricing config | `lifetime_standard` | Match active pricing config |
 
 ### 3.2 Create Webhook
 - ☐ Endpoint URL: `https://aiskillscore.com/api/webhooks/stripe`
@@ -167,11 +178,11 @@ curl -s -o /dev/null -w "Webhook: %{http_code}\n" -X POST https://aiskillscore.c
 - ☐ Homepage loads with Smart Input
 - ☐ Auth page: signup with email/password works
 - ☐ Auth page: Google OAuth works (if configured)
-- ☐ New user gets 5 signup tokens
+- ☐ New user gets 15 signup tokens
 - ☐ Dashboard loads with correct token balance
-- ☐ Daily credits awarded on first login of the day
+- ☐ Daily free tokens are awarded on first login of the day
 - ☐ Free tool (AI Displacement Score) works without tokens
-- ☐ Paid tool (JD Match, 2 tokens) deducts tokens and returns results
+- ☐ Paid tool (JD Match, 5 tokens) deducts tokens and returns results
 - ☐ Paywall appears when tokens insufficient
 - ☐ Token purchase flow (Stripe checkout → webhook → balance update)
 - ☐ Share result → OG image generates correctly

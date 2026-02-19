@@ -2,15 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Crosshair, Wrench, User } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
+import { CORE_NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
-const ITEMS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", key: "dashboard" },
-  { href: "/mission", icon: Crosshair, label: "Mission", key: "mission" },
-  { href: "/tools", icon: Wrench, label: "Tools", key: "tools" },
-  { href: "/settings", icon: User, label: "Settings", key: "settings" },
-] as const;
+const ITEMS = CORE_NAV_ITEMS;
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -25,20 +20,21 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-[0_-6px_24px_rgba(15,23,42,0.08)] md:hidden">
       <div className="flex items-center justify-around">
         {ITEMS.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(item.href + "/");
+          const active = isActiveRoute(pathname, item.href);
           const showDot = item.key === "tools" && showToolsDot && !active;
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={`nav-item relative flex flex-col items-center justify-center py-2 px-4 min-h-[48px] min-w-[48px] transition-colors ${
-                active ? "nav-item-active text-blue-600" : "text-gray-400"
+                active ? "nav-item-active text-blue-700" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <div className="relative">
                 <item.icon className="w-5 h-5" strokeWidth={active ? 2 : 1.75} />
                 {showDot && (
-                  <span className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] rounded-full bg-blue-500" />
+                  <span className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] rounded-full bg-violet-500" />
                 )}
               </div>
               <span className={`text-[11px] font-medium mt-0.5 ${active ? "text-blue-700" : ""}`}>{item.label}</span>

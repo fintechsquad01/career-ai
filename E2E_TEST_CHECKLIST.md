@@ -3,6 +3,16 @@
 > Manual test plan covering all critical user flows.  
 > Run through each section after deploying changes.  
 > Last updated: February 2026
+> Canonical release checklist source: `docs/CODE_HEALTH_CHECKLIST.md`
+
+---
+
+## Closeout Status (2026-02-19)
+
+Execution status captured for release-readiness closeout:
+
+- [x] Branding governance closeout is complete (`merge-state.json` terminalized; gate behavior documented)
+- [ ] Full E2E test execution for this release has not yet been marked complete in this checklist
 
 ---
 
@@ -30,8 +40,8 @@ Before testing, ensure these environment variables are configured:
 - [ ] Fill in name, email, password → click "Create Account"
 - [ ] Verify redirect to `/dashboard`
 - [ ] Verify welcome email arrives (check Resend dashboard if using dev domain)
-- [ ] Verify profile shows 5 tokens in nav TokBadge
-- [ ] Verify `profiles` row created in Supabase with correct `full_name`, `token_balance = 5`
+- [ ] Verify profile shows 15 tokens in nav TokBadge
+- [ ] Verify `profiles` row created in Supabase with correct `full_name`, `token_balance = 15`
 
 ### 1b. Google OAuth Sign Up
 - [ ] Navigate to `/auth` → click Google sign-in
@@ -55,7 +65,7 @@ Before testing, ensure these environment variables are configured:
 
 ---
 
-## 2. Daily Credits
+## 2. Daily Free Tokens (`daily_credits` backend)
 
 ### 2a. First-Load Award
 - [ ] Sign in to existing account
@@ -65,7 +75,7 @@ Before testing, ensure these environment variables are configured:
 
 ### 2b. Idempotency
 - [ ] Refresh the page multiple times
-- [ ] Verify daily credits are NOT awarded again (already awarded today)
+- [ ] Verify daily free tokens are NOT awarded again (already awarded today)
 - [ ] Verify `daily_credits_balance` and `last_daily_credit_at` in Supabase are correct
 
 ### 2c. Cap at 14
@@ -138,7 +148,7 @@ Before testing, ensure these environment variables are configured:
 ### 4c. Token Upsell
 - [ ] With a user who has low tokens (purchased + daily <= 10)
 - [ ] Verify token upsell card appears on dashboard
-- [ ] Verify copy mentions daily credits
+- [ ] Verify copy mentions daily free tokens
 
 ### 4d. Track B Card
 - [ ] For user with completed entrepreneurship/roadmap/salary results
@@ -288,16 +298,16 @@ For each tool, run with sample data and verify:
 | Tool | Cost | Smoke Test Input |
 |---|---|---|
 | Displacement | Free | Job title: "Software Engineer", industry: "Technology" |
-| JD Match | 2 | Paste a real job posting + resume text |
-| Resume | 10 | Upload/paste a resume, optionally add target JD |
-| Cover Letter | 3 | Resume + JD + tone: "professional" |
-| Interview | 3 | Resume + JD + type: "behavioral" |
-| LinkedIn | 10 | Resume + target role: "Product Manager" |
-| Skills Gap | 5 | Resume + target role |
-| Roadmap | 8 | Resume + target role + time horizon: "12" |
-| Salary | 3 | Target role + location + optional current salary |
-| Entrepreneurship | 8 | Resume + risk tolerance: "moderate" |
-| Headshots | 20 | Upload selfie(s) + style: "professional" |
+| JD Match | 5 | Paste a real job posting + resume text |
+| Resume | 15 | Upload/paste a resume, optionally add target JD |
+| Cover Letter | 8 | Resume + JD + tone: "professional" |
+| Interview | 8 | Resume + JD + type: "behavioral" |
+| LinkedIn | 15 | Resume + target role: "Product Manager" |
+| Skills Gap | 8 | Resume + target role |
+| Roadmap | 15 | Resume + target role + time horizon: "12" |
+| Salary | 8 | Target role + location + optional current salary |
+| Entrepreneurship | 12 | Resume + risk tolerance: "moderate" |
+| Headshots | 25 | Upload selfie(s) + style: "professional" |
 
 ---
 

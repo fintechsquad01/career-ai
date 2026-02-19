@@ -1,5 +1,49 @@
 # Code Health Checklist
 
+This is the canonical release checklist for engineering readiness.
+Use this file as the source of truth for release gates; `PRE_DEPLOY_CHECKLIST.md` and `E2E_TEST_CHECKLIST.md` are execution runbooks.
+
+## Closeout Status (2026-02-19)
+
+Evidence-backed release readiness snapshot for governance closeout:
+
+- [x] Branding rollout merge state reflects terminal completion (`A/B/C/D=true`) in `.github/branding-rollout/merge-state.json`
+- [x] Branding CI gate terminal-state behavior is documented in `docs/BRANDING_ROLLOUT_COORDINATION.md`
+- [ ] Pre-push checks completed for this release candidate (`typecheck`, `lint`, `build`, mobile verification)
+- [ ] Production release checks completed (env vars, webhook/cron checks, edge functions, migrations, Stripe webhook)
+
+## Canonical Product Constants (Release Verification)
+
+Use these constants when validating release copy and pricing behavior.
+Source of truth: `src/lib/constants.ts`.
+
+- Signup bonus: **15 free tokens**
+- Daily login bonus: **2 free tokens/day** (daily balance cap: **14**)
+
+### Tool token costs
+
+| Tool | Tokens |
+|---|---:|
+| AI Displacement Score | 0 |
+| JD Match | 5 |
+| Resume Optimizer | 15 |
+| Cover Letter | 8 |
+| LinkedIn Optimizer | 15 |
+| AI Headshots | 25 |
+| Interview Prep | 8 |
+| Skills Gap Analysis | 8 |
+| Career Roadmap | 15 |
+| Salary Negotiation | 8 |
+| Entrepreneurship | 12 |
+
+### Token packs
+
+| Pack | Tokens | Price |
+|---|---:|---:|
+| Starter | 50 | $14 |
+| Pro | 200 | $39 |
+| Power | 500 | $79 |
+
 ## Pre-Push Checklist
 
 Run these before every push to `main`:
@@ -57,12 +101,20 @@ curl -s -o /dev/null -w "%{http_code}" https://aiskillscore.com/api/cron/daily-r
 
 | Event | Indicates |
 |---|---|
-| `tool_run` | Tool usage volume and distribution |
-| `tokens_spent` | Token economy health |
-| `signup_completed` | Conversion funnel start |
-| `paywall_shown` / `paywall_converted` | Monetization conversion |
+| `landing_variant_view` | Landing exposure denominator for CTR/conversion |
+| `landing_analyze` | Brand CTA engagement numerator (CTR signal) |
+| `signup_start` and `signup_complete` | Signup funnel progression and conversion |
+| `tool_run` and `tool_complete` | Tool completion rate and drop-off signal |
+| `paywall_shown` and `token_purchase` | Monetization funnel signal |
 | `share_created` | Viral growth signal |
-| `error_boundary_hit` | Client-side crashes |
+
+### KPI Governance Cross-Reference
+
+For governance formulas, pass/fail thresholds, and review templates, use:
+
+- `docs/BRAND_QA_SCORECARD.md`
+- `docs/BRAND_METRICS_CADENCE.md`
+- `docs/BRANDING_ROLLOUT_COORDINATION.md`
 
 ### Vercel Function Logs
 

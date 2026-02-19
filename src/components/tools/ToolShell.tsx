@@ -13,7 +13,7 @@ import { useTokens } from "@/hooks/useTokens";
 import { useMission } from "@/hooks/useMission";
 import { useAppStore } from "@/stores/app-store";
 import { track } from "@/lib/analytics";
-import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness } from "@/lib/constants";
+import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness, formatTokenAmountLabel } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
 import type { InsightCategory } from "@/lib/loading-insights";
@@ -454,6 +454,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const elapsedInterval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [insightIdx, setInsightIdx] = useState(0);
   const [completedToolIds, setCompletedToolIds] = useState<Set<string>>(new Set());
+  const [showInputSupport, setShowInputSupport] = useState(false);
   const [showNps, setShowNps] = useState(false);
   const [showReferralPrompt, setShowReferralPrompt] = useState(false);
   const [variantSaved, setVariantSaved] = useState(false);
@@ -974,7 +975,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="text-h1">{tool.title}</h1>
           <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
-            {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+            {formatTokenAmountLabel(tool.tokens)}
           </span>
           <span className="ui-badge ui-badge-gray">
             {tool.category}
@@ -988,163 +989,128 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         <p className="text-body-sm max-w-2xl">{tool.description}</p>
       </div>
 
-      {/* Consolidated insight banner — dismissible, once per session */}
-      {!insightsDismissed && state === "input" && (
-        <div className="relative surface-card-soft px-4 py-3.5">
-          <button
-            type="button"
-            onClick={() => {
-              setInsightsDismissed(true);
-              sessionStorage.setItem(`insights-dismissed-${toolId}`, "1");
-            }}
-            className="absolute top-2.5 right-2.5 text-gray-300 hover:text-gray-500 transition-colors"
-            aria-label="Dismiss insight"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-          <p className="text-sm text-gray-600 pr-6 leading-relaxed">{tool.painPoint}</p>
-          {tool.vsCompetitor && (
-            <p className="text-sm text-blue-700 font-medium mt-2">{tool.vsCompetitor}</p>
-          )}
-        </div>
-      )}
-
-      {/* Tool dependency hint (b5b) — rendered early so it's visible above the fold on mobile */}
       {state === "input" && (() => {
         const dep = TOOL_DEPENDENCIES[toolId];
-        if (!dep) return null;
-        if (completedToolIds.has(dep.prereqToolId)) return null;
+        const missingDependency = !!dep && !completedToolIds.has(dep.prereqToolId);
+        const hasResume = !!careerProfile?.resume_text;
+        const hasProfile = !!careerProfile?.title;
+        const hasTarget = toolId === "displacement" ? true : !!activeJobTarget;
+        const needsTargetHint = !activeJobTarget && ["jd_match", "resume", "cover_letter", "interview", "salary"].includes(toolId);
 
         return (
-          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
-            <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-amber-800 leading-relaxed">
-                <span className="font-semibold">Tip:</span> {dep.hint}
-              </p>
-              <Link
-                href={`/tools/${dep.prereqToolId}`}
-                className="text-xs font-medium text-amber-700 hover:text-amber-900 mt-1 inline-flex items-center gap-1"
-              >
-                Run {dep.prereqLabel} first
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+          <div className="space-y-4">
+            <div className="surface-card-soft p-3.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`ui-badge ${hasResume ? "ui-badge-green" : "ui-badge-amber"}`}>
+                  Resume {hasResume ? "ready" : "missing"}
+                </span>
+                <span className={`ui-badge ${hasTarget ? "ui-badge-blue" : "ui-badge-gray"}`}>
+                  {toolId === "displacement" ? "Target not required" : hasTarget ? "Target selected" : "Target optional"}
+                </span>
+                <span className={`ui-badge ${hasProfile ? "ui-badge-blue" : "ui-badge-amber"}`}>
+                  Profile {hasProfile ? "ready" : "incomplete"}
+                </span>
+              </div>
             </div>
+
+            {toolId !== "displacement" && <JobTargetSelector />}
+
+            {children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
+
+            <section className="border border-gray-200 rounded-xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowInputSupport((prev) => !prev)}
+                aria-expanded={showInputSupport}
+                aria-controls={`tool-input-support-${toolId}`}
+                className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-sm font-medium text-gray-700">Support context</span>
+                <span className="text-gray-400">{showInputSupport ? "−" : "+"}</span>
+              </button>
+
+              {showInputSupport && (
+                <div id={`tool-input-support-${toolId}`} className="px-4 pb-4 border-t border-gray-100 space-y-3 pt-3">
+                  {missingDependency && dep && (
+                    <div className="surface-card-soft px-3 py-2.5">
+                      <p className="text-xs font-semibold text-amber-800">Run this first</p>
+                      <ul className="mt-1 space-y-1">
+                        <li className="text-xs text-amber-800 leading-relaxed line-clamp-2">
+                          • {dep.hint}
+                        </li>
+                      </ul>
+                      <Link
+                        href={`/tools/${dep.prereqToolId}`}
+                        className="text-xs font-medium text-amber-700 hover:text-amber-900 mt-1 inline-flex items-center gap-1"
+                      >
+                        Run {dep.prereqLabel} first
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  )}
+
+                  {!insightsDismissed && (
+                    <div className="relative surface-card-soft px-3 py-2.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setInsightsDismissed(true);
+                          sessionStorage.setItem(`insights-dismissed-${toolId}`, "1");
+                        }}
+                        className="absolute top-2 right-2 text-gray-300 hover:text-gray-500 transition-colors"
+                        aria-label="Dismiss insight"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                      <p className="text-xs font-semibold text-gray-700 pr-5">Why this matters</p>
+                      <ul className="mt-1 space-y-1 pr-5">
+                        <li className="text-xs text-gray-600 leading-relaxed line-clamp-2">
+                          • {tool.painPoint}
+                        </li>
+                        {tool.vsCompetitor && (
+                          <li className="text-xs text-blue-700 leading-relaxed line-clamp-2">
+                            • Value context: {tool.vsCompetitor}
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {needsTargetHint && (
+                    <div className="surface-card-soft px-3 py-2.5">
+                      <p className="text-xs font-semibold text-blue-800">Target-specific output</p>
+                      <ul className="mt-1">
+                        <li className="text-xs text-blue-800 leading-relaxed line-clamp-2">
+                          • Paste a JD for role-specific recommendations.
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+
+                  {!hasResume && toolId !== "headshots" && (
+                    <ResumeUploadOrPaste
+                      value=""
+                      onChange={() => {
+                        // After upload, this component auto-saves and updates store state.
+                      }}
+                      compact
+                      label="Add resume for personalized results"
+                      autoSave
+                    />
+                  )}
+
+                  {hasResume && !hasProfile && toolId !== "headshots" && (
+                    <InlineProfileForm
+                      careerProfile={careerProfile}
+                      compact
+                    />
+                  )}
+                </div>
+              )}
+            </section>
           </div>
         );
       })()}
-
-      {/* Context */}
-      {careerProfile?.title && (
-        <div className="text-sm text-gray-500 bg-white/60 backdrop-blur-sm border border-gray-100 px-4 py-3 rounded-xl">
-          Pre-loaded from your resume: <strong className="text-gray-700">{careerProfile.title}</strong>
-          {careerProfile.company && ` at ${careerProfile.company}`}
-        </div>
-      )}
-      {/* Job Target Selector — switch between multiple targets */}
-      {toolId !== "displacement" && <JobTargetSelector />}
-
-      {/* JD nudge — shown when no active job target on tools that benefit from one */}
-      {state === "input" && !activeJobTarget && ["jd_match", "resume", "cover_letter", "interview", "salary"].includes(toolId) && (
-        <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
-          <Target className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-blue-800">
-              <span className="font-semibold">Tip:</span> Paste a job description to get results tailored to a specific role.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Data completeness nudge — inline resume upload */}
-      {state === "input" && !careerProfile?.resume_text && toolId !== "headshots" && (
-        <ResumeUploadOrPaste
-          value=""
-          onChange={() => {
-            // After upload, the component auto-saves to DB and updates the Zustand store
-          }}
-          compact
-          label="Paste your resume for personalized results"
-          autoSave
-        />
-      )}
-      {state === "input" && careerProfile?.resume_text && !careerProfile?.title && toolId !== "headshots" && (
-        <InlineProfileForm
-          careerProfile={careerProfile}
-          compact
-        />
-      )}
-
-      {/* Context verification — show what the AI will use */}
-      {state === "input" && (
-        <details open={!careerProfile?.resume_text} className="group border border-gray-200 rounded-xl overflow-hidden">
-          <summary className="flex items-center justify-between px-4 py-3.5 cursor-pointer hover:bg-gray-50 transition-colors">
-            <span className="text-sm font-medium text-gray-600">
-              Context the AI will use for this analysis
-            </span>
-            <svg className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div className="px-4 pb-3.5 space-y-2 border-t border-gray-100 pt-2.5">
-            {/* Resume context */}
-            {careerProfile?.resume_text ? (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-green-500">&#10003;</span>
-                <span className="text-gray-600">
-                  Resume: <strong className="text-gray-900">{careerProfile.title || "Uploaded"}</strong>
-                  {careerProfile.company ? ` at ${careerProfile.company}` : ""}
-                  {careerProfile.resume_text ? ` (${Math.round(careerProfile.resume_text.length / 5)} words)` : ""}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-amber-500">&#9888;</span>
-                <span className="text-gray-500">No resume uploaded — add one above for personalized results</span>
-              </div>
-            )}
-
-            {/* Job target context */}
-            {toolId === "displacement" ? (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-green-500">&#10003;</span>
-                <span className="text-gray-600">
-                  Scope: <strong className="text-gray-900">Current role risk analysis</strong> (target job not used)
-                </span>
-              </div>
-            ) : activeJobTarget ? (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-green-500">&#10003;</span>
-                <span className="text-gray-600">
-                  Target: <strong className="text-gray-900">{activeJobTarget.title}</strong> at {activeJobTarget.company}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-gray-300">&#9679;</span>
-                <span className="text-gray-400">No target job set (optional)</span>
-              </div>
-            )}
-
-            {/* Profile details */}
-            {careerProfile?.title ? (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-green-500">&#10003;</span>
-                <span className="text-gray-600">
-                  Profile: <strong className="text-gray-900">{careerProfile.title}</strong>
-                  {careerProfile.industry ? `, ${careerProfile.industry}` : ""}
-                  {careerProfile.years_experience ? `, ${careerProfile.years_experience}y exp` : ""}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-amber-500">&#9888;</span>
-                <span className="text-gray-500">No career profile — complete the form above for better accuracy</span>
-              </div>
-            )}
-          </div>
-        </details>
-      )}
 
       {/* Loading state — Rich experience with rotating insights */}
       {state === "loading" && (
@@ -1309,13 +1275,14 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         );
       })()}
 
-      {/* Children render prop */}
-      {state !== "loading" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
+      {/* Children render prop for result state */}
+      {state === "result" && children({ state, result, progress, onRun: handleRun, onReset: handleReset })}
 
       {/* Result actions */}
       {state === "result" && (
         <div className="report-section stagger-children">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Report actions</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Report Actions</p>
+          <p className="text-xs text-gray-500 mb-3">Run again, save, and manage this report across your mission.</p>
           <div className="flex flex-wrap gap-2.5">
             <button
               onClick={handleReset}
@@ -1397,7 +1364,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         return (
           <div className="space-y-3">
             {missionComplete && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+              <div className="report-section bg-emerald-50 border-emerald-200">
                 <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">Mission complete</p>
                 <p className="text-sm text-emerald-900 mb-2">
                   You have finished all core mission tools for this target. Continue with refinement tools or start a new mission.
@@ -1415,9 +1382,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             {!missionComplete && primary && (
               <Link
                 href={`/tools/${primary.tool.id}`}
-                className="block bg-gradient-to-r from-blue-50 to-violet-50 rounded-2xl border border-blue-100 p-5 hover:shadow-md transition-shadow group celebrate"
+                className="block report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100 hover:shadow-md transition-shadow group celebrate"
               >
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Recommended next step</p>
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Next Step</p>
                 <p className="text-sm text-gray-700 mb-3">{primary.narrative}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
@@ -1427,7 +1394,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       primary.tool.tokens === 0 ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
                     }`}>
-                      {primary.tool.tokens === 0 ? "Free" : `${primary.tool.tokens} tokens`}
+                      {formatTokenAmountLabel(primary.tool.tokens)}
                     </span>
                     <ArrowRight className="w-4 h-4 text-blue-400 group-hover:text-blue-600 transition-colors" />
                   </div>
@@ -1446,7 +1413,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                     className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors min-h-[36px]"
                   >
                     {rec.title}
-                    <span className="text-gray-400">{rec.tokens === 0 ? "Free" : `${rec.tokens} tok`}</span>
+                    <span className="text-gray-400">{formatTokenAmountLabel(rec.tokens)}</span>
                   </Link>
                 ))}
               </div>
