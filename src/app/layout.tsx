@@ -161,7 +161,7 @@ export default function RootLayout({
           name: "Free Tier",
           price: "0",
           priceCurrency: "USD",
-          description: "15 free tokens on signup + 2 daily credits. AI Displacement Score is always free.",
+          description: "15 free tokens on signup + 2 daily tokens. AI Displacement Score is always free.",
         },
         {
           "@type": "Offer",

@@ -76,3 +76,10 @@ export const EVENTS = {
   AB_EXPERIMENT_VIEWED: "ab_experiment_viewed",
   LANDING_VARIANT_VIEW: "landing_variant_view",
 } as const;
+
+/**
+ * KPI governance mapping (docs/BRAND_QA_SCORECARD.md):
+ * - Brand CTA CTR: landing_analyze / landing_variant_view
+ * - Visitor-to-signup conversion: signup_complete / landing_variant_view
+ * - Tool completion rate: tool_complete / tool_run
+ */

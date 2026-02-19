@@ -2,8 +2,8 @@ import type { Tool, Pack, CareerProfile, JobTarget } from "@/types";
 import type { Json } from "@/types/database";
 
 export const BRAND_MESSAGING = {
-  valuePromise: "Best output for the best price, with a dashboard that advances your skills over time.",
-  pricingModel: "Premium AI output at fair token pricing with no subscription lock-in.",
+  valuePromise: "Gemini 2.5 Pro career analysis with cited evidence, plus a dashboard that tracks skill progress over time.",
+  pricingModel: "Gemini 2.5 Pro output with pay-per-use token pricing and no subscription lock-in.",
   competitorProofRule: "Format competitor references as claim -> mechanism -> evidence.",
 } as const;
 
@@ -12,12 +12,33 @@ export const TOKEN_LANGUAGE_RULE = {
   avoidTerms: ["credits", "points"],
 } as const;
 
+export const CANONICAL_COPY = {
+  signup: {
+    cta: "Create Account — 15 Free Tokens",
+  },
+  tokens: {
+    unit: "tokens",
+    dailyFreeMessage: "Log in daily for 2 free tokens. That's a free JD Match scan every day.",
+    rateSuffix: "/token",
+  },
+  privacy: {
+    trustLine: "Encrypted · Never sold · 30 second analysis",
+  },
+  cta: {
+    freeAnalysisPrimary: "Get Your Free AI Risk Score",
+  },
+} as const;
+
+export function formatTokenAmountLabel(tokenCount: number): string {
+  return tokenCount === 0 ? "Free" : `${tokenCount} ${CANONICAL_COPY.tokens.unit}`;
+}
+
 export const TOOLS: Tool[] = [
   {
     id: "displacement",
     icon: "ShieldAlert",
     title: "AI Displacement Score",
-    description: "Find out which of your daily tasks AI threatens — and which make you irreplaceable",
+    description: "See which of your daily tasks AI can automate — and which still depend on human judgment",
     tokens: 0,
     category: "Analyze",
     phase: 1,
@@ -29,7 +50,7 @@ export const TOOLS: Tool[] = [
     id: "jd_match",
     icon: "Target",
     title: "JD Match Score",
-    description: "Get a recruiter's honest verdict on your fit — with evidence from your resume",
+    description: "Get a recruiter-style fit assessment with evidence from your resume",
     tokens: 5,
     category: "Analyze",
     phase: 1,
@@ -41,7 +62,7 @@ export const TOOLS: Tool[] = [
     id: "resume",
     icon: "FileText",
     title: "Resume Optimizer",
-    description: "Optimize your resume for ATS and recruiters — without losing your authentic voice",
+    description: "Optimize your resume for ATS parsing and recruiter review — without losing your authentic voice",
     tokens: 15,
     category: "Build",
     phase: 1,
@@ -53,7 +74,7 @@ export const TOOLS: Tool[] = [
     id: "cover_letter",
     icon: "Mail",
     title: "Cover Letter",
-    description: "A cover letter that tells your story — not a template that sounds like everyone else",
+    description: "Build a role-specific cover letter from your real experience — not a generic template",
     tokens: 8,
     category: "Build",
     phase: 2,
@@ -65,7 +86,7 @@ export const TOOLS: Tool[] = [
     id: "linkedin",
     icon: "Linkedin",
     title: "LinkedIn Optimizer",
-    description: "Make LinkedIn's AI recommend you to recruiters — profile, keywords, and content strategy",
+    description: "Optimize your profile for LinkedIn recruiter search and AI summaries — profile, keywords, and content strategy",
     tokens: 15,
     category: "Build",
     phase: 2,
@@ -77,7 +98,7 @@ export const TOOLS: Tool[] = [
     id: "headshots",
     icon: "Camera",
     title: "AI Headshots",
-    description: "Professional headshots in minutes — profiles with pro photos get 14x more views",
+    description: "Generate LinkedIn-ready headshots in minutes — profiles with pro photos get 14x more views",
     tokens: 25,
     category: "Build",
     phase: 2,
@@ -90,7 +111,7 @@ export const TOOLS: Tool[] = [
     id: "interview",
     icon: "MessageSquare",
     title: "Interview Prep",
-    description: "Practice the exact questions they'll ask — including the follow-ups that decide who gets the offer",
+    description: "Practice likely interview questions and follow-ups based on your role and company context",
     tokens: 8,
     category: "Prepare",
     phase: 3,
@@ -102,7 +123,7 @@ export const TOOLS: Tool[] = [
     id: "skills_gap",
     icon: "TrendingUp",
     title: "Skills Gap Analysis",
-    description: "See what's actually missing for your target role — and a week-by-week plan to close each gap",
+    description: "See the missing skills for your target role — and a week-by-week plan to close each gap",
     tokens: 8,
     category: "Grow",
     phase: 3,
@@ -126,7 +147,7 @@ export const TOOLS: Tool[] = [
     id: "salary",
     icon: "DollarSign",
     title: "Salary Negotiation",
-    description: "Know your worth, rehearse the conversation, and negotiate beyond just base salary",
+    description: "Estimate your market range, rehearse the conversation, and negotiate beyond base salary",
     tokens: 8,
     category: "Prepare",
     phase: 3,
@@ -138,7 +159,7 @@ export const TOOLS: Tool[] = [
     id: "entrepreneurship",
     icon: "Rocket",
     title: "Entrepreneurship",
-    description: "Discover which business you could build with the skills you already have — starting this week",
+    description: "Identify business models you can start from your existing skills — with first-week actions",
     tokens: 12,
     category: "Grow",
     phase: 4,

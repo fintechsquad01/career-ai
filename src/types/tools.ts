@@ -29,6 +29,8 @@ export interface Tool {
 
 export type ToolState = "input" | "loading" | "result";
 
+export type ReportSectionKey = "summary" | "evidence" | "actions" | "next_step";
+
 export interface ToolProgress {
   step: number;
   total: number;

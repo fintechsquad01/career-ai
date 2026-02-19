@@ -10,6 +10,7 @@ export type {
   ToolCategory,
   Tool,
   ToolState,
+  ReportSectionKey,
   ToolProgress,
   TDisplacementResult,
   TJdMatchResult,
