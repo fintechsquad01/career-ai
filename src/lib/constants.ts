@@ -12,6 +12,10 @@ export const TOKEN_LANGUAGE_RULE = {
   avoidTerms: ["credits", "points"],
 } as const;
 
+export const FEATURE_FLAGS = {
+  wave2JourneyFlow: "wave2_journey_flow",
+} as const;
+
 export const CANONICAL_COPY = {
   signup: {
     cta: "Create Account — 15 Free Tokens",
