@@ -10,9 +10,9 @@ import { EmailCapture } from "@/components/landing/EmailCapture";
 
 function TokenCalculator() {
   const [jobApps, setJobApps] = useState(5);
-  // Average tokens per full job application: JD Match (5) + Resume (15) + Cover Letter (8) + Interview (8) = 36
+  // Average tokens per full job application: Job Match Score (5) + Resume (15) + Cover Letter (8) + Interview (8) = 36
   const tokensNeeded = useMemo(() => {
-    const perApp = 36; // JD Match + Resume + Cover Letter + Interview
+    const perApp = 36; // Job Match Score + Resume + Cover Letter + Interview
     const base = jobApps * perApp;
     return base;
   }, [jobApps]);
@@ -45,7 +45,7 @@ function TokenCalculator() {
             You&apos;ll need approximately <span className="font-bold text-blue-600">{tokensNeeded} tokens</span>
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            Based on JD Match + Resume Optimizer + Cover Letter + Interview Prep per application
+            Based on Job Match Score + Resume Optimizer + Cover Letter + Interview Prep per application
           </p>
           <p className="text-sm font-semibold text-blue-700 mt-2">
             Recommended: {recommendedPack} Pack
@@ -70,9 +70,9 @@ export default function PricingPage() {
 
   const selectedPack = PACKS.find((p) => p.id === selectedPackId) ?? PACKS[0];
   const selectedPackWorkflowCoverage = selectedPack.tokens >= 200
-    ? "Covers multiple full job cycles: JD Match -> Resume -> Cover Letter -> Interview Prep."
+    ? "Covers multiple full job cycles: Job Match Score -> Resume -> Cover Letter -> Interview Prep."
     : selectedPack.tokens >= 50
-      ? "Covers a focused run: JD Match + Resume Optimizer + one follow-up tool."
+      ? "Covers a focused run: Job Match Score + Resume Optimizer + one follow-up tool."
       : "Best for trying one to two tools and validating fit before scaling.";
 
   const handlePurchase = async (packId: string) => {
@@ -292,7 +292,7 @@ export default function PricingPage() {
                 </tr>
                 {[
                   { key: "ats", label: "ATS Resume Scan" },
-                  { key: "match", label: "JD Matching" },
+                  { key: "match", label: "Job Matching" },
                   { key: "cover", label: "Cover Letters" },
                   { key: "interview", label: "Interview Prep" },
                   { key: "linkedin", label: "LinkedIn Optimization" },

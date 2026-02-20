@@ -124,7 +124,7 @@ export function InlineSignup() {
         </button>
       </form>
       <p className="text-xs text-gray-400 mt-2 text-center">
-        15 free tokens typically cover one resume optimization or multiple JD Match runs.
+        15 free tokens typically cover one resume optimization or multiple Job Match Score runs.
       </p>
       <p className="text-xs text-center mt-1"><a href="/auth" className="text-blue-600 hover:text-blue-700 font-medium">Already have an account? Sign in</a></p>
     </div>

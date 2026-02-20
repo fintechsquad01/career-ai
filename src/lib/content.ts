@@ -87,7 +87,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "Keyword Optimization Beyond Simple Matching",
-        body: "The old advice of 'stuff keywords from the job description into your resume' is outdated and can actually hurt you. Modern ATS and recruiter AI look for:\n\n**Contextual keywords.** Don't just list 'Python' in a skills section. Show it in context: 'Built automated data pipeline in Python reducing report generation time by 60%.'\n\n**Exact title matches.** If the JD says 'Senior Product Manager,' your resume should include that exact phrase, not 'Sr. PM' or 'Product Lead.'\n\n**Hard skills over soft skills.** ATS weighs technical terms, certifications, and tool names more heavily. 'Certified Scrum Master' outweighs 'team player' every time.\n\n**Quantified achievements.** Numbers are high-signal for both ATS and human reviewers. '23% revenue increase' is parseable and memorable. 'Significantly improved revenue' is neither.\n\nAISkillScore's JD Match Score (5 tokens) analyzes your resume against a specific job posting and shows exactly which keywords you're missing and where to add them.",
+        body: "The old advice of 'stuff keywords from the job description into your resume' is outdated and can actually hurt you. Modern ATS and recruiter AI look for:\n\n**Contextual keywords.** Don't just list 'Python' in a skills section. Show it in context: 'Built automated data pipeline in Python reducing report generation time by 60%.'\n\n**Exact title matches.** If the JD says 'Senior Product Manager,' your resume should include that exact phrase, not 'Sr. PM' or 'Product Lead.'\n\n**Hard skills over soft skills.** ATS weighs technical terms, certifications, and tool names more heavily. 'Certified Scrum Master' outweighs 'team player' every time.\n\n**Quantified achievements.** Numbers are high-signal for both ATS and human reviewers. '23% revenue increase' is parseable and memorable. 'Significantly improved revenue' is neither.\n\nAISkillScore's Job Match Score (5 tokens) analyzes your resume against a specific job posting and shows exactly which keywords you're missing and where to add them.",
       },
       {
         heading: "Why Most AI Resume Tools Make Things Worse",
@@ -169,7 +169,7 @@ export const ARTICLES: TArticle[] = [
       },
       {
         heading: "When to Walk Away (And How)",
-        body: "Knowing when to walk away is the ultimate negotiation leverage. If you have alternatives, you negotiate from strength.\n\n**Walk-away indicators:**\n- Offer is >15% below market rate and they won't move\n- Company shows bad faith (rescinding verbal agreements, pressure tactics)\n- The role scope has changed from what was discussed\n- Benefits/culture red flags emerged during negotiation\n\n**How to walk away gracefully:**\n'I really appreciate the time you've invested in this process, and I'm impressed by the team. Unfortunately, the total compensation doesn't align with what I need to make this move. If the situation changes, I'd love to reconnect.'\n\nThis preserves the relationship and often results in an improved offer 24-48 hours later.\n\n**Building leverage before negotiation:**\n- Always have at least 2 active opportunities\n- Know your BATNA (Best Alternative to a Negotiated Agreement)\n- Use AISkillScore's JD Match to apply strategically to roles where you're a strong fit\n- Track your market value quarterly, not just when job hunting",
+        body: "Knowing when to walk away is the ultimate negotiation leverage. If you have alternatives, you negotiate from strength.\n\n**Walk-away indicators:**\n- Offer is >15% below market rate and they won't move\n- Company shows bad faith (rescinding verbal agreements, pressure tactics)\n- The role scope has changed from what was discussed\n- Benefits/culture red flags emerged during negotiation\n\n**How to walk away gracefully:**\n'I really appreciate the time you've invested in this process, and I'm impressed by the team. Unfortunately, the total compensation doesn't align with what I need to make this move. If the situation changes, I'd love to reconnect.'\n\nThis preserves the relationship and often results in an improved offer 24-48 hours later.\n\n**Building leverage before negotiation:**\n- Always have at least 2 active opportunities\n- Know your BATNA (Best Alternative to a Negotiated Agreement)\n- Use AISkillScore's Job Match Score to apply strategically to roles where you're a strong fit\n- Track your market value quarterly, not just when job hunting",
       },
     ],
   },
@@ -441,7 +441,7 @@ export const COMPARISONS: TComparison[] = [
       { name: "Real-Time Interview Assist", us: false, them: true },
       { name: "Resume Optimization", us: true, them: false },
       { name: "Cover Letter Generation", us: true, them: false },
-      { name: "JD Match Analysis", us: true, them: false },
+      { name: "Job Match Analysis", us: true, them: false },
       { name: "Salary Negotiation Scripts", us: true, them: false },
       { name: "Skills Gap Analysis", us: true, them: false },
       { name: "Career Roadmap", us: true, them: false },

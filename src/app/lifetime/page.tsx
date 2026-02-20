@@ -260,7 +260,7 @@ export default function LifetimePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               "1 Resume Optimization (15 tokens)",
-              "2 JD Match Analyses (10 tokens)",
+              "2 Job Match Score Analyses (10 tokens)",
               "1 Cover Letter (8 tokens)",
               "1 Interview Prep (8 tokens)",
               "1 Skills Gap Analysis (8 tokens)",
@@ -315,7 +315,7 @@ export default function LifetimePage() {
             ${activeTier.price} today. {activeTier.tokens} tokens every month. Forever.
           </p>
           <p className="text-xs text-blue-100/90 mb-4">
-            Unlocks recurring mission flow coverage each month: JD Match -&gt; Resume -&gt; Interview Prep -&gt; Salary strategy.
+            Unlocks recurring mission flow coverage each month: Job Match Score -&gt; Resume -&gt; Interview Prep -&gt; Salary strategy.
           </p>
           <button
             onClick={handlePurchase}

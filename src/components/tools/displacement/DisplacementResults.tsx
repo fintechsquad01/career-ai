@@ -264,7 +264,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
       }
       nextStep={
         <div className="surface-card-hero p-5 text-center">
-        <p className="text-sm font-semibold text-gray-900 mb-1">Start here now: run JD Match on your target role</p>
+        <p className="text-sm font-semibold text-gray-900 mb-1">Start here now: run Job Match Score on your target role</p>
         <p className="text-xs text-gray-500 mb-4">
           Turn this risk signal into a role-specific action plan with requirement gaps and fixes.
         </p>
@@ -273,7 +273,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
           href="/tools/jd_match"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]"
         >
-          Run JD Match
+          Run Job Match Score
         </Link>
         </div>
       }

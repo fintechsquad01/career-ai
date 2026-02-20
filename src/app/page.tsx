@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         url: `${APP_URL}/api/og`,
         width: 1200,
         height: 630,
-        alt: "AISkillScore — Stop guessing. Know exactly where you stand.",
+        alt: "AISkillScore — Match your resume to the exact job before you apply.",
       },
     ],
   },

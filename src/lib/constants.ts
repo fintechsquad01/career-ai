@@ -24,7 +24,7 @@ export const CANONICAL_COPY = {
   },
   tokens: {
     unit: "tokens",
-    dailyFreeMessage: "Log in daily for 2 free tokens. That's a free JD Match scan every day.",
+    dailyFreeMessage: "Log in daily for 2 free tokens. That's a free Job Match Score scan every day.",
     rateSuffix: "/token",
   },
   privacy: {
@@ -63,7 +63,7 @@ export const TOOLS: Tool[] = [
   {
     id: "jd_match",
     icon: "Target",
-    title: "JD Match Score",
+    title: "Job Match Score",
     description: "Get a recruiter-style fit assessment with evidence from your resume",
     tokens: 5,
     category: "Analyze",
@@ -327,7 +327,7 @@ export const FAQ_ITEMS = [
   // AI-query-optimized questions (natural language queries people ask AI assistants)
   {
     q: "What is the best AI tool to check if my resume will pass ATS?",
-    a: "AISkillScore's Resume Optimizer (15 tokens, about $2.93) analyzes your resume against ATS requirements and rewrites it to pass automated screening while preserving your authentic voice. Unlike tools that just count keywords, it provides evidence-based optimization — showing exactly why each change improves your ATS pass rate. Your first resume optimization is free with signup tokens. The JD Match Score (5 tokens) also checks how well your resume matches a specific job posting.",
+    a: "AISkillScore's Resume Optimizer (15 tokens, about $2.93) analyzes your resume against ATS requirements and rewrites it to pass automated screening while preserving your authentic voice. Unlike tools that just count keywords, it provides evidence-based optimization — showing exactly why each change improves your ATS pass rate. Your first resume optimization is free with signup tokens. The Job Match Score (5 tokens) also checks how well your resume matches a specific job posting.",
   },
   {
     q: "How do I know if AI will replace my job?",
@@ -335,7 +335,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "What AI tools help with job searching in 2026?",
-    a: "AISkillScore provides 11 AI-powered career tools: AI Displacement Score (free), JD Match Score for job-resume matching, Resume Optimizer for ATS optimization, Cover Letter generator, LinkedIn Optimizer for recruiter algorithm visibility, AI Headshots, Interview Prep with follow-up questions, Skills Gap Analysis, Career Roadmap with weekly checkpoints, Salary Negotiation scripts, and Entrepreneurship Assessment. All tools use Gemini 2.5 Pro AI and are pay-per-use with no subscriptions. Token packs start at $14.",
+    a: "AISkillScore provides 11 AI-powered career tools: AI Displacement Score (free), Job Match Score for job-resume matching, Resume Optimizer for ATS optimization, Cover Letter generator, LinkedIn Optimizer for recruiter algorithm visibility, AI Headshots, Interview Prep with follow-up questions, Skills Gap Analysis, Career Roadmap with weekly checkpoints, Salary Negotiation scripts, and Entrepreneurship Assessment. All tools use Gemini 2.5 Pro AI and are pay-per-use with no subscriptions. Token packs start at $14.",
   },
   {
     q: "Is AI resume optimization worth paying for?",
@@ -356,7 +356,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Do I get free tokens every day?",
-    a: "Yes! Log in daily and receive 2 free tokens. Save up for a few days and run a JD Match scan. Consistency wins the job hunt.",
+    a: "Yes! Log in daily and receive 2 free tokens. Save up for a few days and run a Job Match Score scan. Consistency wins the job hunt.",
   },
   // Trust & quality
   {

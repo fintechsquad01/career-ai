@@ -114,14 +114,14 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<boo
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Hey ${firstName}, welcome aboard!</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        You now have <strong>15 free tokens</strong> to try any of our 11 AI career tools. Plus, log in daily for <strong>2 extra tokens</strong> to build your balance for JD Match, Skills Gap, and more.
+        You now have <strong>15 free tokens</strong> to try any of our 11 AI career tools. Plus, log in daily for <strong>2 extra tokens</strong> to build your balance for Job Match Score, Skills Gap, and more.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
         Here are the most popular ways to get started:
       </p>
       <ul style="color:#4b5563;font-size:14px;line-height:1.9;padding-left:20px;margin:0 0 12px;">
         <li><strong>AI Displacement Score</strong> — free, takes 30 seconds</li>
-        <li><strong>JD Match</strong> — paste a job posting to see your real fit (5 tokens)</li>
+        <li><strong>Job Match Score</strong> — paste a job posting to see your real fit (5 tokens)</li>
         <li><strong>Resume Optimizer</strong> — ATS + recruiter-optimized, voice preserved (15 tokens)</li>
       </ul>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 4px;">
@@ -152,7 +152,7 @@ export async function sendDailyCreditReminder(email: string, name: string, daysM
         Hey ${firstName}, you haven't logged in for ${daysMissed} day${daysMissed > 1 ? "s" : ""} — that's <strong>${missedTokens} tokens</strong> you could have earned.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Daily tokens let you run a <strong>free JD Match scan every day</strong>. In a week, you'll have enough for a full Skills Gap Analysis (8 tokens) or an Interview Prep session (8 tokens).
+        Daily tokens let you run a <strong>free Job Match Score scan every day</strong>. In a week, you'll have enough for a full Skills Gap Analysis (8 tokens) or an Interview Prep session (8 tokens).
       </p>
       <div style="background:#f0fdf4;border-radius:12px;padding:16px;margin:16px 0;text-align:center;">
         <p style="color:#166534;font-size:16px;font-weight:700;margin:0;">2 tokens waiting for you</p>
@@ -213,13 +213,13 @@ export async function sendActivationDay1(email: string, name: string): Promise<b
       <div style="background:#f0f9ff;border-radius:12px;padding:16px;margin:16px 0;">
         <table style="width:100%;border-collapse:collapse;">
           <tr><td style="padding:6px 0;color:#1e40af;font-size:13px;">AI Displacement Score</td><td style="text-align:right;color:#059669;font-weight:700;font-size:13px;">FREE</td></tr>
-          <tr><td style="padding:6px 0;color:#1e40af;font-size:13px;">JD Match (paste a job posting)</td><td style="text-align:right;color:#4b5563;font-size:13px;">5 tokens</td></tr>
+          <tr><td style="padding:6px 0;color:#1e40af;font-size:13px;">Job Match Score (paste a job posting)</td><td style="text-align:right;color:#4b5563;font-size:13px;">5 tokens</td></tr>
           <tr><td style="padding:6px 0;color:#1e40af;font-size:13px;">Resume Optimizer</td><td style="text-align:right;color:#4b5563;font-size:13px;">15 tokens</td></tr>
           <tr><td style="padding:6px 0;color:#1e40af;font-size:13px;">Cover Letter + Interview Prep</td><td style="text-align:right;color:#4b5563;font-size:13px;">8 tokens each</td></tr>
         </table>
       </div>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        <strong>Most users start with the AI Displacement Score</strong> — it's free and takes 30 seconds. Then they run JD Match on a real job posting.
+        <strong>Most users start with the AI Displacement Score</strong> — it's free and takes 30 seconds. Then they run Job Match Score on a real job posting.
       </p>
       <div style="text-align:center;">
         ${ctaButton("Start with Your Free AI Risk Score", `${appUrl}/tools/displacement`)}
@@ -242,7 +242,7 @@ export async function sendActivationDay3(email: string, name: string, tokensRema
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your tokens are waiting</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Hey ${firstName}, you have <strong>${tokensRemaining} tokens</strong> ready to use. Most users run <strong>JD Match</strong> next — just paste any job posting and get an honest assessment of your fit.
+        Hey ${firstName}, you have <strong>${tokensRemaining} tokens</strong> ready to use. Most users run <strong>Job Match Score</strong> next — just paste any job posting and get an honest assessment of your fit.
       </p>
       <div style="background:#fef3c7;border-radius:12px;padding:16px;margin:16px 0;text-align:center;">
         <p style="color:#92400e;font-size:14px;font-weight:600;margin:0;">
@@ -277,7 +277,7 @@ export async function sendActivationDay7(email: string, name: string, tokensRema
       </p>
       <ol style="color:#4b5563;font-size:14px;line-height:1.9;padding-left:20px;margin:0 0 12px;">
         <li>Run your <strong>AI Displacement Score</strong> (free, 30 sec)</li>
-        <li>Paste a job you like into <strong>JD Match</strong> (5 tokens)</li>
+        <li>Paste a job you like into <strong>Job Match Score</strong> (5 tokens)</li>
         <li>Get your resume <strong>ATS-optimized</strong> (15 tokens)</li>
       </ol>
       <div style="text-align:center;">
@@ -307,7 +307,7 @@ export async function sendPostPurchaseWelcome(email: string, name: string, packN
         Here's the optimal order for maximum impact:
       </p>
       <ol style="color:#4b5563;font-size:14px;line-height:1.9;padding-left:20px;margin:0 0 12px;">
-        <li><strong>JD Match</strong> on your top target job (5 tokens)</li>
+        <li><strong>Job Match Score</strong> on your top target job (5 tokens)</li>
         <li><strong>Resume Optimizer</strong> tailored to that role (15 tokens)</li>
         <li><strong>Cover Letter</strong> that tells your story (8 tokens)</li>
         <li><strong>Interview Prep</strong> for the likely questions (8 tokens)</li>
@@ -337,13 +337,13 @@ export async function sendReengagementDay14(email: string, name: string, dailyCr
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your free tokens are waiting</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Hey ${firstName}, you have <strong>${dailyCreditsAvailable} free daily tokens</strong> waiting. Use them to try JD Match, Skills Gap, and other AI career tools.
+        Hey ${firstName}, you have <strong>${dailyCreditsAvailable} free daily tokens</strong> waiting. Use them to try Job Match Score, Skills Gap, and other AI career tools.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
         The job market shifts fast. A quick daily check keeps you ahead:
       </p>
       <ul style="color:#4b5563;font-size:14px;line-height:1.9;padding-left:20px;margin:0 0 12px;">
-        <li>Paste any new job posting → instant JD Match</li>
+        <li>Paste any new job posting → instant Job Match Score</li>
         <li>Track how your match scores change as you improve</li>
         <li>Daily tokens are free — use them or lose them</li>
       </ul>

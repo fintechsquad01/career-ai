@@ -496,7 +496,7 @@ export function DashboardContent({
                   <Target className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">JD Match</p>
+                  <p className="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">Job Match Score</p>
                   <p className="text-xs text-gray-500">Match against a job posting</p>
                 </div>
                 <span className="ui-badge ui-badge-blue flex-shrink-0">5 tokens</span>

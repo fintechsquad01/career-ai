@@ -114,7 +114,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">Quick Apply</h4>
-          <p className="text-xs text-gray-500 mt-0.5">Run JD Match + Resume Optimizer + Cover Letter in one go — 15 tokens</p>
+          <p className="text-xs text-gray-500 mt-0.5">Run Job Match Score + Resume Optimizer + Cover Letter in one go — 15 tokens</p>
         </div>
         <ArrowRight className="w-4 h-4 text-blue-400 group-hover:text-blue-600 transition-colors shrink-0" />
       </Link>

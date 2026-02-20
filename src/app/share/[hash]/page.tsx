@@ -113,7 +113,7 @@ export default async function SharePage({ params }: SharePageProps) {
 
   const shareUrl = `${APP_URL}/share/${hash}`;
   const scoreLabel = getScoreLabel(score.score_type);
-  const sharePageDescription = `${scoreLabel} result from AISkillScore, an AI-powered career intelligence platform. Stop guessing. Know exactly where you stand.`;
+  const sharePageDescription = `${scoreLabel} result from AISkillScore, an AI-powered career intelligence platform. Match your resume to the exact job before you apply.`;
   const scoreText = `${scoreLabel} score: ${score.score_value}/100${score.industry ? ` in ${score.industry}` : ""}.`;
 
   const shareWebPageJsonLd = {

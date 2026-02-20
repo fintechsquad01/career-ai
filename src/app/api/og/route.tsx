@@ -205,7 +205,7 @@ function renderBrandOG() {
               marginBottom: 12,
             }}
           >
-            Stop guessing.
+            Match your resume to the exact job
           </p>
           <p
             style={{
@@ -217,7 +217,7 @@ function renderBrandOG() {
               marginBottom: 20,
             }}
           >
-            Know exactly where you stand.
+            before you apply.
           </p>
           <p
             style={{

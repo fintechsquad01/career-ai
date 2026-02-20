@@ -6,7 +6,7 @@ import { QuickApplyFlow } from "@/components/quick-apply/QuickApplyFlow";
 
 export const metadata: Metadata = {
   title: "Quick Apply — AISkillScore",
-  description: "Paste a job description and run JD Match, Resume Optimizer, and Cover Letter in one go.",
+  description: "Paste a job description and run Job Match Score, Resume Optimizer, and Cover Letter in one go.",
   robots: { index: false, follow: false },
 };
 

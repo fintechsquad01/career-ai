@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | AISkillScore",
   },
   description:
-    "Stop guessing. Know exactly where you stand. 11 AI-powered career tools that analyze resumes and job postings, then guide you to become the top candidate. Pay per use, no subscriptions.",
+    "Match your resume to the exact job before you apply. 11 AI-powered career tools with evidence-based analysis. Pay per use with tokens, no subscriptions.",
   keywords: [
     "AI career tools",
     "resume optimizer",
@@ -187,7 +187,7 @@ export default function RootLayout({
     },
     featureList: [
       "AI Displacement Score (free)",
-      "JD Match Score",
+      "Job Match Score",
       "Resume Optimizer",
       "Cover Letter Generator",
       "LinkedIn Optimizer",

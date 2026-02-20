@@ -114,7 +114,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
                 : [
                     "Run Resume Optimizer to close the highest-priority requirement gaps.",
                     "Update role-specific achievements before applying.",
-                    "Re-run JD Match after updates to validate progress.",
+                    "Re-run Job Match Score after updates to validate progress.",
                   ]
               ).map((step, i) => (
                 <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
