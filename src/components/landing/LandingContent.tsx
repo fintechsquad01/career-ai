@@ -11,6 +11,7 @@ import { FAQ } from "@/components/shared/FAQ";
 import { EmailCapture } from "./EmailCapture";
 import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES, CANONICAL_COPY } from "@/lib/constants";
 import { track } from "@/lib/analytics";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import {
   ShieldAlert,
@@ -218,9 +219,9 @@ export function LandingContent() {
 
     // Save input for post-auth restoration
     if (type === "jd" || type === "url") {
-      localStorage.setItem("aiskillscore_pre_auth_jd", text);
+      safeLocalStorage.setItem("aiskillscore_pre_auth_jd", text);
     } else if (type === "resume") {
-      localStorage.setItem("aiskillscore_pre_auth_resume", text);
+      safeLocalStorage.setItem("aiskillscore_pre_auth_resume", text);
     }
 
     setAnalysisType(type);

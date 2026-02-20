@@ -92,6 +92,7 @@ export const EVENTS = {
   RUN_TOOL_RESULT_META_NORMALIZED: "run_tool_result_meta_normalized",
   RUN_TOOL_RESULT_META_MISSING_FALLBACK: "run_tool_result_meta_missing_fallback",
   RUN_TOOL_OUTPUT_COMPLETENESS_CHECKED: "run_tool_output_completeness_checked",
+  SAFARI_STORAGE_FALLBACK: "safari_storage_fallback",
 } as const;
 
 /**

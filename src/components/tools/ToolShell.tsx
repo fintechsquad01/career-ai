@@ -15,6 +15,7 @@ import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { useAppStore } from "@/stores/app-store";
 import { EVENTS, track } from "@/lib/analytics";
 import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness, formatTokenAmountLabel } from "@/lib/constants";
+import { safeLocalStorage, safeSessionStorage } from "@/lib/safe-storage";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
 import type { InsightCategory } from "@/lib/loading-insights";
@@ -487,16 +488,16 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const [scoreDelta, setScoreDelta] = useState<{ previous: number; current: number; delta: number } | null>(null);
   const [insightsDismissed, setInsightsDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return sessionStorage.getItem(`insights-dismissed-${toolId}`) === "1";
+    return safeSessionStorage.getItem(`insights-dismissed-${toolId}`) === "1";
   });
   // (target editor state removed — now handled by JobTargetSelector)
 
   // Restore pendingInputs from localStorage after Stripe redirect
   useEffect(() => {
-    const stored = localStorage.getItem("pendingInputs");
+    const stored = safeLocalStorage.getItem("pendingInputs");
     if (stored) {
       try { setPendingInputs(JSON.parse(stored)); } catch { /* ignore */ }
-      localStorage.removeItem("pendingInputs");
+      safeLocalStorage.removeItem("pendingInputs");
     }
   }, []);
 
@@ -603,7 +604,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       const effectiveCost = typeof inputs.token_cost === "number" ? inputs.token_cost : tool.tokens;
       if (effectiveCost > 0 && balance < effectiveCost) {
         setPendingInputs(inputs);
-        try { localStorage.setItem("pendingInputs", JSON.stringify(inputs)); } catch { /* ignore */ }
+        safeLocalStorage.setItem("pendingInputs", JSON.stringify(inputs));
         setShowPaywall(true);
         isRunning.current = false;
         return;
@@ -1088,7 +1089,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
                         type="button"
                         onClick={() => {
                           setInsightsDismissed(true);
-                          sessionStorage.setItem(`insights-dismissed-${toolId}`, "1");
+                          safeSessionStorage.setItem(`insights-dismissed-${toolId}`, "1");
                         }}
                         className="absolute top-2 right-2 text-gray-300 hover:text-gray-500 transition-colors"
                         aria-label="Dismiss insight"

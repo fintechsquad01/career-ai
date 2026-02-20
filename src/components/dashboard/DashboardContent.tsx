@@ -23,6 +23,7 @@ import {
 import { useCareerHealth } from "@/hooks/useCareerHealth";
 import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { calculateProfileCompleteness, MISSION_ACTIONS, TOOLS_MAP } from "@/lib/constants";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import type { Profile, CareerProfile, JobTarget, ToolResultRow } from "@/types";
 import { EVENTS, track } from "@/lib/analytics";
 
@@ -203,10 +204,10 @@ export function DashboardContent({
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("purchase") === "success") {
-      const pendingToolId = localStorage.getItem("pendingToolId");
+      const pendingToolId = safeLocalStorage.getItem("pendingToolId");
       if (pendingToolId) {
-        localStorage.removeItem("pendingToolId");
-        localStorage.removeItem("pendingInputs");
+        safeLocalStorage.removeItem("pendingToolId");
+        safeLocalStorage.removeItem("pendingInputs");
         // Small delay to let token balance refresh
         setTimeout(() => {
           window.location.href = `/tools/${pendingToolId}`;

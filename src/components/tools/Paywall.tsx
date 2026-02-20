@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, Coins, ArrowRight, Users } from "lucide-react";
 import { PACKS, CANONICAL_COPY } from "@/lib/constants";
+import { safeLocalStorage } from "@/lib/safe-storage";
 
 const TOOL_UNLOCK_BULLETS: Record<string, string[]> = {
   resume: ["ATS-optimized rewrite preserving your voice", "Before/after score comparison", "Section-by-section recommendations"],
@@ -69,7 +70,7 @@ export function Paywall({
     try {
       // Store pending tool so we can return after purchase
       if (toolId) {
-        localStorage.setItem("pendingToolId", toolId);
+        safeLocalStorage.setItem("pendingToolId", toolId);
       }
       const res = await fetch("/api/checkout", {
         method: "POST",

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/stores/app-store";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import type { CareerProfile, JobTarget } from "@/types";
 
 const PRE_AUTH_RESUME_KEY = "aiskillscore_pre_auth_resume";
@@ -29,8 +30,8 @@ async function syncPreAuthData() {
 
   if (!user) return;
 
-  const resumeText = localStorage.getItem(PRE_AUTH_RESUME_KEY);
-  const jdText = localStorage.getItem(PRE_AUTH_JD_KEY);
+  const resumeText = safeLocalStorage.getItem(PRE_AUTH_RESUME_KEY);
+  const jdText = safeLocalStorage.getItem(PRE_AUTH_JD_KEY);
 
   if (resumeText) {
     await syncResume(supabase, user.id, resumeText);
@@ -70,7 +71,7 @@ async function syncResume(
     const merged: CareerProfile = existing ? { ...existing, ...data } : data;
     useAppStore.getState().setCareerProfile(merged);
 
-    localStorage.removeItem(PRE_AUTH_RESUME_KEY);
+    safeLocalStorage.removeItem(PRE_AUTH_RESUME_KEY);
   } catch (err) {
     console.error("[usePostAuthSync] Resume sync error:", err);
   }
@@ -127,7 +128,7 @@ async function syncJobDescription(
 
     useAppStore.getState().setActiveJobTarget(data as JobTarget);
 
-    localStorage.removeItem(PRE_AUTH_JD_KEY);
+    safeLocalStorage.removeItem(PRE_AUTH_JD_KEY);
   } catch (err) {
     console.error("[usePostAuthSync] JD sync error:", err);
   }

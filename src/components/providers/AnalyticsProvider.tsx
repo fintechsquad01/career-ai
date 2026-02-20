@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { initAnalytics, identify, resetAnalytics } from "@/lib/analytics";
+import { EVENTS, initAnalytics, identify, resetAnalytics, track } from "@/lib/analytics";
 import { createClient } from "@/lib/supabase/client";
+import {
+  STORAGE_FALLBACK_EVENT,
+  type StorageFallbackDetail,
+} from "@/lib/safe-storage";
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -31,8 +35,25 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
+    const handleStorageFallback = (event: Event) => {
+      const customEvent = event as CustomEvent<StorageFallbackDetail>;
+      const detail = customEvent.detail;
+      if (!detail) return;
+
+      track(EVENTS.SAFARI_STORAGE_FALLBACK, {
+        browser: detail.browser,
+        storage_kind: detail.kind,
+        operation: detail.operation,
+        key: detail.key,
+        reason: detail.reason,
+      });
+    };
+
+    window.addEventListener(STORAGE_FALLBACK_EVENT, handleStorageFallback);
+
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener(STORAGE_FALLBACK_EVENT, handleStorageFallback);
     };
   }, []);
 

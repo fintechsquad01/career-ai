@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Brain, Loader2, Lock, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CANONICAL_COPY } from "@/lib/constants";
+import { safeLocalStorage } from "@/lib/safe-storage";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -51,7 +52,7 @@ function AuthContent() {
 
   // Check for pre-auth analysis and errors
   useEffect(() => {
-    const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
+    const preAuthJd = safeLocalStorage.getItem("aiskillscore_pre_auth_jd");
     setHasPreAuthAnalysis(!!preAuthJd);
 
     const callbackError = searchParams.get("error");
@@ -69,7 +70,7 @@ function AuthContent() {
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref) {
-      localStorage.setItem("aiskillscore_referral_code", ref);
+      safeLocalStorage.setItem("aiskillscore_referral_code", ref);
     }
   }, [searchParams]);
 
@@ -116,7 +117,7 @@ function AuthContent() {
         }
 
         if (refCode) {
-          localStorage.setItem("aiskillscore_referral_code", refCode);
+          safeLocalStorage.setItem("aiskillscore_referral_code", refCode);
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -126,7 +127,7 @@ function AuthContent() {
         if (error) throw error;
       }
 
-      const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
+      const preAuthJd = safeLocalStorage.getItem("aiskillscore_pre_auth_jd");
       router.push(preAuthJd ? "/mission" : "/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred");

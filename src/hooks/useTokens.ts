@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/stores/app-store";
 import { track, EVENTS } from "@/lib/analytics";
+import { safeLocalStorage } from "@/lib/safe-storage";
 
 export function useTokens() {
   const {
@@ -58,7 +59,7 @@ export function useTokens() {
         }
 
         // 2. Apply pending referral code from localStorage
-        const pendingRef = localStorage.getItem("aiskillscore_referral_code");
+        const pendingRef = safeLocalStorage.getItem("aiskillscore_referral_code");
         if (pendingRef) {
           try {
             const refRes = await fetch("/api/apply-referral", {
@@ -70,7 +71,7 @@ export function useTokens() {
               const refData = await refRes.json();
               if (refData.applied || refData.reason === "already_referred") {
                 // Remove from localStorage whether applied or already used
-                localStorage.removeItem("aiskillscore_referral_code");
+                safeLocalStorage.removeItem("aiskillscore_referral_code");
                 // Refresh balance to pick up referral bonus tokens
                 if (refData.bonuses_credited) {
                   const balRes = await supabase
@@ -86,7 +87,7 @@ export function useTokens() {
               }
               // If invalid_code or self_referral, also clear to prevent repeated calls
               if (refData.reason === "invalid_code" || refData.reason === "self_referral") {
-                localStorage.removeItem("aiskillscore_referral_code");
+                safeLocalStorage.removeItem("aiskillscore_referral_code");
               }
             }
           } catch {

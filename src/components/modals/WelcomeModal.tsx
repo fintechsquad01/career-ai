@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { INDUSTRIES } from "@/lib/constants";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import { ResumeUploadOrPaste } from "@/components/shared/ResumeUploadOrPaste";
 
 interface WelcomeModalProps {
@@ -70,7 +71,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
   const supabase = createClient();
 
   useEffect(() => {
-    const saved = localStorage.getItem("aiskillscore_pre_auth_resume");
+    const saved = safeLocalStorage.getItem("aiskillscore_pre_auth_resume");
     if (saved) {
       setResumeText(saved);
       setPreAuthResumeDetected(true);
@@ -87,7 +88,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
 
   const handleStep1Next = () => {
     if (!intent) return;
-    localStorage.setItem("aiskillscore_career_intent", intent);
+    safeLocalStorage.setItem("aiskillscore_career_intent", intent);
     setStep(1);
   };
 
@@ -146,7 +147,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
       }
     }
     // Clear pre-auth localStorage
-    localStorage.removeItem("aiskillscore_pre_auth_resume");
+    safeLocalStorage.removeItem("aiskillscore_pre_auth_resume");
     setStep(3);
   };
 

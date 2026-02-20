@@ -16,6 +16,7 @@ import { MissionOverview } from "@/components/mission/MissionOverview";
 import { JobTargetSelector } from "@/components/shared/JobTargetSelector";
 import { MISSION_ACTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import type { JobTarget } from "@/types";
 
 const ACTION_ICONS: Record<string, typeof FileText> = {
@@ -85,7 +86,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
   }, [activeJobTarget?.id, reconcileActionsFromResults]);
 
   useEffect(() => {
-    const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
+    const preAuthJd = safeLocalStorage.getItem("aiskillscore_pre_auth_jd");
     if (preAuthJd && !activeJobTarget) {
       setCreatingFromPreAuth(true);
       const createTarget = async () => {
@@ -126,7 +127,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
             mission_actions: {},
           });
 
-          localStorage.removeItem("aiskillscore_pre_auth_jd");
+          safeLocalStorage.removeItem("aiskillscore_pre_auth_jd");
           window.location.reload();
         } catch (error) {
           console.error("Failed to create job target from pre-auth JD:", error);

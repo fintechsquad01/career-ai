@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CANONICAL_COPY } from "@/lib/constants";
+import { safeLocalStorage } from "@/lib/safe-storage";
 
 export function InlineSignup() {
   const [email, setEmail] = useState("");
@@ -56,7 +57,7 @@ export function InlineSignup() {
         if (signInError) throw signInError;
       }
 
-      const preAuthJd = localStorage.getItem("aiskillscore_pre_auth_jd");
+      const preAuthJd = safeLocalStorage.getItem("aiskillscore_pre_auth_jd");
       router.push(preAuthJd ? "/mission" : "/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred");
