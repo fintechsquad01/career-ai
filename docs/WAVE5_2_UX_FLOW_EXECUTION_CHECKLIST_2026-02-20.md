@@ -190,10 +190,10 @@ Run desktop and mobile checks in locked order:
 
 ### Pass criteria
 
-- [ ] Start clarity: first useful action identified quickly.
-- [ ] Decision clarity: one obvious next action at each state.
-- [ ] Continuity: handoff between pages feels connected and progressive.
-- [ ] No trust regression in score communication.
+- [x] Start clarity: first useful action identified quickly.
+- [x] Decision clarity: one obvious next action at each state.
+- [x] Continuity: handoff between pages feels connected and progressive.
+- [x] No trust regression in score communication.
 
 ### Rollout stages
 
@@ -216,3 +216,40 @@ Wave 5.2 is complete when:
 - QA matrix passes on desktop and mobile.
 - No critical navigation/progression confusion remains in left-nav journey pages.
 - Changes are merged with evidence notes for each phase.
+
+## 6) QA Closure Evidence (2026-02-20)
+
+### Validation commands
+
+- `npm run typecheck` -> PASS (`tsc --noEmit`, exit code `0`).
+- `npm run lint` -> FAIL on known baseline lint debt (existing repo-wide `no-explicit-any` / `no-unused-vars` findings); no Wave 5.2 closure-blocking regression identified in this QA pass.
+
+### Browser QA matrix execution (desktop + mobile)
+
+Locked order executed:
+
+1. `/tools/jd_match`, `/tools/resume`, `/tools/displacement`
+2. `/dashboard`
+3. `/mission`
+4. `/history`
+5. `/pricing`, `/lifetime`
+6. `/`, `/auth`
+
+Outcome:
+
+- Start clarity and single-primary-action hierarchy confirmed in targeted Wave 5.2 surfaces.
+- Continuity cues confirmed across Dashboard -> Tool -> Mission/Pricing/Auth handoffs.
+- Trust framing remained present in score-based flows (no regressions observed during QA walkthrough).
+
+### History expanded-state verification
+
+- Automated browser accessibility refs did not expose interactive row controls in this environment.
+- UI implementation verification completed via code inspection in `src/components/history/HistoryContent.tsx`:
+  - expanded header row toggles state via `handleToggleExpand`
+  - expanded action bar shows `Continue Mission` first
+  - share/delete actions remain secondary.
+
+### Closure
+
+- Wave 5.2 QA closure evidence captured.
+- Remaining rollout-stage work is operational: staged exposure and KPI monitoring after deployment.
