@@ -23,8 +23,40 @@ export const metadata: Metadata = {
 };
 
 export default function ComparePage() {
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "AISkillScore vs Competitors",
+    description: "Compare AISkillScore with Jobscan, Teal, FinalRound, and other career tools.",
+    url: `${APP_URL}/compare`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: COMPARISONS.map((comp, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${APP_URL}/compare/${comp.slug}`,
+        name: comp.title,
+      })),
+    },
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
+            { "@type": "ListItem", position: 2, name: "Compare", item: `${APP_URL}/compare` },
+          ],
+        }).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">

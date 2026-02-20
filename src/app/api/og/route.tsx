@@ -14,6 +14,8 @@ const typeLabels: Record<string, string> = {
   roadmap: "Career Roadmap",
   salary: "Salary Range",
   entrepreneurship: "Founder-Market Fit",
+  interview: "Interview Prep",
+  headshots: "AI Headshots",
 };
 
 const typeIcons: Record<string, string> = {
@@ -26,6 +28,8 @@ const typeIcons: Record<string, string> = {
   roadmap: "🗺️",
   salary: "💰",
   entrepreneurship: "🚀",
+  interview: "💬",
+  headshots: "📸",
 };
 
 const typeGradients: Record<string, { from: string; to: string }> = {
@@ -38,6 +42,8 @@ const typeGradients: Record<string, { from: string; to: string }> = {
   roadmap: { from: "#7C3AED", to: "#2563EB" },
   salary: { from: "#059669", to: "#10B981" },
   entrepreneurship: { from: "#7C3AED", to: "#A855F7" },
+  interview: { from: "#D97706", to: "#F59E0B" },
+  headshots: { from: "#6366F1", to: "#8B5CF6" },
 };
 
 function getScoreColor(score: number) {

@@ -1,0 +1,269 @@
+export interface TRole {
+  slug: string;
+  title: string;
+  persona: string;
+  industry: string;
+  description: string;
+  painPoints: string[];
+  hiringChecklist: string[];
+  toolSequence: string[];
+  faq: { q: string; a: string }[];
+  keywords: string[];
+}
+
+export const ROLES: TRole[] = [
+  {
+    slug: "product-marketing-manager",
+    title: "Product Marketing Manager",
+    persona: "Career Pivoter",
+    industry: "Technology",
+    description: "Product Marketing Managers translate product features into market positioning. Breaking into PMM from adjacent roles requires demonstrating go-to-market execution, competitive analysis skills, and cross-functional collaboration experience.",
+    painPoints: [
+      "Translating non-PMM experience into role-specific language",
+      "Competing against candidates with direct PMM titles",
+      "Proving AI/ML industry knowledge without technical background",
+    ],
+    hiringChecklist: [
+      "Go-to-market launch experience with measurable outcomes",
+      "Competitive analysis and positioning frameworks",
+      "Cross-functional collaboration with product and sales teams",
+      "Customer research and persona development",
+      "Content strategy and messaging architecture",
+    ],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview"],
+    faq: [
+      { q: "How do I transition into product marketing from a different role?", a: "Start by mapping your transferable skills to PMM requirements. Run Job Match Score against target PMM postings to identify specific gaps, then use Resume Optimizer to reframe your experience using PMM language." },
+      { q: "What skills do PMM hiring managers look for?", a: "Go-to-market execution, competitive positioning, customer research, and cross-functional leadership. AISkillScore's Job Match Score shows exactly which of these you demonstrate and which need work." },
+    ],
+    keywords: ["product marketing manager resume", "how to break into product marketing", "PMM career transition", "product marketing interview prep"],
+  },
+  {
+    slug: "software-engineer",
+    title: "Software Engineer",
+    persona: "AI-Anxious Engineer",
+    industry: "Technology",
+    description: "Software Engineers face unique pressure from AI code generation tools. The key differentiator is moving beyond implementation into system design, architecture decisions, and cross-team technical leadership.",
+    painPoints: [
+      "Fear of AI replacing coding tasks",
+      "Mid-level career stagnation without clear path to senior",
+      "Interview readiness for system design and behavioral rounds",
+    ],
+    hiringChecklist: [
+      "System design and architecture experience",
+      "Production-scale problem solving with measurable impact",
+      "Code review and mentorship track record",
+      "Cross-team collaboration and technical communication",
+      "Specific technology stack depth relevant to target role",
+    ],
+    toolSequence: ["displacement", "jd_match", "resume", "interview"],
+    faq: [
+      { q: "Will AI replace software engineers?", a: "AI will transform software engineering roles, not eliminate them. AISkillScore's free AI Displacement Score breaks down which of your daily tasks are automatable vs human-essential, so you can focus upskilling where it matters." },
+      { q: "How do I prepare for senior engineer interviews?", a: "Run Job Match Score against target senior roles to identify gaps, then use Interview Prep to practice system design questions and behavioral follow-ups specific to your target company." },
+    ],
+    keywords: ["software engineer resume optimization", "will ai replace software engineers", "senior software engineer interview prep", "software engineer career growth 2026"],
+  },
+  {
+    slug: "data-analyst",
+    title: "Data Analyst",
+    persona: "Early Career",
+    industry: "Technology",
+    description: "Data Analysts increasingly need to demonstrate business impact beyond SQL and dashboards. Entry-level candidates must show they can translate data into decisions, not just run queries.",
+    painPoints: [
+      "Thin resume with limited professional experience",
+      "Competing against candidates with advanced degrees",
+      "Demonstrating business impact from academic or internship projects",
+    ],
+    hiringChecklist: [
+      "SQL proficiency with real dataset examples",
+      "Data visualization and storytelling skills",
+      "Statistical analysis fundamentals",
+      "Business problem framing and recommendation delivery",
+      "Tool proficiency (Python, R, Tableau, or Power BI)",
+    ],
+    toolSequence: ["jd_match", "resume", "skills_gap", "interview"],
+    faq: [
+      { q: "How do I get a data analyst job with no experience?", a: "Focus on project-based evidence. Use Job Match Score to see exactly what target roles require, then Resume Optimizer to frame your academic projects and internships in business-impact language that passes ATS." },
+      { q: "What should a data analyst resume look like in 2026?", a: "Lead with quantified outcomes, not tool lists. AISkillScore's Resume Optimizer restructures your resume to highlight business impact while preserving ATS compatibility." },
+    ],
+    keywords: ["data analyst resume no experience", "entry level data analyst resume", "data analyst interview questions 2026", "how to become a data analyst"],
+  },
+  {
+    slug: "finance-to-fintech-pm",
+    title: "Finance to Fintech Product Manager",
+    persona: "Finance-to-Fintech Transitioner",
+    industry: "Finance & Banking",
+    description: "Finance professionals transitioning to fintech product management need to reframe banking operations experience as product thinking. The biggest challenge is proving you can own a product roadmap, not just execute within one.",
+    painPoints: [
+      "Banking resume language does not translate to product roles",
+      "No direct product management title on resume",
+      "Unclear how to position regulatory knowledge as an asset",
+    ],
+    hiringChecklist: [
+      "Product roadmap ownership or equivalent project leadership",
+      "User research and customer discovery experience",
+      "Technical collaboration with engineering teams",
+      "Metrics-driven decision making with business outcomes",
+      "Domain expertise in payments, lending, or compliance",
+    ],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "salary"],
+    faq: [
+      { q: "How do I transition from finance to fintech product management?", a: "Map your finance experience to PM competencies: project leadership becomes roadmap ownership, compliance knowledge becomes domain expertise. Run Job Match Score against fintech PM postings to find your strongest translation points." },
+      { q: "Is finance experience valued in fintech?", a: "Yes — domain expertise is a competitive advantage. The key is framing it as product context, not just operations. Resume Optimizer rewrites your experience to highlight the product-relevant impact." },
+    ],
+    keywords: ["finance to fintech career transition", "fintech product manager resume", "banking to product management", "fintech PM interview prep"],
+  },
+  {
+    slug: "healthcare-operations-remote",
+    title: "Healthcare Operations (Remote)",
+    persona: "Healthcare Remote Seeker",
+    industry: "Healthcare",
+    description: "Healthcare operations professionals seeking remote roles must translate clinical or hospital management experience into digital health and telehealth company language. Remote-first companies prioritize process documentation, async communication, and outcome-based management.",
+    painPoints: [
+      "Healthcare jargon does not parse in tech-company ATS systems",
+      "Remote job competition is extremely high for healthcare roles",
+      "Positioning hospital operations for digital health companies",
+    ],
+    hiringChecklist: [
+      "Process improvement with measurable patient or operational outcomes",
+      "EHR/EMR system experience and digital workflow management",
+      "Remote team coordination and async communication skills",
+      "Compliance and regulatory navigation (HIPAA, state regulations)",
+      "Vendor management and cross-functional leadership",
+    ],
+    toolSequence: ["jd_match", "resume", "linkedin", "interview"],
+    faq: [
+      { q: "How do I find remote healthcare jobs?", a: "Focus on digital health companies and telehealth platforms. Use Job Match Score to check your fit against specific remote postings — it identifies which healthcare skills translate and which need reframing." },
+      { q: "How do I make my healthcare resume work for tech companies?", a: "Replace clinical jargon with outcome-focused business language. AISkillScore's Resume Optimizer preserves your expertise while reformatting for ATS systems that digital health companies use." },
+    ],
+    keywords: ["remote healthcare jobs", "healthcare to digital health transition", "telehealth operations resume", "healthcare remote work 2026"],
+  },
+  {
+    slug: "creative-director",
+    title: "Creative Director",
+    persona: "Senior Creative Professional",
+    industry: "Media & Entertainment",
+    description: "Creative Directors face unique ATS challenges because creative impact is hard to quantify. The key is encoding leadership outcomes, business results, and portfolio evidence into a format that both hiring systems and executives can evaluate.",
+    painPoints: [
+      "Creative portfolios do not fit ATS resume formats",
+      "AI-generated content anxiety in creative leadership roles",
+      "Demonstrating business impact from creative campaigns",
+    ],
+    hiringChecklist: [
+      "Brand campaign leadership with revenue or engagement metrics",
+      "Team management and creative talent development",
+      "Client relationship management and stakeholder alignment",
+      "Multi-channel campaign strategy and execution",
+      "Budget management and resource allocation",
+    ],
+    toolSequence: ["displacement", "jd_match", "resume", "linkedin", "interview"],
+    faq: [
+      { q: "How do I optimize a creative director resume for ATS?", a: "Lead with business outcomes (revenue, engagement, brand metrics), not just campaign names. AISkillScore's Resume Optimizer preserves your creative voice while adding the structured impact language ATS systems need." },
+      { q: "Is AI replacing creative director roles?", a: "AI is changing execution but increasing demand for creative strategy and taste-making. Run the free AI Displacement Score to see exactly which creative tasks are at risk and which are becoming more valuable." },
+    ],
+    keywords: ["creative director resume ATS", "creative leadership resume", "ai replacing creative jobs", "creative director interview prep"],
+  },
+  {
+    slug: "marketing-manager",
+    title: "Marketing Manager",
+    persona: "Career Pivoter",
+    industry: "Marketing & Advertising",
+    description: "Marketing Managers need to demonstrate both strategic thinking and execution capability. The shift toward data-driven marketing means quantified campaign results and MarTech proficiency are now table-stakes.",
+    painPoints: [
+      "Generic marketing resume that does not stand out",
+      "Difficulty proving ROI from brand or content initiatives",
+      "Keeping pace with AI marketing tools and expectations",
+    ],
+    hiringChecklist: [
+      "Campaign management with measurable ROI",
+      "Marketing automation and analytics tool proficiency",
+      "Content strategy and SEO fundamentals",
+      "Budget management and vendor coordination",
+      "Cross-functional collaboration with sales and product",
+    ],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "salary"],
+    faq: [
+      { q: "How do I make my marketing resume stand out?", a: "Lead every bullet with a number. Run Job Match Score against your target posting to see exactly which marketing competencies to emphasize, then use Resume Optimizer to restructure around quantified outcomes." },
+      { q: "What marketing skills are most in demand in 2026?", a: "Data-driven campaign execution, AI-assisted content strategy, and attribution modeling. Use Skills Gap Analysis to identify exactly which skills you need and get a week-by-week learning plan." },
+    ],
+    keywords: ["marketing manager resume 2026", "marketing resume optimization", "marketing interview preparation", "marketing career growth"],
+  },
+  {
+    slug: "ux-designer",
+    title: "UX Designer",
+    persona: "AI-Anxious Engineer",
+    industry: "Technology",
+    description: "UX Designers must balance portfolio-driven hiring with ATS-compatible resumes. The growing role of AI in design tools makes research skills, strategic thinking, and cross-functional leadership more valuable than production speed.",
+    painPoints: [
+      "Portfolio-first hiring conflicts with ATS-first screening",
+      "AI design tools threatening production design roles",
+      "Proving business impact from design decisions",
+    ],
+    hiringChecklist: [
+      "User research methodology and synthesis skills",
+      "Design system creation and maintenance experience",
+      "Measurable UX improvements (conversion, task completion, satisfaction)",
+      "Cross-functional collaboration with engineering and product",
+      "Prototyping and design tool proficiency",
+    ],
+    toolSequence: ["displacement", "jd_match", "resume", "interview"],
+    faq: [
+      { q: "How do I write a UX designer resume that passes ATS?", a: "Include both your portfolio link and a structured resume with quantified outcomes. Resume Optimizer formats your design experience for ATS while keeping your creative narrative intact." },
+      { q: "Will AI replace UX designers?", a: "AI will replace production tasks but increase demand for research, strategy, and systems thinking. Run the free AI Displacement Score to see your specific risk profile." },
+    ],
+    keywords: ["ux designer resume ats", "ux design career 2026", "ai replacing ux designers", "ux design interview prep"],
+  },
+  {
+    slug: "project-manager",
+    title: "Project Manager",
+    persona: "Mid-Career Professional",
+    industry: "Consulting",
+    description: "Project Managers transitioning between industries need to demonstrate methodology-agnostic execution skills. The key differentiator is showing outcome-driven leadership, not just process compliance.",
+    painPoints: [
+      "PMP certification expected but not sufficient",
+      "Industry-specific PM experience may not transfer cleanly",
+      "Difficulty quantifying PM impact beyond 'on time, on budget'",
+    ],
+    hiringChecklist: [
+      "Cross-functional team leadership with measurable delivery outcomes",
+      "Risk management and stakeholder communication",
+      "Agile/Scrum methodology experience (not just certification)",
+      "Budget and resource allocation management",
+      "Tool proficiency (Jira, Asana, Monday, or equivalent)",
+    ],
+    toolSequence: ["jd_match", "resume", "interview", "salary"],
+    faq: [
+      { q: "How do I write a project manager resume that shows impact?", a: "Replace process descriptions with outcome metrics. Instead of 'managed 5 sprints,' write 'delivered 3 product launches reducing time-to-market by 30%.' Job Match Score shows which outcome types your target role values most." },
+      { q: "Is PMP certification still worth it in 2026?", a: "PMP opens doors but does not close deals. Hiring managers prioritize demonstrated delivery outcomes. Use Skills Gap Analysis to identify whether your gap is certification or execution evidence." },
+    ],
+    keywords: ["project manager resume optimization", "PMP career value 2026", "project manager interview prep", "PM career transition"],
+  },
+  {
+    slug: "sales-representative",
+    title: "Sales Representative",
+    persona: "Early Career",
+    industry: "Retail & E-commerce",
+    description: "Sales Representatives building early careers need to demonstrate pipeline management, quota attainment, and relationship-building skills even from limited experience. Entry-level sales roles increasingly require tech proficiency and data-driven selling.",
+    painPoints: [
+      "Limited professional sales track record",
+      "Difficulty quantifying impact without enterprise deal sizes",
+      "Competing against candidates with established networks",
+    ],
+    hiringChecklist: [
+      "Quota attainment or equivalent goal achievement metrics",
+      "CRM proficiency (Salesforce, HubSpot)",
+      "Prospecting and pipeline management",
+      "Communication and presentation skills",
+      "Industry or vertical knowledge relevant to target role",
+    ],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "salary"],
+    faq: [
+      { q: "How do I write a sales resume with little experience?", a: "Focus on any metric you can quantify: customer interactions, conversion rates, upsell success, even academic sales competition results. Resume Optimizer helps frame limited experience in the outcome-driven language sales hiring managers expect." },
+      { q: "What do sales hiring managers look for?", a: "Coachability, resilience, and metric awareness. Use Interview Prep to practice behavioral questions around objection handling and quota pressure scenarios." },
+    ],
+    keywords: ["entry level sales resume", "sales representative resume optimization", "sales interview prep", "how to get into sales"],
+  },
+];
+
+export function getRole(slug: string): TRole | undefined {
+  return ROLES.find((r) => r.slug === slug);
+}

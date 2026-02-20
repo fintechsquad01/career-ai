@@ -145,6 +145,17 @@ export default function PricingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productsJsonLd).replace(/</g, "\\u003c") }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://aiskillscore.com" },
+            { "@type": "ListItem", position: 2, name: "Pricing", item: "https://aiskillscore.com/pricing" },
+          ],
+        }).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20 space-y-16">
         {/* Header */}
         <div className="text-center space-y-4">

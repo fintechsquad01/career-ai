@@ -101,6 +101,38 @@ export default async function ToolPage({ params }: ToolPageProps) {
       description: tool.tokens === 0 ? "Free — no tokens required" : `${tool.tokens} tokens (from $${(tool.tokens * 0.158).toFixed(2)} at Power rate)`,
     },
     ...(tool.painPoint ? { slogan: tool.painPoint } : {}),
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".tool-description", "h1"],
+    },
+  } : null;
+
+  const TOOL_STEPS: Record<string, string[]> = {
+    displacement: ["Enter your job title and industry", "AI analyzes task-level automation risk", "Review your displacement score and safe skills", "Get actionable upskilling recommendations"],
+    jd_match: ["Paste a job description or URL", "AI extracts requirements and matches against your resume", "Review fit score with evidence-backed gaps", "Get prioritized next steps to improve your match"],
+    resume: ["Upload or paste your resume", "AI analyzes ATS compatibility and content quality", "Review optimized resume with change rationale", "Download your ATS-ready resume"],
+    cover_letter: ["Select your target job context", "AI generates a role-specific narrative from your experience", "Review and customize the draft", "Download your cover letter"],
+    interview: ["Provide your target role and company context", "AI generates likely questions with follow-ups", "Practice STAR-format answers", "Review preparation guide"],
+    linkedin: ["Share your current LinkedIn profile content", "AI audits headline, summary, and keyword strategy", "Review optimization recommendations", "Apply changes to your profile"],
+    skills_gap: ["Provide your current skills and target role", "AI maps gaps against market requirements", "Review prioritized learning plan", "Follow week-by-week skill building path"],
+    roadmap: ["Share your career context and goals", "AI builds a dual-track plan with milestones", "Review weekly checkpoints and actions", "Track progress against your roadmap"],
+    salary: ["Enter your target role and location", "AI benchmarks market compensation data", "Review negotiation scripts and leverage points", "Prepare for your compensation conversation"],
+    entrepreneurship: ["Share your skills and experience", "AI evaluates founder-market fit and opportunities", "Review business model suggestions", "Follow 90-day launch action plan"],
+    headshots: ["Upload your photos", "AI generates professional headshot variants", "Review and select your favorites", "Download LinkedIn-ready images"],
+  };
+
+  const howToJsonLd = tool ? {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use ${tool.title}`,
+    description: tool.description,
+    totalTime: "PT1M",
+    tool: { "@type": "HowToTool", name: "AISkillScore" },
+    step: (TOOL_STEPS[toolId] || []).map((text, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      text,
+    })),
   } : null;
 
   return (
@@ -116,6 +148,14 @@ export default async function ToolPage({ params }: ToolPageProps) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(serviceJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
+      {howToJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(howToJsonLd).replace(/</g, "\\u003c"),
           }}
         />
       )}

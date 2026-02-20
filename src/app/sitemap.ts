@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/constants";
 import { ARTICLES, COMPARISONS } from "@/lib/content";
+import { ROLES } from "@/lib/roles";
+import { INDUSTRY_PAGES } from "@/lib/industries";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -64,6 +66,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(comp.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    // Role guides — programmatic long-tail pages
+    {
+      url: `${baseUrl}/roles`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...ROLES.map((role) => ({
+      url: `${baseUrl}/roles/${role.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    // Industry guides — programmatic long-tail pages
+    {
+      url: `${baseUrl}/industries`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...INDUSTRY_PAGES.map((ind) => ({
+      url: `${baseUrl}/industries/${ind.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
     // Legal / informational
     {

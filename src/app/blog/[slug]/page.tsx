@@ -181,6 +181,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         )}
 
+        {/* Related reading */}
+        {article.relatedLinks && article.relatedLinks.length > 0 && (
+          <div className="mt-10">
+            <h3 className="font-bold text-gray-900 mb-3">Continue reading</h3>
+            <div className="flex flex-wrap gap-2">
+              {article.relatedLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Bottom CTA */}
         <div className="mt-12 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Take action on what you learned</h2>

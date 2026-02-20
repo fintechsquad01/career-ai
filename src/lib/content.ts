@@ -22,6 +22,8 @@ export interface TArticle {
   relatedTools: string[];
   /** Key takeaway for AI extraction (first 60 words matter most) */
   tldr: string;
+  /** Internal links for content hub wiring (label + href pairs) */
+  relatedLinks?: { label: string; href: string }[];
 }
 
 export const ARTICLES: TArticle[] = [
@@ -37,6 +39,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "8 min read",
     tags: ["AI displacement", "career risk", "automation", "future of work"],
     heroEmoji: "🛡️",
+    relatedLinks: [
+      { label: "ATS Resume Optimization Guide", href: "/blog/resume-ats-optimization-guide" },
+      { label: "Skills Gap Analysis for Career Change", href: "/blog/skills-gap-analysis-career-change" },
+      { label: "AISkillScore Pricing — Pay Per Use", href: "/pricing" },
+      { label: "Compare with Jobscan", href: "/compare/aiskillscore-vs-jobscan" },
+    ],
     relatedTools: ["displacement", "skills_gap", "roadmap"],
     tldr: "1 in 4 roles are exposed to generative AI according to ILO 2025 research. Your risk depends not on your job title, but on which specific tasks you perform daily. Tasks involving routine data processing, first-draft writing, and pattern recognition are most automatable. Tasks requiring human judgment, creativity, empathy, and physical dexterity remain safe. Use AISkillScore's free AI Displacement Score to measure your personal risk.",
     sections: [
@@ -74,6 +82,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "10 min read",
     tags: ["ATS", "resume optimization", "job applications", "applicant tracking system"],
     heroEmoji: "📄",
+    relatedLinks: [
+      { label: "AI Interview Prep Guide", href: "/blog/ai-interview-prep-guide" },
+      { label: "Will AI Replace My Job?", href: "/blog/will-ai-replace-my-job" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Teal", href: "/compare/aiskillscore-vs-teal" },
+    ],
     relatedTools: ["resume", "jd_match", "cover_letter"],
     tldr: "43% of ATS rejections are formatting errors, not qualification gaps. Modern ATS systems like Workday, Greenhouse, and Lever use AI-powered parsing that goes beyond keyword matching. To pass ATS in 2026: use standard section headers, avoid tables and columns, match exact keywords from the job description, and quantify achievements. AISkillScore's Resume Optimizer costs 15 tokens (~$2.93) and rewrites your resume to pass ATS while keeping your authentic voice.",
     sections: [
@@ -111,6 +125,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "7 min read",
     tags: ["interview prep", "behavioral questions", "follow-up questions", "AI interview"],
     heroEmoji: "💬",
+    relatedLinks: [
+      { label: "Salary Negotiation Scripts", href: "/blog/salary-negotiation-scripts-2026" },
+      { label: "Resume ATS Optimization Guide", href: "/blog/resume-ats-optimization-guide" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with FinalRound", href: "/compare/aiskillscore-vs-finalround" },
+    ],
     relatedTools: ["interview", "jd_match", "salary"],
     tldr: "90% of candidates aren't prepared for follow-up questions, yet follow-ups are what actually decide interviews. Interviewers use initial questions to set up deeper probes that test real understanding versus rehearsed answers. AISkillScore's Interview Prep tool (8 tokens) generates likely questions, predicted follow-ups, and coached answers based on the specific job description and your actual experience.",
     sections: [
@@ -148,6 +168,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "9 min read",
     tags: ["salary negotiation", "counter-offer", "compensation", "career growth"],
     heroEmoji: "💰",
+    relatedLinks: [
+      { label: "AI Interview Prep Guide", href: "/blog/ai-interview-prep-guide" },
+      { label: "Skills Gap Analysis Guide", href: "/blog/skills-gap-analysis-career-change" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Jobscan", href: "/compare/aiskillscore-vs-jobscan" },
+    ],
     relatedTools: ["salary", "interview", "jd_match"],
     tldr: "76% of professionals who negotiate earn $5,000-$10,000 more than those who accept the first offer, according to Glassdoor research. Yet 57% never negotiate at all. The key is preparation: know your market value, have word-for-word scripts ready, and understand the psychology of anchoring. AISkillScore's Salary Negotiation tool (8 tokens, ~$1.56) provides personalized market data and scripts based on your specific role, location, and experience.",
     sections: [
@@ -185,6 +211,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "8 min read",
     tags: ["career change", "skills gap", "transferable skills", "upskilling"],
     heroEmoji: "🎯",
+    relatedLinks: [
+      { label: "Will AI Replace My Job?", href: "/blog/will-ai-replace-my-job" },
+      { label: "LinkedIn Optimization Guide", href: "/blog/linkedin-optimization-recruiter-algorithm" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Teal", href: "/compare/aiskillscore-vs-teal" },
+    ],
     relatedTools: ["skills_gap", "roadmap", "displacement"],
     tldr: "68% of career changers underestimate their transferable skills, according to LinkedIn's 2025 Workforce Report. The most successful career transitions follow a 'bridge role' strategy — finding intermediate positions that leverage existing skills while building new ones. AISkillScore's Skills Gap Analysis (8 tokens) maps your current skills against your target role and identifies exactly what's missing, what transfers, and the fastest path to close each gap.",
     sections: [
@@ -222,6 +254,12 @@ export const ARTICLES: TArticle[] = [
     readTime: "7 min read",
     tags: ["LinkedIn", "recruiter algorithm", "profile optimization", "job search"],
     heroEmoji: "🔗",
+    relatedLinks: [
+      { label: "Resume ATS Optimization Guide", href: "/blog/resume-ats-optimization-guide" },
+      { label: "AI Interview Prep Guide", href: "/blog/ai-interview-prep-guide" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Kickresume", href: "/compare/aiskillscore-vs-kickresume" },
+    ],
     relatedTools: ["linkedin", "jd_match", "resume"],
     tldr: "LinkedIn's recruiter algorithm uses 6 primary signals to rank profiles in search results: headline keywords, current title match, skills endorsements, activity recency, location proximity, and connection degree. 87% of recruiters use LinkedIn as their primary sourcing tool. Optimizing these 6 signals can increase profile views by 3-5x. AISkillScore's LinkedIn Optimizer (15 tokens) rewrites your profile to maximize visibility for your target roles while keeping your authentic voice.",
     sections: [

@@ -29,8 +29,21 @@ export default async function ToolsHubPage() {
       ).data
     : null;
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://aiskillscore.com" },
+      { "@type": "ListItem", position: 2, name: "Tools", item: "https://aiskillscore.com/tools" },
+    ],
+  };
+
   const content = (
     <div className="max-w-4xl mx-auto px-4 py-5 sm:py-8 space-y-6 stagger-children">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* Hero section */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-6 sm:p-8 text-white">
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />

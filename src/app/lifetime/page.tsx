@@ -145,6 +145,17 @@ export default function LifetimePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(lifetimeFaqJsonLd).replace(/</g, "\\u003c") }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
+            { "@type": "ListItem", position: 2, name: "Lifetime Deal", item: `${APP_URL}/lifetime` },
+          ],
+        }).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-8">
           <ArrowLeft className="w-4 h-4" /> Pricing

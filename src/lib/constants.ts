@@ -379,6 +379,30 @@ export const FAQ_ITEMS = [
     q: "How accurate are the AI career scores?",
     a: "AISkillScore's analyses are powered by Gemini 2.5 Pro and grounded in real data — ILO 2025 research for displacement scores, BLS salary data for negotiations, and industry-standard ATS parsing rules for resume optimization. Every score comes with evidence and citations, not just a number. However, AI analysis should be used as guidance alongside your own judgment, not as a guarantee of outcomes.",
   },
+  {
+    q: "How many tokens do I need for 5 job applications?",
+    a: "A full application stack (Job Match Score + Resume Optimizer + Cover Letter + Interview Prep) costs about 36 tokens per job. For 5 applications, that is approximately 180 tokens. The Pro Pack (200 tokens, $39) covers this with room for extra runs. If you only need Job Match Score + Resume Optimizer per application, that is 20 tokens each — the Starter Pack (50 tokens, $14) covers 2-3 focused applications.",
+  },
+  {
+    q: "What is the best free AI career tool?",
+    a: "AISkillScore's AI Displacement Score is completely free — no tokens, no credit card, no signup required. It analyzes your specific role against ILO 2025 research data and shows which of your daily tasks AI can automate vs which require human judgment. It takes about 30 seconds and provides an actionable breakdown with upskilling recommendations.",
+  },
+  {
+    q: "How does Job Match Score work?",
+    a: "Paste a job description or URL and your resume. Job Match Score uses Gemini 2.5 Pro to extract every requirement from the posting, then matches each one against evidence from your resume. You get a fit score with cited gaps, strengths quoted from your actual resume text, and prioritized next steps. The analysis takes about 30 seconds and costs 5 tokens.",
+  },
+  {
+    q: "Can I use AISkillScore on my phone?",
+    a: "Yes. AISkillScore is a mobile-first web app that works on any smartphone browser. All 11 tools, your dashboard, and Job Mission Control are fully functional on mobile. For LinkedIn job postings that are hard to copy on mobile, paste the job URL instead — we extract the requirements automatically.",
+  },
+  {
+    q: "How long does resume optimization take?",
+    a: "About 45-60 seconds. Upload your resume (PDF, DOCX, or paste text), optionally provide a target job description for maximum impact, and AISkillScore's Resume Optimizer rewrites it for ATS compatibility while preserving your authentic voice. You get a before/after score comparison with change rationale for every edit.",
+  },
+  {
+    q: "Is AISkillScore better than hiring a career coach?",
+    a: "Career coaches typically charge $200-500 per session. AISkillScore provides evidence-based analysis for a fraction of the cost: Resume Optimizer is about $2.93, Job Match Score is about $0.98, and Interview Prep is about $1.56. The difference: coaches offer personal rapport, while AISkillScore offers data-driven consistency and instant results. Many users run AISkillScore first to diagnose their gaps, then use coaching sessions more effectively.",
+  },
 ];
 
 export const MISSION_ACTIONS = [
