@@ -112,7 +112,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
               {jobTargets.length}
             </span>
           </div>
-          <p className="text-sm text-gray-500">Track and manage all your job applications</p>
+          <p className="text-sm text-gray-500">Pick your current target, complete the next action, then move to application-ready.</p>
         </div>
 
         <div className="flex items-center gap-2">

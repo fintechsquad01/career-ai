@@ -130,9 +130,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
       </div>
 
       <p className="mt-3 text-center text-xs text-gray-500 max-w-lg mx-auto leading-relaxed">
-        For the most accurate analysis, paste the full requirements, responsibilities, and qualifications section,
-        <br className="sm:hidden" />
-        or your complete resume text with bullet points.
+        For best results, paste the full job requirements section or your full resume with bullets.
       </p>
 
       {/* Privacy line */}

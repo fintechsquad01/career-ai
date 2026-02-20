@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Clock, ChevronDown, ChevronUp, Share2, Trash2, Loader2, Pencil, Check, X } from "lucide-react";
 import { Ring } from "@/components/shared/Ring";
@@ -348,6 +349,19 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                   <div className="border-t border-gray-100">
                     {/* Actions bar */}
                     <div className="px-5 py-3 bg-gray-50 flex items-center gap-2 border-b border-gray-100">
+                      <Link
+                        href="/mission"
+                        onClick={() =>
+                          track("history_continue_mission_clicked", {
+                            result_id: r.id,
+                            tool_id: r.tool_id,
+                            route: "/history",
+                          })
+                        }
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors min-h-[32px]"
+                      >
+                        Continue Mission
+                      </Link>
                       <button
                         onClick={() => handleShare(r)}
                         disabled={sharingId === r.id}

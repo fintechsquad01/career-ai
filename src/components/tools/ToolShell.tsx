@@ -126,6 +126,20 @@ const TOOL_DEPENDENCIES: Record<string, { prereqToolId: string; prereqLabel: str
   },
 };
 
+const TOOL_EFFORT_HINTS: Record<string, string> = {
+  displacement: "~30 sec",
+  jd_match: "~30 sec",
+  resume: "~45-60 sec",
+  cover_letter: "~30-45 sec",
+  linkedin: "~45 sec",
+  headshots: "~60-120 sec",
+  interview: "~45 sec",
+  skills_gap: "~30-45 sec",
+  roadmap: "~45 sec",
+  salary: "~30 sec",
+  entrepreneurship: "~45 sec",
+};
+
 /** Generate a contextual narrative based on actual result data */
 function getResultAwareNarrative(
   fromToolId: string,
@@ -1033,6 +1047,16 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
         return (
           <div className="space-y-4">
+            <div className="surface-card-hero p-3.5">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700">Start here now</p>
+              <p className="text-sm text-gray-900 mt-1">
+                Run <span className="font-semibold">{tool.title}</span> to get your next recommended move.
+              </p>
+              <p className="text-xs text-gray-600 mt-1.5">
+                Effort: {formatTokenAmountLabel(tool.tokens)} · {TOOL_EFFORT_HINTS[toolId] || "~30-60 sec"}
+              </p>
+            </div>
+
             <div className="surface-card-soft p-3.5">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`ui-badge ${hasResume ? "ui-badge-green" : "ui-badge-amber"}`}>
@@ -1313,6 +1337,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         <div className="report-section surface-soft border-blue-100">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600 mb-1">Primary action</p>
           <p className="text-sm text-gray-700 mb-3">{primaryRecommendation.narrative}</p>
+          <p className="text-xs text-gray-600 mb-3">
+            Effort: {formatTokenAmountLabel(primaryRecommendation.tool.tokens)} · {TOOL_EFFORT_HINTS[primaryRecommendation.tool.id] || "~30-60 sec"}
+          </p>
           <Link
             href={`/tools/${primaryRecommendation.tool.id}`}
             onClick={() => {
@@ -1336,28 +1363,24 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Result actions */}
       {state === "result" && (
-        <div className="report-section stagger-children">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Report Actions</p>
-          <p className="text-xs text-gray-500 mb-3">Run again, save, and manage this report across your mission.</p>
+        <details className="report-section">
+          <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+            Other actions
+          </summary>
+          <p className="text-xs text-gray-500 mt-2 mb-3">Use these after your primary next step.</p>
           <div className="flex flex-wrap gap-2.5">
-            <button
-              onClick={handleReset}
-              className="btn-secondary"
-            >
+            <button onClick={handleReset} className="btn-ghost">
               <RotateCcw className="w-4 h-4" />
               Run Again
             </button>
-            <button
-              onClick={handleShare}
-              className="btn-secondary"
-            >
+            <button onClick={handleShare} className="btn-ghost">
               <Share2 className="w-4 h-4" />
               Share Report
             </button>
             <Link
               href="/history"
               onClick={() => track(EVENTS.NAV_HISTORY_QUICK_OPENED, { from_route: `/tools/${toolId}`, to_route: "/history" })}
-              className="btn-secondary"
+              className="btn-ghost"
             >
               <Clock className="w-4 h-4" />
               Open History
@@ -1366,27 +1389,20 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               <button
                 onClick={handleSaveResumeVariant}
                 disabled={savingVariant || variantSaved}
-                className={`btn-secondary ${
-                  variantSaved
-                    ? "border-green-200 bg-green-50 text-green-700"
-                    : ""
-                }`}
+                className={`btn-ghost ${variantSaved ? "text-green-700 bg-green-50" : ""}`}
               >
                 <Save className="w-4 h-4" />
                 {variantSaved ? "Variant Saved" : savingVariant ? "Saving..." : "Save Resume Variant"}
               </button>
             )}
             {activeJobTarget && !wave2JourneyFlowEnabled && (
-              <Link
-                href="/mission"
-                className="btn-primary w-auto px-4"
-              >
+              <Link href="/mission" className="btn-ghost">
                 Mission Control
                 <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
-        </div>
+        </details>
       )}
 
       {/* NPS Widget — appears after tool completion */}
@@ -1450,6 +1466,9 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               >
                 <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Next Step</p>
                 <p className="text-sm text-gray-700 mb-3">{primary.narrative}</p>
+                <p className="text-xs text-gray-600 mb-3">
+                  Effort: {formatTokenAmountLabel(primary.tool.tokens)} · {TOOL_EFFORT_HINTS[primary.tool.id] || "~30-60 sec"}
+                </p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
                     {primary.tool.title}

@@ -283,13 +283,13 @@ function AuthContent() {
                 : "Sign In"
               }
             </button>
+            {mode === "signup" && (
+              <p className="text-caption text-center mt-2">
+                After signup, we continue where you left off{hasPreAuthAnalysis ? " in Mission Control" : " on your Dashboard"}.
+              </p>
+            )}
           </form>
-
-          {mode === "signup" && (
-            <p className="text-caption text-center mt-2">
-              Plus 2 daily free tokens after signup.
-            </p>
-          )}
+          {mode === "signup" && <p className="text-caption text-center mt-1">Plus 2 daily free tokens after signup.</p>}
 
           <p className="mt-5 text-center text-sm text-gray-500">
             {mode === "signup" ? (

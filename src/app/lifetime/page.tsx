@@ -314,6 +314,9 @@ export default function LifetimePage() {
           <p className="text-blue-100 mb-6">
             ${activeTier.price} today. {activeTier.tokens} tokens every month. Forever.
           </p>
+          <p className="text-xs text-blue-100/90 mb-4">
+            Unlocks recurring mission flow coverage each month: JD Match -&gt; Resume -&gt; Interview Prep -&gt; Salary strategy.
+          </p>
           <button
             onClick={handlePurchase}
             disabled={purchasing}

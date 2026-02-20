@@ -87,6 +87,8 @@ export function ResumeResults({ result }: ResumeResultsProps) {
     return "low";
   }, [data.result_meta?.confidence_level, evidenceCoverage]);
 
+  const primaryNextStep = data.next_steps?.[0] ?? null;
+
   return (
     <ReportFlow
       summary={
@@ -308,6 +310,14 @@ export function ResumeResults({ result }: ResumeResultsProps) {
         data.next_steps && data.next_steps.length > 0 ? (
           <div className="report-section">
           <h3 className="font-semibold text-gray-900 mb-3">Next Step Plan</h3>
+          {primaryNextStep && (
+            <div className="surface-card-hero p-3.5 mb-3">
+              <p className="text-sm font-semibold text-gray-900">Start here now: {primaryNextStep.action}</p>
+              <p className="text-xs text-gray-600 mt-1">
+                Effort: {primaryNextStep.tool ? `${primaryNextStep.tool} · ~30-45 sec` : "~30-45 sec"}
+              </p>
+            </div>
+          )}
           <div className="space-y-2">
             {data.next_steps.map((ns, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">

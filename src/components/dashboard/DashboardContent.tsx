@@ -48,6 +48,16 @@ interface SmartRec {
   reason: string; // why this is recommended
 }
 
+const AFTER_THIS_HINTS: Record<string, string> = {
+  displacement: "After this -> run JD Match for a real target role.",
+  jd_match: "After this -> run Resume Optimizer to close top gaps.",
+  resume: "After this -> run Interview Prep for likely follow-up questions.",
+  cover_letter: "After this -> run Interview Prep to practice your story live.",
+  interview: "After this -> run Salary Negotiation before offer talks.",
+  linkedin: "After this -> run Skills Gap to prioritize growth targets.",
+  skills_gap: "After this -> run Career Roadmap to sequence execution.",
+};
+
 /** Build context-aware, prioritized recommendations based on user state. */
 function getSmartRecommendations(
   careerProfile: CareerProfile | null,
@@ -308,22 +318,16 @@ export function DashboardContent({
       {primaryRecommendation && wave2JourneyFlowEnabled && (
         <div className="space-y-2">
           <p className="text-overline">Today</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div className="surface-card-soft p-3">
-              <p className="text-xs text-gray-500">Today</p>
-              <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.title}</p>
-            </div>
-            <div className="surface-card-soft p-3">
-              <p className="text-xs text-gray-500">Next best action</p>
-              <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.reason}</p>
-            </div>
-            <div className="surface-card-soft p-3">
-              <p className="text-xs text-gray-500">Progress this week</p>
-              <p className="text-sm font-semibold text-gray-900 mt-1">{missionProgress ?? 0}% mission progress</p>
-              {recommendationTarget?.title && (
-                <p className="text-[11px] text-gray-500 mt-1 truncate">Target: {recommendationTarget.title}</p>
-              )}
-            </div>
+          <div className="surface-card-soft p-3.5">
+            <p className="text-xs text-gray-500">Recommended now</p>
+            <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.title}</p>
+            <p className="text-xs text-gray-600 mt-1">Why now: {primaryRecommendation.reason}</p>
+            {AFTER_THIS_HINTS[primaryRecommendation.id] && (
+              <p className="text-xs text-blue-700 mt-1.5">{AFTER_THIS_HINTS[primaryRecommendation.id]}</p>
+            )}
+            <p className="text-[11px] text-gray-500 mt-1.5">
+              Mission progress: {missionProgress ?? 0}%{recommendationTarget?.title ? ` · Target: ${recommendationTarget.title}` : ""}
+            </p>
           </div>
         </div>
       )}
@@ -348,6 +352,9 @@ export function DashboardContent({
                   {primaryRecommendation.title}
                 </p>
                 <p className="text-xs text-gray-600 mt-1 line-clamp-2">{primaryRecommendation.description}</p>
+                {AFTER_THIS_HINTS[primaryRecommendation.id] && (
+                  <p className="text-xs text-blue-700 mt-1 line-clamp-2">{AFTER_THIS_HINTS[primaryRecommendation.id]}</p>
+                )}
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                   <span className={`ui-badge ${primaryRecommendation.tokens === "Free" ? "ui-badge-green" : "ui-badge-blue"}`}>
                     {primaryRecommendation.tokens === "Free" ? "Free" : `${primaryRecommendation.tokens} tokens`}

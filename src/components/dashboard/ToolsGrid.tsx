@@ -26,6 +26,20 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Grow: "Plan your long-term career trajectory",
 };
 
+const TOOL_EFFORT_HINTS: Record<string, string> = {
+  displacement: "~30 sec",
+  jd_match: "~30 sec",
+  resume: "~45-60 sec",
+  cover_letter: "~30-45 sec",
+  interview: "~45 sec",
+  linkedin: "~45 sec",
+  skills_gap: "~30-45 sec",
+  roadmap: "~45 sec",
+  salary: "~30 sec",
+  entrepreneurship: "~45 sec",
+  headshots: "~60-120 sec",
+};
+
 const POPULAR_TOOLS = new Set(["displacement"]);
 
 interface ToolsGridProps {
@@ -71,6 +85,9 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                       </div>
                       <h4 className="text-[13px] font-semibold text-gray-900">{tool.title}</h4>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{tool.description}</p>
+                      <p className="text-[11px] text-gray-500 mt-1">
+                        {formatTokenLabel(tool.tokens)} · {TOOL_EFFORT_HINTS[tool.id] || "~30-60 sec"}
+                      </p>
                       {statusLabel && (
                         <p className="text-[11px] font-medium text-gray-400 mt-1">{statusLabel}</p>
                       )}
@@ -134,7 +151,10 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
                           {formatTokenLabel(tool.tokens)}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
+                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{tool.description}</p>
+                      <p className="text-[11px] text-gray-500 mt-1">
+                        {formatTokenLabel(tool.tokens)} · {TOOL_EFFORT_HINTS[tool.id] || "~30-60 sec"}
+                      </p>
                       {statusLabel && (
                         <div className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
                           {statusLabel === "Popular" && <Star className="w-3 h-3 text-amber-500" fill="currentColor" />}

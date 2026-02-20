@@ -69,7 +69,7 @@ export function Sidebar() {
   return (
     <aside
       className={`hidden md:flex flex-col border-r border-gray-200/60 bg-white/90 backdrop-blur-xl h-[calc(100vh-4rem)] sticky top-16 z-10 overflow-y-auto overflow-x-hidden transition-all duration-200 ${
-        sidebarCollapsed ? "w-[60px]" : "w-48"
+        sidebarCollapsed ? "w-[68px]" : "w-56"
       }`}
     >
       <div className="flex-1 py-3 px-2 space-y-1">
@@ -110,12 +110,12 @@ export function Sidebar() {
                 strokeWidth={active ? 2 : 1.5}
               />
               {!sidebarCollapsed && (
-                <div className="flex items-center gap-2 min-w-0 w-full">
-                  <span className={`text-sm truncate ${active ? "font-semibold" : "font-medium"}`}>
+                <div className="min-w-0 w-full">
+                  <span className={`text-sm ${active ? "font-semibold" : "font-medium"}`}>
                     {item.label}
                   </span>
                   {getJourneyBadge(item.key) && (
-                    <span className={`ui-badge ml-auto ${getJourneyBadge(item.key) === "Ready" ? "ui-badge-green" : getJourneyBadge(item.key) === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
+                    <span className={`ui-badge mt-1 inline-flex ${getJourneyBadge(item.key) === "Ready" ? "ui-badge-green" : getJourneyBadge(item.key) === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
                       {getJourneyBadge(item.key)}
                     </span>
                   )}

@@ -111,6 +111,9 @@ export function Paywall({
           <p className="text-sm text-gray-600 mt-2">
             Have <strong>{currentBalance}</strong> · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong>
           </p>
+          <p className="text-xs text-blue-700 mt-1.5">
+            Recommended now: <strong>{recommendedPack.name}</strong> unlocks this step and leaves {Math.max(0, recommendedPack.tokens - deficit)} tokens for your next actions.
+          </p>
           <p className="text-xs text-gray-500 mt-1">
             {CANONICAL_COPY.paywall.noSubscription}
           </p>
@@ -159,11 +162,16 @@ export function Paywall({
                     <span className="font-semibold text-gray-900">{pack.name}</span>
                     {isRecommended && (
                     <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
-                        BEST FOR THIS SHORTFALL
+                        BEST NEXT STEP
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">{pack.tokens} tokens · {pack.rate}/token</p>
+                  {isRecommended && (
+                    <p className="text-[11px] text-blue-700 mt-1">
+                      Covers current shortfall ({deficit}) and supports follow-up runs.
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-gray-900">${pack.price}</span>

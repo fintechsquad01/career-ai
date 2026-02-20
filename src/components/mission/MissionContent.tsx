@@ -37,6 +37,12 @@ const PRIORITY_COLORS: Record<string, string> = {
   Low: "bg-gray-100 text-gray-500",
 };
 
+const PROGRESSION_LABELS: Record<"available" | "locked" | "completed", { label: string; cls: string }> = {
+  available: { label: "Next", cls: "bg-blue-50 text-blue-700" },
+  locked: { label: "Blocked", cls: "bg-gray-100 text-gray-500" },
+  completed: { label: "Done", cls: "bg-green-50 text-green-700" },
+};
+
 interface MissionContentProps {
   allJobTargets?: JobTarget[];
 }
@@ -264,6 +270,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
 
   const requirements = (activeJobTarget.requirements as Array<{ skill: string; match: boolean | "partial" }>) || [];
   const matched = requirements.filter((r) => r.match === true).length;
+  const nextAction = MISSION_ACTIONS.find((action, index) => getActionState(action.id, index) === "available");
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
@@ -359,6 +366,14 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
       {/* Action Cards */}
       <div className="space-y-3">
         <h3 className="font-semibold text-gray-900">Mission Actions</h3>
+        {nextAction && !isComplete && (
+          <div className="surface-card-hero p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700 mb-1">Next action</p>
+            <p className="text-sm font-semibold text-gray-900">{nextAction.title}</p>
+            <p className="text-xs text-gray-600 mt-1">{nextAction.description}</p>
+            <p className="text-xs text-gray-600 mt-1.5">Effort: {nextAction.tokens} tokens · ~30 sec</p>
+          </div>
+        )}
         {MISSION_ACTIONS.map((action, index) => {
           const state = getActionState(action.id, index);
           const Icon = ACTION_ICONS[action.id] || FileText;
@@ -392,6 +407,9 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
                     <h4 className="font-semibold text-gray-900">{action.title}</h4>
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${PRIORITY_COLORS[action.priority]}`}>
                       {action.priority}
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${PROGRESSION_LABELS[state].cls}`}>
+                      {PROGRESSION_LABELS[state].label}
                     </span>
                   </div>
                   {state === "completed" && toolResults[action.toolId] ? (
@@ -537,6 +555,12 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               className="inline-flex items-center gap-2 px-6 py-3 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors min-h-[48px]"
             >
               Next Job Mission
+            </Link>
+            <Link
+              href="/tools/displacement"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-blue-200 text-blue-700 text-sm font-medium rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
+            >
+              Start a Fresh Scan
             </Link>
           </div>
         </div>

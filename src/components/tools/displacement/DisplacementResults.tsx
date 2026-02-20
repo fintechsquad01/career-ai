@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { Ring } from "@/components/shared/Ring";
 import { ReportFlow } from "@/components/shared/ReportStructure";
 import { AlertTriangle, Shield, Lightbulb, DollarSign, Twitter, Linkedin } from "lucide-react";
@@ -263,30 +264,42 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
       }
       nextStep={
         <div className="surface-card-hero p-5 text-center">
-        <p className="text-sm font-semibold text-gray-900 mb-1">Next Step: Share Your Benchmark</p>
+        <p className="text-sm font-semibold text-gray-900 mb-1">Start here now: run JD Match on your target role</p>
         <p className="text-xs text-gray-500 mb-4">
-          Share your score with peers to compare market exposure and discuss mitigation strategies.
+          Turn this risk signal into a role-specific action plan with requirement gaps and fixes.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My AI displacement risk score is ${data.score}/100. Benchmark your role risk:`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors min-h-[44px]"
-          >
-            <Twitter className="w-4 h-4" />
-            Share on X
-          </a>
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://aiskillscore.com')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0077B5] text-white text-sm font-semibold rounded-xl hover:bg-[#006699] transition-colors min-h-[44px]"
-          >
-            <Linkedin className="w-4 h-4" />
-            Share on LinkedIn
-          </a>
+        <p className="text-xs text-gray-600 mb-4">Effort: 5 tokens · ~30 sec</p>
+        <Link
+          href="/tools/jd_match"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]"
+        >
+          Run JD Match
+        </Link>
         </div>
+      }
+      actions={
+        <div className="report-section">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-3">Other actions</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My AI displacement risk score is ${data.score}/100. Benchmark your role risk:`)}&url=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin : "https://aiskillscore.com")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              <Twitter className="w-4 h-4" />
+              Share on X
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin : "https://aiskillscore.com")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              <Linkedin className="w-4 h-4" />
+              Share on LinkedIn
+            </a>
+          </div>
         </div>
       }
     />

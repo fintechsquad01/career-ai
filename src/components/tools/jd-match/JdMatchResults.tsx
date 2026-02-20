@@ -289,8 +289,9 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
         data.critical_gaps && data.critical_gaps.length > 0 ? (
           <div className="surface-card-hero p-4">
             <div className="mb-3">
-              <p className="text-sm font-semibold text-gray-900">Address these gaps before you apply</p>
+              <p className="text-sm font-semibold text-gray-900">Start here now: address these gaps before you apply</p>
               <p className="text-xs text-gray-500">Resume Optimizer maps each gap to targeted resume updates.</p>
+              <p className="text-xs text-gray-600 mt-1">Effort: 15 tokens · ~45-60 sec</p>
             </div>
             <Link
               href="/tools/resume"

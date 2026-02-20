@@ -66,6 +66,14 @@ const COMPETITORS = [
 export default function PricingPage() {
   const [purchaseError, setPurchaseError] = useState("");
   const [purchasing, setPurchasing] = useState<string>("");
+  const [selectedPackId, setSelectedPackId] = useState<string>("pro");
+
+  const selectedPack = PACKS.find((p) => p.id === selectedPackId) ?? PACKS[0];
+  const selectedPackWorkflowCoverage = selectedPack.tokens >= 200
+    ? "Covers multiple full job cycles: JD Match -> Resume -> Cover Letter -> Interview Prep."
+    : selectedPack.tokens >= 50
+      ? "Covers a focused run: JD Match + Resume Optimizer + one follow-up tool."
+      : "Best for trying one to two tools and validating fit before scaling.";
 
   const handlePurchase = async (packId: string) => {
     setPurchaseError("");
@@ -167,20 +175,22 @@ export default function PricingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {PACKS.map((pack) => (
-            <div
+            <button
               key={pack.id}
-              className={`surface-card p-6 ${
-                pack.highlighted
+              type="button"
+              onClick={() => setSelectedPackId(pack.id)}
+              className={`text-left surface-card p-6 transition-all ${
+                selectedPackId === pack.id
                   ? "border-blue-600 shadow-lg shadow-blue-600/10 ring-1 ring-blue-600"
                   : "surface-card-hover"
               }`}
             >
-              {pack.highlighted && (
+              {selectedPackId === pack.id && (
                 <span className="ui-badge ui-badge-blue mb-4">
-                  Most Popular · Save {pack.save}
+                  Selected
                 </span>
               )}
-              {pack.save && !pack.highlighted && (
+              {pack.save && selectedPackId !== pack.id && (
                 <span className="ui-badge ui-badge-green mb-4">
                   Save {pack.save}
                 </span>
@@ -194,26 +204,27 @@ export default function PricingPage() {
                   {pack.vsNote}
                 </p>
               )}
-              <button
-                onClick={() => handlePurchase(pack.id)}
-                disabled={purchasing === pack.id}
-                className={`w-full disabled:opacity-60 ${
-                  pack.highlighted
-                    ? "btn-primary"
-                    : "btn-secondary"
-                }`}
-              >
-                {purchasing === pack.id ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Processing…
-                  </>
-                ) : (
-                  `Continue with ${pack.name}`
-                )}
-              </button>
-            </div>
+            </button>
           ))}
+          </div>
+          <div className="surface-card-soft p-4 sm:p-5">
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Recommended next unlock</p>
+            <p className="text-sm text-gray-900 font-semibold">{selectedPack.name} · {selectedPack.tokens} tokens</p>
+            <p className="text-xs text-gray-600 mt-1">{selectedPackWorkflowCoverage}</p>
+            <button
+              onClick={() => handlePurchase(selectedPack.id)}
+              disabled={purchasing === selectedPack.id}
+              className="btn-primary mt-3 w-full sm:w-auto"
+            >
+              {purchasing === selectedPack.id ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Processing…
+                </>
+              ) : (
+                `Continue with ${selectedPack.name}`
+              )}
+            </button>
           </div>
         </div>
 

@@ -49,6 +49,10 @@ export function MissionCard({
   const completedCount = Object.values(missionActions).filter(Boolean).length;
   const totalCount = MISSION_ACTIONS.length;
   const progressPct = Math.round((completedCount / totalCount) * 100);
+  const missionStatus =
+    progressPct >= 100 ? { label: "Done", cls: "bg-green-50 text-green-700" } :
+    progressPct > 0 ? { label: "In progress", cls: "bg-blue-50 text-blue-700" } :
+    { label: "Next", cls: "bg-amber-50 text-amber-700" };
 
   const status = (target.status || "saved") as JobTargetStatus;
   const statusStyle = STATUS_CONFIG[status] || STATUS_CONFIG.saved;
@@ -149,6 +153,9 @@ export function MissionCard({
       {/* Quick results summary */}
       {Object.keys(toolResults).length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-3">
+          <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold rounded-full ${missionStatus.cls}`}>
+            {missionStatus.label}
+          </span>
           {MISSION_ACTIONS.slice(0, 3).map((action) => {
             const result = toolResults[action.toolId];
             if (!result) return null;

@@ -322,6 +322,9 @@ export function LandingContent() {
                   Input-first analysis
                 </p>
                 <SmartInput onAnalyze={handleAnalyze} />
+                <p className="text-xs text-gray-500 text-center">
+                  Continue flow after signup: job-target analyses go to Mission Control; resume-first analyses go to Dashboard.
+                </p>
               </div>
             </>
           )}
