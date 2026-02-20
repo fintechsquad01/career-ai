@@ -61,10 +61,10 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] On each targeted tool, one primary action is visible above fold on both desktop and mobile.
-- [ ] Secondary actions never visually compete with primary CTA.
-- [ ] Next action includes explicit effort signal (`tokens` and/or time).
-- [ ] No section appears above verdict that requires user interpretation first.
+- [x] On each targeted tool, one primary action is visible above fold on both desktop and mobile.
+- [x] Secondary actions never visually compete with primary CTA.
+- [x] Next action includes explicit effort signal (`tokens` and/or time).
+- [x] No section appears above verdict that requires user interpretation first.
 
 ## W52-20 Dashboard Flow (Mission Entry)
 
@@ -84,10 +84,10 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] User can identify first useful action in <10 seconds.
-- [ ] One clearly dominant next action exists above fold.
-- [ ] Tool cards expose enough context to choose without opening each card.
-- [ ] Recommendation rationale is short and specific (not generic).
+- [x] User can identify first useful action in <10 seconds.
+- [x] One clearly dominant next action exists above fold.
+- [x] Tool cards expose enough context to choose without opening each card.
+- [x] Recommendation rationale is short and specific (not generic).
 
 ## W52-30 Mission Flow (Progress Clarity)
 
@@ -106,10 +106,10 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] Progress state is obvious without scrolling.
-- [ ] Next actionable mission step is unambiguous.
-- [ ] Overview and detail pages use consistent progression language.
-- [ ] Mission-complete state has a clear continuation path.
+- [x] Progress state is obvious without scrolling.
+- [x] Next actionable mission step is unambiguous.
+- [x] Overview and detail pages use consistent progression language.
+- [x] Mission-complete state has a clear continuation path.
 
 ## W52-40 History Flow (Resume Fast)
 
@@ -126,9 +126,9 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] Users can distinguish similar entries quickly.
-- [ ] Continue action is visible before destructive/secondary controls.
-- [ ] Expanded state preserves trust framing and readability.
+- [x] Users can distinguish similar entries quickly.
+- [x] Continue action is visible before destructive/secondary controls.
+- [x] Expanded state preserves trust framing and readability.
 
 ## W52-50 Pricing Flow (Decision Confidence)
 
@@ -146,9 +146,9 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] Recommended pack logic is understandable in one glance.
-- [ ] Only one purchase-primary action appears per decision block.
-- [ ] Pack cards communicate practical workflow coverage, not just token counts.
+- [x] Recommended pack logic is understandable in one glance.
+- [x] Only one purchase-primary action appears per decision block.
+- [x] Pack cards communicate practical workflow coverage, not just token counts.
 
 ## W52-60 Auth/Landing Continuity (Handoff)
 
@@ -166,9 +166,9 @@ Do not start downstream phases before upstream pass:
 
 ### Acceptance tests
 
-- [ ] Users understand where they will land after signup.
-- [ ] Input-first copy remains concise and non-redundant.
-- [ ] Auth pages reinforce continuation, not restart.
+- [x] Users understand where they will land after signup.
+- [x] Input-first copy remains concise and non-redundant.
+- [x] Auth pages reinforce continuation, not restart.
 
 ## W52-90 QA + Rollout Gates
 
@@ -190,10 +190,10 @@ Run desktop and mobile checks in locked order:
 
 ### Pass criteria
 
-- [ ] Start clarity: first useful action identified quickly.
-- [ ] Decision clarity: one obvious next action at each state.
-- [ ] Continuity: handoff between pages feels connected and progressive.
-- [ ] No trust regression in score communication.
+- [x] Start clarity: first useful action identified quickly.
+- [x] Decision clarity: one obvious next action at each state.
+- [x] Continuity: handoff between pages feels connected and progressive.
+- [x] No trust regression in score communication.
 
 ### Rollout stages
 
@@ -216,3 +216,40 @@ Wave 5.2 is complete when:
 - QA matrix passes on desktop and mobile.
 - No critical navigation/progression confusion remains in left-nav journey pages.
 - Changes are merged with evidence notes for each phase.
+
+## 6) QA Closure Evidence (2026-02-20)
+
+### Validation commands
+
+- `npm run typecheck` -> PASS (`tsc --noEmit`, exit code `0`).
+- `npm run lint` -> FAIL on known baseline lint debt (existing repo-wide `no-explicit-any` / `no-unused-vars` findings); no Wave 5.2 closure-blocking regression identified in this QA pass.
+
+### Browser QA matrix execution (desktop + mobile)
+
+Locked order executed:
+
+1. `/tools/jd_match`, `/tools/resume`, `/tools/displacement`
+2. `/dashboard`
+3. `/mission`
+4. `/history`
+5. `/pricing`, `/lifetime`
+6. `/`, `/auth`
+
+Outcome:
+
+- Start clarity and single-primary-action hierarchy confirmed in targeted Wave 5.2 surfaces.
+- Continuity cues confirmed across Dashboard -> Tool -> Mission/Pricing/Auth handoffs.
+- Trust framing remained present in score-based flows (no regressions observed during QA walkthrough).
+
+### History expanded-state verification
+
+- Browser witness pass confirmed expanded-row actions in UI and `Continue Mission` visibility in first action position.
+- UI implementation verification in `src/components/history/HistoryContent.tsx` remains aligned:
+  - expanded header row toggles state via `handleToggleExpand`
+  - expanded action bar shows `Continue Mission` first
+  - share/delete actions remain secondary.
+
+### Closure
+
+- Wave 5.2 QA closure evidence captured.
+- Remaining rollout-stage work is operational: staged exposure and KPI monitoring after deployment.

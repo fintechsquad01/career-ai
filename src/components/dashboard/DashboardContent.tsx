@@ -49,13 +49,13 @@ interface SmartRec {
 }
 
 const AFTER_THIS_HINTS: Record<string, string> = {
-  displacement: "After this -> run JD Match for a real target role.",
-  jd_match: "After this -> run Resume Optimizer to close top gaps.",
-  resume: "After this -> run Interview Prep for likely follow-up questions.",
-  cover_letter: "After this -> run Interview Prep to practice your story live.",
-  interview: "After this -> run Salary Negotiation before offer talks.",
-  linkedin: "After this -> run Skills Gap to prioritize growth targets.",
-  skills_gap: "After this -> run Career Roadmap to sequence execution.",
+  displacement: "After this: run Job Match Score for a real target role.",
+  jd_match: "After this: run Resume Optimizer to close your top gaps.",
+  resume: "After this: run Interview Prep for likely follow-up questions.",
+  cover_letter: "After this: run Interview Prep to practice your story live.",
+  interview: "After this: run Salary Negotiation before offer talks.",
+  linkedin: "After this: run Skills Gap to prioritize growth targets.",
+  skills_gap: "After this: run Career Roadmap to sequence execution.",
 };
 
 /** Build context-aware, prioritized recommendations based on user state. */
@@ -111,7 +111,7 @@ function getSmartRecommendations(
   if (activeJobTarget && !completedTargetTools.has("jd_match")) {
     recs.push({
       id: "jd_match",
-      title: `Check your fit for ${activeJobTarget.title || "target role"}`,
+      title: `Run Job Match Score for ${activeJobTarget.title || "target role"}`,
       description: activeJobTarget.company
         ? `For ${activeJobTarget.title || "target role"} at ${activeJobTarget.company}`
         : `For ${activeJobTarget.title || "your target role"}`,
@@ -121,7 +121,7 @@ function getSmartRecommendations(
       icon: Target,
       iconBg: "bg-blue-50",
       iconColor: "text-blue-600",
-      reason: "You have a target job saved",
+      reason: "This gives you the highest-impact fixes before applying",
     });
   }
 

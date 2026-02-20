@@ -33,26 +33,26 @@ const INTENT_OPTIONS: {
   {
     id: "job_hunting",
     icon: Briefcase,
-    label: "I'm actively job hunting",
-    desc: "Find and land your next role",
+    label: "Land a specific role",
+    desc: "Match, optimize, and prepare for your target job",
   },
   {
     id: "advance_career",
     icon: TrendingUp,
-    label: "I want to advance my career",
+    label: "Strengthen my resume first",
     desc: "Level up skills and positioning",
   },
   {
     id: "future_proof",
     icon: ShieldAlert,
-    label: "I want to future-proof against AI",
+    label: "Future-proof against AI shifts",
     desc: "Understand your displacement risk",
   },
   {
     id: "side_income",
     icon: Rocket,
-    label: "I'm exploring side income",
-    desc: "Build income from your skills",
+    label: "Build side-income options",
+    desc: "Discover income paths from your skills",
   },
 ];
 
@@ -204,8 +204,8 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
           <div className="space-y-5">
             <div className="text-center">
               <p className="text-sm text-gray-500 text-center mb-4">Let&apos;s make sure every tool gives you personalized results. This takes 60 seconds.</p>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">What brings you here?</h2>
-              <p className="text-sm text-gray-500">We&apos;ll personalize your experience.</p>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">What&apos;s your immediate goal?</h2>
+              <p className="text-sm text-gray-500">We&apos;ll prioritize your mission path automatically.</p>
             </div>
 
             <div className="space-y-2">
@@ -381,8 +381,11 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
             <div>
               <h2 className="text-xl font-bold text-gray-900 mb-2">You&apos;re all set!</h2>
               <p className="text-sm text-gray-500 leading-relaxed">
+                Your dashboard will prioritize actions in this order: Match &rarr; Optimize &rarr; Prepare.
+              </p>
+              <p className="text-sm text-gray-500 leading-relaxed">
                 {intent === "job_hunting"
-                  ? "Let's start with a free AI Displacement Score to understand your position, then build your application strategy."
+                  ? "Let's start with Job Match Score to see how you fit your target role, then optimize from there."
                   : intent === "advance_career"
                   ? "Let's start by identifying your skill gaps and building a roadmap for your next career move."
                   : intent === "future_proof"
@@ -415,7 +418,7 @@ export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
               className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
             >
               {intent === "job_hunting"
-                ? "Start My Free Analysis"
+                ? "Run Job Match Score"
                 : intent === "future_proof"
                 ? "Check My AI Risk — Free"
                 : "Get Started"

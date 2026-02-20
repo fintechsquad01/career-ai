@@ -285,7 +285,10 @@ function AuthContent() {
             </button>
             {mode === "signup" && (
               <p className="text-caption text-center mt-2">
-                After signup, we continue where you left off{hasPreAuthAnalysis ? " in Mission Control" : " on your Dashboard"}.
+                After signup, we continue exactly where you left off.
+                {hasPreAuthAnalysis
+                  ? " You'll land in Mission Control with your saved job context."
+                  : " You'll land on Dashboard with your next recommended action."}
               </p>
             )}
           </form>

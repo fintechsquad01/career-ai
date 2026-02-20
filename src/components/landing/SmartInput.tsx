@@ -14,9 +14,9 @@ const BADGE_CONFIG: Record<string, { color: string; icon: typeof LinkIcon; label
 };
 
 const CTA_CONFIG: Record<string, { text: string }> = {
-  url: { text: "Analyze This Job" },
-  jd: { text: "See How You Match" },
-  resume: { text: "X-Ray My Resume" },
+  url: { text: "Run Job Match Score" },
+  jd: { text: "Run Job Match Score" },
+  resume: { text: "Optimize Resume First" },
 };
 
 interface SmartInputProps {
@@ -58,12 +58,13 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
           if (f) handleFile(f);
         }}
       >
-        {/* Textarea */}
-        <div className="px-4 pt-4 pb-2">
+        {/* Label */}
+        <div className="px-4 pt-4 pb-1">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Paste Job Description or Job URL</p>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={"Paste anything here...\n\n• A job description you want to apply for\n• A LinkedIn/Greenhouse/Indeed job URL\n• Your resume text"}
+            placeholder={"Paste a job description or job URL (LinkedIn, Greenhouse, Indeed)"}
             rows={text ? 6 : 3}
             aria-label="Paste a job description, job URL, or resume text"
             className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none min-h-[80px]"
@@ -129,8 +130,12 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
         )}
       </div>
 
+      <p className="mt-3 text-center text-xs text-gray-500 sm:hidden leading-relaxed">
+        On mobile LinkedIn and can&apos;t copy the posting? Paste the job URL — we&apos;ll extract requirements.
+      </p>
+
       <p className="mt-3 text-center text-xs text-gray-500 max-w-lg mx-auto leading-relaxed">
-        For best results, paste the full job requirements section or your full resume with bullets.
+        No job post yet? Upload resume and start with Resume Optimizer.
       </p>
 
       {/* Privacy line */}

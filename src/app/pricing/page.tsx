@@ -152,7 +152,7 @@ export default function PricingPage() {
             Continue your mission. Pay per use.
           </h1>
           <p className="text-body max-w-2xl mx-auto leading-relaxed">
-            AISkillScore is an AI-powered career intelligence platform with 11 evidence-first tools. This pricing page shows how token packs map to real workflows so you can pay per use, avoid annual lock-in, and choose the right plan fast.
+            Pay per use with tokens. No subscription lock-in. 11 evidence-first tools powered by Gemini 2.5 Pro — choose the right pack for your mission.
           </p>
           <div className="max-w-2xl mx-auto">
             <Insight
@@ -198,7 +198,11 @@ export default function PricingPage() {
               <h3 className="text-h3">{pack.name}</h3>
               <p className="text-4xl font-bold text-gray-900 mt-2 leading-none">${pack.price}</p>
               <p className="text-xs sm:text-sm text-gray-500 mt-1">{pack.tokens} {CANONICAL_COPY.tokens.unit} · {pack.rate}{CANONICAL_COPY.tokens.rateSuffix}</p>
-              <p className="text-xs text-gray-400 mt-2 mb-4">{pack.description}</p>
+              <p className="text-xs text-gray-400 mt-2">{pack.description}</p>
+              {pack.id === "starter" && (
+                <p className="text-xs text-gray-500 mt-1.5 mb-4">Best for one focused application cycle: Job Match Score + one targeted improvement. If you&apos;re applying to 3+ roles, Pro is usually the smoother path.</p>
+              )}
+              {pack.id !== "starter" && <div className="mb-4" />}
               {pack.vsNote && (
                 <p className="text-caption text-blue-600 bg-blue-50 p-2 rounded-lg mb-4 leading-relaxed">
                   {pack.vsNote}
@@ -208,9 +212,12 @@ export default function PricingPage() {
           ))}
           </div>
           <div className="surface-card-soft p-4 sm:p-5">
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Recommended next unlock</p>
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Recommended now</p>
             <p className="text-sm text-gray-900 font-semibold">{selectedPack.name} · {selectedPack.tokens} tokens</p>
             <p className="text-xs text-gray-600 mt-1">{selectedPackWorkflowCoverage}</p>
+            {selectedPack.id === "pro" && (
+              <p className="text-xs text-blue-700 mt-1">Enough tokens for repeated job-match &rarr; resume optimization loops.</p>
+            )}
             <button
               onClick={() => handlePurchase(selectedPack.id)}
               disabled={purchasing === selectedPack.id}

@@ -28,7 +28,11 @@ export function TokBadge() {
       }`}
     >
       <Coins className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-      {!tokensLoaded && <span>0 tokens</span>}
+      {!tokensLoaded && (
+        <span style={{ transition: "all 300ms ease" }}>
+          {tokenBalance} tokens
+        </span>
+      )}
       {showSplit && (
         <span>
           <span style={{ transition: "all 300ms ease" }}>{tokenBalance}</span>

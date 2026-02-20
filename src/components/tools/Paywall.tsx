@@ -104,15 +104,15 @@ export function Paywall({
           <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
             <Coins className="w-6 h-6 text-amber-600" />
           </div>
-          <h2 className="text-lg font-bold text-gray-900">Continue your mission</h2>
+          <h2 className="text-lg font-bold text-gray-900">Continue this mission step</h2>
           {toolName && (
             <p className="text-xs text-gray-400 mt-0.5">for {toolName}</p>
           )}
           <p className="text-sm text-gray-600 mt-2">
-            Have <strong>{currentBalance}</strong> · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong>
+            You have <strong>{currentBalance}</strong> tokens · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong>
           </p>
           <p className="text-xs text-blue-700 mt-1.5">
-            Recommended now: <strong>{recommendedPack.name}</strong> unlocks this step and leaves {Math.max(0, recommendedPack.tokens - deficit)} tokens for your next actions.
+            Recommended now: <strong>{recommendedPack.name}</strong> covers this step and keeps your next action uninterrupted.
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {CANONICAL_COPY.paywall.noSubscription}

@@ -91,23 +91,23 @@ const NARRATIVE_TRANSITIONS: Record<string, Record<string, string>> = {
 const TOOL_DEPENDENCIES: Record<string, { prereqToolId: string; prereqLabel: string; hint: string }> = {
   resume: {
     prereqToolId: "jd_match",
-    prereqLabel: "JD Match",
-    hint: "Run JD Match first to see your gaps — Resume Optimizer will use those gaps to make targeted improvements.",
+    prereqLabel: "Job Match Score",
+    hint: "Run Job Match Score first to see your gaps — Resume Optimizer will use those gaps to make targeted improvements.",
   },
   cover_letter: {
     prereqToolId: "jd_match",
-    prereqLabel: "JD Match",
-    hint: "Run JD Match first so your cover letter addresses specific requirements from the job posting.",
+    prereqLabel: "Job Match Score",
+    hint: "Run Job Match Score first so your cover letter addresses specific requirements from the job posting.",
   },
   interview: {
     prereqToolId: "jd_match",
-    prereqLabel: "JD Match",
-    hint: "Run JD Match first — Interview Prep will focus on the exact requirements and gaps identified.",
+    prereqLabel: "Job Match Score",
+    hint: "Run Job Match Score first — Interview Prep will focus on the exact requirements and gaps identified.",
   },
   salary: {
     prereqToolId: "jd_match",
-    prereqLabel: "JD Match",
-    hint: "Run JD Match first so salary data is tailored to the specific role and company type.",
+    prereqLabel: "Job Match Score",
+    hint: "Run Job Match Score first so salary data is tailored to the specific role and company type.",
   },
   roadmap: {
     prereqToolId: "skills_gap",
