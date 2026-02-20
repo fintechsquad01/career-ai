@@ -638,7 +638,7 @@ export function LandingContent() {
                       href="/auth"
                       className={`mt-4 flex items-center justify-center text-center ${pack.highlighted ? "btn-primary" : "btn-secondary"}`}
                     >
-                      Get {pack.name}
+                      Continue with {pack.name}
                     </Link>
                   </div>
                 ))}

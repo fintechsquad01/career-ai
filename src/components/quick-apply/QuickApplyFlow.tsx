@@ -261,7 +261,7 @@ export function QuickApplyFlow({ hasResume }: QuickApplyFlowProps) {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">{tool.title}</p>
                   </div>
-                  <span className="text-xs font-bold text-gray-400">{tool.tokens} tok</span>
+                  <span className="text-xs font-bold text-gray-400">{tool.tokens} tokens</span>
                 </div>
               );
             })}

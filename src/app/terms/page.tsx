@@ -36,7 +36,7 @@ export default function TermsPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">2. Account &amp; Eligibility</h2>
-            <p>You must be at least 16 years old to use AISkillScore. You are responsible for maintaining the confidentiality of your account credentials. Each new account receives 15 free tokens upon signup, plus 3 daily credits that reset every 24 hours.</p>
+            <p>You must be at least 16 years old to use AISkillScore. You are responsible for maintaining the confidentiality of your account credentials. Each new account receives 15 free tokens upon signup, plus 2 daily free tokens that reset every 24 hours.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">3. Tokens &amp; Pricing</h2>
@@ -53,7 +53,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-3">4. Refunds &amp; Cancellations</h2>
             <p><strong>Token packs (Starter, Pro, Power):</strong> Eligible for a full refund within 14 days of purchase if no tokens from the pack have been used. Once any tokens from a purchased pack are consumed, the purchase is non-refundable.</p>
             <p className="mt-2"><strong>Lifetime Deal:</strong> Includes a 30-day money-back guarantee from the date of purchase. If you are not satisfied, you may request a full refund within 30 days regardless of token usage.</p>
-            <p className="mt-2"><strong>Free tokens and daily credits:</strong> These are provided at no cost and are not eligible for refund or cash value.</p>
+            <p className="mt-2"><strong>Free tokens and daily free tokens:</strong> These are provided at no cost and are not eligible for refund or cash value.</p>
             <p className="mt-2"><strong>How to request a refund:</strong> Email <a href="mailto:support@aiskillscore.com" className="text-blue-600 hover:underline">support@aiskillscore.com</a> with your account email and reason for the request. Refunds are processed within 5–10 business days to the original payment method.</p>
           </section>
           <section>
@@ -64,7 +64,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-3">6. Acceptable Use</h2>
             <p>You agree not to:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Abuse the platform or exploit free tokens/daily credits through multiple accounts</li>
+              <li>Abuse the platform or exploit free tokens/daily free tokens through multiple accounts</li>
               <li>Reverse-engineer, scrape, or systematically extract AI outputs</li>
               <li>Use the service for any unlawful purpose or to discriminate against individuals</li>
               <li>Resell, redistribute, or commercially repurpose AI-generated results</li>

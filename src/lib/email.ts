@@ -2,7 +2,7 @@
  * Email integration via Resend.
  * No-ops gracefully when RESEND_API_KEY is not configured.
  *
- * Templates: Welcome, Daily Credit Reminder, Results Email
+ * Templates: Welcome, Daily Token Reminder, Results Email
  *
  * FROM ADDRESS & DOMAIN VERIFICATION:
  * - Production: "AISkillScore <noreply@aiskillscore.com>" — requires verified domain in Resend.
@@ -135,7 +135,7 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<boo
 }
 
 // ---------------------------------------------------------------------------
-// Template: Daily Credit Reminder
+// Template: Daily Token Reminder
 // ---------------------------------------------------------------------------
 
 export async function sendDailyCreditReminder(email: string, name: string, daysMissed: number): Promise<boolean> {
@@ -182,7 +182,7 @@ export async function sendResultsEmail(email: string, context: string): Promise<
         Thanks for trying AISkillScore! Your ${contextLabel.toLowerCase()} results are ready.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Create a free account to unlock all 11 AI career tools, save your results, and start your Job Mission. You'll get <strong>15 free tokens</strong> plus <strong>2 daily credits</strong>.
+        Create a free account to unlock all 11 AI career tools, save your results, and start your Job Mission. You'll get <strong>15 free tokens</strong> plus <strong>2 daily free tokens</strong>.
       </p>
       <div style="text-align:center;">
         ${ctaButton("Create Account — 15 Free Tokens", `${appUrl}/auth`)}
@@ -270,7 +270,7 @@ export async function sendActivationDay7(email: string, name: string, tokensRema
     html: emailWrapper(`
       <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Don't let your tokens go to waste</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Hey ${firstName}, you signed up a week ago but still have <strong>${tokensRemaining} tokens</strong> unused. Daily credits cap at 14 — use your signup bonus before it gets crowded out.
+        Hey ${firstName}, you signed up a week ago but still have <strong>${tokensRemaining} tokens</strong> unused. Daily free tokens cap at 14 — use your signup bonus before it gets crowded out.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
         Here's a 10-minute career checkup:
@@ -333,11 +333,11 @@ export async function sendReengagementDay14(email: string, name: string, dailyCr
 
   return sendEmail({
     to: email,
-    subject: `${firstName}, your daily credits are piling up`,
+    subject: `${firstName}, your daily free tokens are piling up`,
     html: emailWrapper(`
-      <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your credits are waiting</h1>
+      <h1 style="font-size:22px;color:#111827;margin:0 0 16px;">Your free tokens are waiting</h1>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
-        Hey ${firstName}, you have <strong>${dailyCreditsAvailable} free daily credits</strong> waiting. Use them to try JD Match, Skills Gap, and other AI career tools.
+        Hey ${firstName}, you have <strong>${dailyCreditsAvailable} free daily tokens</strong> waiting. Use them to try JD Match, Skills Gap, and other AI career tools.
       </p>
       <p style="color:#4b5563;font-size:14px;line-height:1.7;margin:0 0 12px;">
         The job market shifts fast. A quick daily check keeps you ahead:
@@ -348,7 +348,7 @@ export async function sendReengagementDay14(email: string, name: string, dailyCr
         <li>Daily tokens are free — use them or lose them</li>
       </ul>
       <div style="text-align:center;">
-        ${ctaButton("Claim Your Free Credits", `${appUrl}/dashboard`)}
+        ${ctaButton("Claim Your Free Tokens", `${appUrl}/dashboard`)}
       </div>
     `),
   });
