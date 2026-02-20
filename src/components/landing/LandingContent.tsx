@@ -48,13 +48,13 @@ function StickyCtaBar() {
     <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-3 animate-in slide-in-from-bottom-2 duration-300">
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-gray-700 hidden sm:block">
-          Ready to analyze? Paste your resume or job description.
+          Ready? Paste a job description to run Job Match Score.
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="btn-primary w-full sm:w-auto whitespace-nowrap text-xs sm:text-sm px-5"
         >
-          {CANONICAL_COPY.cta.freeAnalysisPrimary}
+          Run Job Match Score
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -309,9 +309,7 @@ export function LandingContent() {
               {/* Divider pointing to SmartInput */}
               <div className="text-center space-y-2">
                 <p className="text-sm text-gray-500 max-w-xl mx-auto leading-relaxed">
-                  Need a full fit analysis? Paste your full resume or full job description.
-                  <br className="sm:hidden" />
-                  Get requirement matches, missing-skill gaps, and next actions with evidence.
+                  Start with Job Match Score to diagnose role fit, then optimize your resume for your top gaps.
                 </p>
                 <ArrowRight className="w-4 h-4 text-gray-300 mx-auto rotate-90" />
               </div>
@@ -319,11 +317,11 @@ export function LandingContent() {
               {/* Full SmartInput */}
               <div className="space-y-2">
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider text-center">
-                  Input-first analysis
+                  Paste Job Description or Job URL
                 </p>
                 <SmartInput onAnalyze={handleAnalyze} />
                 <p className="text-xs text-gray-500 text-center">
-                  Continue flow after signup: job-target analyses go to Mission Control; resume-first analyses go to Dashboard.
+                  After signup: job-target analyses go to Mission Control; resume-first analyses go to Dashboard.
                 </p>
               </div>
             </>
@@ -429,7 +427,7 @@ export function LandingContent() {
                       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                     className="btn-primary btn-shine inline-flex px-6 sm:w-auto"
                     >
-                      {CANONICAL_COPY.cta.freeAnalysisPrimary}
+                      Run Job Match Score
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -512,29 +510,26 @@ export function LandingContent() {
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
-                Why job seekers switch to AISkillScore
+                Who this is for
               </h2>
               <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-                One platform replaces multiple subscriptions. Pay only for the tools you run.
+                Whether you&apos;re pivoting, starting out, or protecting your trajectory — start with a job match.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger-children">
                 {[
                   {
-                    heading: "We show evidence, not just scores",
-                    body: "Keyword tools return a score. We quote resume and JD text, then explain each match, gap, and priority.",
-                    mobileTail: "You can trace each result to source text.",
+                    heading: "Career Pivoters",
+                    body: "Map transferable experience to role-specific requirements before you apply.",
                     color: "border-blue-100 bg-blue-50/30",
                   },
                   {
-                    heading: "Your voice stays yours",
-                    body: "Other tools often rewrite your tone. We keep your voice and explain each change for ATS and recruiter readability.",
-                    mobileTail: "You get edits with rationale, not generic rewrites.",
+                    heading: "Early Career Job Seekers",
+                    body: "Turn vague feedback into a concrete, job-by-job improvement plan.",
                     color: "border-indigo-100 bg-indigo-50/30",
                   },
                   {
-                    heading: "We help you earn while you search",
-                    body: "Most analyses include freelance and consulting angles based on your strongest skills and market demand.",
-                    mobileTail: "You can test income options while running your job search.",
+                    heading: "Mid-Career Professionals",
+                    body: "Protect your trajectory with evidence-based skills and interview strategy.",
                     color: "border-emerald-100 bg-emerald-50/30",
                   },
                 ].map((item) => (
@@ -545,12 +540,13 @@ export function LandingContent() {
                     <h3 className="font-semibold text-gray-900 mb-2">{item.heading}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">
                       {item.body}
-                      <br className="sm:hidden" />
-                      {item.mobileTail}
                     </p>
                   </div>
                 ))}
               </div>
+              <p className="text-center mt-8 text-sm text-gray-600">
+                Start with Job Match Score, then optimize your resume for your highest-priority gap.
+              </p>
             </div>
           </AnimateOnScroll>
 

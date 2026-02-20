@@ -42,18 +42,16 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
 
       {/* Headline */}
       <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight max-w-3xl mx-auto">
-        Stop guessing.
+        Match your resume to the exact job
         <br />
         <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          Know exactly where you stand.
+          before you apply.
         </span>
       </h1>
 
       {/* Subheadline */}
       <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-medium">
-        Paste a job posting or your resume.
-        <br className="sm:hidden" />
-        Get a recruiter-style assessment with cited evidence in about 30 seconds — not a keyword-only score.
+        Run Job Match Score first to see your fit, gaps, and what to fix next — with evidence.
       </p>
 
       {/* Rotating emotional hook */}
@@ -78,17 +76,16 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
         {/* Primary CTA */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button onClick={onCtaClick} className="btn-primary btn-shine sm:w-auto px-8 text-base">
-            {CANONICAL_COPY.cta.freeAnalysisPrimary}
+            Run Job Match Score
             <ArrowRight className="w-5 h-5" />
           </button>
           <button onClick={onCtaClick} className="btn-secondary sm:w-auto px-6">
-            See Full Analysis Flow
+            No target job yet? Optimize Resume First
           </button>
         </div>
 
         <p className="text-sm text-gray-500 leading-relaxed">
-          No signup required for your first analysis.
-          <span className="text-gray-400"> Create your account and get 15 free tokens.</span>
+          Start free with AI Displacement Score, then follow your mission path with tokens.
         </p>
       </div>
     </div>
