@@ -33,7 +33,7 @@ const INTENT_OPTIONS: {
   {
     id: "job_hunting",
     icon: Briefcase,
-    label: "Land a specific role",
+    label: "Land a specific role (most common)",
     desc: "Match, optimize, and prepare for your target job",
   },
   {
@@ -60,7 +60,7 @@ const EXPERIENCE_OPTIONS = ["0–2 years", "3–5 years", "6–10 years", "10+ y
 
 export function WelcomeModal({ userId, onClose }: WelcomeModalProps) {
   const [step, setStep] = useState(0);
-  const [intent, setIntent] = useState<CareerIntent | null>(null);
+  const [intent, setIntent] = useState<CareerIntent | null>("job_hunting");
   const [currentRole, setCurrentRole] = useState("");
   const [industry, setIndustry] = useState("");
   const [experience, setExperience] = useState("");

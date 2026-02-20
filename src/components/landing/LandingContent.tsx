@@ -290,32 +290,8 @@ export function LandingContent() {
 
           {pageState === "default" && (
             <>
-              {/* Quick Displacement Form */}
-              <div ref={quickFormRef} className="max-w-2xl mx-auto">
-                <div className="surface-card p-6 sm:p-8 space-y-5">
-                  <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                      <ShieldAlert className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900">AI Displacement Score</h2>
-                      <p className="text-sm text-gray-500">See which tasks in your role are automatable vs human-essential.</p>
-                    </div>
-                  </div>
-                  <QuickDisplacementForm onSubmit={handleQuickDisplacement} />
-                </div>
-              </div>
-
-              {/* Divider pointing to SmartInput */}
-              <div className="text-center space-y-2">
-                <p className="text-sm text-gray-500 max-w-xl mx-auto leading-relaxed">
-                  Start with Job Match Score to diagnose role fit, then optimize your resume for your top gaps.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-300 mx-auto rotate-90" />
-              </div>
-
-              {/* Full SmartInput */}
-              <div className="space-y-2">
+              {/* Single primary input — SmartInput */}
+              <div ref={quickFormRef} className="space-y-2">
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider text-center">
                   Paste Job Description or Job URL
                 </p>
@@ -547,6 +523,26 @@ export function LandingContent() {
               <p className="text-center mt-8 text-sm text-gray-600">
                 Start with Job Match Score, then optimize your resume for your highest-priority gap.
               </p>
+            </div>
+          </AnimateOnScroll>
+
+          <div className="gradient-divider max-w-4xl mx-auto" />
+
+          {/* Also try for free — displaced from hero */}
+          <AnimateOnScroll as="section" className="py-12 px-4 bg-white">
+            <div className="max-w-2xl mx-auto">
+              <div className="surface-card p-6 sm:p-8 space-y-5">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <ShieldAlert className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Also try for free: AI Displacement Score</h2>
+                    <p className="text-sm text-gray-500">See which tasks in your role are automatable vs human-essential.</p>
+                  </div>
+                </div>
+                <QuickDisplacementForm onSubmit={handleQuickDisplacement} />
+              </div>
             </div>
           </AnimateOnScroll>
 

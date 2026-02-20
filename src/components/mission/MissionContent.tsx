@@ -383,7 +383,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               key={action.id}
               className={`rounded-2xl border p-5 transition-all ${
                 state === "locked"
-                  ? "border-gray-100 bg-gray-50 opacity-60"
+                  ? "border-gray-100 bg-gray-50 opacity-50 pointer-events-none"
                   : state === "completed"
                     ? "border-green-200 bg-green-50"
                     : "border-gray-200 bg-white hover:shadow-md"

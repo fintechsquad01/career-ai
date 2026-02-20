@@ -26,6 +26,13 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Grow: "Plan your long-term career trajectory",
 };
 
+const CATEGORY_PROGRESSION: Record<string, string> = {
+  Analyze: "Start here",
+  Build: "Then",
+  Prepare: "Next",
+  Grow: "Ongoing",
+};
+
 const TOOL_EFFORT_HINTS: Record<string, string> = {
   displacement: "~30 sec",
   jd_match: "~30 sec",
@@ -127,7 +134,12 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
         return (
           <div key={cat}>
             <div className="mb-4">
-              <h3 className="text-overline">{cat}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-overline">{cat}</h3>
+                {CATEGORY_PROGRESSION[cat] && (
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{CATEGORY_PROGRESSION[cat]}</span>
+                )}
+              </div>
               <p className="text-caption mt-0.5">{CATEGORY_DESCRIPTIONS[cat]}</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger-children">

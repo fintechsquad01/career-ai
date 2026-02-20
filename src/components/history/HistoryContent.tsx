@@ -358,21 +358,21 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                             route: "/history",
                           })
                         }
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors min-h-[32px]"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors min-h-[32px]"
                       >
                         Continue Mission
                       </Link>
                       <button
                         onClick={() => handleShare(r)}
                         disabled={sharingId === r.id}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 min-h-[32px]"
+                        className="inline-flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                        aria-label="Share result"
                       >
                         {sharingId === r.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : (
                           <Share2 className="w-3.5 h-3.5" />
                         )}
-                        Share
                       </button>
                       {isConfirmingDelete ? (
                         <div className="flex items-center gap-2">
@@ -398,10 +398,10 @@ export function HistoryContent({ results: initialResults, totalCount }: HistoryC
                         <button
                           onClick={() => handleDelete(r.id)}
                           disabled={deletingId === r.id}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-white border border-gray-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 min-h-[32px]"
+                          className="inline-flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                          aria-label="Delete result"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                          Delete
                         </button>
                       )}
                     </div>

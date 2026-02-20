@@ -73,20 +73,16 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Primary CTA */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        {/* Single primary CTA */}
+        <div className="flex flex-col items-center gap-2">
           <button onClick={onCtaClick} className="btn-primary btn-shine sm:w-auto px-8 text-base">
             Run Job Match Score
             <ArrowRight className="w-5 h-5" />
           </button>
-          <button onClick={onCtaClick} className="btn-secondary sm:w-auto px-6">
+          <button onClick={onCtaClick} className="text-sm text-gray-500 hover:text-gray-700 transition-colors py-1">
             No target job yet? Optimize Resume First
           </button>
         </div>
-
-        <p className="text-sm text-gray-500 leading-relaxed">
-          Start free with AI Displacement Score, then follow your mission path with tokens.
-        </p>
       </div>
     </div>
   );

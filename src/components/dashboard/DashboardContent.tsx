@@ -314,24 +314,6 @@ export function DashboardContent({
         </Link>
       </div>
 
-      {/* Command Center focus */}
-      {primaryRecommendation && wave2JourneyFlowEnabled && (
-        <div className="space-y-2">
-          <p className="text-overline">Today</p>
-          <div className="surface-card-soft p-3.5">
-            <p className="text-xs text-gray-500">Recommended now</p>
-            <p className="text-sm font-semibold text-gray-900 mt-1">{primaryRecommendation.title}</p>
-            <p className="text-xs text-gray-600 mt-1">Why now: {primaryRecommendation.reason}</p>
-            {AFTER_THIS_HINTS[primaryRecommendation.id] && (
-              <p className="text-xs text-blue-700 mt-1.5">{AFTER_THIS_HINTS[primaryRecommendation.id]}</p>
-            )}
-            <p className="text-[11px] text-gray-500 mt-1.5">
-              Mission progress: {missionProgress ?? 0}%{recommendationTarget?.title ? ` · Target: ${recommendationTarget.title}` : ""}
-            </p>
-          </div>
-        </div>
-      )}
-
       {primaryRecommendation && (
         <div className="space-y-2">
           <p className="text-overline">Job Mission Control</p>
@@ -443,23 +425,28 @@ export function DashboardContent({
                 )}
               </div>
               <p className="text-xs text-gray-500">{careerHealth.insight}</p>
-              {careerHealth.suggestedAction && (
-                <Link
-                  href={careerHealth.suggestedAction.href}
-                  className="inline-flex items-center gap-1 mt-2 text-sm font-medium text-blue-600 hover:text-blue-700"
-                >
-                  {careerHealth.suggestedAction.label} <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              )}
-              {recentResults.length > 0 && (
-                <Link
-                  href={`/history?expand=${recentResults[0].id}`}
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 transition-colors"
-                >
-                  Latest result: {recentResults[0].tool_id.replace(/_/g, " ")}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              )}
+              <details className="mt-2">
+                <summary className="text-xs text-gray-400 cursor-pointer hover:text-gray-600">Actions</summary>
+                <div className="mt-2 space-y-1.5">
+                  {careerHealth.suggestedAction && (
+                    <Link
+                      href={careerHealth.suggestedAction.href}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                    >
+                      {careerHealth.suggestedAction.label} <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  )}
+                  {recentResults.length > 0 && (
+                    <Link
+                      href={`/history?expand=${recentResults[0].id}`}
+                      className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 transition-colors"
+                    >
+                      Latest result: {recentResults[0].tool_id.replace(/_/g, " ")}
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                </div>
+              </details>
             </div>
           </div>
         ) : (

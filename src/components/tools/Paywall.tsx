@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import Link from "next/link";
 import { X, Coins, ArrowRight, Users } from "lucide-react";
 import { PACKS, CANONICAL_COPY } from "@/lib/constants";
@@ -42,6 +43,9 @@ export function Paywall({
 
   // Find the cheapest pack that covers the deficit
   const recommendedPack = PACKS.find((p) => p.tokens >= deficit) || PACKS[PACKS.length - 1];
+
+  const [selectedPackId, setSelectedPackId] = useState(recommendedPack.id);
+  const selectedPack = PACKS.find((p) => p.id === selectedPackId) ?? recommendedPack;
 
   // Real-time social proof: count of analyses run in the last 24h
   const [recentToolCount, setRecentToolCount] = useState<number | null>(null);
@@ -146,14 +150,16 @@ export function Paywall({
 
         <div className="space-y-3 stagger-children">
           {PACKS.map((pack) => {
+            const isSelected = pack.id === selectedPackId;
             const isRecommended = pack.id === recommendedPack.id;
             return (
               <button
                 key={pack.id}
-                onClick={() => handlePurchase(pack.id)}
+                type="button"
+                onClick={() => setSelectedPackId(pack.id)}
                 className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all min-h-[44px] ${
-                  isRecommended
-                    ? "border-blue-600 bg-blue-50 hover:bg-blue-100 ring-2 ring-blue-600/20"
+                  isSelected
+                    ? "border-blue-600 bg-blue-50 ring-2 ring-blue-600/20"
                     : "border-gray-200 hover:bg-gray-50"
                 }`}
               >
@@ -161,26 +167,31 @@ export function Paywall({
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-gray-900">{pack.name}</span>
                     {isRecommended && (
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
                         BEST NEXT STEP
+                      </span>
+                    )}
+                    {isSelected && (
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
+                        Selected
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">{pack.tokens} tokens · {pack.rate}/token</p>
-                  {isRecommended && (
-                    <p className="text-[11px] text-blue-700 mt-1">
-                      Covers current shortfall ({deficit}) and supports follow-up runs.
-                    </p>
-                  )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">${pack.price}</span>
-                  <ArrowRight className="w-4 h-4 text-gray-400" />
-                </div>
+                <span className="font-bold text-gray-900">${pack.price}</span>
               </button>
             );
           })}
         </div>
+
+        <button
+          onClick={() => handlePurchase(selectedPack.id)}
+          className="btn-primary w-full mt-4"
+        >
+          Continue with {selectedPack.name} — ${selectedPack.price}
+          <ArrowRight className="w-4 h-4" />
+        </button>
 
         <div className="mt-4 space-y-2">
           <p className="text-xs text-gray-400 text-center">
