@@ -152,7 +152,7 @@ export default function LifetimePage() {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-violet-50 border border-violet-100 rounded-full text-sm font-medium text-violet-700 mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-full text-sm font-medium text-indigo-700 mb-4">
             <Gem className="w-4 h-4" /> Early Bird Lifetime Deal
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
@@ -183,29 +183,29 @@ export default function LifetimePage() {
             onClick={() => setSelectedTier("lifetime_early")}
             className={`bg-white rounded-2xl p-5 text-center relative transition-all cursor-pointer ${
               selectedTier === "lifetime_early"
-                ? "border-2 border-violet-600 ring-2 ring-violet-600/30"
-                : "border-2 border-gray-200 hover:border-violet-300"
+                ? "border-2 border-indigo-600 ring-2 ring-indigo-600/30"
+                : "border-2 border-gray-200 hover:border-indigo-300"
             }`}
           >
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-violet-600 text-white text-[10px] font-bold rounded-full uppercase whitespace-nowrap">Best Value</span>
-            <p className="text-xs font-bold text-violet-600 uppercase mb-2 mt-1">Early Bird</p>
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-indigo-600 text-white text-[10px] font-bold rounded-full uppercase whitespace-nowrap">Best Value</span>
+            <p className="text-xs font-bold text-indigo-600 uppercase mb-2 mt-1">Early Bird</p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">$119</p>
             <p className="text-sm text-gray-500 mt-1">one-time</p>
-            <p className="text-xs text-violet-600 font-medium mt-2 break-words">120 tokens/mo · $0.083/token</p>
+            <p className="text-xs text-indigo-600 font-medium mt-2 break-words">120 tokens/mo · $0.083/token</p>
           </button>
           <button
             type="button"
             onClick={() => setSelectedTier("lifetime_standard")}
             className={`rounded-2xl p-5 text-center transition-all cursor-pointer ${
               selectedTier === "lifetime_standard"
-                ? "bg-white border-2 border-violet-600 ring-2 ring-violet-600/30"
-                : "bg-gray-50 border-2 border-gray-200 hover:border-violet-300"
+                ? "bg-white border-2 border-indigo-600 ring-2 ring-indigo-600/30"
+                : "bg-gray-50 border-2 border-gray-200 hover:border-indigo-300"
             }`}
           >
-            <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>Standard</p>
+            <p className={`text-xs font-bold uppercase mb-2 ${selectedTier === "lifetime_standard" ? "text-indigo-600" : "text-gray-400"}`}>Standard</p>
             <p className={`text-3xl sm:text-4xl font-bold ${selectedTier === "lifetime_standard" ? "text-gray-900" : "text-gray-400"}`}>$179</p>
             <p className={`text-sm mt-1 ${selectedTier === "lifetime_standard" ? "text-gray-500" : "text-gray-400"}`}>one-time</p>
-            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-violet-600" : "text-gray-400"}`}>120 tokens/mo · $0.124/token</p>
+            <p className={`text-xs font-medium mt-2 break-words ${selectedTier === "lifetime_standard" ? "text-indigo-600" : "text-gray-400"}`}>120 tokens/mo · $0.124/token</p>
           </button>
           <button
             type="button"
@@ -225,7 +225,7 @@ export default function LifetimePage() {
         </div>
 
         {/* ROI */}
-        <div className="glass-card p-6 sm:p-8 mb-10">
+        <div className="surface-card p-6 sm:p-8 mb-10">
           <h3 className="font-semibold text-gray-900 mb-4">ROI Calculator</h3>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
@@ -255,7 +255,7 @@ export default function LifetimePage() {
         </div>
 
         {/* What 100 tokens covers */}
-        <div className="glass-card p-6 sm:p-8 mb-10">
+        <div className="surface-card p-6 sm:p-8 mb-10">
           <h3 className="font-semibold text-gray-900 mb-4">What 120 tokens covers monthly</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
@@ -308,7 +308,7 @@ export default function LifetimePage() {
         )}
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-center text-white mb-10">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center text-white mb-10">
           <Sparkles className="w-8 h-8 mx-auto mb-3 text-blue-200" />
           <h2 className="text-2xl font-bold mb-2">Lock in your lifetime deal</h2>
           <p className="text-blue-100 mb-6">

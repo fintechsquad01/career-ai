@@ -26,7 +26,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
 
   const priorityLabel = (p: string) => {
     if (p === "req" || p === "required") return { label: "Required", cls: "bg-red-50 text-red-600" };
-    if (p === "implied") return { label: "Implied", cls: "bg-purple-50 text-purple-600" };
+    if (p === "implied") return { label: "Implied", cls: "bg-indigo-50 text-indigo-600" };
     return { label: "Preferred", cls: "bg-gray-100 text-gray-500" };
   };
 
@@ -118,7 +118,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
                   ]
               ).map((step, i) => (
                 <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                  <span className="text-violet-500">•</span>
+                  <span className="text-indigo-500">•</span>
                   <span>{step}</span>
                 </li>
               ))}
@@ -212,7 +212,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
               {data.hidden_requirements && data.hidden_requirements.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-purple-500" />
+                    <Eye className="w-4 h-4 text-indigo-500" />
                     Hidden Requirements
                   </h4>
                   <div className="space-y-3">
@@ -294,7 +294,7 @@ export function JdMatchResults({ result }: JdMatchResultsProps) {
             </div>
             <Link
               href="/tools/resume"
-              className="inline-flex items-center justify-center w-full sm:w-auto text-sm font-semibold text-violet-700 hover:text-violet-900"
+              className="inline-flex items-center justify-center w-full sm:w-auto text-sm font-semibold text-blue-700 hover:text-blue-900"
               onClick={() =>
                 track("jd_primary_next_action_clicked", {
                   tool_id: "jd_match",

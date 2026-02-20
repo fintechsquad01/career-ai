@@ -143,12 +143,12 @@ function AuthContent() {
       />
       {/* Background gradient blobs */}
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-400/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-lg relative">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
             <Brain className="w-6 h-6 text-white" />
           </div>
           <span className="font-bold text-2xl text-gray-900">AISkillScore</span>
@@ -156,7 +156,7 @@ function AuthContent() {
 
         {/* Pre-auth analysis preview card */}
         {hasPreAuthAnalysis && mode === "signup" && (
-          <div className="glass-card p-4 mb-6 flex items-center gap-3 border-blue-200 bg-blue-50/50">
+          <div className="surface-card p-4 mb-6 flex items-center gap-3 border-blue-200 bg-blue-50/50">
             <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
               <Lock className="w-4 h-4 text-blue-600" />
             </div>
@@ -167,7 +167,7 @@ function AuthContent() {
           </div>
         )}
 
-        <div className="glass-card p-8">
+        <div className="surface-card p-8">
           <h1 className="text-h1 text-center mb-2 tracking-tight">
             {mode === "signup"
               ? hasPreAuthAnalysis

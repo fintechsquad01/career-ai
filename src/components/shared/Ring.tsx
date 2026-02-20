@@ -59,7 +59,7 @@ export function Ring({ score, size = "md", label, showLabel = true, animate = tr
           style={{
             "--ring-circumference": circumference,
             "--ring-offset": offset,
-            filter: `drop-shadow(0 0 4px ${stroke}40)`,
+            filter: `drop-shadow(0 0 2px ${stroke}30)`,
           } as React.CSSProperties}
         />
       </svg>

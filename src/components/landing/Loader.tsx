@@ -40,7 +40,7 @@ export function Loader({ steps, onComplete }: LoaderProps) {
         {/* Shimmer progress bar */}
         <div className="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
           <div
-            className={`h-full rounded-full bg-gradient-to-r from-blue-600 to-violet-600 transition-all duration-300 ease-out${!allDone ? " shimmer" : ""}`}
+            className={`h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300 ease-out${!allDone ? " shimmer" : ""}`}
             style={{ width: `${progress}%` }}
           />
         </div>

@@ -53,7 +53,7 @@ export function MissionCard({ activeJobTarget }: MissionCardProps) {
         className={`rounded-2xl p-5 sm:p-6 text-white hover:opacity-95 transition-opacity celebrate ${
           isCompleted
             ? "bg-gradient-to-r from-emerald-600 to-green-600"
-            : "bg-gradient-to-r from-blue-600 to-violet-600"
+            : "bg-gradient-to-r from-blue-600 to-indigo-600"
         }`}
       >
         <div className="flex items-start justify-between gap-3">

@@ -27,7 +27,7 @@ export function ProfileCard({ profile, careerProfile, activeJobTarget = null }: 
     <div className="glass-card p-6 sm:p-8">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0 ring-4 ring-white shadow-lg">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0 ring-4 ring-white shadow-lg">
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
           ) : (
@@ -68,7 +68,7 @@ export function ProfileCard({ profile, careerProfile, activeJobTarget = null }: 
         </div>
         <div className="w-full bg-gray-100 rounded-full h-2.5">
           <div
-            className="bg-gradient-to-r from-blue-600 to-violet-600 h-2.5 rounded-full transition-all duration-700"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2.5 rounded-full transition-all duration-700"
             style={{ width: `${completeness}%` }}
           />
         </div>

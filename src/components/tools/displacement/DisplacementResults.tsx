@@ -181,7 +181,7 @@ export function DisplacementResults({ result }: DisplacementResultsProps) {
               const text = isObj ? rec.action : rec;
               const typeColors: Record<string, string> = {
                 upskill: "bg-blue-50 text-blue-700",
-                augment: "bg-purple-50 text-purple-700",
+                augment: "bg-indigo-50 text-indigo-700",
                 pivot: "bg-amber-50 text-amber-700",
                 monetize: "bg-emerald-50 text-emerald-700",
               };

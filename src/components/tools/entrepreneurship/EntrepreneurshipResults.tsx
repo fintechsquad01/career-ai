@@ -84,15 +84,15 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
           {/* Unfair Advantages */}
           {data.unfair_advantages && data.unfair_advantages.length > 0 && (
             <div className="surface-card-hero p-6">
-          <h3 className="font-semibold text-purple-900 mb-4 flex items-center gap-2">
-            <Lightbulb className="w-4 h-4 text-purple-600" />
+          <h3 className="font-semibold text-indigo-900 mb-4 flex items-center gap-2">
+            <Lightbulb className="w-4 h-4 text-indigo-600" />
             Your Unfair Advantages
           </h3>
           <div className="space-y-3">
             {data.unfair_advantages.map((ua, i) => (
               <div key={i} className="bg-white/70 rounded-xl p-4">
                 <p className="text-sm font-medium text-gray-900">{ua.advantage}</p>
-                {ua.why_it_matters && <p className="text-xs text-purple-700 mt-1">{ua.why_it_matters}</p>}
+                {ua.why_it_matters && <p className="text-xs text-indigo-700 mt-1">{ua.why_it_matters}</p>}
                 {ua.monetization && (
                   <p className="text-xs text-emerald-700 mt-1 flex items-start gap-1">
                     <DollarSign className="w-3 h-3 flex-shrink-0 mt-0.5" />
@@ -158,7 +158,7 @@ export function EntrepreneurshipResults({ result }: EntrepreneurshipResultsProps
                   <Ring score={bm.match_score} size="sm" showLabel={false} />
                 </div>
                 <p className="text-sm text-gray-600">{bm.description}</p>
-                {bm.why_this_fits && <p className="text-xs text-purple-700">{bm.why_this_fits}</p>}
+                {bm.why_this_fits && <p className="text-xs text-indigo-700">{bm.why_this_fits}</p>}
 
                 {/* Income projections */}
                 {(bm.month_1_income || bm.month_6_income || bm.month_12_income) && (

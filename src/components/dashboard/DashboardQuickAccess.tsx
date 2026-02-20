@@ -24,7 +24,7 @@ const DEFAULT_ITEMS: QuickAccessItem[] = [
     href: "/tools",
     label: "All Tools",
     icon: Sparkles,
-    iconColor: "text-violet-600",
+    iconColor: "text-indigo-600",
   },
   {
     id: "mission",

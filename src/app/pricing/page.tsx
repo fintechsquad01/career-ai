@@ -316,15 +316,15 @@ export default function PricingPage() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mt-6">
             <div className="surface-card p-3 sm:p-4">
-              <p className="text-sm font-semibold text-violet-700">Entrepreneurship Assessment</p>
+              <p className="text-sm font-semibold text-indigo-700">Entrepreneurship Assessment</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Business ideas from your skills + 90-day launch plan</p>
             </div>
             <div className="surface-card p-3 sm:p-4">
-              <p className="text-sm font-semibold text-violet-700">Career Roadmap</p>
+              <p className="text-sm font-semibold text-indigo-700">Career Roadmap</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Dual-track: job hunt + income building with monthly targets</p>
             </div>
             <div className="surface-card p-3 sm:p-4">
-              <p className="text-sm font-semibold text-violet-700">Every Tool</p>
+              <p className="text-sm font-semibold text-indigo-700">Every Tool</p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">Freelance and consulting opportunities surfaced in every result</p>
             </div>
           </div>
@@ -342,7 +342,7 @@ export default function PricingPage() {
         </div>
 
         {/* Lifetime Deal CTA */}
-        <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2 tracking-tight">Want unlimited value?</h2>
           <p className="text-blue-100 mb-4 max-w-2xl mx-auto">
             Get the Lifetime Deal — from $119 for 120 tokens/month forever.

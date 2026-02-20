@@ -144,7 +144,7 @@ export function JobResults({ data, fitScore }: JobResultsProps) {
               <div className="space-y-3">
                 <button
                   onClick={() => setShowSignup(true)}
-                  className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px] flex items-center justify-center gap-2"
                 >
                   {CANONICAL_COPY.signup.cta}
                   <ArrowRight className="w-4 h-4" />

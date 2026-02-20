@@ -119,14 +119,14 @@ export function Paywall({
         </div>
 
         {/* What you'll unlock — tool-specific preview */}
-        <div className="bg-violet-50/80 backdrop-blur-sm border border-violet-100 rounded-xl px-4 py-3 mb-4">
-          <p className="text-xs font-semibold text-violet-700 mb-1.5">What you&apos;ll unlock</p>
-          <p className="text-sm text-violet-900">{toolDescription || toolName || "Premium AI analysis"}</p>
+        <div className="surface-soft border border-blue-100 rounded-xl px-4 py-3 mb-4">
+          <p className="text-xs font-semibold text-blue-700 mb-1.5">What you&apos;ll unlock</p>
+          <p className="text-sm text-gray-900">{toolDescription || toolName || "Premium AI analysis"}</p>
           {bullets && (
             <ul className="mt-2 space-y-1">
               {bullets.map((b, i) => (
-                <li key={i} className="text-xs text-violet-800 flex items-start gap-1.5">
-                  <span className="text-violet-500 mt-0.5">✓</span> {b}
+                <li key={i} className="text-xs text-gray-700 flex items-start gap-1.5">
+                  <span className="text-blue-600 mt-0.5">✓</span> {b}
                 </li>
               ))}
             </ul>
@@ -187,10 +187,10 @@ export function Paywall({
           <Link
             href="/lifetime"
             onClick={onClose}
-            className="block w-full mt-3 p-3 bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200 rounded-xl text-center hover:shadow-md transition-all hover:scale-[1.01]"
+            className="block w-full mt-3 p-3 surface-soft border border-blue-100 rounded-xl text-center hover:shadow-md transition-all hover:scale-[1.01]"
           >
-            <p className="text-xs font-bold text-violet-700">Or get the Lifetime Deal</p>
-            <p className="text-[11px] text-violet-600 mt-0.5">$119 once &rarr; 120 tokens/month forever</p>
+            <p className="text-xs font-bold text-blue-700">Or get the Lifetime Deal</p>
+            <p className="text-[11px] text-blue-600 mt-0.5">$119 once &rarr; 120 tokens/month forever</p>
           </Link>
         </div>
       </div>

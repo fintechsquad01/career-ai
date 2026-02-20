@@ -241,7 +241,7 @@ function getSecondaryRecommendations(currentToolId: string, completedToolIds: Se
 const CATEGORY_CONFIG: Record<InsightCategory, { icon: typeof Lightbulb; label: string; bg: string; border: string; iconColor: string; labelColor: string }> = {
   tip: { icon: Lightbulb, label: "Did you know?", bg: "bg-amber-50", border: "border-amber-200", iconColor: "text-amber-600", labelColor: "text-amber-700" },
   stat: { icon: BarChart3, label: "Industry Insight", bg: "bg-blue-50", border: "border-blue-200", iconColor: "text-blue-600", labelColor: "text-blue-700" },
-  quote: { icon: Quote, label: "Words of Wisdom", bg: "bg-violet-50", border: "border-violet-200", iconColor: "text-violet-600", labelColor: "text-violet-700" },
+  quote: { icon: Quote, label: "Words of Wisdom", bg: "bg-indigo-50", border: "border-indigo-200", iconColor: "text-indigo-600", labelColor: "text-indigo-700" },
   pain_solution: { icon: Zap, label: "Why This Matters", bg: "bg-emerald-50", border: "border-emerald-200", iconColor: "text-emerald-600", labelColor: "text-emerald-700" },
 };
 
@@ -1162,7 +1162,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
             </div>
             <div className="w-56 bg-gray-200 rounded-full h-1.5 mx-auto overflow-hidden mt-1">
               <div
-                className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-700 ease-out progress-glow"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5 rounded-full transition-all duration-700 ease-out progress-glow"
                 style={{ width: `${Math.max(5, (progress.step / progress.total) * 100)}%` }}
               />
             </div>
@@ -1235,7 +1235,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Error display */}
       {state === "result" && error && !result && (
-        <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-2xl p-6 text-center space-y-4 celebrate" role="alert">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4 celebrate" role="alert">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>
@@ -1271,7 +1271,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       {/* Premium analysis badge — shown on successful results */}
       {state === "result" && result && !error && (
         <div className="flex items-center gap-2 text-xs text-gray-400 celebrate">
-          <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
           <span>Evidence-first AI report</span>
           <span className="text-gray-300">·</span>
           <span>{careerProfile?.resume_text ? "Personalized from your resume" : "Add resume for deeper personalization"}</span>
@@ -1309,7 +1309,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
       })()}
 
       {state === "result" && wave2JourneyFlowEnabled && !missionComplete && primaryRecommendation && (
-        <div className="report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100">
+        <div className="report-section surface-soft border-blue-100">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600 mb-1">Primary action</p>
           <p className="text-sm text-gray-700 mb-3">{primaryRecommendation.narrative}</p>
           <Link
@@ -1395,7 +1395,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
 
       {/* Referral prompt — shows after NPS dismissal */}
       {showReferralPrompt && state === "result" && result && !error && !showNps && (
-        <div className="bg-gradient-to-r from-blue-50 to-violet-50 border border-blue-100 rounded-2xl p-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="surface-soft border border-blue-100 rounded-2xl p-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-300">
           <p className="text-sm font-semibold text-gray-900">Know someone who&apos;d find this useful?</p>
           <p className="text-xs text-gray-500 mt-1 mb-3">
             Give a friend 15 free tokens. You get 10 when they sign up.
@@ -1403,7 +1403,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
           <div className="flex gap-3 justify-center">
             <Link
               href="/referral"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[40px]"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[44px]"
             >
               Share Your Referral Link
               <ArrowRight className="w-4 h-4" />
@@ -1445,7 +1445,7 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
               <Link
                 href={`/tools/${primary.tool.id}`}
                 onClick={() => setResultActionTaken(true)}
-                className="block report-section bg-gradient-to-r from-blue-50 to-violet-50 border-blue-100 hover:shadow-md transition-shadow group celebrate"
+                className="block report-section surface-soft border-blue-100 hover:shadow-md transition-shadow group celebrate"
               >
                 <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Next Step</p>
                 <p className="text-sm text-gray-700 mb-3">{primary.narrative}</p>

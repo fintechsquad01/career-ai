@@ -54,7 +54,7 @@ export function MissionCard({
   const statusStyle = STATUS_CONFIG[status] || STATUS_CONFIG.saved;
 
   return (
-    <div className="glass-card p-5 hover:shadow-md transition-all duration-200 group relative">
+    <div className="surface-card p-5 hover:shadow-md transition-all duration-200 group relative">
       {/* Status badge + dropdown */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2 min-w-0">
@@ -130,7 +130,7 @@ export function MissionCard({
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5">
             <div
-              className="bg-gradient-to-r from-blue-600 to-violet-600 h-1.5 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>

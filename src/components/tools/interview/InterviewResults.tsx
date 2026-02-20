@@ -30,7 +30,7 @@ export function InterviewResults({ result }: InterviewResultsProps) {
   const typeColors: Record<string, string> = {
     warm_up: "bg-green-50 text-green-700",
     behavioral: "bg-blue-50 text-blue-700",
-    technical: "bg-purple-50 text-purple-700",
+    technical: "bg-indigo-50 text-indigo-700",
     case_study: "bg-indigo-50 text-indigo-700",
     gap_probe: "bg-red-50 text-red-700",
     culture_fit: "bg-sky-50 text-sky-700",
@@ -126,9 +126,9 @@ export function InterviewResults({ result }: InterviewResultsProps) {
               <div className="px-4 pb-4 space-y-4 border-t border-gray-100">
                 {/* What they're really asking */}
                 {q.what_theyre_really_asking && (
-                  <div className="p-3 bg-purple-50 rounded-xl">
-                    <p className="text-[10px] font-semibold text-purple-700 uppercase mb-0.5">What They&apos;re Really Asking</p>
-                    <p className="text-sm text-purple-900">{q.what_theyre_really_asking}</p>
+                  <div className="p-3 bg-indigo-50 rounded-xl">
+                    <p className="text-[10px] font-semibold text-indigo-700 uppercase mb-0.5">What They&apos;re Really Asking</p>
+                    <p className="text-sm text-indigo-900">{q.what_theyre_really_asking}</p>
                   </div>
                 )}
 

@@ -14,7 +14,7 @@ const ICON_MAP: Record<string, typeof ShieldAlert> = {
 
 const CATEGORY_ICON_STYLES: Record<string, { bg: string; text: string }> = {
   Analyze: { bg: "bg-blue-50", text: "text-blue-600" },
-  Build: { bg: "bg-violet-50", text: "text-violet-600" },
+  Build: { bg: "bg-indigo-50", text: "text-indigo-600" },
   Prepare: { bg: "bg-amber-50", text: "text-amber-600" },
   Grow: { bg: "bg-emerald-50", text: "text-emerald-600" },
 };
@@ -92,7 +92,7 @@ export function ToolsGrid({ compact = false }: ToolsGridProps) {
         href="/quick-apply"
         className="surface-card-hero flex items-center gap-4 p-4 hover:shadow-md transition-shadow group"
       >
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shrink-0">
           <Zap className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1 min-w-0">

@@ -130,8 +130,8 @@ export function ResumeResults({ result }: ResumeResultsProps) {
           {/* Voice note */}
           {data.voice_note && (
             <div className="surface-card-hero p-4">
-              <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1">Voice Preservation</p>
-              <p className="text-sm text-purple-900">{data.voice_note}</p>
+              <p className="text-[10px] font-semibold text-indigo-700 uppercase mb-1">Voice Preservation</p>
+              <p className="text-sm text-indigo-900">{data.voice_note}</p>
             </div>
           )}
         </>

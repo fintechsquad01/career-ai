@@ -72,8 +72,8 @@ function getSmartRecommendations(
       tokens: "Free",
       priority: 0,
       icon: FileText,
-      iconBg: "bg-violet-50",
-      iconColor: "text-violet-600",
+      iconBg: "bg-indigo-50",
+      iconColor: "text-indigo-600",
       reason: "Unlocks personalized analysis",
     });
   }
@@ -130,8 +130,8 @@ function getSmartRecommendations(
       tokens: TOOLS_MAP.resume?.tokens ?? 15,
       priority: 3,
       icon: FileText,
-      iconBg: "bg-violet-50",
-      iconColor: "text-violet-600",
+      iconBg: "bg-indigo-50",
+      iconColor: "text-indigo-600",
       reason: jdMatchScore ? `Match score: ${jdMatchScore}%` : "Improve your match",
     });
   }
@@ -162,8 +162,8 @@ function getSmartRecommendations(
       tokens: TOOLS_MAP.cover_letter?.tokens ?? 8,
       priority: 5,
       icon: Mail,
-      iconBg: "bg-violet-50",
-      iconColor: "text-violet-600",
+      iconBg: "bg-indigo-50",
+      iconColor: "text-indigo-600",
       reason: "Resume + JD available",
     });
   }
@@ -178,8 +178,8 @@ function getSmartRecommendations(
       tokens: TOOLS_MAP.skills_gap?.tokens ?? 8,
       priority: 6,
       icon: TrendingUp,
-      iconBg: "bg-violet-50",
-      iconColor: "text-violet-600",
+      iconBg: "bg-indigo-50",
+      iconColor: "text-indigo-600",
       reason: "Plan your growth",
     });
   }
@@ -293,7 +293,7 @@ export function DashboardContent({
         </div>
         <Link
           href="/settings"
-          className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white font-bold flex-shrink-0 ring-2 ring-white shadow-md hover:opacity-90 transition-opacity"
+          className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0 ring-2 ring-white shadow-md hover:opacity-90 transition-opacity"
         >
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
@@ -484,11 +484,11 @@ export function DashboardContent({
                 href="/tools/jd_match"
                 className="surface-card surface-card-hover flex items-center gap-3 p-3.5 group"
               >
-                <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center flex-shrink-0">
-                  <Target className="w-5 h-5 text-violet-600" />
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                  <Target className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-violet-700">JD Match</p>
+                  <p className="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">JD Match</p>
                   <p className="text-xs text-gray-500">Match against a job posting</p>
                 </div>
                 <span className="ui-badge ui-badge-blue flex-shrink-0">5 tokens</span>

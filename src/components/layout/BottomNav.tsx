@@ -34,7 +34,7 @@ export function BottomNav() {
               <div className="relative">
                 <item.icon className="w-[21px] h-[21px]" strokeWidth={active ? 2 : 1.75} />
                 {showDot && (
-                  <span className="absolute -top-0.5 -right-0.5 w-[7px] h-[7px] rounded-full bg-violet-500" />
+                  <span className="absolute -top-0.5 -right-0.5 w-[7px] h-[7px] rounded-full bg-indigo-500" />
                 )}
               </div>
               <span className={`text-xs font-medium mt-1 leading-none ${active ? "text-blue-700" : ""}`}>{item.label}</span>

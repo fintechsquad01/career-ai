@@ -93,11 +93,11 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
       {/* Opening hook strategy */}
       {data.opening_hook && (
         <div className="surface-card-hero p-4">
-          <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
+          <p className="text-[10px] font-semibold text-indigo-700 uppercase mb-1 flex items-center gap-1.5">
             <Sparkles className="w-3 h-3" />
             Opening Hook Strategy
           </p>
-          <p className="text-sm text-purple-900">{data.opening_hook}</p>
+          <p className="text-sm text-indigo-900">{data.opening_hook}</p>
         </div>
       )}
 
@@ -131,7 +131,7 @@ export function CoverLetterResults({ result }: CoverLetterResultsProps) {
           <div className="space-y-2">
             {data.highlighted_sections.map((hl, i) => {
               const typeColors: Record<string, string> = {
-                storytelling: "bg-purple-50 text-purple-700",
+                storytelling: "bg-indigo-50 text-indigo-700",
                 job_specific: "bg-blue-50 text-blue-700",
                 keyword_match: "bg-green-50 text-green-700",
                 achievement: "bg-amber-50 text-amber-700",

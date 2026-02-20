@@ -84,11 +84,11 @@ export function LinkedInResults({ result }: LinkedInResultsProps) {
           {/* AI Value Prop */}
           {data.ai_value_prop && (
             <div className="surface-card-hero p-4">
-              <p className="text-[10px] font-semibold text-purple-700 uppercase mb-1 flex items-center gap-1.5">
+              <p className="text-[10px] font-semibold text-indigo-700 uppercase mb-1 flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3" />
                 LinkedIn AI Will Summarize You As
               </p>
-              <p className="text-sm text-purple-900 italic">&ldquo;{data.ai_value_prop}&rdquo;</p>
+              <p className="text-sm text-indigo-900 italic">&ldquo;{data.ai_value_prop}&rdquo;</p>
             </div>
           )}
         </>

@@ -107,13 +107,13 @@ export function Nav({ isLoggedIn }: NavProps) {
     <>
       <nav
         data-wave2-journey={wave2JourneyFlowEnabled ? "enabled" : "disabled"}
-        className="sticky top-0 z-40 bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-gray-200/60"
+        className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/70"
       >
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 sm:h-16">
           {/* Logo + breadcrumb */}
           <div className="flex items-center gap-3 min-w-0">
             <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
                 <Brain className="w-[18px] h-[18px] text-white" />
               </div>
               <span className="font-bold text-gray-900 text-lg hidden sm:inline">AISkillScore</span>
@@ -156,7 +156,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                   <TokBadge />
                 </Link>
                 {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
-                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[9px] font-bold shadow-sm"
+                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9px] font-bold shadow-sm"
                   >
                     <Plus className="w-2.5 h-2.5" strokeWidth={3} />
                   </span>
@@ -165,7 +165,7 @@ export function Nav({ isLoggedIn }: NavProps) {
               <div className="relative" ref={avatarMenuRef}>
                 <button
                   onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden hover:opacity-90 transition-opacity"
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden hover:opacity-90 transition-opacity"
                 >
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt={profile.full_name ? `${profile.full_name}'s avatar` : "User avatar"} className="w-full h-full rounded-full object-cover" />
@@ -201,7 +201,7 @@ export function Nav({ isLoggedIn }: NavProps) {
               </Link>
               <Link
                 href="/auth"
-                className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:opacity-90 transition-opacity min-h-[44px] flex items-center"
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 transition-opacity min-h-[44px] flex items-center"
               >
                 {CANONICAL_COPY.cta.getStarted}
               </Link>
@@ -216,7 +216,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                   <TokBadge />
                 </Link>
                 {dailyCreditsBalance > 0 && !dailyCreditsAwarded && (
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4.5 h-4.5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[8px] font-bold shadow-sm">
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4.5 h-4.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[8px] font-bold shadow-sm">
                     <Plus className="w-2.5 h-2.5" strokeWidth={3} />
                   </span>
                 )}
@@ -288,7 +288,7 @@ export function Nav({ isLoggedIn }: NavProps) {
                   <Link
                     href="/auth"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 min-h-[48px]"
+                    className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 min-h-[48px]"
                   >
                     {CANONICAL_COPY.cta.getStarted}
                   </Link>

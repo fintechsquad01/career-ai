@@ -127,8 +127,8 @@ const HERO_TOOLS: {
 }[] = [
   { id: "displacement", icon: ShieldAlert, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
   { id: "jd_match", icon: Target, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
-  { id: "resume", icon: FileText, iconBg: "bg-violet-50", iconColor: "text-violet-600" },
-  { id: "cover_letter", icon: Mail, iconBg: "bg-violet-50", iconColor: "text-violet-600" },
+  { id: "resume", icon: FileText, iconBg: "bg-indigo-50", iconColor: "text-indigo-600" },
+  { id: "cover_letter", icon: Mail, iconBg: "bg-indigo-50", iconColor: "text-indigo-600" },
   { id: "interview", icon: MessageSquare, iconBg: "bg-amber-50", iconColor: "text-amber-600" },
   { id: "linkedin", icon: Linkedin, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
 ];
@@ -331,7 +331,7 @@ export function LandingContent() {
 
           {pageState === "results" && analysisError && (
             <div className="max-w-xl mx-auto">
-              <div className="glass-card p-8 text-center space-y-4">
+              <div className="surface-card p-8 text-center space-y-4">
                 <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-6 h-6 text-amber-500" />
                 </div>
@@ -399,7 +399,7 @@ export function LandingContent() {
 
               {/* Blurred preview card */}
               <div className="relative max-w-2xl mx-auto mb-10">
-                <div className="glass-card p-6 sm:p-8">
+                <div className="surface-card p-6 sm:p-8">
                   <div className="blur-[3px] select-none pointer-events-none space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
@@ -525,7 +525,7 @@ export function LandingContent() {
                     heading: "Your voice stays yours",
                     body: "Other tools often rewrite your tone. We keep your voice and explain each change for ATS and recruiter readability.",
                     mobileTail: "You get edits with rationale, not generic rewrites.",
-                    color: "border-violet-100 bg-violet-50/30",
+                    color: "border-indigo-100 bg-indigo-50/30",
                   },
                   {
                     heading: "We help you earn while you search",
@@ -559,7 +559,7 @@ export function LandingContent() {
                 From first paste to first offer
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
-                <div className="glass-card p-6 sm:p-8 text-center">
+                <div className="surface-card p-6 sm:p-8 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
                     <span className="text-xl font-bold text-blue-600">1</span>
                   </div>
@@ -569,17 +569,17 @@ export function LandingContent() {
                     Paste your resume and get a free AI risk score with task-level breakdown and next steps.
                   </p>
                 </div>
-                <div className="glass-card p-6 sm:p-8 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold text-violet-600">2</span>
+                <div className="surface-card p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-xl font-bold text-indigo-600">2</span>
                   </div>
-                  <p className="text-xs font-bold text-violet-600 uppercase tracking-wider mb-2">Week 1</p>
+                  <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">Week 1</p>
                   <h3 className="font-semibold text-gray-900 mb-2">Match &amp; optimize</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">
                     Match against jobs, optimize your resume, and prep for interviews in one workflow.
                   </p>
                 </div>
-                <div className="glass-card p-6 sm:p-8 text-center">
+                <div className="surface-card p-6 sm:p-8 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
                     <span className="text-xl font-bold text-emerald-600">3</span>
                   </div>
@@ -589,7 +589,7 @@ export function LandingContent() {
                     Track progress, close skill gaps, and explore freelance opportunities with clear action steps.
                   </p>
                 </div>
-                <div className="glass-card p-6 sm:p-8 text-center">
+                <div className="surface-card p-6 sm:p-8 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-4">
                     <span className="text-xl font-bold text-amber-600">4</span>
                   </div>
@@ -644,7 +644,7 @@ export function LandingContent() {
                 ))}
               </div>
               <p className="text-center mt-6">
-                <Link href="/lifetime" className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+                <Link href="/lifetime" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                   Or get the Lifetime Deal — $119 once, 120 tokens/mo forever →
                 </Link>
               </p>
@@ -669,7 +669,7 @@ export function LandingContent() {
               {/* Email capture */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
                     <Sparkles className="w-3.5 h-3.5 text-white" />
                   </div>
                   <span className="font-bold text-gray-900">AISkillScore</span>

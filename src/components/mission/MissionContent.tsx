@@ -151,9 +151,9 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-5 sm:py-8 space-y-6">
         {/* Hero section */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-6 sm:p-8 text-white">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-6 sm:p-8 text-white">
           <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-violet-400/20 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-indigo-400/20 rounded-full blur-2xl" />
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
               <Crosshair className="w-5 h-5 text-blue-200" />
@@ -167,7 +167,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
         </div>
 
         {/* 3-step workflow */}
-        <div className="glass-card p-5 sm:p-6">
+        <div className="surface-card p-5 sm:p-6">
           <h3 className="text-sm font-semibold text-gray-900 mb-4">How it works</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex sm:flex-col items-start sm:items-center sm:text-center gap-3">
@@ -180,8 +180,8 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               </div>
             </div>
             <div className="flex sm:flex-col items-start sm:items-center sm:text-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                <FileText className="w-5 h-5 text-indigo-600" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">2. Build Materials</p>
@@ -210,8 +210,8 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
             <p className="text-xs text-gray-500 mt-0.5">See exactly how your skills match the job requirements</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center mb-2">
-              <FileText className="w-4 h-4 text-violet-600" />
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center mb-2">
+              <FileText className="w-4 h-4 text-indigo-600" />
             </div>
             <p className="text-sm font-semibold text-gray-900">Smart Materials</p>
             <p className="text-xs text-gray-500 mt-0.5">Resume and cover letter tuned specifically to the posting</p>
@@ -237,7 +237,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
         <div className="text-center space-y-2">
           <Link
             href="/tools/jd_match"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/20 min-h-[48px]"
           >
             <Target className="w-4 h-4" />
             Analyze a Job Posting
@@ -288,7 +288,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
       </div>
 
       {/* Mission Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white">
         <div className="flex items-center gap-2 mb-3">
           <Crosshair className="w-4 h-4" />
           <span className="text-xs font-semibold text-blue-100 uppercase tracking-wider">
@@ -336,7 +336,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
 
       {/* Skill Matrix */}
       {requirements.length > 0 && (
-        <div className="glass-card p-6 sm:p-8">
+        <div className="surface-card p-6 sm:p-8">
           <h3 className="font-semibold text-gray-900 mb-4">Requirements Match</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {requirements.map((req, i) => (
@@ -443,7 +443,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
 
       {/* Career Growth section — unlocked after 3+ actions completed */}
       {completed >= 3 && (
-        <div className="glass-card p-5">
+        <div className="surface-card p-5">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="font-semibold text-gray-900">Beyond the Job Search</h3>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
@@ -488,7 +488,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
                 style={{
                   left: `${5 + (i * 4.5)}%`,
                   top: `${-10 + (i % 3) * 5}%`,
-                  backgroundColor: ["#3B82F6", "#8B5CF6", "#10B981", "#F59E0B", "#EF4444"][i % 5],
+                  backgroundColor: ["#3B82F6", "#4F46E5", "#10B981", "#F59E0B", "#EF4444"][i % 5],
                   animationDelay: `${i * 0.15}s`,
                   animationDuration: `${1.5 + (i % 3) * 0.5}s`,
                   opacity: 0.7,
@@ -517,7 +517,7 @@ export function MissionContent({ allJobTargets = [] }: MissionContentProps) {
               </div>
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Actions</p>
-                <p className="text-2xl font-bold text-violet-600">{completed}/{total}</p>
+                <p className="text-2xl font-bold text-indigo-600">{completed}/{total}</p>
               </div>
             </div>
           )}

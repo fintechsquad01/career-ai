@@ -48,7 +48,7 @@ export function SmartInput({ onAnalyze }: SmartInputProps) {
   return (
     <div className="w-full max-w-xl mx-auto">
       <div
-        className="glass-card overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-lg transition-all duration-300"
+        className="surface-card overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-lg transition-all duration-300"
         onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-blue-400"); }}
         onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove("ring-2", "ring-blue-400"); }}
         onDrop={(e) => {

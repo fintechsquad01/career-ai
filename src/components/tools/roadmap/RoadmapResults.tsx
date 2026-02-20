@@ -23,7 +23,7 @@ function getTrackBadge(track?: string) {
   const styles: Record<string, { cls: string; label: string }> = {
     job_hunt: { cls: "bg-blue-50 text-blue-700", label: "Job Hunt" },
     income_build: { cls: "bg-emerald-50 text-emerald-700", label: "Income" },
-    both: { cls: "bg-purple-50 text-purple-700", label: "Both" },
+    both: { cls: "bg-indigo-50 text-indigo-700", label: "Both" },
   };
   const s = styles[track];
   if (!s) return null;

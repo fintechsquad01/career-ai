@@ -118,7 +118,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
         <div className="flex items-center gap-2">
           <Link
             href="/quick-apply"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[40px]"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[40px]"
           >
             <Zap className="w-3.5 h-3.5" />
             Quick Apply
@@ -135,7 +135,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
 
       {/* Add job form */}
       {showAddForm && (
-        <div className="glass-card p-4 space-y-3">
+        <div className="surface-card p-4 space-y-3">
           <input
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
@@ -231,7 +231,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
           {/* Add new job card */}
           <button
             onClick={() => setShowAddForm(true)}
-            className="glass-card p-5 border-2 border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px] group"
+            className="surface-card p-5 border-2 border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px] group"
           >
             <div className="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
               <Plus className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
@@ -247,7 +247,7 @@ export function MissionOverview({ jobTargets, onSelectTarget }: MissionOverviewP
       <div className="sm:hidden">
         <Link
           href="/quick-apply"
-          className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[48px]"
+          className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity min-h-[48px]"
         >
           <Zap className="w-4 h-4" />
           Quick Apply — Run 3 Tools at Once

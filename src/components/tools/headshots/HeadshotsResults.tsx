@@ -50,7 +50,7 @@ export function HeadshotsResults({ result }: HeadshotsResultsProps) {
                 <a
                   href={img.url}
                   download={`headshot-${i + 1}.jpg`}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-600 hover:text-violet-700 min-h-[44px]"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 min-h-[44px]"
                 >
                   <Download className="w-4 h-4" />
                   Download

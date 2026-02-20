@@ -34,7 +34,7 @@ const NAV_ITEMS: AppNavItem[] = [
 const QUICK_TOOLS = [
   { href: "/tools/displacement", icon: ShieldAlert, label: "AI Risk", color: "text-red-500" },
   { href: "/tools/resume", icon: FileText, label: "Resume", color: "text-blue-500" },
-  { href: "/tools/interview", icon: Zap, label: "Interview", color: "text-violet-500" },
+  { href: "/tools/interview", icon: Zap, label: "Interview", color: "text-indigo-500" },
 ];
 
 export function Sidebar() {

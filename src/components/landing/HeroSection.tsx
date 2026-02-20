@@ -32,7 +32,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <div className="relative text-center space-y-8">
       {/* Gradient orb */}
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-gradient-to-r from-blue-400/20 via-violet-400/20 to-purple-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-gradient-to-r from-blue-400/18 via-indigo-400/18 to-slate-400/12 rounded-full blur-3xl pointer-events-none" />
 
       {/* Badge */}
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100/70 rounded-full">
@@ -44,7 +44,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight max-w-3xl mx-auto">
         Stop guessing.
         <br />
-        <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           Know exactly where you stand.
         </span>
       </h1>
