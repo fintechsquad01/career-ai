@@ -34,5 +34,5 @@ export default async function LifetimePage() {
     );
   }
 
-  return <LifetimeContent />;
+  return <AppShell isLoggedIn={false}><LifetimeContent /></AppShell>;
 }

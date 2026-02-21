@@ -99,5 +99,5 @@ export default async function IndustriesIndexPage() {
   if (user) {
     return <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>;
   }
-  return <div className="min-h-screen bg-[#F5F5F7]">{content}</div>;
+  return <AppShell isLoggedIn={false}>{content}</AppShell>;
 }

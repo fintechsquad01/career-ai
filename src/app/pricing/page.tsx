@@ -100,9 +100,9 @@ export default async function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+    <AppShell isLoggedIn={false}>
       {schemas}
       <PricingContent />
-    </div>
+    </AppShell>
   );
 }

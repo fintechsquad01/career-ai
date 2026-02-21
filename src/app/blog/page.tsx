@@ -96,6 +96,6 @@ export default async function BlogIndex() {
   return user ? (
     <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>
   ) : (
-    <div className="min-h-screen bg-[#F5F5F7]">{content}</div>
+    <AppShell isLoggedIn={false}>{content}</AppShell>
   );
 }

@@ -88,25 +88,9 @@ export default async function ToolsHubPage() {
     );
   }
 
-  // Unauthenticated: simple layout without AppShell
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="h-16 border-b border-gray-200 bg-white/80 backdrop-blur-xl flex items-center px-4">
-        <Link
-          href="/"
-          className="text-lg font-bold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent"
-        >
-          AISkillScore
-        </Link>
-        <div className="flex-1" />
-        <Link
-          href="/auth"
-          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
-        >
-          Sign Up Free
-        </Link>
-      </nav>
+    <AppShell isLoggedIn={false}>
       {content}
-    </div>
+    </AppShell>
   );
 }
