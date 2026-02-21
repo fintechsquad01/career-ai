@@ -97,6 +97,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     ],
   };
 
+  const faqJsonLd = article.faq?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      }
+    : null;
+
   const relatedTools = article.relatedTools
     .map((id) => TOOLS_MAP[id])
     .filter(Boolean);
@@ -111,6 +123,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+        />
+      )}
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         {/* Breadcrumb */}
@@ -237,6 +255,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                       </span>
                       <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 shrink-0" />
                     </TrackedLink>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* FAQ */}
+            {article.faq && article.faq.length > 0 && (
+              <div className="mt-12">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <div className="space-y-4">
+                  {article.faq.map((item, i) => (
+                    <details key={i} className="group surface-base">
+                      <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                        {item.q}
+                        <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
+                      </summary>
+                      <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+                    </details>
                   ))}
                 </div>
               </div>

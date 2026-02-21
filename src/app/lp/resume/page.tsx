@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -7,16 +8,48 @@ import {
   GitCompareArrows,
 } from "lucide-react";
 
-export const metadata = {
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
+export const metadata: Metadata = {
   title:
     "Your Resume Is Getting Rejected — Fix It in Minutes | AISkillScore",
   description:
     "43% of ATS rejections are formatting errors, not qualification gaps. Get your ATS score and AI-powered resume optimization. 15 free tokens on signup.",
+  alternates: { canonical: `${APP_URL}/lp/resume` },
+  openGraph: {
+    title: "Your Resume Is Getting Rejected — Fix It in Minutes",
+    description:
+      "43% of ATS rejections are formatting errors. Get your ATS score and AI-powered resume optimization.",
+    url: `${APP_URL}/lp/resume`,
+    type: "website",
+    siteName: "AISkillScore",
+    images: [{ url: `${APP_URL}/api/og`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Your Resume Is Getting Rejected — Fix It in Minutes",
+    description:
+      "43% of ATS rejections are formatting errors. Get your ATS score and AI-powered resume optimization.",
+    images: [`${APP_URL}/api/og`],
+  },
 };
 
 export default function ResumeLandingPage() {
+  const pageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Resume ATS Optimization",
+    description: "AI-powered resume optimization that passes ATS screening while preserving your authentic voice.",
+    url: `${APP_URL}/lp/resume`,
+    publisher: { "@type": "Organization", name: "AISkillScore", url: APP_URL },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24">
         {/* Hero */}
         <div className="text-center space-y-6">

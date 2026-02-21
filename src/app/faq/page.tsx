@@ -173,8 +173,8 @@ export default async function FaqPage() {
           <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Popular tools:</span>
             <Link href="/tools/displacement" className="ui-badge ui-badge-green hover:opacity-80 transition-opacity">AI Displacement Score — Free</Link>
-            <Link href="/tools/jd_match" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Job Match Score — 5 tokens</Link>
-            <Link href="/tools/resume" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Resume Optimizer — 15 tokens</Link>
+            <Link href="/tools/jd_match" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Job Match Score — 5 tokens (~$1)</Link>
+            <Link href="/tools/resume" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Resume Optimizer — 15 tokens (~$3)</Link>
           </div>
 
           {/* Bottom CTA */}
@@ -188,7 +188,7 @@ export default async function FaqPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/auth" className="btn-primary sm:w-auto px-6">
-                Create Account — 15 Free Tokens
+                Create Account — 15 Free Tokens (~$3 value)
               </Link>
               <Link href="/pricing" className="btn-secondary sm:w-auto px-6">
                 View Token Pricing

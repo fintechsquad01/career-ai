@@ -34,6 +34,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    // Landing pages — high-intent SEO pages
+    {
+      url: `${baseUrl}/lp/resume`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/lp/career-change`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/lp/ai-risk`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     // Tool pages — high value for SEO and AI citability
     ...TOOLS.map((tool) => ({
       url: `${baseUrl}/tools/${tool.id}`,

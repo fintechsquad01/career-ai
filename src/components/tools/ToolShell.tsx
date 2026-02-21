@@ -14,7 +14,7 @@ import { useMission } from "@/hooks/useMission";
 import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
 import { useAppStore } from "@/stores/app-store";
 import { EVENTS, track } from "@/lib/analytics";
-import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness, formatTokenAmountLabel } from "@/lib/constants";
+import { TOOLS_MAP, MISSION_ACTIONS, calculateProfileCompleteness, formatTokenAmountLabel, formatTokenWithPrice, tokensToDollars } from "@/lib/constants";
 import { safeLocalStorage, safeSessionStorage } from "@/lib/safe-storage";
 import { createClient } from "@/lib/supabase/client";
 import { getLoadingInsights } from "@/lib/loading-insights";
@@ -464,6 +464,8 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
   const setCareerProfile = useAppStore((s) => s.setCareerProfile);
   const setActiveJobTarget = useAppStore((s) => s.setActiveJobTarget);
   const setJobTargets = useAppStore((s) => s.setJobTargets);
+  const tokenBalance = useAppStore((s) => s.tokenBalance);
+  const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
 
   const isRunning = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -1343,8 +1345,19 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         <div className="report-section surface-soft border-blue-100">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600 mb-1">Primary action</p>
           <p className="text-sm text-gray-700 mb-3">{primaryRecommendation.narrative}</p>
-          <p className="text-xs text-gray-600 mb-3">
-            Effort: {formatTokenAmountLabel(primaryRecommendation.tool.tokens)} · {TOOL_EFFORT_HINTS[primaryRecommendation.tool.id] || "~30-60 sec"}
+          <p className="text-xs text-gray-600 mb-2">
+            {formatTokenWithPrice(primaryRecommendation.tool.tokens)} · {TOOL_EFFORT_HINTS[primaryRecommendation.tool.id] || "~30-60 sec"}
+          </p>
+          <p className="text-xs text-gray-500 mb-3">
+            You have {tokenBalance + dailyCreditsBalance} tokens.{" "}
+            {(() => {
+              const remaining = MISSION_ACTIONS
+                .filter((a) => !completedToolIds.has(a.toolId))
+                .reduce((sum, a) => sum + a.tokens, 0);
+              return remaining > 0
+                ? `Remaining application stack: ${remaining} tokens (${tokensToDollars(remaining)}).`
+                : "";
+            })()}
           </p>
           <Link
             href={`/tools/${primaryRecommendation.tool.id}`}

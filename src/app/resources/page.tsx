@@ -237,7 +237,7 @@ export default async function ResourcesPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
-                Create Account — 15 Free Tokens
+                Create Account — 15 Free Tokens (~$3 value)
               </Link>
               <Link href="/pricing" className="btn-secondary sm:w-auto px-6 inline-flex">
                 View Token Pricing

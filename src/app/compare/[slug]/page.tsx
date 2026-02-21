@@ -82,6 +82,18 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
     ],
   };
 
+  const faqJsonLd = comp.faq?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: comp.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      }
+    : null;
+
   const content = (
     <>
       <script
@@ -92,6 +104,12 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+        />
+      )}
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         {/* Breadcrumb */}
@@ -191,6 +209,24 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
             ))}
           </ul>
         </div>
+
+        {/* FAQ */}
+        {comp.faq && comp.faq.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              {comp.faq.map((item, i) => (
+                <details key={i} className="group glass-card">
+                  <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                    {item.q}
+                    <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
+                  </summary>
+                  <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">

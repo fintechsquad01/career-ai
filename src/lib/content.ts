@@ -24,6 +24,8 @@ export interface TArticle {
   tldr: string;
   /** Internal links for content hub wiring (label + href pairs) */
   relatedLinks?: { label: string; href: string }[];
+  /** FAQ items for FAQPage schema and rich snippets */
+  faq?: { q: string; a: string }[];
 }
 
 export const ARTICLES: TArticle[] = [
@@ -69,6 +71,12 @@ export const ARTICLES: TArticle[] = [
         body: "**Highest displacement risk:**\n- Administrative and office support (67% of tasks automatable)\n- Financial services and accounting (54%)\n- Customer service and support (52%)\n- Marketing and content creation (48%)\n- Legal research and paralegal work (45%)\n\n**Moderate displacement risk:**\n- Software development (38% — AI assists but humans architect)\n- Education and training (32%)\n- Healthcare administration (30%)\n\n**Lowest displacement risk:**\n- Skilled trades and construction (12%)\n- Healthcare practitioners (15%)\n- Social work and counseling (18%)\n- Executive leadership (20%)\n\nSource: ILO 2025 Research, McKinsey Global Institute, World Economic Forum Future of Jobs Report 2025.",
       },
     ],
+    faq: [
+      { q: "Will AI replace my job in 2026?", a: "Most jobs won't be fully replaced — they'll be transformed. The ILO estimates 1 in 4 workers have roles exposed to generative AI, but displacement depends on which tasks you perform and how quickly you adapt." },
+      { q: "How do I check my AI displacement risk?", a: "AISkillScore offers a free AI Displacement Score that analyzes your specific role against ILO 2025 research data. It breaks down which tasks are at risk and provides an action plan." },
+      { q: "What jobs are safe from AI?", a: "Roles requiring physical dexterity, emotional intelligence, complex judgment, and creative leadership have the lowest displacement risk — typically under 20% task automation." },
+      { q: "How can I future-proof my career against AI?", a: "Focus on human-only skills like strategic thinking and relationship building, learn to use AI tools to boost your productivity, and build transferable skills that apply across industries." },
+    ],
   },
   {
     slug: "resume-ats-optimization-guide",
@@ -111,6 +119,12 @@ export const ARTICLES: TArticle[] = [
         heading: "The Complete ATS Optimization Checklist",
         body: "Before you submit your next application, verify:\n\n☑ Standard file format (.docx or clean .pdf)\n☑ No tables, columns, text boxes, or graphics\n☑ Standard section headers (Professional Experience, Education, Skills)\n☑ Contact info in main body, not headers/footers\n☑ Job title from JD appears in your resume\n☑ 5+ keyword matches from the job description\n☑ All achievements are quantified with numbers\n☑ Consistent date formatting throughout\n☑ No AI-detectable language patterns\n☑ Tailored for this specific role (not a generic resume)\n\nOr let AISkillScore handle it: the Resume Optimizer (15 tokens, ~$2.93) runs all these checks automatically and rewrites problem areas while keeping your authentic voice. Compare that to Jobscan at $49.95/month for keyword counting alone.",
       },
+    ],
+    faq: [
+      { q: "What is an ATS score and why does it matter?", a: "An ATS (Applicant Tracking System) score measures how well your resume parses and matches a job posting. 75% of resumes are auto-rejected before a human sees them, often due to formatting errors." },
+      { q: "What resume format works best for ATS?", a: "Use a single-column layout in .docx or clean PDF format with standard section headers, no tables or graphics, and contact info in the main body — not headers or footers." },
+      { q: "How do I optimize my resume for ATS without keyword stuffing?", a: "Use contextual keywords from the job description naturally within your achievement bullets. Show skills in action rather than listing them, and include exact job title matches." },
+      { q: "How much does professional ATS optimization cost?", a: "Subscription tools like Jobscan charge $49.95/month. AISkillScore's Resume Optimizer costs 15 tokens (about $2.93) with no subscription required." },
     ],
   },
   {
@@ -155,6 +169,11 @@ export const ARTICLES: TArticle[] = [
         body: "Most candidates don't realize that salary negotiation doesn't start when you get the offer — it starts during the interview. Every answer you give either increases or decreases your perceived value.\n\n**Value-increasing signals:**\n- Quantified achievements ('increased conversion by 34%')\n- Evidence of leadership and initiative\n- Market awareness and industry knowledge\n- Enthusiasm calibrated to the role level\n\n**Value-decreasing signals:**\n- Revealing desperation ('I really need this job')\n- Underselling experience ('I just helped with...')\n- Not asking thoughtful questions back\n- Accepting the first number discussed\n\nAISkillScore's Salary Negotiation tool (8 tokens) provides market data and word-for-word scripts. Used together with Interview Prep, you enter every interview knowing your worth and how to communicate it.",
       },
     ],
+    faq: [
+      { q: "How do I prepare for follow-up interview questions?", a: "Prepare 2-3 layers deep for every answer using the STAR method. For each initial answer, anticipate 'tell me more,' 'what went wrong,' and 'what would you do differently' follow-ups." },
+      { q: "What are the most common interview follow-up questions?", a: "The three most common are: 'Can you walk me through that in more detail?', 'What would you do differently?', and 'How did you measure success?' Prepare specific examples for each." },
+      { q: "Can AI help me prepare for job interviews?", a: "Yes — AI tools can analyze specific job descriptions to predict likely questions and generate company-specific prep. AISkillScore's Interview Prep costs 8 tokens and includes follow-up question coaching." },
+    ],
   },
   {
     slug: "salary-negotiation-scripts-2026",
@@ -197,6 +216,11 @@ export const ARTICLES: TArticle[] = [
         heading: "When to Walk Away (And How)",
         body: "Knowing when to walk away is the ultimate negotiation leverage. If you have alternatives, you negotiate from strength.\n\n**Walk-away indicators:**\n- Offer is >15% below market rate and they won't move\n- Company shows bad faith (rescinding verbal agreements, pressure tactics)\n- The role scope has changed from what was discussed\n- Benefits/culture red flags emerged during negotiation\n\n**How to walk away gracefully:**\n'I really appreciate the time you've invested in this process, and I'm impressed by the team. Unfortunately, the total compensation doesn't align with what I need to make this move. If the situation changes, I'd love to reconnect.'\n\nThis preserves the relationship and often results in an improved offer 24-48 hours later.\n\n**Building leverage before negotiation:**\n- Always have at least 2 active opportunities\n- Know your BATNA (Best Alternative to a Negotiated Agreement)\n- Use AISkillScore's Job Match Score to apply strategically to roles where you're a strong fit\n- Track your market value quarterly, not just when job hunting",
       },
+    ],
+    faq: [
+      { q: "How much more can I earn by negotiating salary?", a: "76% of professionals who negotiate earn $5,000 to $10,000 more. Over a 30-year career, that initial negotiation can compound to over $1 million in additional earnings." },
+      { q: "What do I say when asked about salary expectations?", a: "Deflect with: 'I'd like to understand the full scope of the role first. What's the budgeted range for this position?' This keeps you from anchoring too low." },
+      { q: "Should I negotiate a remote work salary adjustment?", a: "Yes — push back on location-based pay cuts by framing your value around output, not geography. Many competing remote roles don't adjust for location." },
     ],
   },
   {
@@ -241,6 +265,11 @@ export const ARTICLES: TArticle[] = [
         body: "Expectations vs. reality for career change timelines:\n\n**Adjacent move** (same industry, different function): 2-4 months\n- Example: Software developer → DevOps engineer\n- Strategy: Upskill in specific tools, leverage industry knowledge\n\n**Lateral move** (different industry, similar function): 3-6 months\n- Example: Banking project manager → Tech project manager\n- Strategy: Learn industry terminology, highlight transferable PM skills\n\n**Diagonal move** (different industry AND function): 6-12 months\n- Example: Teacher → UX designer\n- Strategy: Bridge role, portfolio building, certification\n\n**Complete reinvention**: 12-24 months\n- Example: Lawyer → Software engineer\n- Strategy: Bootcamp or self-study, bridge role, networking\n\n**How to accelerate any transition:**\n1. Start building proof of work immediately (don't wait until you 'finish learning')\n2. Network in your target field 3 months before you start applying\n3. Apply to bridge roles, not just dream roles\n4. Use your unique background as a differentiator, not a liability\n\nAISkillScore's Career Roadmap (15 tokens) generates a realistic timeline with weekly milestones based on your specific starting point and target.",
       },
     ],
+    faq: [
+      { q: "How do I identify my transferable skills for a career change?", a: "List every task you perform, then map them to your target role. Skills like project management, communication, data analysis, and stakeholder management transfer across most industries." },
+      { q: "How long does a career change typically take?", a: "A well-planned career transition typically takes 6 to 12 months. The key is building skills and network in parallel with your current role rather than quitting first." },
+      { q: "What is a skills gap analysis?", a: "A skills gap analysis compares your current skills against the requirements of your target role, identifying exactly which gaps to close and which strengths already transfer." },
+    ],
   },
   {
     slug: "linkedin-optimization-recruiter-algorithm",
@@ -283,6 +312,11 @@ export const ARTICLES: TArticle[] = [
         heading: "Open to Work: The Right Way to Signal Availability",
         body: "LinkedIn's 'Open to Work' feature has two modes, and choosing the wrong one can hurt more than help.\n\n**Recruiters only (recommended):**\n- Green banner NOT visible to your network\n- Only visible to recruiters using LinkedIn Recruiter\n- Increases profile appearances in recruiter search by ~40%\n- No risk of your current employer seeing it\n\n**All LinkedIn members (use carefully):**\n- Green #OpenToWork photo frame visible to everyone\n- Can signal desperation to some recruiters\n- Best used if you're publicly job hunting (laid off, graduating, etc.)\n\n**Pro tip:** When setting Open to Work, be specific about:\n- Target job titles (up to 5)\n- Locations and remote preference\n- Start date\n- Job types (full-time, contract, etc.)\n\nThe more specific your preferences, the better LinkedIn matches you with relevant recruiter searches.\n\nAISkillScore's LinkedIn Optimizer (15 tokens) rewrites your entire profile — headline, About, Experience descriptions, and Skills — to maximize the 6 ranking signals while preserving your authentic voice. Compare that to hiring a LinkedIn consultant at $200-500 for the same service.",
       },
+    ],
+    faq: [
+      { q: "How do I optimize my LinkedIn for recruiters in 2026?", a: "Focus on a keyword-rich headline, a value-proposition summary in the first two lines, quantified achievements in experience, and regular activity — LinkedIn's AI now factors engagement into search ranking." },
+      { q: "Does LinkedIn activity affect recruiter search results?", a: "Yes — LinkedIn's 2026 algorithm uses activity signals like posts, comments, and recommendations as ranking factors. Active profiles appear higher in recruiter searches." },
+      { q: "What should my LinkedIn headline say?", a: "Include your target role title, 2-3 key skills, and a value differentiator. Example: 'Senior Product Manager | AI/ML Products | Shipped 3 products to 10M+ users.'" },
     ],
   },
   {
@@ -329,6 +363,11 @@ export const ARTICLES: TArticle[] = [
         body: "Here's a concrete 4-step plan to protect and grow your engineering career:\n\n**Step 1: Measure your actual risk (today, free)**\nRun AISkillScore's free AI Displacement Score. It analyzes your specific role and daily tasks against ILO 2025 data. You'll see exactly which tasks are automatable and which are safe. No signup required.\n\n**Step 2: Match against your target role (this week)**\nUse Job Match Score (5 tokens) with a job posting for your next desired role. See which skills the market values most — and where your resume has evidence gaps.\n\n**Step 3: Close your top 2 gaps (this month)**\nUse Skills Gap Analysis (8 tokens) to get a week-by-week learning plan for your highest-priority gaps. Focus on the gaps that overlap with human-essential skills.\n\n**Step 4: Prepare your positioning (before your next interview)**\nUse Resume Optimizer (15 tokens) to rewrite your experience in terms of judgment, design decisions, and business impact — not just technical output. Then use Interview Prep (8 tokens) to practice follow-up questions.\n\nTotal investment: under $8 for the complete analysis. Compare that to a career coach at $200-500/session.",
       },
     ],
+    faq: [
+      { q: "Will AI replace software engineers?", a: "AI won't replace software engineers wholesale, but it will transform the role. Engineers who learn to architect systems, review AI-generated code, and focus on complex problem-solving will thrive." },
+      { q: "What programming skills are AI-proof?", a: "System design, architecture decisions, debugging complex issues, security analysis, and understanding business context are hardest for AI to replicate. Pure coding tasks are most at risk." },
+      { q: "How should developers prepare for AI changes?", a: "Master AI-assisted development workflows, focus on system-level thinking over rote coding, and build expertise in areas requiring human judgment like trade-off analysis and stakeholder communication." },
+    ],
   },
   {
     slug: "get-interviews-little-experience",
@@ -373,6 +412,11 @@ export const ARTICLES: TArticle[] = [
         body: "Here's a concrete schedule to transform your job search:\n\n**Day 1: Audit your resume format**\nRun your resume through AISkillScore's Job Match Score (5 tokens) with a target job posting. See exactly where you match, where you miss, and whether your formatting passes ATS.\n\n**Day 2: Rewrite your resume**\nUse Resume Optimizer (15 tokens) to get an ATS-optimized version. Focus on quantifying every bullet point using the Action + Metric + Context formula.\n\n**Day 3: Build your keyword bank**\nCollect 5 job postings for your target role. Identify the 15-20 terms that appear in at least 3 of them. These are your priority keywords.\n\n**Day 4: Write your template cover letter**\nCreate one cover letter using the Story-Hook-Evidence format. For each application, customize the Hook and 1-2 Evidence points. AISkillScore's Cover Letter tool (8 tokens) can generate this automatically from each job posting.\n\n**Day 5: Apply to 5 jobs with tailored materials**\nFor each application: customize your resume keywords, adjust your cover letter hook, and submit. Track which versions get callbacks.\n\nTotal cost: under $5 for the complete Job Match Score + Resume Optimizer stack. Your first tools are free with the 15 signup tokens. Compare that to resume writing services at $200-500.\n\nThe difference between sending 50 generic applications and 10 targeted ones is dramatic. Quality over quantity wins at every career level — but especially at the start.",
       },
     ],
+    faq: [
+      { q: "How do I get interviews with little work experience?", a: "Focus on transferable skills from any context — school projects, volunteering, freelance work, personal projects. Tailor every application to the specific role rather than mass-applying." },
+      { q: "How many jobs should I apply to per week?", a: "Quality over quantity — 5 to 10 highly tailored applications per week outperform 50 generic ones. Use a Job Match Score to focus on roles where you have the highest fit." },
+      { q: "What should entry-level candidates put on their resume?", a: "Lead with skills and relevant projects, not job titles. Include coursework, certifications, side projects, and volunteer work with quantified results where possible." },
+    ],
   },
 ];
 
@@ -396,6 +440,8 @@ export interface TComparison {
   features: { name: string; us: boolean | string; them: boolean | string }[];
   /** Verdict paragraph */
   verdict: string;
+  /** FAQ items for FAQPage schema and rich snippets */
+  faq?: { q: string; a: string }[];
 }
 
 export const COMPARISONS: TComparison[] = [
@@ -458,6 +504,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From $14", them: "$49.95/mo" },
     ],
     verdict: "Jobscan is a solid ATS keyword scanner, but at $49.95/month it's expensive for a single-purpose tool. AISkillScore provides the same keyword matching plus 10 additional AI career tools, all at pay-per-use pricing. If you're actively job hunting and need more than just resume scanning — interview prep, cover letters, salary data — AISkillScore delivers significantly more value at a fraction of the cost.",
+    faq: [
+      { q: "Is AISkillScore better than Jobscan?", a: "AISkillScore offers evidence-based matching with recruiter perspective and 11 AI tools beyond keyword counting. Jobscan focuses on keyword matching at $49.95/month; AISkillScore uses pay-per-use tokens starting free." },
+      { q: "How much does AISkillScore cost compared to Jobscan?", a: "Jobscan costs $49.95/month ($599/year). AISkillScore has no subscription — you pay per use with tokens. A full resume optimization costs about $2.93." },
+      { q: "Can I use AISkillScore instead of Jobscan?", a: "Yes. AISkillScore covers everything Jobscan does (ATS optimization, keyword matching) plus 10 additional tools including interview prep, cover letters, and salary negotiation." },
+    ],
   },
   {
     slug: "aiskillscore-vs-teal",
@@ -519,6 +570,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From $14", them: "$29/mo" },
     ],
     verdict: "Teal excels at job application tracking and provides a solid resume builder with its Chrome extension. However, it relies on templates rather than AI-powered personalization, and its $29/month subscription adds up quickly. AISkillScore is the better choice if you want AI-personalized content that preserves your authentic voice, plus access to interview prep, salary negotiation, and career planning tools — all without a recurring subscription.",
+    faq: [
+      { q: "Is AISkillScore better than Teal?", a: "AISkillScore preserves your authentic voice while optimizing, whereas Teal uses generic templates. AISkillScore also offers 11 tools vs Teal's resume focus, with no monthly subscription." },
+      { q: "How does AISkillScore pricing compare to Teal?", a: "Teal costs $29/month. AISkillScore has no subscription — pay per use with tokens. 15 free tokens on signup lets you try multiple tools before paying anything." },
+      { q: "Does AISkillScore have job tracking like Teal?", a: "AISkillScore offers Mission Control for tracking job applications and progress across multiple targets, plus 11 AI tools for the full application workflow." },
+    ],
   },
   {
     slug: "aiskillscore-vs-finalround",
@@ -577,6 +633,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price per interview prep", us: "~$1.56", them: "$149/mo" },
     ],
     verdict: "FinalRound AI is specialized in real-time interview assistance — a niche use case that raises ethical concerns with many employers. At $149/month, it's the most expensive option in the career tools space. AISkillScore provides comprehensive interview preparation including follow-up questions (which FinalRound doesn't cover), plus 10 additional career tools, all at pay-per-use pricing. For genuine interview preparation that makes you a better candidate rather than giving you a hidden earpiece, AISkillScore is the clear choice.",
+    faq: [
+      { q: "Is AISkillScore better than FinalRound AI?", a: "AISkillScore offers interview prep with follow-up question coaching at $1.56 per use, compared to FinalRound's $149/month. AISkillScore also provides 10 additional career tools." },
+      { q: "How much cheaper is AISkillScore than FinalRound?", a: "FinalRound AI costs $149/month ($1,788/year). AISkillScore's interview prep costs about $1.56 per session with no subscription — roughly 95% cheaper." },
+      { q: "Does AISkillScore have real-time interview coaching?", a: "AISkillScore focuses on preparation rather than real-time copiloting, with company-specific questions, follow-up predictions, and defensibility coaching that prepares you to handle any probe." },
+    ],
   },
   {
     slug: "aiskillscore-vs-kickresume",
@@ -639,6 +700,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From free", them: "$19/mo" },
     ],
     verdict: "Kickresume is a solid resume builder with attractive templates and an AI writing assistant. It's a good choice if visual design is your primary concern. However, AISkillScore offers something fundamentally different: AI analysis that explains why each change matters, plus 10 additional career tools. If you want a pretty template, use Kickresume. If you want to understand how to actually get hired — with interview prep, salary data, and career planning — AISkillScore delivers far more value at a lower total cost.",
+    faq: [
+      { q: "Is AISkillScore better than Kickresume?", a: "AISkillScore offers AI-powered optimization that preserves your voice, plus 10 additional career tools. Kickresume focuses on templates and basic AI writing at $19/month." },
+      { q: "Does AISkillScore have resume templates?", a: "AISkillScore optimizes your existing resume content for ATS systems while preserving your format and voice, rather than forcing you into pre-made templates." },
+      { q: "How does AISkillScore compare to Kickresume on price?", a: "Kickresume costs $19/month. AISkillScore has no subscription — resume optimization costs about $2.93 per use with 15 free tokens on signup." },
+    ],
   },
   {
     slug: "aiskillscore-vs-resumeio",
@@ -701,6 +767,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From free", them: "$24.95/mo" },
     ],
     verdict: "Resume.io excels at making resumes look polished with professional templates and easy formatting. If you just need a visually appealing document, it does the job. But looking good isn't enough — your resume needs to perform. AISkillScore analyzes your content against real job requirements, optimizes for ATS, and provides the evidence behind every recommendation. Plus, you get 10 additional career tools for a fraction of Resume.io's annual cost. For job seekers who want results, not just aesthetics, AISkillScore is the smarter investment.",
+    faq: [
+      { q: "Is AISkillScore better than Resume.io?", a: "AISkillScore provides AI-powered content optimization with evidence-based feedback, while Resume.io focuses on template-based formatting. AISkillScore also offers 10 additional career tools." },
+      { q: "How much does AISkillScore cost vs Resume.io?", a: "Resume.io costs $24.95/month. AISkillScore uses pay-per-use tokens with no subscription — a full resume optimization costs about $2.93." },
+      { q: "Can AISkillScore replace Resume.io?", a: "Yes for content optimization and ATS scoring. AISkillScore analyzes and improves your resume content, keywords, and structure. For visual formatting, you can use any template with AISkillScore's optimized content." },
+    ],
   },
   {
     slug: "aiskillscore-vs-resume-worded",
@@ -761,6 +832,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From free", them: "$24.99/mo" },
     ],
     verdict: "Resume Worded is a decent starting point if you want a quick resume score. But when you're applying to real jobs, you need more than a number — you need evidence-based analysis matched to specific job requirements, plus interview prep, cover letters, and salary data. AISkillScore delivers all 11 tools at a fraction of the cost with no subscription lock-in.",
+    faq: [
+      { q: "Is AISkillScore better than Resume Worded?", a: "AISkillScore enhances your resume while preserving your authentic voice, unlike Resume Worded which tends to rewrite content. AISkillScore also offers 11 total career tools vs Resume Worded's resume focus." },
+      { q: "How does AISkillScore pricing compare to Resume Worded?", a: "Resume Worded costs $24.99/month. AISkillScore has no subscription — resume optimization costs about $2.93 per use, and you get 15 free tokens on signup." },
+      { q: "Does AISkillScore rewrite my resume like Resume Worded?", a: "No — AISkillScore enhances rather than rewrites. It preserves your voice and stories while optimizing for ATS parsing, keywords, and structure. This avoids the AI-detection problem." },
+    ],
   },
   {
     slug: "aiskillscore-vs-enhancv",
@@ -822,6 +898,11 @@ export const COMPARISONS: TComparison[] = [
       { name: "Price", us: "From free", them: "$19.99/mo" },
     ],
     verdict: "Enhancv is great if you need a visually polished resume from scratch. But building a beautiful resume doesn't guarantee it performs. AISkillScore takes what you've already written and optimizes it for ATS systems and recruiter review — with evidence for every change. Combined with interview prep, salary scripts, and skills gap analysis, it's the difference between a pretty document and a career strategy.",
+    faq: [
+      { q: "Is AISkillScore better than Enhancv?", a: "AISkillScore offers AI-powered content optimization and 11 career tools, while Enhancv focuses on visual resume design. AISkillScore is better for ATS optimization; Enhancv is better for visual creativity." },
+      { q: "How much does AISkillScore cost compared to Enhancv?", a: "Enhancv costs $19.99/month. AISkillScore has no subscription — pay per use with tokens starting free. A full resume optimization costs about $2.93." },
+      { q: "Can I use both AISkillScore and Enhancv?", a: "Yes — use AISkillScore to optimize your resume content and ATS keywords, then apply Enhancv's visual templates for design. The optimized content will perform well in any format." },
+    ],
   },
 ];
 

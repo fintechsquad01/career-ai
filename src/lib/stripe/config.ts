@@ -1,4 +1,10 @@
 export const STRIPE_PRODUCTS = {
+  topup: {
+    name: "Quick Top-Up",
+    tokens: 15,
+    price_cents: 500,
+    stripe_price_id: process.env.STRIPE_PRICE_TOPUP || "",
+  },
   starter: {
     name: "Starter Pack",
     tokens: 50,

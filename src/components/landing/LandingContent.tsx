@@ -9,7 +9,7 @@ import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
 import { EmailCapture } from "./EmailCapture";
-import { PACKS, FAQ_ITEMS, TOOLS, CANONICAL_COPY } from "@/lib/constants";
+import { PACKS, FAQ_ITEMS, TOOLS, CANONICAL_COPY, formatTokenWithPrice } from "@/lib/constants";
 import { EVENTS, track } from "@/lib/analytics";
 import { safeLocalStorage } from "@/lib/safe-storage";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
@@ -424,7 +424,7 @@ export function LandingContent() {
                           <ht.icon className={`w-5 h-5 ${ht.iconColor}`} />
                         </div>
                         <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
-                          {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+                          {formatTokenWithPrice(tool.tokens)}
                         </span>
                       </div>
                       <h3 className="text-sm font-bold text-gray-900 mb-1">{tool.title}</h3>
@@ -449,7 +449,7 @@ export function LandingContent() {
                             <ht.icon className={`w-5 h-5 ${ht.iconColor}`} />
                           </div>
                           <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
-                            {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+                            {formatTokenWithPrice(tool.tokens)}
                           </span>
                         </div>
                         <h3 className="text-sm font-bold text-gray-900 mb-1">{tool.title}</h3>

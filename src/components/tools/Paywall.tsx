@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import Link from "next/link";
 import { X, Coins, ArrowRight, Users } from "lucide-react";
-import { PACKS, CANONICAL_COPY } from "@/lib/constants";
+import { PACKS, TOPUP_PACK, CANONICAL_COPY, tokensToDollars } from "@/lib/constants";
 import { trackPurchase } from "@/lib/analytics";
 import { safeLocalStorage } from "@/lib/safe-storage";
 
@@ -27,6 +27,7 @@ interface PaywallProps {
   toolName?: string;
   toolId?: string;
   toolDescription?: string;
+  missionProgress?: { completed: number; total: number; currentStep: string };
   onClose: () => void;
   onPurchaseComplete: () => void;
 }
@@ -37,16 +38,20 @@ export function Paywall({
   toolName,
   toolId,
   toolDescription,
+  missionProgress,
   onClose,
   onPurchaseComplete,
 }: PaywallProps) {
   const deficit = Math.max(0, requiredTokens - currentBalance);
+  const showTopUp = deficit <= 15;
 
-  // Find the cheapest pack that covers the deficit
-  const recommendedPack = PACKS.find((p) => p.tokens >= deficit) || PACKS[PACKS.length - 1];
+  const availablePacks = showTopUp ? [TOPUP_PACK, ...PACKS] : PACKS;
+  const recommendedPack = showTopUp
+    ? TOPUP_PACK
+    : PACKS.find((p) => p.tokens >= deficit) || PACKS[PACKS.length - 1];
 
   const [selectedPackId, setSelectedPackId] = useState(recommendedPack.id);
-  const selectedPack = PACKS.find((p) => p.id === selectedPackId) ?? recommendedPack;
+  const selectedPack = availablePacks.find((p) => p.id === selectedPackId) ?? recommendedPack;
 
   // Real-time social proof: count of analyses run in the last 24h
   const [recentToolCount, setRecentToolCount] = useState<number | null>(null);
@@ -84,7 +89,7 @@ export function Paywall({
       });
       const data = await res.json();
       if (data.url) {
-        const pack = PACKS.find((p) => p.id === packId);
+        const pack = availablePacks.find((p) => p.id === packId);
         if (pack) trackPurchase({ id: pack.id, name: pack.name, price: pack.price, tokens: pack.tokens });
         window.location.href = data.url;
       }
@@ -112,11 +117,16 @@ export function Paywall({
             <Coins className="w-6 h-6 text-amber-600" />
           </div>
           <h2 className="text-lg font-bold text-gray-900">Continue this mission step</h2>
-          {toolName && (
+          {missionProgress && (
+            <p className="text-xs text-blue-600 font-medium mt-1">
+              Step {missionProgress.completed + 1} of {missionProgress.total}: {missionProgress.currentStep}
+            </p>
+          )}
+          {toolName && !missionProgress && (
             <p className="text-xs text-gray-400 mt-0.5">for {toolName}</p>
           )}
           <p className="text-sm text-gray-600 mt-2">
-            You have <strong>{currentBalance}</strong> tokens · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong>
+            You have <strong>{currentBalance}</strong> tokens · Need <strong>{requiredTokens}</strong> · Short <strong>{deficit}</strong> ({tokensToDollars(deficit)})
           </p>
           <p className="text-xs text-blue-700 mt-1.5">
             Recommended now: <strong>{recommendedPack.name}</strong> covers this step and keeps your next action uninterrupted.
@@ -152,7 +162,7 @@ export function Paywall({
         </div>
 
         <div className="space-y-3 stagger-children">
-          {PACKS.map((pack) => {
+          {availablePacks.map((pack) => {
             const isSelected = pack.id === selectedPackId;
             const isRecommended = pack.id === recommendedPack.id;
             return (

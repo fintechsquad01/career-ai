@@ -15,6 +15,15 @@ export const metadata: Metadata = {
     title: "Industries — AI Career Guides by Industry",
     description: "Industry-specific career guides with AI displacement analysis, resume optimization, and job match tools.",
     url: `${APP_URL}/industries`,
+    type: "website",
+    siteName: "AISkillScore",
+    images: [{ url: `${APP_URL}/api/og`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Industries — AI Career Guides by Industry | AISkillScore",
+    description: "Industry-specific career guides with AI displacement analysis, resume optimization, and job match tools.",
+    images: [`${APP_URL}/api/og`],
   },
 };
 
@@ -44,11 +53,24 @@ export default async function IndustriesIndexPage() {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
+      { "@type": "ListItem", position: 2, name: "Industries", item: `${APP_URL}/industries` },
+    ],
+  };
+
   const content = (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
         <div className="surface-hero p-6 sm:p-8 mb-10">

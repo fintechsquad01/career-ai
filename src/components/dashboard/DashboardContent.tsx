@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 import { useCareerHealth } from "@/hooks/useCareerHealth";
 import { useWave2JourneyFlow } from "@/hooks/useWave2JourneyFlow";
-import { calculateProfileCompleteness, MISSION_ACTIONS, TOOLS_MAP } from "@/lib/constants";
+import { calculateProfileCompleteness, MISSION_ACTIONS, TOOLS_MAP, tokensToDollars } from "@/lib/constants";
+import { useAppStore } from "@/stores/app-store";
 import { safeLocalStorage } from "@/lib/safe-storage";
 import type { Profile, CareerProfile, JobTarget, ToolResultRow } from "@/types";
 import { EVENTS, track } from "@/lib/analytics";
@@ -258,10 +259,16 @@ export function DashboardContent({
     })[0];
   }, [activeJobTarget, allJobTargets, getMissionProgress]);
 
+  const tokenBalance = useAppStore((s) => s.tokenBalance);
+  const dailyCreditsBalance = useAppStore((s) => s.dailyCreditsBalance);
+  const totalBalance = tokenBalance + dailyCreditsBalance;
+
   const recommendations = getSmartRecommendations(careerProfile, recommendationTarget, recentResults);
   const primaryRecommendation = recommendations[0] ?? null;
   const missionProgress = missionCardTarget ? getMissionProgress(missionCardTarget) : null;
   const latestResult = recentResults[0] || null;
+  const recTokenCost = primaryRecommendation ? (typeof primaryRecommendation.tokens === "number" ? primaryRecommendation.tokens : 0) : 0;
+  const needsTokens = recTokenCost > 0 && totalBalance < recTokenCost;
 
   const initials = profile?.full_name
     ? profile.full_name
@@ -323,11 +330,12 @@ export function DashboardContent({
         <div className="space-y-2">
           <p className="text-overline">Job Mission Control</p>
           <Link
-            href={primaryRecommendation.href}
+            href={needsTokens ? "/pricing" : primaryRecommendation.href}
             onClick={() =>
               track(EVENTS.DASHBOARD_NEXT_ACTION_CLICKED, {
                 route: "/dashboard",
                 tool_id: primaryRecommendation.id,
+                needs_tokens: needsTokens,
               })
             }
             className="block surface-card-hero p-4 group"
@@ -344,8 +352,11 @@ export function DashboardContent({
                 )}
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                   <span className={`ui-badge ${primaryRecommendation.tokens === "Free" ? "ui-badge-green" : "ui-badge-blue"}`}>
-                    {primaryRecommendation.tokens === "Free" ? "Free" : `${primaryRecommendation.tokens} tokens`}
+                    {primaryRecommendation.tokens === "Free" ? "Free" : `${primaryRecommendation.tokens} tokens (${tokensToDollars(recTokenCost)})`}
                   </span>
+                  {needsTokens && (
+                    <span className="ui-badge ui-badge-amber">You have {totalBalance} — need {recTokenCost}</span>
+                  )}
                   {missionProgress !== null && (
                     <span className="ui-badge ui-badge-gray">Mission {missionProgress}%</span>
                   )}
@@ -353,7 +364,7 @@ export function DashboardContent({
                 </div>
               </div>
               <span className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 group-hover:text-blue-800 whitespace-nowrap">
-                Run now <ArrowRight className="w-4 h-4" />
+                {needsTokens ? "Get tokens" : "Run now"} <ArrowRight className="w-4 h-4" />
               </span>
             </div>
           </Link>

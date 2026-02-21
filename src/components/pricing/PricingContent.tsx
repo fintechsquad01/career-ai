@@ -54,10 +54,10 @@ function TokenCalculator() {
         </div>
         <div className="surface-hero p-4 text-center space-y-1">
           <p className="text-sm text-gray-600">
-            You&apos;ll need approximately <span className="font-bold text-blue-600">{tokensNeeded} tokens</span>
+            You&apos;ll need approximately <span className="font-bold text-blue-600">{tokensNeeded} tokens</span> (~${Math.round(tokensNeeded * 0.195)})
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            Job Match Score + Resume Optimizer + Cover Letter + Interview Prep per application
+            A full application stack is under $8. Job Match Score + Resume Optimizer + Cover Letter + Interview Prep per application
           </p>
           <p className="text-sm font-semibold text-blue-700 mt-2">
             Recommended: {recommendedPack} Pack
@@ -124,6 +124,18 @@ export function PricingContent() {
         </p>
         <div className="inline-flex items-center gap-2 ui-badge ui-badge-green">
           {CANONICAL_COPY.tokens.dailyFreeMessage}
+        </div>
+      </div>
+
+      {/* Try free first */}
+      <div className="surface-base p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-gray-900">Not sure yet? Start free.</p>
+          <p className="text-xs text-gray-500 mt-0.5">AI Displacement Score is always free. Or sign up for 15 free tokens (~$3 value).</p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <Link href="/tools/displacement" className="btn-secondary px-4 text-xs !min-h-[36px]">Free AI Risk Score</Link>
+          <Link href="/auth" className="btn-primary px-4 text-xs !min-h-[36px] !w-auto">Sign Up Free</Link>
         </div>
       </div>
 

@@ -19,7 +19,7 @@ export const FEATURE_FLAGS = {
 
 export const CANONICAL_COPY = {
   signup: {
-    cta: "Create Account — 15 Free Tokens",
+    cta: "Create Account — 15 Free Tokens (~$3 value)",
     ctaShort: "Create Account — Free",
   },
   tokens: {
@@ -32,8 +32,8 @@ export const CANONICAL_COPY = {
   },
   cta: {
     freeAnalysisPrimary: "Get Your Free AI Risk Score",
-    getStarted: "Get Started — 15 Free Tokens",
-    unlockResults: "Unlock Results — 15 Free Tokens",
+    getStarted: "Get Started — 15 Free Tokens (~$3 value)",
+    unlockResults: "Unlock Results — 15 Free Tokens (~$3 value)",
     addTokens: "Add Tokens",
     continueMission: "Continue Mission",
   },
@@ -45,6 +45,23 @@ export const CANONICAL_COPY = {
 
 export function formatTokenAmountLabel(tokenCount: number): string {
   return tokenCount === 0 ? "Free" : `${tokenCount} ${CANONICAL_COPY.tokens.unit}`;
+}
+
+const PRO_RATE = 0.195;
+
+/** Format tokens with an inline dollar price hint based on Pro pack rate */
+export function formatTokenWithPrice(tokenCount: number): string {
+  if (tokenCount === 0) return "Free";
+  const dollars = tokenCount * PRO_RATE;
+  const priceStr = dollars < 1 ? `~$${dollars.toFixed(2)}` : `~$${Math.round(dollars)}`;
+  return `${tokenCount} tokens (${priceStr})`;
+}
+
+/** Get just the dollar estimate for a token amount */
+export function tokensToDollars(tokenCount: number): string {
+  if (tokenCount === 0) return "free";
+  const dollars = tokenCount * PRO_RATE;
+  return dollars < 1 ? `~$${dollars.toFixed(2)}` : `~$${Math.round(dollars)}`;
 }
 
 export const TOOLS: Tool[] = [
@@ -273,6 +290,15 @@ export const INDUSTRIES = [
 export const TOOLS_MAP = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
 ) as Record<string, Tool>;
+
+export const TOPUP_PACK: Pack = {
+  id: "topup",
+  name: "Quick Top-Up",
+  tokens: 15,
+  price: 5,
+  rate: "$0.33",
+  description: "Cover your next tool run",
+};
 
 export const PACKS: Pack[] = [
   {

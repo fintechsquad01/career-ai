@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -7,16 +8,48 @@ import {
   DollarSign,
 } from "lucide-react";
 
-export const metadata = {
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
+export const metadata: Metadata = {
   title:
     "Planning a Career Change? Get Your Free Career Analysis | AISkillScore",
   description:
     "53% of professionals plan to switch careers by end of 2026. Get a data-driven skills gap analysis, career roadmap, and salary benchmarks — free.",
+  alternates: { canonical: `${APP_URL}/lp/career-change` },
+  openGraph: {
+    title: "Planning a Career Change? Get Your Free Career Analysis",
+    description:
+      "Get a data-driven skills gap analysis, career roadmap, and salary benchmarks — free.",
+    url: `${APP_URL}/lp/career-change`,
+    type: "website",
+    siteName: "AISkillScore",
+    images: [{ url: `${APP_URL}/api/og`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Planning a Career Change? Get Your Free Career Analysis",
+    description:
+      "Get a data-driven skills gap analysis, career roadmap, and salary benchmarks — free.",
+    images: [`${APP_URL}/api/og`],
+  },
 };
 
 export default function CareerChangeLandingPage() {
+  const pageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Career Change Analysis",
+    description: "Data-driven career transition planning with skills gap analysis, roadmap, and salary benchmarks.",
+    url: `${APP_URL}/lp/career-change`,
+    publisher: { "@type": "Organization", name: "AISkillScore", url: APP_URL },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24">
         {/* Hero */}
         <div className="text-center space-y-6">
