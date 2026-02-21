@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { COMPARISONS } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
@@ -68,17 +69,20 @@ export default async function ComparePage() {
         }).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            How AISkillScore Compares
-          </h1>
-          <p className="text-lg text-gray-500">
-            11 AI career tools, pay per use — vs single-purpose monthly subscriptions.
-          </p>
-        </div>
+        <AnimateOnScroll>
+          <div className="text-center mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
+              How AISkillScore Compares
+            </h1>
+            <p className="text-lg text-gray-500">
+              11 AI career tools, pay per use — vs single-purpose monthly subscriptions.
+            </p>
+          </div>
+        </AnimateOnScroll>
 
         {/* Quick comparison table */}
-        <div className="glass-card overflow-x-auto mb-12">
+        <AnimateOnScroll>
+          <div className="glass-card overflow-x-auto mb-12">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200">
@@ -118,16 +122,20 @@ export default async function ComparePage() {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+        </AnimateOnScroll>
 
         {/* Individual comparison cards */}
-        <div className="space-y-6">
+        <AnimateOnScroll>
+          <div className="space-y-6 stagger-children">
           {COMPARISONS.map((comp) => (
             <Link
               key={comp.slug}
               href={`/compare/${comp.slug}`}
-              className="block glass-card p-6 sm:p-8 hover:shadow-md transition-shadow group"
+              className="block glass-card overflow-hidden hover:shadow-md transition-shadow group"
             >
+              <div className="h-0.5 bg-gradient-to-r from-blue-600 to-violet-600" />
+              <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                   AISkillScore vs {comp.competitor}
@@ -145,12 +153,16 @@ export default async function ComparePage() {
                   Full comparison <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
+              </div>
             </Link>
           ))}
-        </div>
+          </div>
+        </AnimateOnScroll>
 
         {/* CTA */}
-        <div className="mt-16 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
+        <div className="gradient-divider my-12" />
+        <AnimateOnScroll>
+          <div className="mt-16 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Try it free — no credit card required</h2>
           <p className="text-blue-100 mb-6">15 free tokens + AI Displacement Score always free.</p>
           <Link
@@ -159,7 +171,8 @@ export default async function ComparePage() {
           >
             Get Started Free <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
+          </div>
+        </AnimateOnScroll>
       </div>
     </>
   );

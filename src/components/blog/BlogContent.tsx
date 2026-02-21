@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { ArrowRight, Clock, Briefcase, Building2, GitCompareArrows } from "lucide-react";
 import type { TArticle } from "@/lib/content";
 
@@ -38,7 +39,7 @@ export function BlogContent({ articles }: BlogContentProps) {
   return (
     <>
       {/* Category pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-10 stagger-children">
         {FILTER_CATEGORIES.map((cat) => (
           <button
             key={cat}
@@ -80,15 +81,16 @@ export function BlogContent({ articles }: BlogContentProps) {
 
       {/* Article grid */}
       {rest.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14">
-          {rest.map((article) => (
+        <AnimateOnScroll>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14 stagger-children">
+            {rest.map((article) => (
             <Link
               key={article.slug}
               href={`/blog/${article.slug}`}
               className="surface-base surface-hover p-5 flex flex-col group"
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">{article.heroEmoji}</span>
+                <span className="text-2xl">{article.heroEmoji}</span>
                 <span className={CATEGORY_BADGES[article.category] || "ui-badge ui-badge-gray"}>
                   {article.category}
                 </span>
@@ -108,8 +110,9 @@ export function BlogContent({ articles }: BlogContentProps) {
                 ))}
               </div>
             </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        </AnimateOnScroll>
       )}
 
       {filtered.length === 0 && (
@@ -117,9 +120,11 @@ export function BlogContent({ articles }: BlogContentProps) {
       )}
 
       {/* Browse by topic */}
-      <div className="mb-14">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Browse by topic</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="gradient-divider mb-14" />
+      <AnimateOnScroll>
+        <div className="mb-14">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Browse by topic</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 stagger-children">
           <Link href="/roles" className="surface-base surface-hover p-4 flex items-center gap-3 group">
             <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
               <Briefcase className="w-4 h-4 text-indigo-600" />
@@ -148,16 +153,19 @@ export function BlogContent({ articles }: BlogContentProps) {
             </div>
           </Link>
         </div>
-      </div>
+        </div>
+      </AnimateOnScroll>
 
       {/* Bottom CTA */}
-      <div className="surface-hero p-8 text-center">
+      <AnimateOnScroll>
+        <div className="surface-hero p-8 text-center">
         <h2 className="text-xl font-bold text-gray-900 mb-2">Ready to take action?</h2>
         <p className="text-sm text-gray-500 mb-6">Try our free AI Displacement Score — no signup required.</p>
         <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
           Get Started Free <ArrowRight className="w-4 h-4" />
         </Link>
-      </div>
+        </div>
+      </AnimateOnScroll>
     </>
   );
 }

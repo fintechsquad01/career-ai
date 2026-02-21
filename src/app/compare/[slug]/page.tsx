@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, X, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { COMPARISONS, getComparison } from "@/lib/content";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -212,33 +213,40 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
 
         {/* FAQ */}
         {comp.faq && comp.faq.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-            <div className="space-y-4">
-              {comp.faq.map((item, i) => (
-                <details key={i} className="group glass-card">
-                  <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
-                    {item.q}
-                    <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
-                  </summary>
-                  <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
+          <>
+            <div className="gradient-divider mb-10" />
+            <AnimateOnScroll>
+              <div className="mb-10">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <div className="space-y-4 stagger-children">
+                  {comp.faq.map((item, i) => (
+                    <details key={i} className="group glass-card">
+                      <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                        {item.q}
+                        <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
+                      </summary>
+                      <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            </AnimateOnScroll>
+          </>
         )}
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">Switch from {comp.competitor} — Start free</h2>
-          <p className="text-blue-100 mb-6">15 tokens free + AI Displacement Score always free. No credit card.</p>
-          <Link
-            href="/auth"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
-          >
-            Try AISkillScore Free <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+        <AnimateOnScroll>
+          <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
+            <h2 className="text-2xl font-bold mb-2">Switch from {comp.competitor} — Start free</h2>
+            <p className="text-blue-100 mb-6">15 tokens free + AI Displacement Score always free. No credit card.</p>
+            <Link
+              href="/auth"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
+            >
+              Try AISkillScore Free <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </AnimateOnScroll>
       </div>
     </>
   );

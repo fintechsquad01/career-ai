@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import Link from "next/link";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { FAQ } from "@/components/shared/FAQ";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
@@ -136,49 +137,56 @@ export default async function FaqPage() {
 
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-3xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="mb-8" aria-label="Breadcrumb">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Home
-            </Link>
-          </nav>
+          <AnimateOnScroll>
+            {/* Breadcrumb */}
+            <nav className="mb-8" aria-label="Breadcrumb">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Home
+              </Link>
+            </nav>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-gray-500 mb-12 max-w-xl leading-relaxed">
-            Everything you need to know about AISkillScore&apos;s AI career
-            tools, token pricing, and getting started.
-          </p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-gray-500 mb-12 max-w-xl leading-relaxed">
+              Everything you need to know about AISkillScore&apos;s AI career
+              tools, token pricing, and getting started.
+            </p>
+          </AnimateOnScroll>
 
-          <div className="space-y-12">
-            {CATEGORIES.map((cat) => (
-              <section key={cat.label}>
-                <div className="mb-4">
-                  <h2 className="text-lg font-bold text-gray-900">
-                    {cat.label}
-                  </h2>
-                  <p className="text-sm text-gray-500">{cat.description}</p>
-                </div>
-                <FAQ items={cat.items} />
-              </section>
-            ))}
-          </div>
+          <AnimateOnScroll>
+            <div className="space-y-12 stagger-children">
+              {CATEGORIES.map((cat) => (
+                <section key={cat.label}>
+                  <div className="mb-4">
+                    <h2 className="text-lg font-bold text-gray-900">
+                      {cat.label}
+                    </h2>
+                    <p className="text-sm text-gray-500">{cat.description}</p>
+                  </div>
+                  <FAQ items={cat.items} />
+                </section>
+              ))}
+            </div>
+          </AnimateOnScroll>
 
           {/* Popular tools */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+          <AnimateOnScroll>
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Popular tools:</span>
             <Link href="/tools/displacement" className="ui-badge ui-badge-green hover:opacity-80 transition-opacity">AI Displacement Score — Free</Link>
             <Link href="/tools/jd_match" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Job Match Score — 5 tokens (~$1)</Link>
             <Link href="/tools/resume" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Resume Optimizer — 15 tokens (~$3)</Link>
-          </div>
+            </div>
+          </AnimateOnScroll>
 
           {/* Bottom CTA */}
-          <div className="mt-8 surface-card p-6 sm:p-8 text-center">
+          <AnimateOnScroll>
+            <div className="mt-8 surface-hero p-6 sm:p-8 text-center">
             <h3 className="text-lg font-bold text-gray-900 mb-2">
               Still have questions?
             </h3>
@@ -194,7 +202,8 @@ export default async function FaqPage() {
                 View Token Pricing
               </Link>
             </div>
-          </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
     </>

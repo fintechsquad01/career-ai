@@ -17,6 +17,7 @@ import { ROLES } from "@/lib/roles";
 import { INDUSTRY_PAGES } from "@/lib/industries";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { EVENTS } from "@/lib/analytics";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -136,22 +137,25 @@ export default async function ResourcesPage() {
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Hero */}
-          <div className="text-center mb-12">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
-              Career Resources
-            </h1>
-            <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              Guides, strategies, and intelligence to navigate your job search
-              with evidence — not guesswork.{" "}
-              <Link href="/tools" className="text-blue-600 hover:text-blue-700 font-medium">
-                Or explore all 11 AI tools
-              </Link>
-            </p>
-          </div>
+          <AnimateOnScroll>
+            <div className="text-center mb-12">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
+                Career Resources
+              </h1>
+              <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
+                Guides, strategies, and intelligence to navigate your job search
+                with evidence — not guesswork.{" "}
+                <Link href="/tools" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Or explore all 11 AI tools
+                </Link>
+              </p>
+            </div>
+          </AnimateOnScroll>
 
           {/* Category Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-            {CATEGORIES.map((cat, i) => (
+          <AnimateOnScroll>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12 stagger-children">
+              {CATEGORIES.map((cat, i) => (
               <TrackedLink
                 key={cat.href}
                 href={cat.href}
@@ -180,15 +184,17 @@ export default async function ResourcesPage() {
                 </span>
               </TrackedLink>
             ))}
-          </div>
+            </div>
+          </AnimateOnScroll>
 
           {/* Divider */}
           <div className="gradient-divider mb-12" />
 
           {/* Featured Guides */}
-          <div className="mb-16">
-            <h2 className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <AnimateOnScroll>
+            <div className="mb-16">
+              <h2 className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
               {featured.map((article, i) => (
                 <Link
                   key={article.slug}
@@ -196,7 +202,7 @@ export default async function ResourcesPage() {
                   className={`surface-base surface-hover p-5 flex flex-col ${i === 0 ? "sm:col-span-2 sm:row-span-1" : ""}`}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{article.heroEmoji}</span>
+                    <span className="text-2xl">{article.heroEmoji}</span>
                     <span className={CATEGORY_BADGES[article.category] || "ui-badge ui-badge-gray"}>
                       {article.category}
                     </span>
@@ -225,25 +231,28 @@ export default async function ResourcesPage() {
                 All {ARTICLES.length} articles <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </p>
-          </div>
+            </div>
+          </AnimateOnScroll>
 
           {/* Bottom CTA */}
-          <div className="surface-base p-6 sm:p-8 text-center">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Ready to start?
-            </h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Create a free account and get 15 tokens to try any AI career tool.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
-                Create Account — 15 Free Tokens (~$3 value)
-              </Link>
-              <Link href="/pricing" className="btn-secondary sm:w-auto px-6 inline-flex">
-                View Token Pricing
-              </Link>
+          <AnimateOnScroll>
+            <div className="surface-hero p-6 sm:p-8 text-center">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Ready to start?
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Create a free account and get 15 tokens to try any AI career tool.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
+                  Create Account — 15 Free Tokens (~$3 value)
+                </Link>
+                <Link href="/pricing" className="btn-secondary sm:w-auto px-6 inline-flex">
+                  View Token Pricing
+                </Link>
+              </div>
             </div>
-          </div>
+          </AnimateOnScroll>
         </div>
       </section>
     </>

@@ -8,6 +8,7 @@ import { EVENTS } from "@/lib/analytics";
 import { TrackedLink } from "@/components/shared/TrackedLink";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -262,33 +263,40 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {/* FAQ */}
             {article.faq && article.faq.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-                <div className="space-y-4">
-                  {article.faq.map((item, i) => (
-                    <details key={i} className="group surface-base">
-                      <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
-                        {item.q}
-                        <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
-                      </summary>
-                      <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
-                    </details>
-                  ))}
-                </div>
-              </div>
+              <>
+                <div className="gradient-divider mt-12" />
+                <AnimateOnScroll>
+                  <div className="mt-12">
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                    <div className="space-y-4 stagger-children">
+                      {article.faq.map((item, i) => (
+                        <details key={i} className="group surface-base">
+                          <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                            {item.q}
+                            <span className="ml-2 text-gray-400 group-open:rotate-45 transition-transform text-lg">+</span>
+                          </summary>
+                          <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                </AnimateOnScroll>
+              </>
             )}
 
             {/* Bottom CTA */}
-            <div className="mt-12 surface-hero p-8 text-center">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Take action on what you learned</h2>
-              <p className="text-sm text-gray-500 mb-6">Free AI Displacement Score + 15 tokens on signup. No credit card.</p>
-              <Link
-                href="/auth"
-                className="btn-primary sm:w-auto px-6 inline-flex"
-              >
-                Get Started Free <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+            <AnimateOnScroll>
+              <div className="mt-12 surface-hero p-8 text-center">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Take action on what you learned</h2>
+                <p className="text-sm text-gray-500 mb-6">Free AI Displacement Score + 15 tokens on signup. No credit card.</p>
+                <Link
+                  href="/auth"
+                  className="btn-primary sm:w-auto px-6 inline-flex"
+                >
+                  Get Started Free <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </AnimateOnScroll>
           </article>
 
           {/* Sidebar — desktop only */}

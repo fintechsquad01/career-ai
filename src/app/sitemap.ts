@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/constants";
-import { ARTICLES, COMPARISONS } from "@/lib/content";
+import { ARTICLES, COMPARISONS, ALTERNATIVES } from "@/lib/content";
 import { ROLES } from "@/lib/roles";
 import { INDUSTRY_PAGES } from "@/lib/industries";
 
@@ -83,6 +83,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...COMPARISONS.map((comp) => ({
       url: `${baseUrl}/compare/${comp.slug}`,
       lastModified: new Date(comp.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    // Alternatives pages — high commercial intent
+    ...ALTERNATIVES.map((alt) => ({
+      url: `${baseUrl}/alternatives/${alt.slug}`,
+      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

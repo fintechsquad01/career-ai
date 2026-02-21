@@ -915,3 +915,113 @@ export function getArticle(slug: string): TArticle | undefined {
 export function getComparison(slug: string): TComparison | undefined {
   return COMPARISONS.find((c) => c.slug === slug);
 }
+
+// ─── Alternatives Pages ─────────────────────────────────────────
+
+export interface TAlternative {
+  slug: string;
+  competitor: string;
+  competitorPrice: string;
+  title: string;
+  description: string;
+  comparisonSlug: string;
+  faq: { q: string; a: string }[];
+}
+
+export const ALTERNATIVES: TAlternative[] = [
+  {
+    slug: "jobscan-alternatives",
+    competitor: "Jobscan",
+    competitorPrice: "$49.95/month",
+    title: "Best Jobscan Alternatives in 2026",
+    description: "Looking for a Jobscan alternative? Compare the top AI resume and career tools that offer more features at a lower cost — no monthly subscription required.",
+    comparisonSlug: "aiskillscore-vs-jobscan",
+    faq: [
+      { q: "What is the best alternative to Jobscan in 2026?", a: "AISkillScore is the top Jobscan alternative, offering 11 AI career tools with evidence-based matching and pay-per-use pricing — no $49.95/month subscription." },
+      { q: "Why are people leaving Jobscan?", a: "Common complaints include keyword-only matching that doesn't translate to interviews, high monthly cost for limited features, and no voice preservation in resume optimization." },
+      { q: "Is there a free alternative to Jobscan?", a: "AISkillScore offers a free AI Displacement Score and 15 free tokens on signup — enough to try multiple premium tools at no cost." },
+    ],
+  },
+  {
+    slug: "teal-alternatives",
+    competitor: "Teal",
+    competitorPrice: "$29/month",
+    title: "Best Teal Alternatives in 2026",
+    description: "Comparing Teal alternatives? Find AI career tools that preserve your authentic voice while optimizing for ATS — without a monthly subscription.",
+    comparisonSlug: "aiskillscore-vs-teal",
+    faq: [
+      { q: "What is the best alternative to Teal in 2026?", a: "AISkillScore offers 11 AI tools that enhance rather than rewrite your resume, preserving your authentic voice while optimizing for ATS — all with pay-per-use pricing." },
+      { q: "Why are people switching from Teal?", a: "Users switch because Teal's templates destroy authentic voice, the resume builder is clunky, and $29/month adds up when you only need occasional optimization." },
+      { q: "Is there a cheaper alternative to Teal?", a: "AISkillScore has no monthly fee. Resume optimization costs about $2.93 per use, and you get 15 free tokens on signup to try tools before paying." },
+    ],
+  },
+  {
+    slug: "finalround-alternatives",
+    competitor: "FinalRound AI",
+    competitorPrice: "$149/month",
+    title: "Best FinalRound AI Alternatives in 2026",
+    description: "Looking for a FinalRound AI alternative? Get interview prep with follow-up coaching at a fraction of the cost — plus 10 more career tools.",
+    comparisonSlug: "aiskillscore-vs-finalround",
+    faq: [
+      { q: "What is the best alternative to FinalRound AI?", a: "AISkillScore provides interview prep with follow-up question coaching for about $1.56 per session — compared to FinalRound's $149/month — plus 10 additional career tools." },
+      { q: "Why is FinalRound AI so expensive?", a: "FinalRound charges $149/month for real-time interview copiloting. Most candidates only need preparation, not live assistance, making the cost hard to justify." },
+      { q: "Can I get interview prep without a subscription?", a: "Yes. AISkillScore's Interview Prep costs 8 tokens (about $1.56) with no subscription. It generates company-specific questions plus follow-up predictions." },
+    ],
+  },
+  {
+    slug: "resume-worded-alternatives",
+    competitor: "Resume Worded",
+    competitorPrice: "$24.99/month",
+    title: "Best Resume Worded Alternatives in 2026",
+    description: "Searching for a Resume Worded alternative? Find tools that enhance your resume without rewriting your voice — at pay-per-use pricing.",
+    comparisonSlug: "aiskillscore-vs-resume-worded",
+    faq: [
+      { q: "What is the best alternative to Resume Worded?", a: "AISkillScore enhances rather than rewrites your resume, preserving your authentic voice while optimizing for ATS. It costs about $2.93 per optimization with no monthly fee." },
+      { q: "Does Resume Worded rewrite your entire resume?", a: "Yes, Resume Worded tends to rewrite content, often losing your personal voice and story. AISkillScore takes the opposite approach — enhance, don't rewrite." },
+      { q: "Is AISkillScore cheaper than Resume Worded?", a: "Yes. Resume Worded costs $24.99/month. AISkillScore uses pay-per-use tokens — a full resume optimization costs about $2.93 with 15 free tokens on signup." },
+    ],
+  },
+  {
+    slug: "enhancv-alternatives",
+    competitor: "Enhancv",
+    competitorPrice: "$19.99/month",
+    title: "Best Enhancv Alternatives in 2026",
+    description: "Exploring Enhancv alternatives? Find AI-powered content optimization with 11 career tools — not just visual templates.",
+    comparisonSlug: "aiskillscore-vs-enhancv",
+    faq: [
+      { q: "What is the best alternative to Enhancv?", a: "For content optimization and ATS scoring, AISkillScore offers AI-powered analysis plus 10 additional career tools. For visual design, Enhancv's templates complement AISkillScore's optimized content." },
+      { q: "Is Enhancv good for ATS optimization?", a: "Enhancv focuses on visual design rather than ATS content optimization. For the best results, use AISkillScore to optimize your content, then apply any visual template." },
+      { q: "How much does AISkillScore cost compared to Enhancv?", a: "Enhancv costs $19.99/month. AISkillScore has no subscription — resume optimization costs about $2.93 per use with 15 free tokens on signup." },
+    ],
+  },
+  {
+    slug: "kickresume-alternatives",
+    competitor: "Kickresume",
+    competitorPrice: "$19/month",
+    title: "Best Kickresume Alternatives in 2026",
+    description: "Looking beyond Kickresume? Get AI-powered resume optimization that preserves your voice, plus 10 more career tools — no monthly subscription.",
+    comparisonSlug: "aiskillscore-vs-kickresume",
+    faq: [
+      { q: "What is the best alternative to Kickresume?", a: "AISkillScore offers AI-powered content optimization with voice preservation and 11 total career tools. It costs about $2.93 per optimization with no monthly fee." },
+      { q: "Is Kickresume good for ATS?", a: "Kickresume focuses on templates and basic AI writing. For deep ATS optimization with keyword matching and formatting analysis, AISkillScore provides more thorough results." },
+      { q: "Can I use AISkillScore without a subscription?", a: "Yes. AISkillScore is pay-per-use with tokens — no subscription required. You get 15 free tokens on signup plus 2 free tokens daily." },
+    ],
+  },
+  {
+    slug: "resumeio-alternatives",
+    competitor: "Resume.io",
+    competitorPrice: "$24.95/month",
+    title: "Best Resume.io Alternatives in 2026",
+    description: "Comparing Resume.io alternatives? Get AI-powered content optimization beyond templates — with evidence-based feedback and 11 career tools.",
+    comparisonSlug: "aiskillscore-vs-resumeio",
+    faq: [
+      { q: "What is the best alternative to Resume.io?", a: "AISkillScore provides AI-powered content optimization and evidence-based ATS feedback, plus 10 additional career tools beyond resume building — all with pay-per-use pricing." },
+      { q: "Is Resume.io worth the monthly cost?", a: "At $24.95/month, Resume.io focuses on template-based formatting. AISkillScore's pay-per-use model costs about $2.93 per optimization and includes deeper AI analysis." },
+      { q: "Can I get a free resume optimization?", a: "AISkillScore gives 15 free tokens on signup — enough for a full resume optimization at no cost. The AI Displacement Score is always free." },
+    ],
+  },
+];
+
+export function getAlternative(slug: string): TAlternative | undefined {
+  return ALTERNATIVES.find((a) => a.slug === slug);
+}

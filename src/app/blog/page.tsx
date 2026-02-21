@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ARTICLES } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
+import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { BlogContent } from "@/components/blog/BlogContent";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -79,14 +80,16 @@ export default async function BlogIndex() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
 
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-            AI Career Intelligence Blog
-          </h1>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            Direct, data-backed answers for navigating your career in the age of AI.
-          </p>
-        </div>
+        <AnimateOnScroll>
+          <div className="text-center mb-10">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
+              AI Career Intelligence Blog
+            </h1>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Direct, data-backed answers for navigating your career in the age of AI.
+            </p>
+          </div>
+        </AnimateOnScroll>
 
         <BlogContent articles={ARTICLES} />
       </div>

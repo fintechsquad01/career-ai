@@ -72,6 +72,14 @@ export default function CareerChangeLandingPage() {
           </p>
         </div>
 
+        {/* Key Takeaway — AI extraction target */}
+        <div className="mt-8 max-w-lg mx-auto surface-hero p-5">
+          <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Key Takeaway</p>
+          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+            53% of professionals plan career changes by 2026. AISkillScore provides free skills gap analysis, career roadmaps with timelines, and salary benchmarks — using a data-driven dual-track approach that builds both transition skills and income resilience.
+          </p>
+        </div>
+
         {/* CTA */}
         <div className="mt-10 text-center">
           <Link
