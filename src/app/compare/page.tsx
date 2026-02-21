@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { PainSolution } from "@/components/shared/PainSolution";
+import { CompetitorAnchor } from "@/components/shared/CompetitorAnchor";
+import { ATS_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { COMPARISONS } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
@@ -80,6 +84,10 @@ export default async function ComparePage() {
           </div>
         </AnimateOnScroll>
 
+        <div className="mb-10">
+          <CompetitorAnchor />
+        </div>
+
         {/* Quick comparison table */}
         <AnimateOnScroll>
           <div className="glass-card overflow-x-auto mb-12">
@@ -125,6 +133,14 @@ export default async function ComparePage() {
           </div>
         </AnimateOnScroll>
 
+        <div className="mb-10">
+          <PainSolution
+            pain={PAIN_SOLUTIONS[1].pain}
+            solution={PAIN_SOLUTIONS[1].solution}
+            source={PAIN_SOLUTIONS[1].source}
+          />
+        </div>
+
         {/* Individual comparison cards */}
         <AnimateOnScroll>
           <div className="space-y-6 stagger-children">
@@ -158,6 +174,10 @@ export default async function ComparePage() {
           ))}
           </div>
         </AnimateOnScroll>
+
+        <div className="mt-10 mb-6">
+          <StatBlock stats={ATS_STATS.slice(0, 3)} />
+        </div>
 
         {/* CTA */}
         <div className="gradient-divider my-12" />

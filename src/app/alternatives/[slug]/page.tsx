@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { CompetitorAnchor } from "@/components/shared/CompetitorAnchor";
+import { PainSolution } from "@/components/shared/PainSolution";
+import { PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { ALTERNATIVES, getAlternative, getComparison } from "@/lib/content";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -117,6 +120,9 @@ export default async function AlternativesPage({ params }: AlternativesPageProps
                 {alt.description}
               </p>
             </div>
+            <div className="mt-4">
+              <CompetitorAnchor competitors={[alt.competitor]} />
+            </div>
           </header>
         </AnimateOnScroll>
 
@@ -200,6 +206,15 @@ export default async function AlternativesPage({ params }: AlternativesPageProps
             </AnimateOnScroll>
           </>
         )}
+
+        <AnimateOnScroll>
+          <div className="mb-8">
+            <PainSolution
+              pain={PAIN_SOLUTIONS[5].pain}
+              solution={PAIN_SOLUTIONS[5].solution}
+            />
+          </div>
+        </AnimateOnScroll>
 
         <div className="gradient-divider mb-10" />
 

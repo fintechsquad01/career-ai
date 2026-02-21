@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ShieldAlert, Zap, Clock, Shield } from "lucide-react";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { ExpertQuote } from "@/components/shared/ExpertQuote";
+import { AI_DISPLACEMENT_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -72,6 +75,10 @@ export default function AiRiskLandingPage() {
           </p>
         </div>
 
+        <div className="mt-8 max-w-lg mx-auto">
+          <StatBlock stats={AI_DISPLACEMENT_STATS.slice(0, 3)} />
+        </div>
+
         {/* CTA */}
         <div className="mt-10 text-center">
           <Link
@@ -125,6 +132,14 @@ export default function AiRiskLandingPage() {
             <strong>Gemini 2.5 Pro AI</strong>. Not a quiz — a real analysis of
             your specific role.
           </p>
+        </div>
+
+        <div className="mt-8 max-w-lg mx-auto">
+          <ExpertQuote
+            quote={RECRUITER_QUOTES[3].quote}
+            attribution={RECRUITER_QUOTES[3].attribution}
+            role={RECRUITER_QUOTES[3].role}
+          />
         </div>
 
         {/* Secondary CTA */}

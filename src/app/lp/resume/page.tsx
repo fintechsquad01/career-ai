@@ -7,6 +7,9 @@ import {
   Mic,
   GitCompareArrows,
 } from "lucide-react";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { ExpertQuote } from "@/components/shared/ExpertQuote";
+import { ATS_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -79,6 +82,10 @@ export default function ResumeLandingPage() {
           </p>
         </div>
 
+        <div className="mt-8 max-w-lg mx-auto">
+          <StatBlock stats={ATS_STATS.slice(0, 3)} />
+        </div>
+
         {/* CTA */}
         <div className="mt-10 text-center">
           <Link
@@ -149,6 +156,14 @@ export default function ResumeLandingPage() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 max-w-lg mx-auto">
+          <ExpertQuote
+            quote={RECRUITER_QUOTES[2].quote}
+            attribution={RECRUITER_QUOTES[2].attribution}
+            role={RECRUITER_QUOTES[2].role}
+          />
         </div>
 
         {/* Secondary CTA */}

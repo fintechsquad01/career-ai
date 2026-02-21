@@ -7,6 +7,8 @@ import {
   Map,
   DollarSign,
 } from "lucide-react";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { CAREER_CHANGE_STATS } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -80,6 +82,10 @@ export default function CareerChangeLandingPage() {
           </p>
         </div>
 
+        <div className="mt-8 max-w-lg mx-auto">
+          <StatBlock stats={CAREER_CHANGE_STATS} />
+        </div>
+
         {/* CTA */}
         <div className="mt-10 text-center">
           <Link
@@ -127,19 +133,33 @@ export default function CareerChangeLandingPage() {
         </div>
 
         {/* Dual-track approach */}
-        <div className="mt-12 bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center space-y-3">
-          <h3 className="font-semibold text-blue-900 text-sm">
-            The dual-track approach that works
-          </h3>
-          <p className="text-sm text-blue-800 max-w-md mx-auto">
-            The best career changers don&apos;t quit and hope. They build a{" "}
-            <strong>transition track</strong> (new skills + network) alongside
-            an <strong>income track</strong> (current role + side projects) until
-            the switch is safe.
-          </p>
-          <p className="text-xs text-blue-600">
-            Our analysis maps both tracks for your specific situation.
-          </p>
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="surface-base overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-blue-600 to-blue-400" />
+            <div className="p-5">
+              <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Track A</p>
+              <h3 className="text-sm font-bold text-gray-900 mb-3">Become the Top Candidate</h3>
+              <ul className="space-y-1.5 text-xs text-gray-600">
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-blue-400 shrink-0" />Resume optimization with voice preservation</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-blue-400 shrink-0" />Evidence-based job matching</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-blue-400 shrink-0" />Follow-up interview coaching</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-blue-400 shrink-0" />Salary negotiation with leverage</li>
+              </ul>
+            </div>
+          </div>
+          <div className="surface-base overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-violet-600 to-violet-400" />
+            <div className="p-5">
+              <p className="text-xs font-bold text-violet-600 uppercase tracking-wider mb-2">Track B</p>
+              <h3 className="text-sm font-bold text-gray-900 mb-3">Build Income Resilience</h3>
+              <ul className="space-y-1.5 text-xs text-gray-600">
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-violet-400 shrink-0" />Freelance opportunity discovery</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-violet-400 shrink-0" />Entrepreneurship assessment</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-violet-400 shrink-0" />LinkedIn monetization strategy</li>
+                <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-violet-400 shrink-0" />Monetizable skills identification</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         {/* Secondary CTA */}

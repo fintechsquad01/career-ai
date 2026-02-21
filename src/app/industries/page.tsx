@@ -5,6 +5,8 @@ import { INDUSTRY_PAGES } from "@/lib/industries";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { AI_DISPLACEMENT_STATS } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -88,6 +90,10 @@ export default async function IndustriesIndexPage() {
             </div>
           </div>
         </AnimateOnScroll>
+
+          <div className="mb-10">
+            <StatBlock stats={AI_DISPLACEMENT_STATS.slice(0, 3)} />
+          </div>
 
         <AnimateOnScroll>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">

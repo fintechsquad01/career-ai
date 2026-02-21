@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { ExpertQuote } from "@/components/shared/ExpertQuote";
+import { ATS_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
 import { ArrowRight, Clock, Briefcase, Building2, GitCompareArrows } from "lucide-react";
 import type { TArticle } from "@/lib/content";
 
@@ -79,6 +82,10 @@ export function BlogContent({ articles }: BlogContentProps) {
         </Link>
       )}
 
+      <div className="mb-10">
+        <StatBlock stats={ATS_STATS.slice(0, 3)} />
+      </div>
+
       {/* Article grid */}
       {rest.length > 0 && (
         <AnimateOnScroll>
@@ -118,6 +125,14 @@ export function BlogContent({ articles }: BlogContentProps) {
       {filtered.length === 0 && (
         <p className="text-center text-sm text-gray-400 py-8">No articles in this category yet.</p>
       )}
+
+      <div className="mb-10">
+        <ExpertQuote
+          quote={RECRUITER_QUOTES[0].quote}
+          attribution={RECRUITER_QUOTES[0].attribution}
+          role={RECRUITER_QUOTES[0].role}
+        />
+      </div>
 
       {/* Browse by topic */}
       <div className="gradient-divider mb-14" />

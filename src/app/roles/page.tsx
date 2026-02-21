@@ -5,6 +5,9 @@ import { ROLES } from "@/lib/roles";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { ExpertQuote } from "@/components/shared/ExpertQuote";
+import { ATS_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -97,6 +100,10 @@ export default async function RolesIndexPage() {
           </div>
         </AnimateOnScroll>
 
+          <div className="mb-10">
+            <StatBlock stats={ATS_STATS.slice(0, 3)} />
+          </div>
+
         {Object.entries(grouped).map(([industry, roles]) => (
           <AnimateOnScroll key={industry}>
             <div className="mb-10">
@@ -122,6 +129,14 @@ export default async function RolesIndexPage() {
             </div>
           </AnimateOnScroll>
         ))}
+
+          <div className="my-10">
+            <ExpertQuote
+              quote={RECRUITER_QUOTES[0].quote}
+              attribution={RECRUITER_QUOTES[0].attribution}
+              role={RECRUITER_QUOTES[0].role}
+            />
+          </div>
 
         {/* Cross-link */}
         <div className="mt-4 text-center">

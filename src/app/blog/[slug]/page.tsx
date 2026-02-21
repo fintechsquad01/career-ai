@@ -9,6 +9,9 @@ import { TrackedLink } from "@/components/shared/TrackedLink";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { ExpertQuote } from "@/components/shared/ExpertQuote";
+import { getStatsByTag, getQuoteByTopic } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -113,6 +116,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const relatedTools = article.relatedTools
     .map((id) => TOOLS_MAP[id])
     .filter(Boolean);
+
+  const primaryTag = article.tags[0] ?? "resume";
+  const contextStats = getStatsByTag(primaryTag);
+  const contextQuote = getQuoteByTopic(primaryTag);
 
   const content = (
     <>
@@ -260,6 +267,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </div>
               </div>
             )}
+
+            <div className="mt-10 mb-4 space-y-6">
+              <StatBlock stats={contextStats} />
+              <ExpertQuote
+                quote={contextQuote.quote}
+                attribution={contextQuote.attribution}
+                role={contextQuote.role}
+              />
+            </div>
 
             {/* FAQ */}
             {article.faq && article.faq.length > 0 && (

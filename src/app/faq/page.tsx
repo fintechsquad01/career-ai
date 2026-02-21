@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import Link from "next/link";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { PainSolution } from "@/components/shared/PainSolution";
+import { ATS_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { FAQ } from "@/components/shared/FAQ";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
@@ -158,18 +162,33 @@ export default async function FaqPage() {
             </p>
           </AnimateOnScroll>
 
+          <div className="mb-10">
+            <StatBlock stats={ATS_STATS.slice(0, 3)} />
+          </div>
+
           <AnimateOnScroll>
             <div className="space-y-12 stagger-children">
-              {CATEGORIES.map((cat) => (
-                <section key={cat.label}>
-                  <div className="mb-4">
-                    <h2 className="text-lg font-bold text-gray-900">
-                      {cat.label}
-                    </h2>
-                    <p className="text-sm text-gray-500">{cat.description}</p>
-                  </div>
-                  <FAQ items={cat.items} />
-                </section>
+              {CATEGORIES.map((cat, index) => (
+                <Fragment key={cat.label}>
+                  {index === 2 && (
+                    <div className="my-8">
+                      <PainSolution
+                        pain={PAIN_SOLUTIONS[1].pain}
+                        solution={PAIN_SOLUTIONS[1].solution}
+                        source={PAIN_SOLUTIONS[1].source}
+                      />
+                    </div>
+                  )}
+                  <section key={cat.label}>
+                    <div className="mb-4">
+                      <h2 className="text-lg font-bold text-gray-900">
+                        {cat.label}
+                      </h2>
+                      <p className="text-sm text-gray-500">{cat.description}</p>
+                    </div>
+                    <FAQ items={cat.items} />
+                  </section>
+                </Fragment>
               ))}
             </div>
           </AnimateOnScroll>

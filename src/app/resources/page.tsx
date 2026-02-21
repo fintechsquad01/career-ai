@@ -18,6 +18,10 @@ import { INDUSTRY_PAGES } from "@/lib/industries";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { EVENTS } from "@/lib/analytics";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
+import { StatBlock } from "@/components/shared/StatBlock";
+import { PainSolution } from "@/components/shared/PainSolution";
+import { CompetitorAnchor } from "@/components/shared/CompetitorAnchor";
+import { ATS_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -152,6 +156,10 @@ export default async function ResourcesPage() {
             </div>
           </AnimateOnScroll>
 
+          <div className="mb-10">
+            <StatBlock stats={ATS_STATS.slice(0, 3)} />
+          </div>
+
           {/* Category Cards */}
           <AnimateOnScroll>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12 stagger-children">
@@ -233,6 +241,18 @@ export default async function ResourcesPage() {
             </p>
             </div>
           </AnimateOnScroll>
+
+          <div className="mb-10">
+            <PainSolution
+              pain={PAIN_SOLUTIONS[0].pain}
+              solution={PAIN_SOLUTIONS[0].solution}
+              source={PAIN_SOLUTIONS[0].source}
+            />
+          </div>
+
+          <div className="mb-10">
+            <CompetitorAnchor />
+          </div>
 
           {/* Bottom CTA */}
           <AnimateOnScroll>
