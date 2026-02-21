@@ -111,12 +111,12 @@ export function Sidebar() {
                 strokeWidth={active ? 2 : 1.5}
               />
               {!sidebarCollapsed && (
-                <div className="min-w-0 w-full">
-                  <span className={`text-sm ${active ? "font-semibold" : "font-medium"}`}>
+                <div className="min-w-0 w-full flex items-center justify-between gap-1">
+                  <span className={`text-sm truncate ${active ? "font-semibold" : "font-medium"}`}>
                     {item.label}
                   </span>
                   {getJourneyBadge(item.key) && (
-                    <span className={`ui-badge mt-1 inline-flex ${getJourneyBadge(item.key) === "Ready" ? "ui-badge-green" : getJourneyBadge(item.key) === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
+                    <span className={`ui-badge shrink-0 ${getJourneyBadge(item.key) === "Ready" ? "ui-badge-green" : getJourneyBadge(item.key) === "In progress" ? "ui-badge-blue" : "ui-badge-amber"}`}>
                       {getJourneyBadge(item.key)}
                     </span>
                   )}

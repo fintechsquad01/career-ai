@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 import Link from "next/link";
 import {
   BookOpen,
@@ -89,7 +91,14 @@ const CATEGORIES = [
   },
 ];
 
-export default function ResourcesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ResourcesPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -111,8 +120,8 @@ export default function ResourcesPage() {
 
   const featured = ARTICLES.slice(0, 3);
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
@@ -139,12 +148,12 @@ export default function ResourcesPage() {
           </div>
 
           {/* Category Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
-            {CATEGORIES.map((cat) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            {CATEGORIES.map((cat, i) => (
               <Link
                 key={cat.href}
                 href={cat.href}
-                className="surface-base surface-hover p-5 flex flex-col gap-3 group"
+                className={`${i < 2 ? "surface-hero" : "surface-base"} surface-hover p-5 flex flex-col gap-3 group`}
               >
                 <div className="flex items-start justify-between">
                   <div className={`w-10 h-10 rounded-xl ${cat.iconBg} flex items-center justify-center`}>
@@ -169,6 +178,9 @@ export default function ResourcesPage() {
             ))}
           </div>
 
+          {/* Divider */}
+          <div className="gradient-divider mb-12" />
+
           {/* Featured Guides */}
           <div className="mb-16">
             <h2 className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
@@ -180,6 +192,7 @@ export default function ResourcesPage() {
                   className={`surface-base surface-hover p-5 flex flex-col ${i === 0 ? "sm:col-span-2 sm:row-span-1" : ""}`}
                 >
                   <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg">{article.heroEmoji}</span>
                     <span className={CATEGORY_BADGES[article.category] || "ui-badge ui-badge-gray"}>
                       {article.category}
                     </span>
@@ -229,6 +242,16 @@ export default function ResourcesPage() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
+
+  if (user) {
+    return (
+      <AppShell isLoggedIn={true} profile={profile}>
+        {content}
+      </AppShell>
+    );
+  }
+
+  return <div className="min-h-screen bg-[#F5F5F7]">{content}</div>;
 }

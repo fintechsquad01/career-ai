@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { INDUSTRY_PAGES } from "@/lib/industries";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -16,7 +18,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function IndustriesIndexPage() {
+export const dynamic = "force-dynamic";
+
+export default async function IndustriesIndexPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
+
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -34,8 +44,8 @@ export default function IndustriesIndexPage() {
     },
   };
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
@@ -83,6 +93,11 @@ export default function IndustriesIndexPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
+
+  if (user) {
+    return <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>;
+  }
+  return <div className="min-h-screen bg-[#F5F5F7]">{content}</div>;
 }

@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Clock, Calendar, User, Tag } from "lucide-react"
 import { notFound } from "next/navigation";
 import { ARTICLES, getArticle } from "@/lib/content";
 import { TOOLS_MAP } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -54,6 +56,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = getArticle(slug);
   if (!article) notFound();
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -91,8 +99,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     .map((id) => TOOLS_MAP[id])
     .filter(Boolean);
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }}
@@ -298,6 +306,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </aside>
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  return user ? (
+    <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>
+  ) : (
+    <div className="min-h-screen bg-[#F5F5F7]">{content}</div>
   );
 }

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 import Link from "next/link";
 import { FAQ } from "@/components/shared/FAQ";
 import { FAQ_ITEMS } from "@/lib/constants";
@@ -18,6 +20,8 @@ export const metadata: Metadata = {
     url: `${APP_URL}/faq`,
   },
 };
+
+export const dynamic = "force-dynamic";
 
 interface FaqCategory {
   label: string;
@@ -89,7 +93,13 @@ const CATEGORIES: FaqCategory[] = [
   },
 ];
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -109,8 +119,8 @@ export default function FaqPage() {
     })),
   };
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -187,6 +197,11 @@ export default function FaqPage() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
+
+  if (user) {
+    return <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>;
+  }
+  return <div className="min-h-screen bg-[#F5F5F7]">{content}</div>;
 }

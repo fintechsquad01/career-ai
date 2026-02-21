@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, Tag, Briefcase, Building2, GitCompareArrows } from "lucide-react";
 import { ARTICLES } from "@/lib/content";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -29,7 +31,14 @@ const CATEGORY_BADGES: Record<string, string> = {
   news: "ui-badge ui-badge-gray",
 };
 
-export default function BlogIndex() {
+export const dynamic = "force-dynamic";
+
+export default async function BlogIndex() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
   const blogCollectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -73,8 +82,8 @@ export default function BlogIndex() {
 
   const [hero, ...rest] = ARTICLES;
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogCollectionJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogItemListJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
@@ -207,6 +216,12 @@ export default function BlogIndex() {
           </Link>
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  return user ? (
+    <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>
+  ) : (
+    <div className="min-h-screen bg-[#F5F5F7]">{content}</div>
   );
 }
