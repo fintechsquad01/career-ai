@@ -78,6 +78,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [savingNotifs, setSavingNotifs] = useState(false);
 
   // Career profile fields
+  const [resumeFilePath, setResumeFilePath] = useState(careerProfile?.resume_file_path || "");
   const [jobTitle, setJobTitle] = useState(careerProfile?.title || "");
   const [company, setCompany] = useState(careerProfile?.company || "");
   const [industry, setIndustry] = useState(careerProfile?.industry || "");
@@ -96,6 +97,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   const [passwordError, setPasswordError] = useState("");
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const resumeInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -104,6 +106,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
   }, [profile?.full_name, profile?.avatar_url]);
 
   useEffect(() => {
+    setResumeFilePath(careerProfile?.resume_file_path || "");
     setJobTitle(careerProfile?.title || "");
     setCompany(careerProfile?.company || "");
     setIndustry(careerProfile?.industry || "");
@@ -280,31 +283,31 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
       }
       setParsing(false);
 
-      // Upsert career_profile
-      const { data: existing } = await supabase.from("career_profiles").select("id").eq("user_id", user.id).single();
-      const updateData = {
-        resume_file_path: filePath,
-        resume_text: resumeText,
-        source: "upload" as const,
-        parsed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      // Atomic upsert career_profile
+      const { data: saved, error: upsertError } = await supabase
+        .from("career_profiles")
+        .upsert({
+          user_id: user.id,
+          resume_file_path: filePath,
+          resume_text: resumeText,
+          source: "upload" as const,
+          parsed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "user_id" })
+        .select()
+        .single();
+      if (upsertError) throw new Error(`Failed to save resume: ${upsertError.message}`);
+      if (saved) useAppStore.getState().setCareerProfile(saved as CareerProfile);
 
-      if (existing) {
-        const { data: updated } = await supabase.from("career_profiles").update(updateData).eq("user_id", user.id).select().single();
-        if (updated) useAppStore.getState().setCareerProfile(updated as CareerProfile);
-      } else {
-        const { data: inserted } = await supabase.from("career_profiles").insert({ user_id: user.id, ...updateData }).select().single();
-        if (inserted) useAppStore.getState().setCareerProfile(inserted as CareerProfile);
-      }
-
+      setResumeFilePath(filePath);
       setUploadSuccess(true);
       toast(parsedWithWarning || !resumeText ? "Resume uploaded with extraction warning" : "Resume uploaded and parsed!");
-      setTimeout(() => setUploadSuccess(false), 3000);
+      setTimeout(() => setUploadSuccess(false), 5000);
+      if (resumeInputRef.current) resumeInputRef.current.value = "";
       router.refresh();
     } catch (err) {
       console.error("Upload error:", err);
-      toast("Failed to upload resume. Please try again.");
+      toast(err instanceof Error ? err.message : "Failed to upload resume. Please try again.");
     } finally {
       setUploading(false);
       setParsing(false);
@@ -510,22 +513,30 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
             {/* Resume Upload with Parsing */}
             <div>
               <span className="block text-sm font-medium text-gray-700 mb-1">Resume</span>
-              {careerProfile?.resume_text || careerProfile?.resume_file_path ? (
+              {careerProfile?.resume_text || resumeFilePath ? (
                 <div className="space-y-2">
                   <div className={`flex items-center justify-between p-3 rounded-xl ${
-                    uploadWarning || !careerProfile.resume_text
-                      ? "bg-amber-50 border border-amber-200"
-                      : "bg-green-50 border border-green-200"
+                    uploadSuccess
+                      ? "bg-green-50 border border-green-200"
+                      : uploadWarning || !careerProfile?.resume_text
+                        ? "bg-amber-50 border border-amber-200"
+                        : "bg-green-50 border border-green-200"
                   }`}>
                     <div>
-                      <span className={`text-sm ${uploadWarning || !careerProfile.resume_text ? "text-amber-800" : "text-green-800"}`}>
+                      <span className={`text-sm ${
+                        uploadSuccess
+                          ? "text-green-800"
+                          : uploadWarning || !careerProfile?.resume_text
+                            ? "text-amber-800"
+                            : "text-green-800"
+                      }`}>
                         {uploadSuccess
-                          ? "Resume uploaded!"
-                          : careerProfile.resume_text
+                          ? "Resume saved successfully"
+                          : careerProfile?.resume_text
                             ? "Resume uploaded & parsed"
                             : "Resume uploaded (paste text needed)"}
                       </span>
-                      {careerProfile.parsed_at && (
+                      {careerProfile?.parsed_at && !uploadSuccess && (
                         <p className={`text-[10px] mt-0.5 ${uploadWarning || !careerProfile.resume_text ? "text-amber-700" : "text-green-600"}`}>
                           Parsed {new Date(careerProfile.parsed_at).toLocaleDateString()}
                         </p>
@@ -541,6 +552,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                         "Replace"
                       )}
                       <input
+                        ref={resumeInputRef}
                         type="file"
                         accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                         className="sr-only"
@@ -550,7 +562,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
                       />
                     </label>
                   </div>
-                  {(uploadWarning || !careerProfile.resume_text) && (
+                  {!uploadSuccess && (uploadWarning || !careerProfile?.resume_text) && (
                     <p className="text-xs text-amber-700">
                       {uploadWarning || "Text extraction was incomplete. Paste your full resume text directly for reliable analysis."}
                     </p>
@@ -559,6 +571,7 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
               ) : (
                 <label className="block border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
                   <input
+                    ref={resumeInputRef}
                     type="file"
                     accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                     className="sr-only"
