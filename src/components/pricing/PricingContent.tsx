@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X, Loader2 } from "lucide-react";
 import { PACKS, TOOLS, FAQ_ITEMS, CANONICAL_COPY, formatTokenAmountLabel } from "@/lib/constants";
+import { trackPurchase, track, EVENTS } from "@/lib/analytics";
+import { TrackedLink } from "@/components/shared/TrackedLink";
 import { FAQ } from "@/components/shared/FAQ";
 
 const PRICING_FAQ_QUESTIONS = [
@@ -19,6 +21,7 @@ const PRICING_FAQS = FAQ_ITEMS.filter((item) =>
 
 function TokenCalculator() {
   const [jobApps, setJobApps] = useState(5);
+  const calculatorTracked = useRef(false);
   const tokensNeeded = useMemo(() => jobApps * 36, [jobApps]);
   const recommendedPack = tokensNeeded <= 50 ? "Starter" : tokensNeeded <= 200 ? "Pro" : tokensNeeded <= 500 ? "Power" : "Lifetime";
 
@@ -35,7 +38,13 @@ function TokenCalculator() {
             min={1}
             max={30}
             value={jobApps}
-            onChange={(e) => setJobApps(Number(e.target.value))}
+            onChange={(e) => {
+              setJobApps(Number(e.target.value));
+              if (!calculatorTracked.current) {
+                calculatorTracked.current = true;
+                track(EVENTS.PRICING_CALCULATOR_USED, { initial_value: 5, new_value: Number(e.target.value) });
+              }
+            }}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
           />
           <div className="flex justify-between text-xs text-gray-400 mt-1">
@@ -92,6 +101,8 @@ export function PricingContent() {
         throw new Error(data.error || data.message || "Purchase failed. Please try again.");
       }
       if (data.url) {
+        const pack = PACKS.find((p) => p.id === packId);
+        if (pack) trackPurchase({ id: pack.id, name: pack.name, price: pack.price, tokens: pack.tokens });
         window.location.href = data.url;
       }
     } catch (err) {
@@ -127,7 +138,10 @@ export function PricingContent() {
             <button
               key={pack.id}
               type="button"
-              onClick={() => setSelectedPackId(pack.id)}
+              onClick={() => {
+                setSelectedPackId(pack.id);
+                track(EVENTS.PRICING_PACK_SELECTED, { pack_id: pack.id });
+              }}
               className={`text-left surface-base p-6 transition-all ${
                 selectedPackId === pack.id
                   ? "border-blue-600 shadow-lg shadow-blue-600/10 ring-1 ring-blue-600"
@@ -184,9 +198,9 @@ export function PricingContent() {
         <p className="text-sm text-gray-600 mb-4 max-w-lg mx-auto">
           Lifetime Deal — $119 once for 120 tokens/month forever. Break even in 3 months vs Pro packs.
         </p>
-        <Link href="/lifetime" className="btn-primary sm:w-auto px-6 inline-flex">
+        <TrackedLink href="/lifetime" event={EVENTS.PRICING_LIFETIME_CLICKED} className="btn-primary sm:w-auto px-6 inline-flex">
           Learn More <ArrowRight className="w-4 h-4" />
-        </Link>
+        </TrackedLink>
       </div>
 
       {/* Compact Competitor Summary — 3 rows only */}
@@ -223,9 +237,9 @@ export function PricingContent() {
           </table>
         </div>
         <p className="text-center">
-          <Link href="/compare" className="text-xs text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1">
+          <TrackedLink href="/compare" event={EVENTS.PRICING_COMPARE_CLICKED} className="text-xs text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1">
             See detailed comparisons <ArrowRight className="w-3 h-3" />
-          </Link>
+          </TrackedLink>
         </p>
       </div>
 

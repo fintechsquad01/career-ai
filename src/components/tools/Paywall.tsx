@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, Coins, ArrowRight, Users } from "lucide-react";
 import { PACKS, CANONICAL_COPY } from "@/lib/constants";
+import { trackPurchase } from "@/lib/analytics";
 import { safeLocalStorage } from "@/lib/safe-storage";
 
 const TOOL_UNLOCK_BULLETS: Record<string, string[]> = {
@@ -83,6 +84,8 @@ export function Paywall({
       });
       const data = await res.json();
       if (data.url) {
+        const pack = PACKS.find((p) => p.id === packId);
+        if (pack) trackPurchase({ id: pack.id, name: pack.name, price: pack.price, tokens: pack.tokens });
         window.location.href = data.url;
       }
     } catch (error) {

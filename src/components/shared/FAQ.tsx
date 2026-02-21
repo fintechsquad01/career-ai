@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { EVENTS, track } from "@/lib/analytics";
 
 interface FAQItem {
   q: string;
@@ -28,7 +29,10 @@ export function FAQ({ items }: FAQProps) {
             itemType="https://schema.org/Question"
           >
             <button
-              onClick={() => setOpenIndex(isOpen ? null : i)}
+              onClick={() => {
+                if (!isOpen) track(EVENTS.FAQ_ITEM_EXPANDED, { question: item.q });
+                setOpenIndex(isOpen ? null : i);
+              }}
               className="w-full flex items-center justify-between px-5 py-4 text-left min-h-[44px]"
               aria-expanded={isOpen}
             >

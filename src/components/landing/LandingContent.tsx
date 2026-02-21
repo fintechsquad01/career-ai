@@ -160,6 +160,29 @@ export function LandingContent() {
     });
   }, []);
 
+  useEffect(() => {
+    const fired = new Set<string>();
+    const markers = document.querySelectorAll("[data-scroll-depth]");
+    if (!markers.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const depth = (entry.target as HTMLElement).dataset.scrollDepth;
+          if (depth && !fired.has(depth)) {
+            fired.add(depth);
+            track(EVENTS.LANDING_SCROLL_DEPTH, { depth });
+          }
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    markers.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const handleCtaClick = () => {
     quickFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
@@ -316,7 +339,7 @@ export function LandingContent() {
             </div>
           </AnimateOnScroll>
 
-          <div className="gradient-divider max-w-4xl mx-auto" />
+          <div className="gradient-divider max-w-4xl mx-auto" data-scroll-depth="25" />
 
           {/* See What You'll Get — interactive preview */}
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-warm-gradient">
@@ -452,7 +475,7 @@ export function LandingContent() {
             </div>
           </AnimateOnScroll>
 
-          <div className="gradient-divider max-w-4xl mx-auto" />
+          <div className="gradient-divider max-w-4xl mx-auto" data-scroll-depth="50" />
 
           {/* Why AISkillScore — pain-point-first comparison */}
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
@@ -498,7 +521,7 @@ export function LandingContent() {
             </div>
           </AnimateOnScroll>
 
-          <div className="gradient-divider max-w-4xl mx-auto" />
+          <div className="gradient-divider max-w-4xl mx-auto" data-scroll-depth="75" />
 
           {/* Your Career Journey — compact stepper */}
           <AnimateOnScroll as="section" className="py-16 sm:py-20 px-4 bg-white">
@@ -599,7 +622,7 @@ export function LandingContent() {
             </div>
           </AnimateOnScroll>
 
-          <div className="gradient-divider max-w-4xl mx-auto" />
+          <div className="gradient-divider max-w-4xl mx-auto" data-scroll-depth="100" />
 
           {/* FAQ — top 5 with link to full /faq page */}
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">

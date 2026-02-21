@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import Link from "next/link";
+import { TrackedLink } from "@/components/shared/TrackedLink";
 import {
   BookOpen,
   Briefcase,
@@ -15,6 +16,7 @@ import { ARTICLES, COMPARISONS } from "@/lib/content";
 import { ROLES } from "@/lib/roles";
 import { INDUSTRY_PAGES } from "@/lib/industries";
 import { FAQ_ITEMS } from "@/lib/constants";
+import { EVENTS } from "@/lib/analytics";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -150,9 +152,11 @@ export default async function ResourcesPage() {
           {/* Category Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
             {CATEGORIES.map((cat, i) => (
-              <Link
+              <TrackedLink
                 key={cat.href}
                 href={cat.href}
+                event={EVENTS.RESOURCE_CATEGORY_CLICKED}
+                properties={{ category: cat.title, href: cat.href }}
                 className={`${i < 2 ? "surface-hero" : "surface-base"} surface-hover p-5 flex flex-col gap-3 group`}
               >
                 <div className="flex items-start justify-between">
@@ -174,7 +178,7 @@ export default async function ResourcesPage() {
                 <span className="text-xs text-blue-600 font-medium inline-flex items-center gap-1 mt-auto">
                   Browse <ArrowRight className="w-3 h-3" />
                 </span>
-              </Link>
+              </TrackedLink>
             ))}
           </div>
 

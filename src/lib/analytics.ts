@@ -20,6 +20,8 @@ const GA4_EVENT_MAP: Record<string, string> = {
   landing_analyze: "generate_lead",
   share_created: "share",
   affiliate_click: "select_promotion",
+  pricing_pack_selected: "select_item",
+  content_tool_clicked: "select_content",
 };
 
 let posthogInstance: {
@@ -94,6 +96,31 @@ export function setUserProperties(properties: Properties) {
   }
 }
 
+/** Track a token pack purchase with GA4 e-commerce parameters */
+export function trackPurchase(pack: { id: string; name: string; price: number; tokens: number }) {
+  posthogInstance?.capture("token_purchase", {
+    pack_id: pack.id,
+    pack_name: pack.name,
+    price: pack.price,
+    tokens: pack.tokens,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    // GA4 e-commerce requires items[] which doesn't fit the flat Properties type
+    (window.gtag as (...args: unknown[]) => void)("event", "purchase", {
+      currency: "USD",
+      value: pack.price,
+      items: [{
+        item_id: pack.id,
+        item_name: `${pack.name} Pack`,
+        price: pack.price,
+        quantity: 1,
+        item_category: "token_pack",
+      }],
+    });
+  }
+}
+
 /** Reset analytics on logout */
 export function resetAnalytics() {
   posthogInstance?.reset();
@@ -137,6 +164,18 @@ export const EVENTS = {
   RUN_TOOL_RESULT_META_MISSING_FALLBACK: "run_tool_result_meta_missing_fallback",
   RUN_TOOL_OUTPUT_COMPLETENESS_CHECKED: "run_tool_output_completeness_checked",
   SAFARI_STORAGE_FALLBACK: "safari_storage_fallback",
+  // Content engagement
+  FAQ_ITEM_EXPANDED: "faq_item_expanded",
+  RESOURCE_CATEGORY_CLICKED: "resource_category_clicked",
+  CONTENT_TOOL_CLICKED: "content_tool_clicked",
+  CONTENT_RELATED_CLICKED: "content_related_clicked",
+  // Pricing funnel
+  PRICING_CALCULATOR_USED: "pricing_calculator_used",
+  PRICING_PACK_SELECTED: "pricing_pack_selected",
+  PRICING_LIFETIME_CLICKED: "pricing_lifetime_clicked",
+  PRICING_COMPARE_CLICKED: "pricing_compare_clicked",
+  // Scroll depth
+  LANDING_SCROLL_DEPTH: "landing_scroll_depth",
 } as const;
 
 /**

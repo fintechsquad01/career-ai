@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Clock, Calendar, User, Tag } from "lucide-react"
 import { notFound } from "next/navigation";
 import { ARTICLES, getArticle } from "@/lib/content";
 import { TOOLS_MAP } from "@/lib/constants";
+import { EVENTS } from "@/lib/analytics";
+import { TrackedLink } from "@/components/shared/TrackedLink";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 
@@ -197,9 +199,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Try these tools</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {relatedTools.map((tool) => (
-                    <Link
+                    <TrackedLink
                       key={tool.id}
                       href={`/tools/${tool.id}`}
+                      event={EVENTS.CONTENT_TOOL_CLICKED}
+                      properties={{ from_article: slug, to_tool: tool.id }}
                       className="surface-base surface-hover p-4 group"
                     >
                       <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
@@ -209,7 +213,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                       <span className={`ui-badge mt-2 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
                         {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
                       </span>
-                    </Link>
+                    </TrackedLink>
                   ))}
                 </div>
               </div>
@@ -221,16 +225,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Continue reading</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {article.relatedLinks.map((link) => (
-                    <Link
+                    <TrackedLink
                       key={link.href}
                       href={link.href}
+                      event={EVENTS.CONTENT_RELATED_CLICKED}
+                      properties={{ from_article: slug, to_href: link.href }}
                       className="surface-base surface-hover p-4 flex items-center justify-between group"
                     >
                       <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
                         {link.label}
                       </span>
                       <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 shrink-0" />
-                    </Link>
+                    </TrackedLink>
                   ))}
                 </div>
               </div>
