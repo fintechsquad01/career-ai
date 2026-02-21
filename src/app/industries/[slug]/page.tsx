@@ -64,8 +64,9 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
-      { "@type": "ListItem", position: 2, name: "Industries", item: `${APP_URL}/industries` },
-      { "@type": "ListItem", position: 3, name: industry.name, item: `${APP_URL}/industries/${slug}` },
+      { "@type": "ListItem", position: 2, name: "Resources", item: `${APP_URL}/resources` },
+      { "@type": "ListItem", position: 3, name: "Industries", item: `${APP_URL}/industries` },
+      { "@type": "ListItem", position: 4, name: industry.name, item: `${APP_URL}/industries/${slug}` },
     ],
   };
 
@@ -95,6 +96,8 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
         <div>
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600">Home</Link>
+          <span>/</span>
+          <Link href="/resources" className="hover:text-gray-600">Resources</Link>
           <span>/</span>
           <Link href="/industries" className="hover:text-gray-600">Industries</Link>
           <span>/</span>

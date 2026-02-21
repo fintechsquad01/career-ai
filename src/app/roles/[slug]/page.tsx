@@ -64,8 +64,9 @@ export default async function RolePage({ params }: RolePageProps) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
-      { "@type": "ListItem", position: 2, name: "Roles", item: `${APP_URL}/roles` },
-      { "@type": "ListItem", position: 3, name: role.title, item: `${APP_URL}/roles/${slug}` },
+      { "@type": "ListItem", position: 2, name: "Resources", item: `${APP_URL}/resources` },
+      { "@type": "ListItem", position: 3, name: "Roles", item: `${APP_URL}/roles` },
+      { "@type": "ListItem", position: 4, name: role.title, item: `${APP_URL}/roles/${slug}` },
     ],
   };
 
@@ -95,6 +96,8 @@ export default async function RolePage({ params }: RolePageProps) {
         <div>
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600">Home</Link>
+          <span>/</span>
+          <Link href="/resources" className="hover:text-gray-600">Resources</Link>
           <span>/</span>
           <Link href="/roles" className="hover:text-gray-600">Roles</Link>
           <span>/</span>

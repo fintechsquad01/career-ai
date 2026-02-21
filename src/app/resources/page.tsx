@@ -142,6 +142,17 @@ export default async function ResourcesPage() {
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-4xl mx-auto">
           <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Resources" }]} />
+          <div className="flex flex-wrap gap-2 mb-6">
+            {["Career Guides", "Role Guides", "Industry Intel", "Comparisons", "FAQ"].map((label) => (
+              <a
+                key={label}
+                href={`#${label.toLowerCase().replace(/\s+/g, "-")}`}
+                className="ui-badge ui-badge-gray hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
           {/* Hero */}
           <AnimateOnScroll>
             <div className="text-center mb-12">
@@ -164,7 +175,7 @@ export default async function ResourcesPage() {
 
           {/* Category Cards */}
           <AnimateOnScroll>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12 stagger-children">
+            <div id="career-guides" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12 stagger-children">
               {CATEGORIES.map((cat, i) => (
               <TrackedLink
                 key={cat.href}
@@ -203,7 +214,7 @@ export default async function ResourcesPage() {
           {/* Featured Guides */}
           <AnimateOnScroll>
             <div className="mb-16">
-              <h2 className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
+              <h2 id="role-guides" className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
               {featured.map((article, i) => (
                 <Link

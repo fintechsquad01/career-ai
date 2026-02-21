@@ -38,6 +38,10 @@ export default function AiRiskLandingPage() {
     description: "Free AI displacement risk assessment powered by ILO 2025 research data.",
     url: `${APP_URL}/lp/ai-risk`,
     publisher: { "@type": "Organization", name: "AISkillScore", url: APP_URL },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".key-takeaway"],
+    },
   };
 
   return (
@@ -70,7 +74,7 @@ export default function AiRiskLandingPage() {
         {/* Key Takeaway — AI extraction target */}
         <div className="mt-8 max-w-lg mx-auto surface-hero p-5">
           <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Key Takeaway</p>
-          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+          <p className="text-sm text-gray-800 leading-relaxed font-medium key-takeaway">
             1 in 4 workers globally face AI displacement risk. AISkillScore&apos;s free AI Displacement Score analyzes your specific role against ILO 2025 research data in 30 seconds — breaking down which tasks are at risk and providing a personalized action plan.
           </p>
         </div>

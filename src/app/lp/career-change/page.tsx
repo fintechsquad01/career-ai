@@ -44,6 +44,10 @@ export default function CareerChangeLandingPage() {
     description: "Data-driven career transition planning with skills gap analysis, roadmap, and salary benchmarks.",
     url: `${APP_URL}/lp/career-change`,
     publisher: { "@type": "Organization", name: "AISkillScore", url: APP_URL },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".key-takeaway"],
+    },
   };
 
   return (
@@ -77,7 +81,7 @@ export default function CareerChangeLandingPage() {
         {/* Key Takeaway — AI extraction target */}
         <div className="mt-8 max-w-lg mx-auto surface-hero p-5">
           <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Key Takeaway</p>
-          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+          <p className="text-sm text-gray-800 leading-relaxed font-medium key-takeaway">
             53% of professionals plan career changes by 2026. AISkillScore provides free skills gap analysis, career roadmaps with timelines, and salary benchmarks — using a data-driven dual-track approach that builds both transition skills and income resilience.
           </p>
         </div>

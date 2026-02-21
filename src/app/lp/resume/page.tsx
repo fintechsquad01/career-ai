@@ -45,6 +45,10 @@ export default function ResumeLandingPage() {
     description: "AI-powered resume optimization that passes ATS screening while preserving your authentic voice.",
     url: `${APP_URL}/lp/resume`,
     publisher: { "@type": "Organization", name: "AISkillScore", url: APP_URL },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".key-takeaway"],
+    },
   };
 
   return (
@@ -77,7 +81,7 @@ export default function ResumeLandingPage() {
         {/* Key Takeaway — AI extraction target */}
         <div className="mt-8 max-w-lg mx-auto surface-hero p-5">
           <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Key Takeaway</p>
-          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+          <p className="text-sm text-gray-800 leading-relaxed font-medium key-takeaway">
             43% of ATS rejections stem from formatting errors, not qualifications. AISkillScore&apos;s Resume Optimizer fixes parsing issues and optimizes keywords while preserving your authentic voice — starting free with 15 tokens, no subscription required.
           </p>
         </div>

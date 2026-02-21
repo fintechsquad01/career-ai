@@ -47,6 +47,15 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - [Salary Negotiation Scripts](https://aiskillscore.com/blog/salary-negotiation-scripts-2026): 76% of professionals who negotiate earn $5,000-$10,000 more. Word-for-word scripts included.
 - [Skills Gap Analysis for Career Changers](https://aiskillscore.com/blog/skills-gap-analysis-career-change): 68% of career changers underestimate their transferable skills. Bridge role strategy explained.
 - [LinkedIn Optimization Guide](https://aiskillscore.com/blog/linkedin-optimization-recruiter-algorithm): How LinkedIn's 2026 recruiter algorithm ranks profiles, and how to optimize for maximum visibility.
+- [Token Guide for Job Applications](https://aiskillscore.com/blog/how-many-tokens-for-job-applications): Complete breakdown of token costs per tool, mission workflow budgets, and pay-per-use vs subscription math.
+- [Freelance Income from Career Skills](https://aiskillscore.com/blog/freelance-income-career-skills): How to build freelance income using skills you already have — the dual-track approach.
+- [ATS Resume Changes 2026](https://aiskillscore.com/blog/ats-resume-changes-2026): 78% of ATS platforms now use ML semantic matching. What changed and how to adapt.
+
+## Role Guides
+
+- 18 role-specific career guides covering: Product Marketing Manager, Software Engineer, Data Analyst, Finance-to-Fintech PM, Healthcare Operations, Creative Director, Marketing Manager, UX Designer, Project Manager, Sales Representative, DevOps Engineer, Frontend Developer, Junior Data Scientist, Technical Writer, Business Analyst, Security Analyst, UX Researcher, and more.
+- Each guide includes: hiring checklist, recommended tool sequence, pain points, and FAQ.
+- Browse all: [Role Guides](https://aiskillscore.com/roles)
 
 ## Comparisons
 
@@ -55,6 +64,7 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - [AISkillScore vs FinalRound AI](https://aiskillscore.com/compare/aiskillscore-vs-finalround): Interview prep from $0.23 vs $149/month, plus 10 more tools.
 - [AISkillScore vs Kickresume](https://aiskillscore.com/compare/aiskillscore-vs-kickresume): AI analysis + 10 tools vs template-based resume builder at $19/month.
 - [AISkillScore vs Resume.io](https://aiskillscore.com/compare/aiskillscore-vs-resumeio): Strategy-focused AI optimization vs design-focused templates at $24.95/month.
+- [AISkillScore vs Zety](https://aiskillscore.com/compare/aiskillscore-vs-zety): AI-powered content optimization vs template-based builder at $23/month.
 
 ## Alternatives Pages
 
@@ -65,6 +75,7 @@ AISkillScore helps job seekers and career changers understand exactly where they
 - [Best Enhancv Alternatives 2026](https://aiskillscore.com/alternatives/enhancv-alternatives): AI content optimization beyond visual templates.
 - [Best Kickresume Alternatives 2026](https://aiskillscore.com/alternatives/kickresume-alternatives): AI-powered optimization with 11 career tools.
 - [Best Resume.io Alternatives 2026](https://aiskillscore.com/alternatives/resumeio-alternatives): Evidence-based feedback beyond template formatting.
+- [Best Zety Alternatives 2026](https://aiskillscore.com/alternatives/zety-alternatives): AI content optimization beyond template-based builders.
 
 ## Landing Pages
 
