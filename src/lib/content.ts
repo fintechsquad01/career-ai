@@ -285,6 +285,95 @@ export const ARTICLES: TArticle[] = [
       },
     ],
   },
+  {
+    slug: "ai-replace-software-engineers-2026",
+    title: "Will AI Replace Software Engineers? 2026 Task-Level Analysis",
+    description:
+      "AI code generation tools are transforming software development. This task-level analysis shows which engineering tasks face automation and which remain uniquely human — with evidence from ILO 2025 data.",
+    publishedAt: "2026-02-21",
+    updatedAt: "2026-02-21",
+    author: "AISkillScore Research",
+    category: "research" as const,
+    readTime: "9 min read",
+    tags: ["AI displacement", "software engineering", "automation", "career risk"],
+    heroEmoji: "🤖",
+    relatedLinks: [
+      { label: "Will AI Replace My Job?", href: "/blog/will-ai-replace-my-job" },
+      { label: "Skills Gap Analysis Guide", href: "/blog/skills-gap-analysis-career-change" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Jobscan", href: "/compare/aiskillscore-vs-jobscan" },
+      { label: "DevOps Engineer Guide", href: "/roles/devops-engineer" },
+      { label: "Frontend Developer Guide", href: "/roles/frontend-developer" },
+    ],
+    relatedTools: ["displacement", "skills_gap", "interview"],
+    tldr: "AI will not replace software engineers wholesale, but it will replace specific tasks within the role. According to ILO 2025 research, code generation, boilerplate writing, and routine testing face high automation. Architecture design, system debugging, cross-team coordination, and product judgment remain uniquely human. Engineers who understand which of their daily tasks are automatable — and invest in the human-essential skills — will thrive. Run the free AI Displacement Score to see your personal task-level risk.",
+    sections: [
+      {
+        heading: "What does the data actually say about AI and software jobs?",
+        body: "The headlines are alarming — 'AI will replace developers by 2027' — but the data tells a more nuanced story.\n\nAccording to ILO 2025 research, 1 in 4 workers globally have roles exposed to generative AI. For software engineers specifically, exposure is high but replacement risk depends entirely on which tasks dominate your daily work.\n\nKey distinction: exposure means your role involves tasks AI can assist with. It does not mean your entire job disappears. Most engineering roles will be transformed — some tasks automated, new tasks created, and the remaining human tasks becoming more valuable.\n\nThe engineers at highest risk are those whose work is primarily:\n- Writing boilerplate code from specifications\n- Translating designs into standard implementations\n- Running routine test suites and documenting results\n- Generating standard CRUD operations\n\nThe engineers at lowest risk perform:\n- System architecture decisions across distributed services\n- Debugging complex production incidents under time pressure\n- Cross-team technical leadership and mentoring\n- Translating ambiguous business requirements into technical approach\n- Making trade-off decisions with incomplete information",
+      },
+      {
+        heading: "Which specific engineering tasks are most automatable?",
+        body: "Let's break this down by concrete daily tasks, not abstract categories.\n\n**High automation risk (AI handles 70-90% today):**\n- Writing unit tests from function signatures\n- Generating boilerplate CRUD endpoints\n- Converting Figma designs to component code\n- Writing documentation from code\n- Translating between programming languages\n- Creating database migrations from schema changes\n\n**Medium automation risk (AI assists, human guides):**\n- Code review for style and common bugs\n- Writing integration tests\n- Refactoring for performance\n- Debugging straightforward errors from stack traces\n- Implementing well-defined features from detailed specs\n\n**Low automation risk (human judgment essential):**\n- Choosing between architectural approaches\n- Debugging distributed system failures\n- Negotiating technical trade-offs with product teams\n- Making build-vs-buy decisions\n- Mentoring junior engineers\n- Incident response and postmortem analysis\n- Designing systems for unknown future requirements\n\nThe pattern: AI excels at tasks with clear inputs, defined outputs, and existing patterns. Humans remain essential when judgment, context, and stakeholder navigation matter.",
+      },
+      {
+        heading: "How should software engineers adapt their skills?",
+        body: "The winning strategy is not to compete with AI at code generation — it's to become the engineer who knows when and how to deploy AI effectively.\n\n**Invest in these skills (high future value):**\n1. **System design** — AI can write functions but cannot architect systems. Understanding distributed systems, scaling patterns, and failure modes is increasingly valuable.\n2. **AI tool orchestration** — Engineers who can evaluate, configure, and integrate AI tools into development workflows become force multipliers.\n3. **Technical communication** — As AI handles more routine code, the ability to explain technical decisions to non-technical stakeholders becomes the bottleneck.\n4. **Debugging complex systems** — AI can fix simple bugs but struggles with cross-service, environment-specific, or timing-dependent issues.\n5. **Product engineering judgment** — Understanding what to build, not just how to build it.\n\n**De-prioritize (AI is catching up fast):**\n- Memorizing syntax for multiple languages\n- Manual test writing for standard code paths\n- Spending hours on boilerplate scaffolding\n- Documentation that describes what code does (AI reads code directly)\n\nUse AISkillScore's Skills Gap Analysis (8 tokens) to map your current skill distribution against these future-value categories.",
+      },
+      {
+        heading: "What do hiring managers actually look for in 2026?",
+        body: "We analyzed hiring patterns across technology companies and found a clear shift in what gets candidates past the interview stage.\n\n**What's gained importance:**\n- Demonstrated system design thinking (even for mid-level roles)\n- Experience with AI-assisted development workflows\n- Evidence of cross-functional collaboration\n- Production incident handling examples\n- Ability to articulate trade-off decisions\n\n**What's lost importance:**\n- Raw algorithm speed in coding interviews (many companies are moving away from LeetCode-style tests)\n- Language-specific syntax knowledge\n- Framework depth without breadth\n- Years of experience as a primary signal\n\nThe interview itself is changing. More companies use take-home projects with AI tools explicitly allowed, system design rounds, and behavioral questions about technical judgment. AISkillScore's Interview Prep (8 tokens) generates questions, predicted follow-ups, and coached answers specific to your target company and role.",
+      },
+      {
+        heading: "Your action plan: what to do this week",
+        body: "Here's a concrete 4-step plan to protect and grow your engineering career:\n\n**Step 1: Measure your actual risk (today, free)**\nRun AISkillScore's free AI Displacement Score. It analyzes your specific role and daily tasks against ILO 2025 data. You'll see exactly which tasks are automatable and which are safe. No signup required.\n\n**Step 2: Match against your target role (this week)**\nUse Job Match Score (5 tokens) with a job posting for your next desired role. See which skills the market values most — and where your resume has evidence gaps.\n\n**Step 3: Close your top 2 gaps (this month)**\nUse Skills Gap Analysis (8 tokens) to get a week-by-week learning plan for your highest-priority gaps. Focus on the gaps that overlap with human-essential skills.\n\n**Step 4: Prepare your positioning (before your next interview)**\nUse Resume Optimizer (15 tokens) to rewrite your experience in terms of judgment, design decisions, and business impact — not just technical output. Then use Interview Prep (8 tokens) to practice follow-up questions.\n\nTotal investment: under $8 for the complete analysis. Compare that to a career coach at $200-500/session.",
+      },
+    ],
+  },
+  {
+    slug: "get-interviews-little-experience",
+    title: "How to Get Interviews With Little Experience: An Evidence-Based Guide",
+    description:
+      "Low callbacks aren't about your qualifications — 43% of ATS rejections are formatting errors. This guide shows early-career professionals how to get past automated screening and land interviews using evidence-based strategies.",
+    publishedAt: "2026-02-21",
+    updatedAt: "2026-02-21",
+    author: "AISkillScore Research",
+    category: "guides" as const,
+    readTime: "8 min read",
+    tags: ["entry level", "resume optimization", "ATS", "job applications", "early career"],
+    heroEmoji: "🎯",
+    relatedLinks: [
+      { label: "ATS Resume Optimization Guide", href: "/blog/resume-ats-optimization-guide" },
+      { label: "AI Interview Prep Guide", href: "/blog/ai-interview-prep-guide" },
+      { label: "AISkillScore Pricing", href: "/pricing" },
+      { label: "Compare with Enhancv", href: "/compare/aiskillscore-vs-enhancv" },
+      { label: "Junior Data Scientist Guide", href: "/roles/junior-data-scientist" },
+    ],
+    relatedTools: ["resume", "jd_match", "cover_letter"],
+    tldr: "Getting interviews with limited experience is not about having the perfect background — it's about presenting what you have in the format hiring systems and recruiters expect. 43% of ATS rejections come from formatting errors, not missing qualifications. The key strategies: match your resume keywords to each specific job posting, quantify every achievement (even academic ones), use the exact language from the job description, and write a cover letter that tells a story. AISkillScore's Job Match Score (5 tokens) shows exactly where your resume matches and misses for each job.",
+    sections: [
+      {
+        heading: "Why you're not getting callbacks (it's probably not your experience)",
+        body: "The most common assumption early-career job seekers make is: 'I'm not getting interviews because I don't have enough experience.' The data suggests otherwise.\n\n**The real reasons applications fail:**\n\n1. **ATS formatting errors (43% of rejections)** — Your resume never reaches a human. Tables, columns, graphics, and non-standard section headers cause parsing failures. Source: JobScan research.\n\n2. **Keyword mismatch (35% of filtered applications)** — ATS systems compare your resume text against the job posting. If your resume uses 'customer service' but the posting says 'client relations,' the system may not make the connection.\n\n3. **Generic applications (22% lower callback rate)** — Sending the same resume to every job. Recruiters can tell within 6 seconds whether you tailored your application.\n\n4. **Missing quantification** — 'Helped with social media' vs 'Grew Instagram engagement by 40% over 3 months.' Recruiters need evidence, even from internships or projects.\n\nNotice what's NOT on this list: 'not enough years of experience.' Many entry-level postings that say '2-3 years' will interview candidates with strong project work and clear potential. The filter is how you present, not what you have.",
+      },
+      {
+        heading: "How to pass ATS with a thin resume",
+        body: "ATS compliance is the single highest-ROI fix for entry-level job seekers. Here's exactly what to do:\n\n**Format rules (non-negotiable):**\n- Use a single-column layout with standard section headers: Summary, Experience, Education, Skills, Projects\n- No tables, no columns, no text boxes, no graphics\n- Use a standard font (Arial, Calibri, Times New Roman) at 10-12pt\n- Save as .docx (not PDF) unless the posting specifically requests PDF\n- Include your full name, email, phone, and LinkedIn URL at the top\n\n**Content rules for thin experience:**\n- Include a Summary section (3 lines) that mirrors the language of your target role\n- List relevant coursework under Education with outcome descriptions\n- Create a Projects section for academic, personal, and volunteer work\n- Treat internships as full Experience entries with bullet points\n- Add a Skills section matching the exact terms from job postings\n\n**Keyword strategy:**\nFor each application, read the job posting and identify 8-10 key terms. These often include: specific tools (Excel, Python, HubSpot), methodologies (Agile, A/B testing), and soft skills (collaboration, problem-solving). Work these exact terms into your resume naturally.\n\nAISkillScore's Resume Optimizer (15 tokens, about $2.93) rewrites your resume for ATS compliance while preserving your voice. Your first run is free with signup tokens.",
+      },
+      {
+        heading: "How to quantify achievements when you have limited experience",
+        body: "Every experience can be quantified. The formula: Action + Metric + Context.\n\n**Academic projects:**\n- Before: 'Worked on a marketing project'\n- After: 'Led a 4-person team to develop a go-to-market strategy for a campus startup, resulting in 200+ pre-launch signups in 2 weeks'\n\n**Internships:**\n- Before: 'Helped with data analysis'\n- After: 'Analyzed 3 months of customer feedback data (500+ responses) and identified 3 product improvement opportunities, 2 of which were implemented'\n\n**Volunteer work:**\n- Before: 'Volunteered at food bank'\n- After: 'Coordinated weekly food distribution for 150+ families, reducing wait times by 25% through process redesign'\n\n**Part-time jobs:**\n- Before: 'Cashier at retail store'\n- After: 'Processed 100+ transactions daily with 99.8% accuracy, trained 3 new team members on POS system'\n\n**Personal projects:**\n- Before: 'Built a website'\n- After: 'Designed and deployed a personal portfolio site using React and Tailwind CSS, achieving 95+ Lighthouse performance score'\n\nThe metric doesn't have to be dramatic. Any number — team size, timeline, quantity, percentage — transforms a vague claim into evidence a recruiter can evaluate.",
+      },
+      {
+        heading: "The cover letter strategy that gets read",
+        body: "Most cover letters are ignored. But for entry-level roles, a great cover letter can compensate for resume gaps.\n\n**What hiring managers skip (immediately):**\n- 'I am writing to express my interest in...'\n- Generic company praise ('I've always admired your company...')\n- Rehashing your resume bullet points\n- Any cover letter longer than 250 words\n\n**What actually works:**\n\n**The Story-Hook-Evidence format:**\n\n1. **Story (2 sentences):** Open with a specific moment that connects you to the role. 'When I automated my university's event registration process and cut manual entry by 80%, I realized I wanted to build tools that solve real operational problems.'\n\n2. **Hook (1 sentence):** Connect your story to their specific need. 'Your posting for a Junior Operations Analyst describes exactly this kind of work.'\n\n3. **Evidence (3-4 sentences):** Give 2-3 specific examples from your experience that match their requirements. Use numbers.\n\n4. **Close (1 sentence):** 'I'd welcome the chance to discuss how my [specific skill] can contribute to [specific team/project].'\n\nAISkillScore's Cover Letter tool (8 tokens) generates role-specific cover letters from your resume and the job posting. It uses the story-hook-evidence format and pulls real details from your background.",
+      },
+      {
+        heading: "Your 5-day action plan to start getting interviews",
+        body: "Here's a concrete schedule to transform your job search:\n\n**Day 1: Audit your resume format**\nRun your resume through AISkillScore's Job Match Score (5 tokens) with a target job posting. See exactly where you match, where you miss, and whether your formatting passes ATS.\n\n**Day 2: Rewrite your resume**\nUse Resume Optimizer (15 tokens) to get an ATS-optimized version. Focus on quantifying every bullet point using the Action + Metric + Context formula.\n\n**Day 3: Build your keyword bank**\nCollect 5 job postings for your target role. Identify the 15-20 terms that appear in at least 3 of them. These are your priority keywords.\n\n**Day 4: Write your template cover letter**\nCreate one cover letter using the Story-Hook-Evidence format. For each application, customize the Hook and 1-2 Evidence points. AISkillScore's Cover Letter tool (8 tokens) can generate this automatically from each job posting.\n\n**Day 5: Apply to 5 jobs with tailored materials**\nFor each application: customize your resume keywords, adjust your cover letter hook, and submit. Track which versions get callbacks.\n\nTotal cost: under $5 for the complete Job Match Score + Resume Optimizer stack. Your first tools are free with the 15 signup tokens. Compare that to resume writing services at $200-500.\n\nThe difference between sending 50 generic applications and 10 targeted ones is dramatic. Quality over quantity wins at every career level — but especially at the start.",
+      },
+    ],
+  },
 ];
 
 // ─── Comparison Pages ────────────────────────────────────────────

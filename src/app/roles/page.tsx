@@ -48,12 +48,19 @@ export default function RolesIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-3 tracking-tight">
-          Career Role Guides
-        </h1>
-        <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-          Find your role. See what hiring teams look for. Get an AI-powered action plan to close your gaps and land the job.
-        </p>
+        <div className="surface-hero p-6 sm:p-8 mb-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">
+            Career Role Guides
+          </h1>
+          <p className="text-sm text-gray-600 leading-relaxed max-w-2xl mb-3">
+            Role-specific career strategies with tailored hiring checklists, tool sequences, and FAQ.
+            Find your exact role and get an AI-powered action plan.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <span className="ui-badge ui-badge-blue">{ROLES.length} roles</span>
+            <span className="ui-badge ui-badge-gray">{Object.keys(grouped).length} industries</span>
+          </div>
+        </div>
 
         {Object.entries(grouped).map(([industry, roles]) => (
           <div key={industry} className="mb-10">
@@ -78,6 +85,16 @@ export default function RolesIndexPage() {
             </div>
           </div>
         ))}
+
+        {/* Cross-link */}
+        <div className="mt-4 text-center">
+          <Link
+            href="/industries"
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+          >
+            Browse by industry instead <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -41,12 +41,18 @@ export default function IndustriesIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-3 tracking-tight">
-          Industry Career Guides
-        </h1>
-        <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-          See how AI is reshaping your industry. Get a displacement risk profile, then follow an evidence-based action plan for your next role.
-        </p>
+        <div className="surface-hero p-6 sm:p-8 mb-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">
+            Industry Career Guides
+          </h1>
+          <p className="text-sm text-gray-600 leading-relaxed max-w-2xl mb-3">
+            Industry-by-industry AI impact analysis. See displacement risk, recommended tools, and top roles for your sector.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <span className="ui-badge ui-badge-blue">{INDUSTRY_PAGES.length} industries</span>
+            <span className="ui-badge ui-badge-gray">AI displacement context</span>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {INDUSTRY_PAGES.map((ind) => (
@@ -65,6 +71,16 @@ export default function IndustriesIndexPage() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Cross-link */}
+        <div className="mt-8 text-center">
+          <Link
+            href="/roles"
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+          >
+            Browse by role instead <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
     </div>

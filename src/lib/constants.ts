@@ -403,6 +403,18 @@ export const FAQ_ITEMS = [
     q: "Is AISkillScore better than hiring a career coach?",
     a: "Career coaches typically charge $200-500 per session. AISkillScore provides evidence-based analysis for a fraction of the cost: Resume Optimizer is about $2.93, Job Match Score is about $0.98, and Interview Prep is about $1.56. The difference: coaches offer personal rapport, while AISkillScore offers data-driven consistency and instant results. Many users run AISkillScore first to diagnose their gaps, then use coaching sessions more effectively.",
   },
+  {
+    q: "What should I do if AI can automate my job tasks?",
+    a: "First, identify which specific tasks are at risk — not your entire role. Run AISkillScore's free AI Displacement Score for a task-level breakdown. Then invest in the tasks AI cannot replace: judgment calls, cross-team coordination, stakeholder management, and creative problem-solving. Use Skills Gap Analysis to map your adaptation path. Most roles will be transformed, not eliminated — the professionals who understand their risk profile and adapt proactively will be the most valuable.",
+  },
+  {
+    q: "How do I write a resume with no professional experience?",
+    a: "Focus on quantifiable outcomes from academic projects, internships, volunteer work, and personal projects. Use the formula: Action + Metric + Context. For example, 'Led a 4-person team to develop a go-to-market strategy, resulting in 200+ pre-launch signups.' AISkillScore's Resume Optimizer (15 tokens) rewrites limited experience in the outcome-driven language hiring managers expect, and Job Match Score (5 tokens) shows exactly which parts of your background match a specific job posting.",
+  },
+  {
+    q: "What is the difference between ATS optimization and keyword stuffing?",
+    a: "ATS optimization means using the exact terms from a job posting naturally in your resume so automated screening systems recognize your qualifications. Keyword stuffing means repeating terms unnaturally or hiding them in white text — this gets flagged by modern ATS and recruiter review. AISkillScore's Resume Optimizer ensures keyword alignment while preserving natural, professional language. The result should read well to both machines and humans.",
+  },
 ];
 
 export const MISSION_ACTIONS = [

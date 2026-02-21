@@ -36,6 +36,59 @@ const CATEGORY_BADGES: Record<string, string> = {
   news: "ui-badge ui-badge-gray",
 };
 
+const CATEGORIES = [
+  {
+    title: "Career Guides",
+    description: "Evidence-based articles on resumes, interviews, salary negotiation, and career strategy.",
+    href: "/blog",
+    icon: BookOpen,
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-50",
+    count: ARTICLES.length,
+    countLabel: "articles",
+  },
+  {
+    title: "Role Guides",
+    description: "Role-specific hiring checklists, tool sequences, and career strategies for your exact position.",
+    href: "/roles",
+    icon: Briefcase,
+    iconColor: "text-indigo-600",
+    iconBg: "bg-indigo-50",
+    count: ROLES.length,
+    countLabel: "roles",
+  },
+  {
+    title: "Industry Intelligence",
+    description: "AI displacement context, recommended tools, and top roles for your industry sector.",
+    href: "/industries",
+    icon: Building2,
+    iconColor: "text-emerald-600",
+    iconBg: "bg-emerald-50",
+    count: INDUSTRY_PAGES.length,
+    countLabel: "industries",
+  },
+  {
+    title: "Tool Comparisons",
+    description: "See how AISkillScore compares to Jobscan, Teal, Resume Worded, and other career platforms.",
+    href: "/compare",
+    icon: GitCompareArrows,
+    iconColor: "text-amber-600",
+    iconBg: "bg-amber-50",
+    count: COMPARISONS.length,
+    countLabel: "comparisons",
+  },
+  {
+    title: "FAQ",
+    description: "Answers about tokens, pricing, tools, privacy, and how to get the most from AISkillScore.",
+    href: "/faq",
+    icon: HelpCircle,
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-50",
+    count: FAQ_ITEMS.length,
+    countLabel: "questions",
+  },
+];
+
 export default function ResourcesPage() {
   const collectionJsonLd = {
     "@context": "https://schema.org",
@@ -52,71 +105,82 @@ export default function ResourcesPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: APP_URL },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Resources",
-        item: `${APP_URL}/resources`,
-      },
+      { "@type": "ListItem", position: 2, name: "Resources", item: `${APP_URL}/resources` },
     ],
   };
+
+  const featured = ARTICLES.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c"),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
 
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Hero */}
-          <div className="text-center mb-14">
+          <div className="text-center mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
               Career Resources
             </h1>
             <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              Guides, strategies, and tools to navigate your job search with
-              evidence — not guesswork.{" "}
+              Guides, strategies, and intelligence to navigate your job search
+              with evidence — not guesswork.{" "}
               <Link href="/tools" className="text-blue-600 hover:text-blue-700 font-medium">
-                Explore all 11 AI tools
+                Or explore all 11 AI tools
               </Link>
             </p>
           </div>
 
-          {/* Section: Career Guides (Blog) */}
-          <section className="mb-14">
-            <div className="flex items-center gap-2 mb-5">
-              <BookOpen className="w-5 h-5 text-blue-600" />
-              <h2 className="text-lg font-bold text-gray-900">
-                Career Guides
-              </h2>
-              <span className="ui-badge ui-badge-gray ml-auto">
-                {ARTICLES.length} articles
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {ARTICLES.map((article) => (
+          {/* Category Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+            {CATEGORIES.map((cat) => (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="surface-base surface-hover p-5 flex flex-col gap-3 group"
+              >
+                <div className="flex items-start justify-between">
+                  <div className={`w-10 h-10 rounded-xl ${cat.iconBg} flex items-center justify-center`}>
+                    <cat.icon className={`w-5 h-5 ${cat.iconColor}`} />
+                  </div>
+                  <span className="ui-badge ui-badge-gray">
+                    {cat.count} {cat.countLabel}
+                  </span>
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">
+                    {cat.title}
+                  </h2>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {cat.description}
+                  </p>
+                </div>
+                <span className="text-xs text-blue-600 font-medium inline-flex items-center gap-1 mt-auto">
+                  Browse <ArrowRight className="w-3 h-3" />
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Featured Guides */}
+          <div className="mb-16">
+            <h2 className="text-lg font-bold text-gray-900 mb-5">Featured Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {featured.map((article, i) => (
                 <Link
                   key={article.slug}
                   href={`/blog/${article.slug}`}
-                  className="surface-card surface-card-hover p-5 flex flex-col"
+                  className={`surface-base surface-hover p-5 flex flex-col ${i === 0 ? "sm:col-span-2 sm:row-span-1" : ""}`}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className={
-                        CATEGORY_BADGES[article.category] ||
-                        "ui-badge ui-badge-gray"
-                      }
-                    >
+                    <span className={CATEGORY_BADGES[article.category] || "ui-badge ui-badge-gray"}>
                       {article.category}
                     </span>
                     <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -124,12 +188,15 @@ export default function ResourcesPage() {
                       {article.readTime}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1 group-hover:text-blue-600">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-1">
                     {article.title}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
                     {article.description}
                   </p>
+                  <span className="text-xs text-blue-600 font-medium inline-flex items-center gap-1 mt-3">
+                    Read guide <ArrowRight className="w-3 h-3" />
+                  </span>
                 </Link>
               ))}
             </div>
@@ -138,153 +205,13 @@ export default function ResourcesPage() {
                 href="/blog"
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
               >
-                All articles <ArrowRight className="w-3.5 h-3.5" />
+                All {ARTICLES.length} articles <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </p>
-          </section>
-
-          {/* Section: Role Guides */}
-          <section className="mb-14">
-            <div className="flex items-center gap-2 mb-5">
-              <Briefcase className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-lg font-bold text-gray-900">
-                Role-Specific Guides
-              </h2>
-              <span className="ui-badge ui-badge-gray ml-auto">
-                {ROLES.length} roles
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {ROLES.map((role) => (
-                <Link
-                  key={role.slug}
-                  href={`/roles/${role.slug}`}
-                  className="surface-card surface-card-hover p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {role.title}
-                    </h3>
-                    <p className="text-xs text-gray-500">{role.industry}</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-                </Link>
-              ))}
-            </div>
-            <p className="mt-4">
-              <Link
-                href="/roles"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
-              >
-                All role guides <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </p>
-          </section>
-
-          {/* Section: Industry Intelligence */}
-          <section className="mb-14">
-            <div className="flex items-center gap-2 mb-5">
-              <Building2 className="w-5 h-5 text-emerald-600" />
-              <h2 className="text-lg font-bold text-gray-900">
-                Industry Intelligence
-              </h2>
-              <span className="ui-badge ui-badge-gray ml-auto">
-                {INDUSTRY_PAGES.length} industries
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {INDUSTRY_PAGES.map((ind) => (
-                <Link
-                  key={ind.slug}
-                  href={`/industries/${ind.slug}`}
-                  className="surface-card surface-card-hover p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {ind.name}
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      {ind.topRoles.length} top roles covered
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-                </Link>
-              ))}
-            </div>
-            <p className="mt-4">
-              <Link
-                href="/industries"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
-              >
-                All industry guides <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </p>
-          </section>
-
-          {/* Section: Tool Comparisons */}
-          <section className="mb-14">
-            <div className="flex items-center gap-2 mb-5">
-              <GitCompareArrows className="w-5 h-5 text-amber-600" />
-              <h2 className="text-lg font-bold text-gray-900">
-                Tool Comparisons
-              </h2>
-              <span className="ui-badge ui-badge-gray ml-auto">
-                {COMPARISONS.length} comparisons
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {COMPARISONS.map((comp) => (
-                <Link
-                  key={comp.slug}
-                  href={`/compare/${comp.slug}`}
-                  className="surface-card surface-card-hover p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {comp.title}
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      vs {comp.competitor} ({comp.competitorPrice})
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-                </Link>
-              ))}
-            </div>
-            <p className="mt-4">
-              <Link
-                href="/compare"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
-              >
-                All comparisons <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </p>
-          </section>
-
-          {/* Section: FAQ */}
-          <section className="mb-14">
-            <Link
-              href="/faq"
-              className="surface-card surface-card-hover p-5 flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <HelpCircle className="w-5 h-5 text-blue-600" />
-                <div>
-                  <h2 className="text-sm font-bold text-gray-900">
-                    Frequently Asked Questions
-                  </h2>
-                  <p className="text-xs text-gray-500">
-                    {FAQ_ITEMS.length} answers about tools, pricing, privacy,
-                    and more
-                  </p>
-                </div>
-              </div>
-              <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-            </Link>
-          </section>
+          </div>
 
           {/* Bottom CTA */}
-          <div className="surface-card p-6 sm:p-8 text-center">
+          <div className="surface-base p-6 sm:p-8 text-center">
             <h3 className="text-lg font-bold text-gray-900 mb-2">
               Ready to start?
             </h3>

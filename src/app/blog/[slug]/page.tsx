@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Clock, Calendar, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Calendar, User, Tag } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ARTICLES, getArticle } from "@/lib/content";
 import { TOOLS_MAP } from "@/lib/constants";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
+
+const CATEGORY_BADGES: Record<string, string> = {
+  guides: "ui-badge ui-badge-blue",
+  research: "ui-badge ui-badge-amber",
+  tips: "ui-badge ui-badge-green",
+  news: "ui-badge ui-badge-gray",
+};
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -47,7 +54,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = getArticle(slug);
   if (!article) notFound();
 
-  // Article JSON-LD for AI citation
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -71,7 +77,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     wordCount: article.sections.reduce((acc, s) => acc + s.body.split(/\s+/).length, 0),
   };
 
-  // BreadcrumbList for navigation
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -97,9 +102,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
 
-      <article className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
+        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <Link href="/" className="hover:text-gray-600">Home</Link>
           <span>/</span>
           <Link href="/blog" className="hover:text-gray-600">Blog</Link>
@@ -107,110 +112,192 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <span className="text-gray-600 truncate">{article.title}</span>
         </nav>
 
-        {/* Back */}
         <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-6">
           <ArrowLeft className="w-4 h-4" /> All articles
         </Link>
 
-        {/* Header */}
-        <header className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase">
-              {article.category}
-            </span>
-            <span className="flex items-center gap-1 text-xs text-gray-400">
-              <Clock className="w-3 h-3" /> {article.readTime}
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-4 leading-tight">
-            {article.title}
-          </h1>
-
-          {/* TLDR — first paragraph for AI extraction */}
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-6">
-            <p className="text-sm font-semibold text-blue-800 mb-1">TL;DR</p>
-            <p className="text-sm text-blue-700 leading-relaxed">{article.tldr}</p>
-          </div>
-
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span className="flex items-center gap-1.5">
-              <User className="w-4 h-4" /> {article.author}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4" /> Updated {article.updatedAt}
-            </span>
-          </div>
-        </header>
-
-        {/* Article body */}
-        <div className="space-y-10">
-          {article.sections.map((section, i) => (
-            <section key={i}>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                {section.heading}
-              </h2>
-              <div className="prose-content text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                {section.body}
+        {/* Desktop: article + sidebar, Mobile: stacked */}
+        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-8">
+          <article>
+            {/* Header */}
+            <header className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <span className={CATEGORY_BADGES[article.category] || "ui-badge ui-badge-gray"}>
+                  {article.category}
+                </span>
+                <span className="flex items-center gap-1 text-xs text-gray-400">
+                  <Clock className="w-3 h-3" /> {article.readTime}
+                </span>
               </div>
-            </section>
-          ))}
-        </div>
 
-        {/* Related tools CTA */}
-        {relatedTools.length > 0 && (
-          <div className="mt-12 glass-card p-6 sm:p-8">
-            <h3 className="font-bold text-gray-900 mb-4">Try these tools</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {relatedTools.map((tool) => (
-                <Link
-                  key={tool.id}
-                  href={`/tools/${tool.id}`}
-                  className="bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition-colors group"
-                >
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600">
-                    {tool.title}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">{tool.description}</p>
-                  <p className="text-xs font-bold mt-2 text-blue-600">
-                    {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
-                  </p>
-                </Link>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-4 leading-tight">
+                {article.title}
+              </h1>
+
+              <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+                <span className="flex items-center gap-1.5">
+                  <User className="w-4 h-4" /> {article.author}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4" /> Updated {article.updatedAt}
+                </span>
+              </div>
+            </header>
+
+            {/* Key Takeaway — highest-citation block for AI systems */}
+            <div className="surface-hero p-5 mb-8">
+              <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Key Takeaway</p>
+              <p className="text-sm text-gray-800 leading-relaxed font-medium">{article.tldr}</p>
+            </div>
+
+            {/* In This Article — TOC */}
+            {article.sections.length > 2 && (
+              <nav className="surface-base p-4 mb-8">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">In this article</p>
+                <ol className="space-y-1">
+                  {article.sections.map((section, i) => (
+                    <li key={i}>
+                      <a
+                        href={`#section-${i}`}
+                        className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        {i + 1}. {section.heading}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+
+            {/* Article body */}
+            <div className="space-y-10">
+              {article.sections.map((section, i) => (
+                <section key={i} id={`section-${i}`}>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                    {section.heading}
+                  </h2>
+                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                    {section.body}
+                  </div>
+                </section>
               ))}
             </div>
-          </div>
-        )}
 
-        {/* Related reading */}
-        {article.relatedLinks && article.relatedLinks.length > 0 && (
-          <div className="mt-10">
-            <h3 className="font-bold text-gray-900 mb-3">Continue reading</h3>
-            <div className="flex flex-wrap gap-2">
-              {article.relatedLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            {/* Related Tools — card layout */}
+            {relatedTools.length > 0 && (
+              <div className="mt-12">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Try these tools</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {relatedTools.map((tool) => (
+                    <Link
+                      key={tool.id}
+                      href={`/tools/${tool.id}`}
+                      className="surface-base surface-hover p-4 group"
+                    >
+                      <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {tool.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{tool.description}</p>
+                      <span className={`ui-badge mt-2 ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
+                        {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Related Reading — card layout */}
+            {article.relatedLinks && article.relatedLinks.length > 0 && (
+              <div className="mt-10">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Continue reading</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {article.relatedLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="surface-base surface-hover p-4 flex items-center justify-between group"
+                    >
+                      <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {link.label}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 shrink-0" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Bottom CTA */}
+            <div className="mt-12 surface-hero p-8 text-center">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Take action on what you learned</h2>
+              <p className="text-sm text-gray-500 mb-6">Free AI Displacement Score + 15 tokens on signup. No credit card.</p>
+              <Link
+                href="/auth"
+                className="btn-primary sm:w-auto px-6 inline-flex"
+              >
+                Get Started Free <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-          </div>
-        )}
+          </article>
 
-        {/* Bottom CTA */}
-        <div className="mt-12 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">Take action on what you learned</h2>
-          <p className="text-blue-100 mb-6">Free AI Displacement Score + 15 tokens on signup. No credit card.</p>
-          <Link
-            href="/auth"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors min-h-[48px]"
-          >
-            Get Started Free <ArrowRight className="w-4 h-4" />
-          </Link>
+          {/* Sidebar — desktop only */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24 space-y-6">
+              {/* Quick Facts */}
+              <div className="surface-base p-4 space-y-3">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Quick Facts</p>
+                <div className="space-y-2 text-xs text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <User className="w-3.5 h-3.5 text-gray-400" />
+                    <span>{article.author}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-gray-400" />
+                    <span>{article.readTime}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                    <span>Updated {article.updatedAt}</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {article.tags.slice(0, 4).map((tag) => (
+                    <span key={tag} className="ui-badge ui-badge-gray text-[10px]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick TOC for sidebar */}
+              {article.sections.length > 2 && (
+                <div className="surface-base p-4">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Sections</p>
+                  <ol className="space-y-1.5">
+                    {article.sections.map((section, i) => (
+                      <li key={i}>
+                        <a href={`#section-${i}`} className="text-xs text-gray-500 hover:text-blue-600 transition-colors line-clamp-1">
+                          {section.heading}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Pricing link */}
+              <Link href="/pricing" className="surface-base surface-hover p-4 flex items-center gap-2 group">
+                <div>
+                  <p className="text-xs font-semibold text-gray-900 group-hover:text-blue-600">Token Pricing</p>
+                  <p className="text-[10px] text-gray-400">From free. No subscriptions.</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+              </Link>
+            </div>
+          </aside>
         </div>
-      </article>
+      </div>
     </div>
   );
 }
