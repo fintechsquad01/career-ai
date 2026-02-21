@@ -4,6 +4,11 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ROLES, getRole } from "@/lib/roles";
 import { TOOLS_MAP } from "@/lib/constants";
+import { ContentSidebar } from "@/components/shared/ContentSidebar";
+import { RelatedContent } from "@/components/shared/RelatedContent";
+import { DidYouKnow } from "@/components/shared/DidYouKnow";
+import { getRelatedContent } from "@/lib/content-links";
+import { getInsightForPage } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -76,13 +81,18 @@ export default async function RolePage({ params }: RolePageProps) {
 
   const tools = role.toolSequence.map((id) => TOOLS_MAP[id]).filter(Boolean);
 
+  const relatedItems = getRelatedContent("role", slug);
+  const insight = getInsightForPage("role", slug);
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
 
-      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-8">
+        <div>
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600">Home</Link>
           <span>/</span>
@@ -170,6 +180,9 @@ export default async function RolePage({ params }: RolePageProps) {
           </div>
         </section>
 
+        {insight && <DidYouKnow text={insight.text} source={insight.source} />}
+        <RelatedContent items={relatedItems} />
+
         {/* CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-2">Start your {role.title} mission</h2>
@@ -180,6 +193,15 @@ export default async function RolePage({ params }: RolePageProps) {
           >
             Get Started Free <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+        </div>
+        <ContentSidebar
+          tools={role.toolSequence}
+          relatedPages={[
+            { label: `${role.industry} Industry Guide`, href: `/industries/${role.industry.toLowerCase().replace(/[\s&]+/g, "-")}` },
+          ]}
+          insight={insight ?? undefined}
+        />
         </div>
       </div>
     </div>

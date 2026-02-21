@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { StatBlock } from "@/components/shared/StatBlock";
 import { ExpertQuote } from "@/components/shared/ExpertQuote";
-import { ATS_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
+import { CAREER_CHANGE_STATS, RECRUITER_QUOTES } from "@/lib/pain-stats";
 import { ArrowRight, Clock, Briefcase, Building2, GitCompareArrows } from "lucide-react";
 import type { TArticle } from "@/lib/content";
 
@@ -83,7 +83,7 @@ export function BlogContent({ articles }: BlogContentProps) {
       )}
 
       <div className="mb-10">
-        <StatBlock stats={ATS_STATS.slice(0, 3)} />
+        <StatBlock stats={CAREER_CHANGE_STATS} />
       </div>
 
       {/* Article grid */}

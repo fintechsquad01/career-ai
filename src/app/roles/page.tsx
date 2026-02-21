@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { ROLES } from "@/lib/roles";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { StatBlock } from "@/components/shared/StatBlock";
 import { ExpertQuote } from "@/components/shared/ExpertQuote";
@@ -84,6 +85,7 @@ export default async function RolesIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
+        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Roles" }]} />
         <AnimateOnScroll>
           <div className="surface-hero p-6 sm:p-8 mb-10">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">
@@ -101,7 +103,7 @@ export default async function RolesIndexPage() {
         </AnimateOnScroll>
 
           <div className="mb-10">
-            <StatBlock stats={ATS_STATS.slice(0, 3)} />
+            <StatBlock stats={ATS_STATS.slice(4, 7)} />
           </div>
 
         {Object.entries(grouped).map(([industry, roles]) => (

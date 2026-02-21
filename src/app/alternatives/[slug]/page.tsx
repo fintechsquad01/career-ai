@@ -9,6 +9,11 @@ import { CompetitorAnchor } from "@/components/shared/CompetitorAnchor";
 import { PainSolution } from "@/components/shared/PainSolution";
 import { PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { ALTERNATIVES, getAlternative, getComparison } from "@/lib/content";
+import { ContentSidebar } from "@/components/shared/ContentSidebar";
+import { RelatedContent } from "@/components/shared/RelatedContent";
+import { DidYouKnow } from "@/components/shared/DidYouKnow";
+import { getRelatedContent } from "@/lib/content-links";
+import { getInsightForPage } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -94,13 +99,18 @@ export default async function AlternativesPage({ params }: AlternativesPageProps
     })),
   };
 
+  const relatedItems = getRelatedContent("alternative", slug);
+  const insight = getInsightForPage("alternative", slug);
+
   const pageContent = (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
 
-      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-8">
+          <div>
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600">Home</Link>
           <span>/</span>
@@ -235,6 +245,9 @@ export default async function AlternativesPage({ params }: AlternativesPageProps
           </section>
         </AnimateOnScroll>
 
+        {insight && <DidYouKnow text={insight.text} source={insight.source} />}
+        <RelatedContent items={relatedItems} />
+
         <AnimateOnScroll>
           <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
             <h2 className="text-2xl font-bold mb-2">Switch from {alt.competitor} — Start free</h2>
@@ -247,6 +260,16 @@ export default async function AlternativesPage({ params }: AlternativesPageProps
             </Link>
           </div>
         </AnimateOnScroll>
+          </div>
+          <ContentSidebar
+            relatedPages={[
+              { label: `Full ${alt.competitor} Comparison`, href: `/compare/${alt.comparisonSlug}` },
+              { label: "Token Pricing", href: "/pricing" },
+              { label: "All Comparisons", href: "/compare" },
+            ]}
+            insight={insight ?? undefined}
+          />
+        </div>
       </div>
     </>
   );

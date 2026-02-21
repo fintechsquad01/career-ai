@@ -17,6 +17,7 @@ import { ROLES } from "@/lib/roles";
 import { INDUSTRY_PAGES } from "@/lib/industries";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { EVENTS } from "@/lib/analytics";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { StatBlock } from "@/components/shared/StatBlock";
 import { PainSolution } from "@/components/shared/PainSolution";
@@ -140,6 +141,7 @@ export default async function ResourcesPage() {
 
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-4xl mx-auto">
+          <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Resources" }]} />
           {/* Hero */}
           <AnimateOnScroll>
             <div className="text-center mb-12">

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { StatBlock } from "@/components/shared/StatBlock";
 import { PainSolution } from "@/components/shared/PainSolution";
-import { ATS_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
+import { INTERVIEW_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { FAQ } from "@/components/shared/FAQ";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
@@ -163,7 +163,7 @@ export default async function FaqPage() {
           </AnimateOnScroll>
 
           <div className="mb-10">
-            <StatBlock stats={ATS_STATS.slice(0, 3)} />
+            <StatBlock stats={INTERVIEW_STATS} />
           </div>
 
           <AnimateOnScroll>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ARTICLES } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { BlogContent } from "@/components/blog/BlogContent";
 
@@ -80,6 +81,7 @@ export default async function BlogIndex() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
 
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
+        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
         <AnimateOnScroll>
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">

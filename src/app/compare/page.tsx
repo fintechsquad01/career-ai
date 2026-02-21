@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { StatBlock } from "@/components/shared/StatBlock";
 import { PainSolution } from "@/components/shared/PainSolution";
 import { CompetitorAnchor } from "@/components/shared/CompetitorAnchor";
-import { ATS_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
+import { SALARY_STATS, PAIN_SOLUTIONS } from "@/lib/pain-stats";
 import { COMPARISONS } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
@@ -73,6 +74,7 @@ export default async function ComparePage() {
         }).replace(/</g, "\\u003c") }}
       />
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
+        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Compare" }]} />
         <AnimateOnScroll>
           <div className="text-center mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
@@ -176,7 +178,7 @@ export default async function ComparePage() {
         </AnimateOnScroll>
 
         <div className="mt-10 mb-6">
-          <StatBlock stats={ATS_STATS.slice(0, 3)} />
+          <StatBlock stats={SALARY_STATS} />
         </div>
 
         {/* CTA */}

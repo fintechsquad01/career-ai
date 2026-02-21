@@ -179,3 +179,34 @@ export function getQuoteByTopic(topic: string): TExpertQuote {
   };
   return RECRUITER_QUOTES[map[topic] ?? 0];
 }
+
+const PAGE_INSIGHTS: Record<string, { text: string; source?: string }[]> = {
+  industry: [
+    { text: "47% of jobs face significant AI transformation by 2030 — but most will evolve, not disappear.", source: "McKinsey Global Institute" },
+    { text: "Workers who proactively upskill around AI earn 15-40% more than peers who don't.", source: "World Economic Forum" },
+    { text: "Professionals who augment their work with AI tools report 40% higher productivity within 3 months.", source: "Stanford HAI 2025" },
+  ],
+  role: [
+    { text: "Candidates who tailor their resume to each job description are 3x more likely to get an interview.", source: "CareerBuilder" },
+    { text: "Referred candidates are 4x more likely to be hired. Include referral strategy in your prep.", source: "LinkedIn Talent Solutions" },
+    { text: "Resumes with quantified achievements receive 40% more interview callbacks.", source: "TalentWorks" },
+  ],
+  compare: [
+    { text: "Career tools charge $29-$149/month for single-purpose subscriptions. Most users only need them 2-4 months.", source: "Industry analysis" },
+    { text: "A complete job application stack on AISkillScore costs about $8.58 — less than a single month of any competitor.", source: "AISkillScore pricing" },
+  ],
+  alternative: [
+    { text: "76% of professionals who negotiate salary earn $5,000-$10,000 more. Over 30 years, that compounds to $1M+.", source: "Salary.com" },
+    { text: "The best career changers build income resilience BEFORE making the switch.", source: "Career transition research" },
+  ],
+};
+
+export function getInsightForPage(
+  pageType: string,
+  _slug: string,
+): { text: string; source?: string } | null {
+  const insights = PAGE_INSIGHTS[pageType];
+  if (!insights || insights.length === 0) return null;
+  const idx = Math.abs(_slug.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0)) % insights.length;
+  return insights[idx];
+}

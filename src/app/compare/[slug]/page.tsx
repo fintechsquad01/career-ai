@@ -6,6 +6,11 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import { COMPARISONS, getComparison } from "@/lib/content";
+import { ContentSidebar } from "@/components/shared/ContentSidebar";
+import { RelatedContent } from "@/components/shared/RelatedContent";
+import { DidYouKnow } from "@/components/shared/DidYouKnow";
+import { getRelatedContent } from "@/lib/content-links";
+import { getInsightForPage } from "@/lib/pain-stats";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
 
@@ -95,6 +100,9 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
       }
     : null;
 
+  const relatedItems = getRelatedContent("compare", slug);
+  const insight = getInsightForPage("compare", slug);
+
   const content = (
     <>
       <script
@@ -113,6 +121,8 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
       )}
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-8">
+          <div>
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600">Home</Link>
@@ -234,6 +244,9 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
           </>
         )}
 
+        {insight && <DidYouKnow text={insight.text} source={insight.source} />}
+        <RelatedContent items={relatedItems} />
+
         {/* CTA */}
         <AnimateOnScroll>
           <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
@@ -247,6 +260,16 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
             </Link>
           </div>
         </AnimateOnScroll>
+          </div>
+          <ContentSidebar
+            relatedPages={[
+              { label: `${comp.competitor} Alternatives`, href: `/alternatives/${comp.competitor.toLowerCase().replace(/[\s.]+/g, "")}-alternatives` },
+              { label: "Token Pricing", href: "/pricing" },
+              { label: "All Comparisons", href: "/compare" },
+            ]}
+            insight={insight ?? undefined}
+          />
+        </div>
       </div>
     </>
   );
