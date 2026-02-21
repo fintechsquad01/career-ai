@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, X, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/layout/AppShell";
 import { COMPARISONS, getComparison } from "@/lib/content";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://aiskillscore.com";
@@ -47,6 +49,12 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
   const comp = getComparison(slug);
   if (!comp) notFound();
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data
+    : null;
+
   // Article schema for comparison content
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -74,8 +82,8 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
     ],
   };
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+  const content = (
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }}
@@ -196,6 +204,11 @@ export default async function ComparisonPage({ params }: ComparePageProps) {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
+
+  if (user) {
+    return <AppShell isLoggedIn={true} profile={profile}>{content}</AppShell>;
+  }
+  return <div className="min-h-screen bg-[#F5F5F7]">{content}</div>;
 }
