@@ -196,6 +196,9 @@ export function Nav({ isLoggedIn }: NavProps) {
               <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900">
                 Pricing
               </Link>
+              <Link href="/resources" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+                Resources
+              </Link>
               <Link href="/auth" className="text-sm font-medium text-gray-600 hover:text-gray-900">
                 Sign In
               </Link>
@@ -283,6 +286,7 @@ export function Nav({ isLoggedIn }: NavProps) {
             ) : (
               <>
                 <MobileLink href="/pricing" label="Pricing" active={isActiveRoute(pathname, "/pricing")} onClick={() => setMobileMenuOpen(false)} />
+                <MobileLink href="/resources" label="Resources" active={isActiveRoute(pathname, "/resources")} onClick={() => setMobileMenuOpen(false)} />
                 <MobileLink href="/auth" label="Sign In" active={isActiveRoute(pathname, "/auth")} onClick={() => setMobileMenuOpen(false)} />
                 <div className="pt-4">
                   <Link

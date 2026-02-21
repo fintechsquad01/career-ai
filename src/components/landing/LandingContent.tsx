@@ -9,8 +9,8 @@ import { XrayResults } from "./XrayResults";
 import { JobResults } from "./JobResults";
 import { FAQ } from "@/components/shared/FAQ";
 import { EmailCapture } from "./EmailCapture";
-import { PACKS, FAQ_ITEMS, TOOLS, INDUSTRIES, CANONICAL_COPY } from "@/lib/constants";
-import { track } from "@/lib/analytics";
+import { PACKS, FAQ_ITEMS, TOOLS, CANONICAL_COPY } from "@/lib/constants";
+import { EVENTS, track } from "@/lib/analytics";
 import { safeLocalStorage } from "@/lib/safe-storage";
 import { AnimateOnScroll } from "@/components/shared/AnimateOnScroll";
 import {
@@ -28,6 +28,17 @@ import {
 import type { LucideIcon } from "lucide-react";
 import type { InputType } from "@/lib/detect-input";
 import type { ParseInputResult } from "@/types/landing";
+
+const LANDING_FAQ_QUESTIONS = [
+  "How does the token system work?",
+  "Is the AI Displacement Score really free?",
+  "How is AISkillScore different from Jobscan or Teal?",
+  "Is my data safe and private?",
+  "What is the best free AI career tool?",
+];
+const LANDING_FAQS = FAQ_ITEMS.filter((item) =>
+  LANDING_FAQ_QUESTIONS.includes(item.q)
+);
 
 type LandingState = "default" | "analyzing" | "results";
 
@@ -134,69 +145,6 @@ const HERO_TOOLS: {
   { id: "linkedin", icon: Linkedin, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
 ];
 
-function QuickDisplacementForm({
-  onSubmit,
-}: {
-  onSubmit: (text: string) => void;
-}) {
-  const [jobTitle, setJobTitle] = useState("");
-  const [industry, setIndustry] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!jobTitle.trim()) return;
-    const input = `Role: ${jobTitle.trim()}${industry ? `, Industry: ${industry}` : ""}`;
-    onSubmit(input);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label htmlFor="quick-job-title" className="sr-only">
-            Your job title
-          </label>
-          <input
-            id="quick-job-title"
-            type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            placeholder="e.g. Marketing Manager"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-300 transition-shadow min-h-[44px]"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="quick-industry" className="sr-only">
-            Your industry
-          </label>
-          <select
-            id="quick-industry"
-            value={industry}
-            onChange={(e) => setIndustry(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-300 transition-shadow min-h-[44px] appearance-none"
-          >
-            <option value="">Select your industry</option>
-            {INDUSTRIES.map((ind) => (
-              <option key={ind} value={ind}>
-                {ind}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <button
-        type="submit"
-        disabled={!jobTitle.trim()}
-        className="btn-primary w-full sm:w-auto px-8"
-      >
-        <ShieldAlert className="w-5 h-5" />
-        {CANONICAL_COPY.cta.freeAnalysisPrimary}
-      </button>
-    </form>
-  );
-}
-
 export function LandingContent() {
   const [pageState, setPageState] = useState<LandingState>("default");
   const [analysisType, setAnalysisType] = useState<InputType>(null);
@@ -206,12 +154,14 @@ export function LandingContent() {
   const [lastInput, setLastInput] = useState<{ text: string; type: InputType } | null>(null);
   const quickFormRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    track(EVENTS.LANDING_VARIANT_VIEW, {
+      referrer: document.referrer || "direct",
+    });
+  }, []);
+
   const handleCtaClick = () => {
     quickFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
-  const handleQuickDisplacement = (text: string) => {
-    handleAnalyze(text, "resume");
   };
 
   const handleAnalyze = async (text: string, type: InputType) => {
@@ -439,7 +389,8 @@ export function LandingContent() {
               <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
                 Gemini 2.5 Pro outputs with recruiter-style evidence. Pay per use with transparent token pricing.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+              {/* Desktop grid / Mobile horizontal scroll */}
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
                 {HERO_TOOLS.map((ht) => {
                   const tool = TOOLS.find((t) => t.id === ht.id);
                   if (!tool) return null;
@@ -453,20 +404,41 @@ export function LandingContent() {
                           {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
                         </span>
                       </div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-1">
-                        {tool.title}
-                      </h3>
-                      <p className="text-xs text-gray-500 leading-relaxed flex-1">
-                        {tool.description}
-                      </p>
+                      <h3 className="text-sm font-bold text-gray-900 mb-1">{tool.title}</h3>
+                      <p className="text-xs text-gray-500 leading-relaxed flex-1">{tool.description}</p>
                       {tool.painPoint && (
-                        <p className="text-[11px] text-red-600/80 font-medium mt-2">
-                          {tool.painPoint}
-                        </p>
+                        <p className="text-[11px] text-red-600/80 font-medium mt-2">{tool.painPoint}</p>
                       )}
                     </div>
                   );
                 })}
+              </div>
+              {/* Mobile: horizontal swipe carousel */}
+              <div className="sm:hidden -mx-4 px-4">
+                <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide">
+                  {HERO_TOOLS.map((ht) => {
+                    const tool = TOOLS.find((t) => t.id === ht.id);
+                    if (!tool) return null;
+                    return (
+                      <div key={tool.id} className="surface-card p-5 flex flex-col snap-center shrink-0 w-[280px]">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className={`w-10 h-10 rounded-xl ${ht.iconBg} flex items-center justify-center`}>
+                            <ht.icon className={`w-5 h-5 ${ht.iconColor}`} />
+                          </div>
+                          <span className={`ui-badge ${tool.tokens === 0 ? "ui-badge-green" : "ui-badge-blue"}`}>
+                            {tool.tokens === 0 ? "Free" : `${tool.tokens} tokens`}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-bold text-gray-900 mb-1">{tool.title}</h3>
+                        <p className="text-xs text-gray-500 leading-relaxed flex-1">{tool.description}</p>
+                        {tool.painPoint && (
+                          <p className="text-[11px] text-red-600/80 font-medium mt-2">{tool.painPoint}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-center text-xs text-gray-400 mt-1">Swipe to see more</p>
               </div>
               <p className="text-center mt-8">
                 <Link
@@ -528,73 +500,53 @@ export function LandingContent() {
 
           <div className="gradient-divider max-w-4xl mx-auto" />
 
-          {/* Also try for free — displaced from hero */}
-          <AnimateOnScroll as="section" className="py-12 px-4 bg-white">
-            <div className="max-w-2xl mx-auto">
-              <div className="surface-card p-6 sm:p-8 space-y-5">
-                <div className="flex items-center gap-3 mb-1">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <ShieldAlert className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-900">Also try for free: AI Displacement Score</h2>
-                    <p className="text-sm text-gray-500">See which tasks in your role are automatable vs human-essential.</p>
-                  </div>
-                </div>
-                <QuickDisplacementForm onSubmit={handleQuickDisplacement} />
-              </div>
-            </div>
-          </AnimateOnScroll>
-
-          <div className="gradient-divider max-w-4xl mx-auto" />
-
-          {/* Your Career Journey — timeline */}
-          <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
+          {/* Your Career Journey — compact stepper */}
+          <AnimateOnScroll as="section" className="py-16 sm:py-20 px-4 bg-white">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-12 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10 tracking-tight">
                 From first paste to first offer
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
-                <div className="surface-card p-6 sm:p-8 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold text-blue-600">1</span>
+              {/* Desktop: horizontal stepper */}
+              <div className="hidden sm:grid sm:grid-cols-4 gap-0 relative">
+                <div className="absolute top-5 left-[12.5%] right-[12.5%] h-0.5 bg-gray-200" aria-hidden="true" />
+                {[
+                  { num: "1", time: "Day 1", label: "Paste & discover", desc: "Free AI risk score with task-level breakdown.", color: "bg-blue-600" },
+                  { num: "2", time: "Week 1", label: "Match & optimize", desc: "Match jobs, optimize resume, prep interviews.", color: "bg-indigo-600" },
+                  { num: "3", time: "Ongoing", label: "Track & grow", desc: "Close skill gaps, explore freelance income.", color: "bg-emerald-600" },
+                  { num: "4", time: "Month 1+", label: "Apply & negotiate", desc: "Batch-apply, cover letters, salary scripts.", color: "bg-amber-600" },
+                ].map((step) => (
+                  <div key={step.num} className="flex flex-col items-center text-center relative z-10">
+                    <div className={`w-10 h-10 rounded-full ${step.color} flex items-center justify-center text-white font-bold text-sm mb-3`}>
+                      {step.num}
+                    </div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">{step.time}</p>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{step.label}</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed max-w-[180px]">{step.desc}</p>
                   </div>
-                  <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Day 1</p>
-                  <h3 className="font-semibold text-gray-900 mb-2">Paste &amp; discover</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Paste your resume and get a free AI risk score with task-level breakdown and next steps.
-                  </p>
-                </div>
-                <div className="surface-card p-6 sm:p-8 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold text-indigo-600">2</span>
+                ))}
+              </div>
+              {/* Mobile: vertical stepper */}
+              <div className="sm:hidden space-y-0">
+                {[
+                  { num: "1", time: "Day 1", label: "Paste & discover", desc: "Free AI risk score with task-level breakdown.", color: "bg-blue-600", line: true },
+                  { num: "2", time: "Week 1", label: "Match & optimize", desc: "Match jobs, optimize resume, prep interviews.", color: "bg-indigo-600", line: true },
+                  { num: "3", time: "Ongoing", label: "Track & grow", desc: "Close skill gaps, explore freelance income.", color: "bg-emerald-600", line: true },
+                  { num: "4", time: "Month 1+", label: "Apply & negotiate", desc: "Batch-apply, cover letters, salary scripts.", color: "bg-amber-600", line: false },
+                ].map((step) => (
+                  <div key={step.num} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-9 h-9 rounded-full ${step.color} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
+                        {step.num}
+                      </div>
+                      {step.line && <div className="w-0.5 flex-1 bg-gray-200 my-1" />}
+                    </div>
+                    <div className="pb-6">
+                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{step.time}</p>
+                      <h3 className="text-sm font-semibold text-gray-900">{step.label}</h3>
+                      <p className="text-xs text-gray-500 leading-relaxed">{step.desc}</p>
+                    </div>
                   </div>
-                  <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">Week 1</p>
-                  <h3 className="font-semibold text-gray-900 mb-2">Match &amp; optimize</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Match against jobs, optimize your resume, and prep for interviews in one workflow.
-                  </p>
-                </div>
-                <div className="surface-card p-6 sm:p-8 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold text-emerald-600">3</span>
-                  </div>
-                  <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Ongoing</p>
-                  <h3 className="font-semibold text-gray-900 mb-2">Track &amp; grow</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Track progress, close skill gaps, and explore freelance opportunities with clear action steps.
-                  </p>
-                </div>
-                <div className="surface-card p-6 sm:p-8 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold text-amber-600">4</span>
-                  </div>
-                  <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Month 1+</p>
-                  <h3 className="font-semibold text-gray-900 mb-2">Apply &amp; negotiate</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Use Quick Apply to batch-run tools, craft cover letters, and negotiate salary with confidence.
-                  </p>
-                </div>
+                ))}
               </div>
             </div>
           </AnimateOnScroll>
@@ -649,20 +601,29 @@ export function LandingContent() {
 
           <div className="gradient-divider max-w-4xl mx-auto" />
 
-          {/* FAQ */}
+          {/* FAQ — top 5 with link to full /faq page */}
           <AnimateOnScroll as="section" className="py-20 sm:py-28 px-4 bg-white">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
                 Frequently asked questions
               </h2>
-              <FAQ items={FAQ_ITEMS} />
+              <FAQ items={LANDING_FAQS} />
+              <p className="text-center mt-6">
+                <Link
+                  href="/faq"
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+                >
+                  See all {FAQ_ITEMS.length} questions
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </p>
             </div>
           </AnimateOnScroll>
 
-          {/* Footer */}
+          {/* Footer — categorized links */}
           <AnimateOnScroll as="div" className="py-12 px-4 bg-[#F5F5F7] border-t border-gray-200">
             <div className="max-w-4xl mx-auto space-y-8">
-              {/* Email capture */}
+              {/* Top row: brand + email */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
@@ -674,28 +635,37 @@ export function LandingContent() {
                   <EmailCapture context="landing_footer" />
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200/60">
-                <div className="flex items-center gap-6 text-sm text-gray-500">
-                  <Link href="/pricing" className="hover:text-gray-900">
-                    Pricing
-                  </Link>
-                  <Link href="/blog" className="hover:text-gray-900">
-                    Blog
-                  </Link>
-                  <Link href="/compare" className="hover:text-gray-900">
-                    Compare
-                  </Link>
-                  <Link href="/privacy" className="hover:text-gray-900">
-                    Privacy
-                  </Link>
-                  <Link href="/terms" className="hover:text-gray-900">
-                    Terms
-                  </Link>
+              {/* Link columns */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4 border-t border-gray-200/60">
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Product</p>
+                  <div className="flex flex-col gap-2 text-sm text-gray-500">
+                    <Link href="/pricing" className="hover:text-gray-900">Pricing</Link>
+                    <Link href="/tools" className="hover:text-gray-900">Tools</Link>
+                    <Link href="/lifetime" className="hover:text-gray-900">Lifetime Deal</Link>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400">
-                  © {new Date().getFullYear()} AISkillScore. All rights reserved.
-                </p>
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Resources</p>
+                  <div className="flex flex-col gap-2 text-sm text-gray-500">
+                    <Link href="/blog" className="hover:text-gray-900">Blog</Link>
+                    <Link href="/roles" className="hover:text-gray-900">Role Guides</Link>
+                    <Link href="/industries" className="hover:text-gray-900">Industry Guides</Link>
+                    <Link href="/compare" className="hover:text-gray-900">Compare</Link>
+                    <Link href="/faq" className="hover:text-gray-900">FAQ</Link>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Legal</p>
+                  <div className="flex flex-col gap-2 text-sm text-gray-500">
+                    <Link href="/privacy" className="hover:text-gray-900">Privacy</Link>
+                    <Link href="/terms" className="hover:text-gray-900">Terms</Link>
+                  </div>
+                </div>
               </div>
+              <p className="text-xs text-gray-400 text-center sm:text-left pt-2">
+                © {new Date().getFullYear()} AISkillScore. All rights reserved.
+              </p>
             </div>
           </AnimateOnScroll>
         </>

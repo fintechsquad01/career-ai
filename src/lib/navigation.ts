@@ -1,4 +1,5 @@
 import {
+  BookOpen,
   Clock,
   Crosshair,
   LayoutDashboard,
@@ -25,6 +26,7 @@ export const CORE_NAV_ITEMS: AppNavItem[] = [
 export const EXTENDED_NAV_ITEMS: AppNavItem[] = [
   { href: "/history", label: "History", icon: Clock, key: "history" },
   { href: "/quick-apply", label: "Quick Apply", icon: Zap, key: "quick_apply" },
+  { href: "/resources", label: "Resources", icon: BookOpen, key: "resources" },
 ];
 
 export function isActiveRoute(pathname: string, href: string): boolean {

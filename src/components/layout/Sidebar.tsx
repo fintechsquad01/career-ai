@@ -28,6 +28,7 @@ const NAV_ITEMS: AppNavItem[] = [
   navByKey.get("quick_apply")!,
   navByKey.get("tools")!,
   navByKey.get("history")!,
+  navByKey.get("resources")!,
   navByKey.get("settings")!,
 ];
 

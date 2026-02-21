@@ -1,11 +1,26 @@
 "use client";
 
 /**
- * Analytics utilities for PostHog integration.
- * Falls back to no-ops when PostHog is not configured.
+ * Dual-track analytics: PostHog (product) + GA4 (acquisition/marketing).
+ * Falls back to no-ops when either provider is not configured.
  */
 
 type Properties = Record<string, string | number | boolean | null | undefined>;
+
+const GA_MEASUREMENT_ID = "G-QH29WYDDEV";
+
+/**
+ * Maps PostHog event names to GA4 recommended event names where applicable.
+ * Unmapped events pass through as custom events.
+ */
+const GA4_EVENT_MAP: Record<string, string> = {
+  signup_complete: "sign_up",
+  token_purchase: "purchase",
+  paywall_shown: "view_promotion",
+  landing_analyze: "generate_lead",
+  share_created: "share",
+  affiliate_click: "select_promotion",
+};
 
 let posthogInstance: {
   capture: (event: string, properties?: Properties) => void;
@@ -40,14 +55,43 @@ export async function initAnalytics() {
   }
 }
 
-/** Track a custom event */
-export function track(event: string, properties?: Properties) {
-  posthogInstance?.capture(event, properties);
+function gtagEvent(eventName: string, params?: Properties) {
+  if (typeof window === "undefined" || !window.gtag) return;
+  const clean: Record<string, string | number | boolean> = {};
+  if (params) {
+    for (const [k, v] of Object.entries(params)) {
+      if (v != null) clean[k] = v;
+    }
+  }
+  window.gtag("event", eventName, clean);
 }
 
-/** Identify a user after login/signup */
+/** Track a custom event — sends to both PostHog and GA4 */
+export function track(event: string, properties?: Properties) {
+  posthogInstance?.capture(event, properties);
+
+  const ga4Event = GA4_EVENT_MAP[event] ?? event;
+  gtagEvent(ga4Event, properties);
+}
+
+/** Identify a user after login/signup — sends to both PostHog and GA4 */
 export function identify(userId: string, properties?: Properties) {
   posthogInstance?.identify(userId, properties);
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("config", GA_MEASUREMENT_ID, { user_id: userId });
+  }
+}
+
+/** Set GA4 user properties (user-scoped custom dimensions) */
+export function setUserProperties(properties: Properties) {
+  if (typeof window !== "undefined" && window.gtag) {
+    const clean: Record<string, string | number | boolean> = {};
+    for (const [k, v] of Object.entries(properties)) {
+      if (v != null) clean[k] = v;
+    }
+    window.gtag("set", "user_properties", clean);
+  }
 }
 
 /** Reset analytics on logout */

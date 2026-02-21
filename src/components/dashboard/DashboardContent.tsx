@@ -214,11 +214,16 @@ export function DashboardContent({
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("purchase") === "success") {
+      const packId = params.get("pack") ?? "unknown";
+      track(EVENTS.TOKEN_PURCHASE, {
+        pack_id: packId,
+        currency: "USD",
+      });
+
       const pendingToolId = safeLocalStorage.getItem("pendingToolId");
       if (pendingToolId) {
         safeLocalStorage.removeItem("pendingToolId");
         safeLocalStorage.removeItem("pendingInputs");
-        // Small delay to let token balance refresh
         setTimeout(() => {
           window.location.href = `/tools/${pendingToolId}`;
         }, 1500);

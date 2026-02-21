@@ -620,6 +620,12 @@ export function ToolShell({ toolId, children }: ToolShellProps) {
         setPendingInputs(inputs);
         safeLocalStorage.setItem("pendingInputs", JSON.stringify(inputs));
         setShowPaywall(true);
+        track(EVENTS.PAYWALL_SHOWN, {
+          tool_id: toolId,
+          required_tokens: effectiveCost,
+          current_balance: balance,
+          deficit: effectiveCost - balance,
+        });
         isRunning.current = false;
         return;
       }

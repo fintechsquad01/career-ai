@@ -655,3 +655,12 @@ a:active {
   height: 2.75rem;
   border-radius: 0.75rem;
 }
+
+/* Hide scrollbar for horizontal carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

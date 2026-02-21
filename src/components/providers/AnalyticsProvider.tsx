@@ -30,6 +30,13 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
         identify(session.user.id, {
           email: session.user.email,
         });
+
+        const createdAt = new Date(session.user.created_at).getTime();
+        const isNewUser = Date.now() - createdAt < 60_000;
+        if (isNewUser) {
+          const method = session.user.app_metadata?.provider === "google" ? "google" : "email";
+          track(EVENTS.SIGNUP_COMPLETE, { method });
+        }
       } else if (event === "SIGNED_OUT") {
         resetAnalytics();
       }
