@@ -159,8 +159,16 @@ export default function FaqPage() {
             ))}
           </div>
 
+          {/* Popular tools */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Popular tools:</span>
+            <Link href="/tools/displacement" className="ui-badge ui-badge-green hover:opacity-80 transition-opacity">AI Displacement Score — Free</Link>
+            <Link href="/tools/jd_match" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Job Match Score — 5 tokens</Link>
+            <Link href="/tools/resume" className="ui-badge ui-badge-blue hover:opacity-80 transition-opacity">Resume Optimizer — 15 tokens</Link>
+          </div>
+
           {/* Bottom CTA */}
-          <div className="mt-16 surface-card p-6 sm:p-8 text-center">
+          <div className="mt-8 surface-card p-6 sm:p-8 text-center">
             <h3 className="text-lg font-bold text-gray-900 mb-2">
               Still have questions?
             </h3>
@@ -172,8 +180,8 @@ export default function FaqPage() {
               <Link href="/auth" className="btn-primary sm:w-auto px-6">
                 Create Account — 15 Free Tokens
               </Link>
-              <Link href="/resources" className="btn-secondary sm:w-auto px-6">
-                Browse Resources
+              <Link href="/pricing" className="btn-secondary sm:w-auto px-6">
+                View Token Pricing
               </Link>
             </div>
           </div>

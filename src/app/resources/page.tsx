@@ -85,7 +85,10 @@ export default function ResourcesPage() {
             </h1>
             <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
               Guides, strategies, and tools to navigate your job search with
-              evidence — not guesswork.
+              evidence — not guesswork.{" "}
+              <Link href="/tools" className="text-blue-600 hover:text-blue-700 font-medium">
+                Explore all 11 AI tools
+              </Link>
             </p>
           </div>
 
@@ -288,9 +291,14 @@ export default function ResourcesPage() {
             <p className="text-sm text-gray-500 mb-4">
               Create a free account and get 15 tokens to try any AI career tool.
             </p>
-            <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
-              Create Account — 15 Free Tokens
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/auth" className="btn-primary sm:w-auto px-6 inline-flex">
+                Create Account — 15 Free Tokens
+              </Link>
+              <Link href="/pricing" className="btn-secondary sm:w-auto px-6 inline-flex">
+                View Token Pricing
+              </Link>
+            </div>
           </div>
         </div>
       </section>

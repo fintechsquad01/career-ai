@@ -391,6 +391,15 @@ export default function PricingPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-h2 text-center mb-8">FAQ</h2>
           <FAQ items={FAQ_ITEMS} />
+          <p className="text-center mt-6">
+            <Link
+              href="/faq"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+            >
+              See all FAQs
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </p>
         </div>
       </div>
     </div>
