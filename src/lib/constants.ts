@@ -441,6 +441,45 @@ export const FAQ_ITEMS = [
     q: "What is the difference between ATS optimization and keyword stuffing?",
     a: "ATS optimization means using the exact terms from a job posting naturally in your resume so automated screening systems recognize your qualifications. Keyword stuffing means repeating terms unnaturally or hiding them in white text — this gets flagged by modern ATS and recruiter review. AISkillScore's Resume Optimizer ensures keyword alignment while preserving natural, professional language. The result should read well to both machines and humans.",
   },
+  // Getting Started
+  {
+    q: "Can I use AISkillScore on my phone?",
+    a: "Yes. AISkillScore is a mobile-first web app — it works on any device with a browser. No app download needed. All tools, results, and your dashboard are fully responsive on phones, tablets, and desktops.",
+  },
+  {
+    q: "Do daily free tokens expire?",
+    a: "Daily credits expire after 7 days and cap at 14 accumulated credits. They're spent before purchased tokens. Purchased tokens never expire. You earn 2 free credits per day just by logging in — enough for a free Job Match Score scan every day.",
+  },
+  {
+    q: "Which AI tools are completely free?",
+    a: "The AI Displacement Score is always free with unlimited uses — no tokens, no signup required. Beyond that, you get 15 free tokens on signup plus 2 daily credits. Daily credits alone cover a Job Match Score (5 tokens) every few days at no cost.",
+  },
+  // Trust & Accuracy
+  {
+    q: "How accurate are AISkillScore's career scores?",
+    a: "AISkillScore uses Gemini 2.5 Pro — one of the most capable AI models available — combined with ILO 2025 research data, real ATS parsing logic, and recruiter evaluation frameworks. Every score cites specific evidence from your resume or profile. We never invent metrics or fabricate achievements.",
+  },
+  {
+    q: "How do tokens convert to dollar cost?",
+    a: "At the Pro pack rate ($0.195/token): Job Match Score costs about $1, Interview Prep about $1.56, Resume Optimizer about $2.93, and a complete 5-tool application stack costs about $8.58. The Starter pack ($14 for 50 tokens) works out to $0.28/token; the Power pack ($79 for 500 tokens) is $0.158/token.",
+  },
+  {
+    q: "How is AISkillScore different from hiring a career coach?",
+    a: "Career coaches charge $150-$300 per session and require scheduling. AISkillScore provides evidence-based analysis 24/7 for 530-830x less cost. A full career assessment (displacement + resume + interview prep + salary) costs under $10 total. Many users run AISkillScore first to diagnose gaps, then use coaching sessions more efficiently.",
+  },
+  // Power Users
+  {
+    q: "Can I track multiple job applications?",
+    a: "Yes. Mission Control lets you create separate job targets and track progress across applications. Each target has its own 5-step workflow (Resume, Cover Letter, Interview, Skills Gap, Salary) with completion tracking and recommended next actions.",
+  },
+  {
+    q: "How deep is the interview preparation?",
+    a: "AISkillScore generates company-specific interview questions based on the actual job description, plus follow-up question predictions — the part that actually decides interviews. Unlike other tools that give you generic practice questions, we prepare you 2-3 layers deep with defensibility coaching for probing follow-ups.",
+  },
+  {
+    q: "What happens to my data and privacy?",
+    a: "Your data is encrypted in transit and at rest. We never sell your information to third parties. Resume text and job descriptions are processed for analysis only and stored securely in your account. You can delete your account and all data at any time from Settings. We comply with GDPR and standard data protection regulations.",
+  },
 ];
 
 export const MISSION_ACTIONS = [
