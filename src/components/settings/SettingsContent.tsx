@@ -307,7 +307,12 @@ export function SettingsContent({ profile, careerProfile, transactions }: Settin
       router.refresh();
     } catch (err) {
       console.error("Upload error:", err);
-      toast(err instanceof Error ? err.message : "Failed to upload resume. Please try again.");
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.toLowerCase().includes("unicode") || msg.toLowerCase().includes("encoding")) {
+        toast("This PDF contains unsupported characters. Please save it as a new PDF or paste your resume text directly.");
+      } else {
+        toast(msg || "Failed to upload resume. Please try again.");
+      }
     } finally {
       setUploading(false);
       setParsing(false);

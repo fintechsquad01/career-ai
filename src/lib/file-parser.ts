@@ -32,6 +32,12 @@ export type FileParseResult = {
   quality: ParseQuality;
 };
 
+function sanitizeText(text: string): string {
+  return text
+    .replace(/\u0000/g, "")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+}
+
 function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -69,7 +75,7 @@ export async function parseFile(file: File): Promise<FileParseResult> {
 
   // Plain text files
   if (fileType === "text/plain" || fileName.endsWith(".txt")) {
-    const text = await file.text();
+    const text = sanitizeText(await file.text());
     const wc = countWords(text);
     const quality = getParseQuality(wc);
     logParseDiagnostics(fileName, fileType || "text/plain", wc, quality);
@@ -155,7 +161,7 @@ async function extractPdfText(file: File): Promise<string> {
       );
     }
 
-    const fullText = textParts.join("\n\n");
+    const fullText = sanitizeText(textParts.join("\n\n"));
     const wordCount = countWords(fullText);
 
     if (wordCount < MIN_RESUME_WORDS) {
@@ -207,7 +213,7 @@ async function extractDocxText(file: File): Promise<string> {
       throw new Error("No text content found in DOCX.");
     }
 
-    const fullText = textParts.join("\n");
+    const fullText = sanitizeText(textParts.join("\n"));
     const wordCount = countWords(fullText);
     if (wordCount < MIN_RESUME_WORDS) {
       throw new Error(
