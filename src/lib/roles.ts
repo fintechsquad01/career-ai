@@ -262,6 +262,81 @@ export const ROLES: TRole[] = [
     ],
     keywords: ["entry level sales resume", "sales representative resume optimization", "sales interview prep", "how to get into sales"],
   },
+  {
+    slug: "devops-engineer",
+    title: "DevOps Engineer",
+    persona: "AI-Anxious Engineer",
+    industry: "Technology",
+    description: "DevOps Engineers face a dual challenge: demonstrating both deep infrastructure expertise and the ability to automate at scale — while AI tools like GitHub Copilot and AI-powered IaC increasingly handle routine tasks. The winning strategy is positioning yourself as the engineer who designs the automation, not the one executing it.",
+    painPoints: [
+      "AI automating routine infrastructure tasks (Terraform generation, CI/CD config)",
+      "Difficulty showcasing impact beyond 'kept systems running'",
+      "Rapid toolchain evolution making existing skills feel dated",
+    ],
+    hiringChecklist: [
+      "CI/CD pipeline design and optimization with measurable outcomes",
+      "Infrastructure as Code proficiency (Terraform, Pulumi, CloudFormation)",
+      "Cloud platform expertise (AWS, GCP, Azure) with cost optimization examples",
+      "Monitoring and observability stack experience (Prometheus, Grafana, Datadog)",
+      "Incident response and reliability engineering metrics (SLOs, MTTR)",
+    ],
+    toolSequence: ["displacement", "jd_match", "resume", "interview", "skills_gap"],
+    faq: [
+      { q: "Will AI replace DevOps engineers?", a: "AI automates routine tasks like config generation and log analysis, but system design, incident response judgment, and cross-team coordination remain human-essential. Run the free AI Displacement Score to see which of your specific tasks are at risk." },
+      { q: "How do I show DevOps impact on a resume?", a: "Quantify everything: deployment frequency increase, MTTR reduction, cost savings from infrastructure optimization, uptime improvements. Job Match Score shows which metrics your target role values most." },
+    ],
+    keywords: ["devops engineer ai displacement", "devops resume optimization", "will ai replace devops", "devops career path 2026"],
+  },
+  {
+    slug: "frontend-developer",
+    title: "Frontend Developer",
+    persona: "AI-Anxious Engineer",
+    industry: "Technology",
+    description: "Frontend Developers face increasing pressure from AI code generation tools that can scaffold components and write boilerplate. The differentiator in 2026 is demonstrating design system thinking, performance optimization expertise, and the ability to translate complex user requirements into accessible interfaces.",
+    painPoints: [
+      "AI-generated UI code commoditizing basic frontend work",
+      "Framework churn making it hard to show durable expertise",
+      "Portfolio projects feeling insufficient against production experience",
+    ],
+    hiringChecklist: [
+      "Framework proficiency with production-scale examples (React, Vue, Angular, or Next.js)",
+      "Performance optimization evidence (Core Web Vitals, bundle size, rendering)",
+      "Accessibility compliance (WCAG 2.1+) implementation",
+      "Design system creation or contribution",
+      "State management and API integration patterns",
+    ],
+    toolSequence: ["displacement", "jd_match", "resume", "interview", "skills_gap"],
+    faq: [
+      { q: "Is frontend development being replaced by AI?", a: "AI can generate component boilerplate, but cannot make architectural decisions, optimize for performance across devices, or ensure accessibility compliance. The role is evolving from 'write code' to 'design systems that scale.' Run AI Displacement Score to see your specific risk profile." },
+      { q: "How do I make a frontend resume stand out in 2026?", a: "Lead with impact metrics: page load improvements, conversion lifts from UI changes, accessibility audit scores. Resume Optimizer ensures your technical achievements read as business outcomes." },
+    ],
+    keywords: ["frontend developer career path 2026", "frontend resume optimization", "will ai replace frontend developers", "react developer resume"],
+  },
+  {
+    slug: "junior-data-scientist",
+    title: "Junior Data Scientist",
+    persona: "Early Career",
+    industry: "Technology",
+    description: "Junior Data Scientists entering the job market in 2026 compete against both experienced practitioners and AI tools that can automate basic analysis. Standing out requires demonstrating problem formulation skills, domain knowledge application, and the ability to communicate findings to non-technical stakeholders.",
+    painPoints: [
+      "Thin professional experience in a field that values seniority",
+      "AI tools automating exploratory analysis and basic modeling",
+      "Gap between academic projects and production data science",
+    ],
+    hiringChecklist: [
+      "SQL proficiency with complex query examples",
+      "Python/R with statistical modeling and ML library experience",
+      "Data visualization and storytelling for business stakeholders",
+      "Version control and reproducible analysis practices",
+      "Domain knowledge application in at least one vertical",
+    ],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "skills_gap"],
+    faq: [
+      { q: "How do I get a data science job with no professional experience?", a: "Frame academic and personal projects as business problem solutions. Replace 'built a model' with 'identified $X revenue opportunity through churn prediction model.' Resume Optimizer rewrites project descriptions in the outcome-driven language hiring managers expect." },
+      { q: "What skills do entry-level data scientists need in 2026?", a: "SQL and Python are table stakes. Differentiate with communication skills, domain expertise, and the ability to translate model outputs into business decisions. Use Skills Gap Analysis to identify your specific gaps for target roles." },
+    ],
+    keywords: ["entry level data scientist resume", "junior data scientist career path", "data science resume optimization", "how to get into data science 2026"],
+  },
 ];
 
 export function getRole(slug: string): TRole | undefined {

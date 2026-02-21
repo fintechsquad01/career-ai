@@ -110,6 +110,34 @@ export const INDUSTRY_PAGES: TIndustry[] = [
     ],
     keywords: ["legal resume optimization", "ai replacing lawyers 2026", "legal career guide", "legal tech career transition"],
   },
+  {
+    slug: "startup-saas",
+    name: "Startup & SaaS",
+    description: "Startup and SaaS professionals need to demonstrate velocity, adaptability, and measurable impact. Hiring processes favor candidates who can show cross-functional ownership, growth metrics, and the ability to operate with minimal structure. AI tools are accelerating every function — the advantage goes to those who use them strategically.",
+    displacementContext: "Routine reporting, boilerplate content creation, and basic data analysis face rapid AI adoption in startups. Strategic decision-making, product-market fit judgment, cross-functional leadership, and customer relationship management remain human-essential.",
+    topRoles: ["Product Manager", "Growth Marketer", "Full-Stack Engineer", "Customer Success Manager", "Founding Team Member"],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "entrepreneurship"],
+    faq: [
+      { q: "How do I write a resume for a startup?", a: "Replace corporate language with impact-per-person metrics. Show breadth: '0-to-1 product launch' beats 'managed feature requests.' Job Match Score reveals which startup-specific signals your target company values." },
+      { q: "Do startups use ATS?", a: "Most Series A+ startups use Greenhouse, Lever, or Ashby. Even smaller startups increasingly use structured screening. Resume Optimizer ensures your resume passes both automated screening and the 6-second founder scan." },
+      { q: "How do I transition from corporate to startup?", a: "Reframe corporate experience as initiative ownership. Show ambiguity tolerance and speed. Use Job Match Score to identify which corporate achievements translate to startup priorities for your target role." },
+    ],
+    keywords: ["startup resume tips", "saas career guide 2026", "startup interview prep", "how to get hired at a startup"],
+  },
+  {
+    slug: "government-public-sector",
+    name: "Government & Public Sector",
+    description: "Government and public sector roles have unique hiring processes: structured applications, keyword-heavy screening, and strict qualification matching. AI adoption varies widely by agency, but digital transformation is creating demand for tech-savvy professionals who understand both policy and implementation.",
+    displacementContext: "Administrative processing, routine compliance checks, and standard reporting face AI automation. Policy analysis, constituent engagement, complex regulatory interpretation, and inter-agency coordination remain strongly human.",
+    topRoles: ["Policy Analyst", "Program Manager", "IT Specialist", "Grants Manager", "Public Affairs Specialist"],
+    toolSequence: ["jd_match", "resume", "cover_letter", "interview", "skills_gap"],
+    faq: [
+      { q: "How do I optimize a resume for government jobs?", a: "Government hiring is extremely keyword-dependent. Use the exact language from the job announcement. Job Match Score maps your experience against federal/state posting requirements with evidence for each match." },
+      { q: "Do government agencies use ATS?", a: "Yes — USAJOBS, Workday, and agency-specific systems all use automated screening. Many require specific formatting and keyword density. Resume Optimizer ensures compliance while making your application compelling to the human reviewer who follows." },
+      { q: "How do I transition from private sector to government?", a: "Government values demonstrated public service orientation and structured project delivery. Translate corporate experience into public-impact language. Skills Gap Analysis shows which government-specific competencies you need to highlight." },
+    ],
+    keywords: ["government resume optimization", "usajobs resume tips", "public sector career guide", "government interview prep 2026"],
+  },
 ];
 
 export function getIndustry(slug: string): TIndustry | undefined {
